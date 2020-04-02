@@ -1,0 +1,20 @@
+{
+  "name": "dynamodb-driver",
+  "version": "1.0.0",
+  "description": "A simple driver for interacting with dynamodb.",
+  "main": "./src/driver.js",
+  "files": [
+    "/src"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Brian Ellingson",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^7.0.2"
+  },
+  "devDependencies": {
+    "jest": "^25.2.4"
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "question": [
+    {
+      "text_id": "producer",
+      "title": "Primary Data Producer",
+      "text": "Who is the primary person responsible for the collection or creation of this data product?",
+      "help": "Often this is the Principle Investigator, Project Scientist, or Project Manager",
+      "inputs": ["text", "text", "email"],
+      "labels": ["text_id", "Organization", "email"],
+      "required": true
+    },
+    {
+      "text_id": "technical_contact",
+      "title": "Archival Request Point of Contact ",
+      "text": "Who should the DAAC contact with questions regarding this data archival request? ",
+      "help": "This person should be knowledgeable about the data to provide additional information as needed.",
+      "inputs": ["text", "text", "email"],
+      "labels": ["text_id", "Organization", "email"],
+      "required": true
+    },
+    {
+      "text_id": "dataset",
+      "title": "Data Product",
+      "text": "How do you refer to this data product? Please provide a brief description of the data product. What instrument and/or input data were used to generate this product? What are the primary parameters represented in the data?",
+      "help": "The title is how the DAAC will refer to the data product during the Archival Interest process. The description should mimic a journal abstract and should provide a reader with the information needed to quickly understand the relevance and usefulness of the data.",
+      "inputs": ["text", "text"],
+      "labels": ["Title", "Description"],
+      "required": true
+    },
+    {
+      "title": "Funding Source",
+      "text_id": "Funded by Agency or Organization",
+      "text": "What organization funded the creation of this data product? ",
+      "help": null,
+      "type": "text",
+      "requested_type": "Controlled: dropdown",
+      "source": "NASA, NOAA, NSF, USGS, University <fill in which>, Other <fill in>",
+      "required": true,
+      "validation": null,
+      "note": null
+    },
+    {
+      "title": "Funding Source: Grant Number",
+      "text_id": null,
+      "text": null,
+      "help": null,
+      "type": "text",
+      "requested_type": null,
+      "source": null,
+      "required": null,
+      "validation": "valid grant number",
+      "note": null
+    },
+    {
+      "title": "Funding Source: Program",
+      "text_id": null,
+      "text": "Under what program within the funding organization does your project fall?",
+      "help": null,
+      "type": "dropdown",
+      "requested_type": "Controlled: dropdown",
+      "source": "<filter based on organization seleted>\n",
+      "required": null,
+      "validation": null,
+      "note": "should be pulled from master list (GCMD?)"
+    },
+    {
+      "title": "Funding source: Project",
+      "text_id": null,
+      "text": "Through which project within the funding program was this work awarded?",
+      "help": null,
+      "type": "dropdown",
+      "requested_type": "Controlled: dropdown",
+      "source": "<fiter based on program selected>",
+      "required": null,
+      "validation": null,
+      "note": "should be pulled from master list (GCMD?)"
+    },
+    {
+      "title": "Estimated dataset volume",
+      "text_id": "Estimated data product volume",
+      "text": "What is the estimated total volume of all files in this data product?",
+      "help": null,
+      "type": "number",
+      "requested_type": "Free text (allow decimal); Controlled: dropdown",
+      "source": "dropdown with units (KB, MB, GB, TB, PB)",
+      "required": true,
+      "validation": "Free text validated as number; dropdown value must be selected",
+      "note": null
+    },
+    {
+      "title": "Time period of dataset",
+      "text_id": "Data product temporal coverage",
+      "text": "What period of time is covered by the entire data product?",
+      "help": "This should the beginning date of the first data file and the ending date of the last data file, even if there are gaps. ",
+      "type": "daterange",
+      "requested_type": "Controlled   ",
+      "source": "Date selection widget for start date and end date; For end date, also an option to say \"on going\"",
+      "required": true,
+      "validation": null,
+      "note": null
+    },
+    {
+      "title": "Spatial coverage",
+      "text_id": "Spatial coverage",
+      "text": "What is the general geographical region covered by this data product? ",
+      "help": "Alaska, Northern Hemispere, Global",
+      "type": "keyword",
+      "requested_type": "Controlled: Multiple choice?",
+      "source": "GCMD Locations Keywords\n",
+      "required": true,
+      "validation": null,
+      "note": "reuse MMT GUI element"
+    },
+    {
+      "title": "Data format",
+      "text_id": "Data file format",
+      "text": "In what file format(s) is this data product stored?",
+      "help": "Link to NASA Approved data formats?",
+      "type": "checkboxes",
+      "requested_type": "Controlled: Multiple choice",
+      "source": "GCMD granule data format keywords; \"Other\"",
+      "required": true,
+      "validation": null,
+      "note": null
+    },
+    {
+      "title": "Dataset restrictions",
+      "text_id": "Data product restrictions\n",
+      "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy?",
+      "help": "Link to NASA Open Data Policy\nhttps://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy",
+      "type": "radio",
+      "requested_type": "Controlled: Yes/No",
+      "source": null,
+      "required": true,
+      "validation": null,
+      "note": null
+    },
+    {
+      "title": "Science value of dataset",
+      "text_id": "Science value of data product ",
+      "text": "Please describe the science value of this data product. ",
+      "help": "For example, how will it benefit the science community? What are the strengths and the limitations of the data product? What other data products does it compliment? ",
+      "type": "textarea",
+      "requested_type": "Free text",
+      "source": null,
+      "required": true,
+      "validation": "Consider a reasonable character limit for this.",
+      "note": null
+    },
+    {
+      "title": "Reason for submitting",
+      "text_id": "Reason for submitting your data product",
+      "text": "Please briefly explain your reasons for requesting archival of your data product at a DAAC.  ",
+      "help": "For example, are you attempting to publish a paper which requires data to be archived in a trusted repository? Have you been instructed by a NASA program manager to submit your data to a DAAC? Do you want your data product archived with related data? ",
+      "type": "textarea",
+      "requested_type": "Free text",
+      "source": null,
+      "required": true,
+      "validation": "Consider a reasonable character limit for this.",
+      "note": null
+    },
+    {
+      "title": "Year of Publication (or anticipated publication)",
+      "text_id": "Dependencies for archival approval",
+      "text": "Do you have any dependencies related to this data product being approved for archival at a DAAC? If yes, please provide a brief explanation. ",
+      "help": "For example, are you hoping to have the data product approved prior publishing a paper or presenting at a conference? Does your project have a defined timeline in which the data product needs to be published?",
+      "type": "year",
+      "requested_type": "Yes|No\nIf Yes, then free text field",
+      "source": null,
+      "required": true,
+      "validation": null,
+      "note": "radio and text in template"
+    },
+    {
+      "title": "Dataset status (static or ongoing)",
+      "text_id": "Data product status",
+      "text": "After the delivery to the DAAC, will you continue to generate data to extend the data product? \nIf yes, what is the anticipated frequency of additional data deliveries to the DAAC?",
+      "help": "For example, is this an on-going data product as opposed to a static data product or will you be extending the time series of the data product? ",
+      "type": "status",
+      "requested_type": "Controlled: One choice",
+      "source": "YES|NO\nIf YES, Dropdown: daily, weekly, monthly, quarterly, yearly, ad-hoc",
+      "required": true,
+      "validation": null,
+      "note": "radio and dropdown in template"
+    },
+    {
+      "title": "Is there a publication describing the dataset? Please provide",
+      "text_id": "Publication describing the data product",
+      "text": "Please provide the citation or Digital Object Identifier (DOI) for any publications describing this data product.",
+      "help": "For example, a overview paper describing the research, methods, or initial results related to the data product.  ",
+      "type": "text",
+      "requested_type": "Free text",
+      "source": null,
+      "required": true,
+      "validation": null,
+      "note": null
+    },
+    {
+      "title": "Download URL for data",
+      "text_id": "Sample data file(s)",
+      "text": "Please upload a sample data file(s) or provide a URL of a location where a sample file(s) can be accessed. ",
+      "help": "Providing a sample file will help the DAAC to better understand your data format, structure, and content. \n(need to show the filesize limit)",
+      "type": "file",
+      "requested_type": "File upload widget AND Free text\n",
+      "source": null,
+      "required": true,
+      "validation": "Validate that file is uploaded OR text field populated; validate file(s) against file size limit\n",
+      "note": null
+    }
+  ]
+}

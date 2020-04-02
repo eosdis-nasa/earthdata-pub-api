@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"iam_roles","Source":"./iam","Dir":"iam"},{"Key":"","Source":"","Dir":"."},{"Key":"dynamodb_tables","Source":"./dynamodb","Dir":"dynamodb"},{"Key":"lambda_functions","Source":"./lambda","Dir":"lambda"}]}

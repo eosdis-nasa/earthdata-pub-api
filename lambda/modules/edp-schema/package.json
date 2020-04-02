@@ -1,0 +1,17 @@
+{
+  "name": "edp-schema",
+  "version": "1.0.0",
+  "description": "Earthdata Pub database schema and validation.",
+  "main": "edp-schema.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+  },
+  "author": "Brian Ellingson",
+  "license": "ISC",
+  "dependencies": {
+    "jsonschema": "^1.2.5"
+  },
+  "devDependencies": {
+    "jest": "^25.2.4"
+  }
+}
