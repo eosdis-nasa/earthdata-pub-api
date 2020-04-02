@@ -24,6 +24,12 @@
   *   that item's type
   */
 
+  /**
+   * @typedef {Object} Response
+   * @property {Item|Item[]|boolean} data
+   * @property {string} [err]
+   */
+
 /**
  * A driver for interfacing with the AWS DynamoDB Document Client using
  *   Earthdata Pub's database schema.
@@ -47,14 +53,22 @@ class Driver {
    *   or external:DocumentClient.query
    * @param {QueryParams} params - Query params for external:DocumentClient
    *   operation
-   * @return {Promise<Item|Error>} A promise that returns the requested Item if
-   *   resolved or Error if rejected
+   * @return {Promise<Response>} A promise that resolves to a Response object
    */
   request(operation, params) {
     var promise = new Promise((resolve) => {
       const callback = (err, data) => {
-        if (err) return resolve(err);
-        else resolve(data.Items);
+        if (err) {
+          return resolve({ data: false, err: err.message);
+        }
+        else {
+          if (data.Items) {
+            resolve({ data: data.Items, err: null);
+          }
+          else {
+            resolve({ data: true, err: null);
+          }
+        }
       }
       operation(params, callback);
     });
@@ -72,15 +86,21 @@ class Driver {
    *   promise resolves.
    */
   expandKeys(item) {
+    let err;
     let promises = [];
     for (let key of Object.keys(item)) {
       if (typeof item[key] == 'object') {
         if (item[key].hasOwnProperty("f_ref")) {
           const promise = new Promise((resolve) => {
             this.getItemById(item[key].f_ref, item[key].id)
-              .then((nestedItem) => {
+            .then(({ data, err }) => {
+              if (data) {
                 item[key] = nestedItem;
                 resolve();
+              }
+              else {
+                reject();
+              }
             });
           });
           promises.push(promise);
@@ -100,8 +120,8 @@ class Driver {
    * @param {string} [unique_name] - Unique Name of entity
    * @param {string} [version] - Version of entity
    * @param {bool} [expand = true] - Whether or not to expand foreign keys
-   * @return {(Item|Item[])} - A single Item or Item[] of zero or more
-   *   entities
+   * @return {Response} - The Response object bubbled up from the routed method
+   *   or an empty error Response.
    *
    */
   async getItems(tableName, id, uniqueName, version, expand = true) {
@@ -117,7 +137,7 @@ class Driver {
       }
     }
     else {
-      return [];
+      return { data: false, err: "There was an uncaught error."};
     }
   }
 
@@ -129,16 +149,23 @@ class Driver {
    * @return {(Item|Error)} - A single Item or Error
    */
   async getItemById(tableName, id, expand = false) {
+    let data;
+    let items;
+    let err;
     let params = {
       TableName: tableName,
       KeyConditionExpression: `id = ${id}`
     }
-    let items = await this.request(this.query, params);
-    let item = items[0];
+    { items, err } = await this.request(this.query, params);
+    data = items[0];
     if (expand) {
-      await this.expandKeys(item);
+      await this.expandKeys(data)
+      .catch(() => {
+        data = false;
+        err = "Expanding foreign keys failed, possibly due to an invalid foreign key.";
+      });
     }
-    return item;
+    return { data: data, err: err };
   }
 
   /**
@@ -150,17 +177,24 @@ class Driver {
    * @return {(Item|Error)} - A single Item or Error
    */
   async getItemByNameAndVersion(tableName, uniqueName, version, expand = false) {
+    let data;
+    let items;
+    let err;
     let params = {
       TableName: tableName,
       IndexName: `${tableName}_index`,
       KeyConditionExpression: `unique_name = ${uniqueName} and version = ${version}`
     }
-    let items = await this.request(this.query, params);
-    let item = items[0];
+    { items, err } = await this.request(this.query, params);
+    let data = items[0];
     if (expand) {
-      await this.expandKeys(item);
+      await this.expandKeys(data)
+      .catch(() => {
+        data = false;
+        err = "There was an error, possibly an invalid foreign key.";
+      });
     }
-    return item;
+    return { data: data, err: err };
   }
 
   /**
@@ -175,8 +209,49 @@ class Driver {
       IndexName: `${tableName}_index`,
       KeyConditionExpression: `unique_name = ${uniqueName}`
     }
-    let items = await this.request(this.query, params);
-    return items;
+    return await this.request(this.query, params);
+  }
+
+  /**
+   * Puts a new item or new version of existing item into the given
+   * table
+   * @param {string} tableName - Name of the DynamoDB table to query
+   * @param {Item} item - New item to put into table
+   * @return {Response} - Response object where data is a boolean
+   *   indicating success of operation and err is an error string
+   *   or null
+   */
+  async putItem(tableName, item) {
+    let data;
+    let err;
+    const uuid = require('uuid');
+    const deepEqual = require('deep-equal');
+    { data, err } = await this.getItemsByName(item.unique_name);
+    if (data) {
+      const count = data.length;
+      const lastIndex = count - 1;
+      const latest = count > 0 ? data[lastIndex] : { version: 0 };
+      const newVersion = latest.version + 1;
+
+      delete item.id;
+      delete item.version;
+      delete latest.id;
+      delete latest.version;
+
+      if (!deepEqual(item, latest)) {
+        item.id = uuid.v4();
+        item.version = newVersion;
+        const params = {
+          Item: item,
+          TableName: tableName
+        }
+        { data, err } = await this.request(this.put, params);
+      }
+      else {
+        err = "The new item is equivalent to previous version.";
+      }
+    }
+    return { data: data, err: err };
   }
 }
 

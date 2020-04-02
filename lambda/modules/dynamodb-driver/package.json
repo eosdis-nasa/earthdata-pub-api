@@ -12,7 +12,8 @@
   "author": "Brian Ellingson",
   "license": "ISC",
   "dependencies": {
-    "uuid": "^7.0.2"
+    "uuid": "^7.0.2",
+    "deep-equal": "^2.0.2"
   },
   "devDependencies": {
     "jest": "^25.2.4"
