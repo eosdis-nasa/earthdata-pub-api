@@ -1,8 +1,8 @@
 {
-  "name": "dynamodb-driver",
+  "name": "database-driver",
   "version": "1.0.0",
-  "description": "A simple driver for interacting with dynamodb.",
-  "main": "./src/driver.js",
+  "description": "A drive module for interacting with the database.",
+  "main": "./src/index.js",
   "files": [
     "/src"
   ],
@@ -13,7 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "uuid": "^7.0.2",
-    "deep-equal": "^2.0.2"
+    "deep-equal": "^2.0.2",
+    "jsonschema": "^1.2.5"
   },
   "devDependencies": {
     "jest": "^25.2.4"

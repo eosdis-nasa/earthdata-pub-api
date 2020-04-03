@@ -1,153 +1,186 @@
-    {
-      "id": "b4e35cb9-d1e5-44cf-9ffb-6ad9d3f8ae34",
-      "version": 1,
-      "unique_name": "producer_poc",
-      "title": "Primary Data Producer",
-      "text": "Who is the primary person responsible for the collection or creation of this data product?",
-      "help": "Often this is the Principle Investigator, Project Scientist, or Project Manager",
-      "required": true,
-      "inputs": [
-        {
-          "type": "text",
-          "id": "producer_poc_name",
-          "label": "Name",
-          "validation": "not_null",
-          "validation_error_msg": "Please enter a name."
-        },
-        {
-          "type": "text",
-          "id": "producer_poc_organization",
-          "label": "Organization",
-          "validation": "not_null",
-          "validation_error_msg": "Please enter an organization."
-        },
-        {
-          "type": "email",
-          "id": "producer_poc_email",
-          "label": "Email",
-          "validation": "not_null",
-          "validation_error_msg": "Please enter an email."
+[
+  {
+    "unique_name": "poc_info",
+    "title": "Point of Contact",
+    "text": "A question for contact information may look like this. Name and Email are required, but for this example Organization is optional.",
+    "help": "This is a helpful tooltip with more information about the question.",
+    "inputs": [
+      {
+        "type": "text",
+        "id": "poc_info_name",
+        "label": "Name",
+        "validation_error_msg": "Please enter a name for the point of contact.",
+        "required": true
+      },
+      {
+        "type": "text",
+        "id": "poc_info_organization",
+        "label": "Organization",
+        "validation_error_msg": "Please enter an organization."
+      },
+      {
+        "type": "email",
+        "id": "poc_info_email",
+        "label": "Email",
+        "validator": "not_null",
+        "validation_error_msg": "Please enter an email.",
+        "required": true
+      }
+    ]
+  },
+  {
+    "unique_name": "checkboxes",
+    "title": "Checkbox Example",
+    "text": "These are a lot of checkboxes. Please check them.",
+    "help": "Checkboxes can be used where 0 or more choices should be made from given options.",
+    "inputs": [
+      {
+        "type": "checkbox",
+        "id": "checkboxes_banana",
+        "label": "Banana"
+      },
+      {
+        "type": "checkbox",
+        "id": "checkboxes_apple",
+        "label": "Apple"
+      },
+      {
+        "type": "checkbox",
+        "id": "checkboxes_strawberry",
+        "label": "Strawberry"
+      },
+      {
+        "type": "checkbox",
+        "id": "checkboxes_potato",
+        "label": "Potato"
+      }
+    ]
+  },
+  {
+    "unique_name": "more_words",
+    "title": "More Words",
+    "text": "Can you enter some words in a single text input, and then more words in a multiline textarea?",
+    "help": "This is a text input and a text area together. Attributes like rows and cols can be set explicitly here, or done client-side through styles.",
+    "inputs": [
+      {
+        "type": "text",
+        "id": "more_words_title",
+        "label": "Title",
+        "required": true,
+        "validation_error_msg": "Please enter a title."
+      },
+      {
+        "type": "textarea",
+        "id": "more_words_description",
+        "label": "Description",
+        "validator": "not_null",
+        "validation_error_msg": "Please enter a description.",
+        "attributes": {
+          "rows": 10,
+          "cols": 80
         }
-      ]
-    },
-    {
-      "id": "a9cdc22c-4532-47b3-863d-58f2fd07cdcf",
-      "version": 1,
-      "unique_name": "technical_poc",
-      "title": "Archival Request Point of Contact ",
-      "text": "Who should the DAAC contact with questions regarding this data archival request? ",
-      "help": "This person should be knowledgeable about the data to provide additional information as needed.",
-      "required": true,
-      "inputs": [
-        {
-          "type": "text",
-          "id": "technical_poc_name",
-          "label": "Name",
-          "validation": "not_null",
-          "validation_error_msg": "Please enter a name."
+      }
+    ]
+  },
+  {
+    "unique_name": "radios",
+    "title": "Radios and Numbers",
+    "text": "This is a question? Radio groups are good for when there should be exactly one choice made from predefined options.",
+    "help": "This a number input coupled with a radio group. The positive validator checks that the input is a positive number.",
+    "inputs": [
+      {
+        "type": "number",
+        "id": "radios_amount",
+        "label": "Amount",
+        "required": true,
+        "validator": "positive",
+        "validation_error_msg": "You must enter a positive value."
+      },
+      {
+        "type": "radio",
+        "id": "radios_choice",
+        "label": "Choice",
+        "enums": [ "Choice 1", "Choice 2", "Choice 3", "Choice 4"]
+      }
+    ]
+  },
+  {
+    "unique_name": "dataset_restrictions",
+    "title": "Dataset Restrictions",
+    "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy?",
+    "help": "NASA Open Data Policy https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy",
+    "required": true,
+    "inputs": [
+      {
+        "type": "checkbox",
+        "id": "dataset_restrictions_public",
+        "label": "Releasable to public"
+      }
+    ]
+  },
+  {
+    "unique_name": "multiselect",
+    "help": "You can select up to 2 items",
+    "text": "Select the options to apply?",
+    "title": "Multiselect Option",
+    "inputs": [
+      {
+        "type": "select",
+        "id": "multiselect_choice",
+        "label": "Choose Carefully",
+        "attributes": {
+          "min": "1",
+          "max": "2"
         },
-        {
-          "type": "text",
-          "id": "technical_poc_organization",
-          "label": "Organization",
-          "validation": "not_null",
-          "validation_error_msg": "Please enter an organization."
-        },
-        {
-          "type": "email",
-          "id": "technical_poc_email",
-          "label": "Email",
-          "validation": "not_null",
-          "validation_error_msg": "Please enter an email."
-        }
-      ]
-    },
-    {
-      "id": "5ae650df-548a-4a9f-80fa-920c9c48286b",
-      "version": 1,
-      "unique_name": "data_product",
-      "title": "Data Product",
-      "text": "How do you refer to this data product? Please provide a brief description of the data product. What instrument and/or input data were used to generate this product? What are the primary parameters represented in the data?",
-      "help": "The title is how the DAAC will refer to the data product during the Archival Interest process. The description should mimic a journal abstract and should provide a reader with the information needed to quickly understand the relevance and usefulness of the data.",
-      "required": true,
-      "inputs": [
-        {
-          "type": "text",
-          "id": "data_product_title",
-          "label": "Title",
-          "validation": "not_null",
-          "validation_error_msg": "Please enter a title for this data product."
-        },
-        {
-          "type": "text",
-          "id": "data_product_description",
-          "label": "Description",
-          "validation": "not_null",
-          "validation_error_msg": "Please enter a description of the data product."
-        }
-      ]
-    },
-    {
-      "id": "a9cdc22c-4532-47b3-863d-58f2fd07cdcf",
-      "version": 1,
-      "unique_name": "dataset_volume",
-      "title": "Estimated Dataset Volume",
-      "text": "What is the estimated total volume of all files in this data product?",
-      "help": "This is the total disk space consumed by the dataset.", // this will be used as a tooltip
-      "required": true,
-      "inputs": [
-        {
-          "type": "number",
-          "id": "dataset_volume_size", // id will serve as the key in the json built from the data entered in the form
-          "label": "Size",
-          "validation": "positive,not_null",
-          "validation_error_msg": "You must enter a positive value."
-        },
-        {
-          "type": "radio", // This will be a radio group and not a single radio button
-          "id": "dataset_volume_units",
-          "label": "Units",
-          "enums": [ "KB", "MB", "GB", "TB", "PB" ] // No validation required if we have a preselected default
-        }
-      ]
-    },
-    {
-      "id": "a9cdc22c-4532-47b3-863d-58f2fd07cdcf",
-      "version": 1,
-      "unique_name": "dataset_restrictions",
-      "title": "Dataset Restrictions",
-      "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy?",
-      "help": "NASA Open Data Policy https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy",
-      "required": true,
-      "inputs": [
-        {
-          "type": "checkbox",
-          "id": "dataset_restrictions_public",
-          "label": "Releasable to public"
-        }
-      ]
-    },
-    {
-      "version": 1,
-      "unique_name": "multiselect",
-      "help": "You can select up to 2 items",
-      "text": "Select the options to apply?",
-      "title": "Multiselect Option",
-      "inputs": [
-        {
-          "type": "select",
-          "attributes": {
-            "min": "1",
-            "max": "2",
-          },
-          "enums": [
-              "This is the first option",
-              "This is the second option",
-              "This is the third option"
-          ],
-          "validation_error_msg": "At least 1 option should be selected."
-        }
-      ]
-    }
+        "enums": [
+            "This is the first option",
+            "This is the second option",
+            "This is the third option"
+        ],
+        "validation_error_msg": "At least 1 and at most 2 should be selected."
+      }
+    ]
+  },
+  {
+    "unique_name": "example_file",
+    "title": "Example File",
+    "text": "This is an example of a file input.",
+    "help": "This allows a user to specify a local file to upload.",
+    "required": true,
+    "inputs": [
+      {
+        "type": "file",
+        "id": "example_file_upload",
+        "label": "Upload File"
+      }
+    ]
+  },
+  {
+    "unique_name": "example_date",
+    "title": "Example Date",
+    "text": "This is an example of a data input.",
+    "help": "This allows a user to select a date. Two date inputs could be combined in a question for a start and end date.",
+    "required": true,
+    "inputs": [
+      {
+        "type": "date",
+        "id": "example_date_when",
+        "label": "When"
+      }
+    ]
+  },
+  {
+    "unique_name": "example_spatial",
+    "title": "Example Spatial Extent",
+    "text": "This is an example for the spatial extent widget.",
+    "help": "This will be a graphical widget for defining the geographical spatial extent of a dataset.",
+    "required": true,
+    "inputs": [
+      {
+        "type": "spatial",
+        "id": "example_spatial_where",
+        "label": "Where"
+      }
+    ]
   }
-}
+]

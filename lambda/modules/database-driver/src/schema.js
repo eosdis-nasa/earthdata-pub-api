@@ -1,15 +1,18 @@
+/** @module Schema */
 const Validator = require('jsonschema').Validator;
 
+/**
+ *  A tree structure of JSON schemas not intended for direct access.
+ *  @private
+ *  @type {object}
+ */
 const schema = {
   "form": {
     "id": "/form",
     "type": "object",
     "required": ["unique_name", "text", "sections"],
     "properties": {
-      "id": {
-        "type": "string",
-        "pattern": "^[a-f|0-9]{8}-[a-f|0-9]{4}-4[a-f|0-9]{3}-[89ab][a-f|0-9]{3}-[a-f|0-9]{12}$"
-      },
+      "id": { "$ref": "/uuid" },
       "version": { "type": "number" },
       "unique_name": { "type": "string" },
       "text":  { "type": "string" },
@@ -38,7 +41,7 @@ const schema = {
     "required": ["unique_name", "title", "text", "help", "inputs"],
     "type": "object",
     "properties": {
-      "id": { "type": "string" },
+      "id": { "$ref": "/uuid" },
       "version": { "type": "number" },
       "unique_name": { "type": "string" },
       "title": { "type": "string" },
@@ -70,34 +73,56 @@ const schema = {
     }
   },
   "definitions": {
+    "uuid": {
+      "id": "/uuid",
+      "type": "string",
+      "pattern": "^[a-f|0-9]{8}-[a-f|0-9]{4}-4[a-f|0-9]{3}-[89ab][a-f|0-9]{3}-[a-f|0-9]{12}$"
+    },
     "foreign_key":  {
       "id": "/foreign_key",
       "type": "object",
       "required": ["id", "f_ref"],
       "properties": {
-        "id": {"type": "string" },
+        "id": { "$ref": "/uuid" },
         "f_ref": { "type": "string" }
       }
     }
   }
 }
 
-const v = new Validator();
-v.addSchema(schema.form, "/form");
-v.addSchema(schema.question, "/question");
-v.addSchema(schema.definitions.foreign_key, "/foreign_key");
+/**
+ * A validator utility
+ * @private
+ * @type {external:Validator}
+ */
+const validator = new Validator();
+validator.addSchema(schema.form, "/form");
+validator.addSchema(schema.question, "/question");
+validator.addSchema(schema.definitions.uuid, "/uuid");
+validator.addSchema(schema.definitions.foreign_key, "/foreign_key");
 
-
-module.exports = {
-  validate: (item, tableName) => {
-    if (schema.hasOwnProperty(tableName) && tableName !== "definitions") {
-      return v.validate(item, schema[tableName]);
-    }
-    else {
-      return false;
-    }
-  },
-  isTable: (tableName) => {
-    return schema.hasOwnProperty(tableName) && tableName !== "definitions";
+/**
+ * Validates an Item against the schema for a given table
+ * @param {Item} item - An Item to be validated
+ * @param {string} tableName - The table whose schema will be used for
+ *   validation
+ * @return {boolean} Whether or not the Item pass validation;
+ */
+module.exports.validate = function(item, tableName) {
+  if (schema.hasOwnProperty(tableName) && tableName !== "definitions") {
+    return validator.validate(item, schema[tableName]);
   }
+  else {
+    return false;
+  }
+}
+
+/**
+ * Checks if a table exists within the schema tree and consequently if it
+ * exists within the database.
+ * @param {string} tableName - The table to check for
+ * @return {boolean} Whether or not the table exists
+ */
+module.exports.isTable = function(tableName) {
+  return schema.hasOwnProperty(tableName) && tableName !== "definitions";
 }
