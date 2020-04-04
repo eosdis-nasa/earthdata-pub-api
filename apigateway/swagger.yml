@@ -1,0 +1,128 @@
+openapi: "3.0.0"
+info:
+  description: "This is the API that serves as the central interaction point between the client
+    and back-end services of Earthdata Pub."
+  version: "1.0.0"
+  title: "Earthdata Pub API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "dummy@dummy.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+tags:
+- name: "data"
+  description: "Interact with the database"
+  externalDocs:
+    description: "Read the docs"
+    url: "http://database.docs/#TODO"
+
+paths:
+  /{table_name}:
+    get:
+      tags:
+      - "data"
+      summary: "Returns 1 or more items from the given database table"
+      description: "Accepts one of the follow combinations of query parameters: id, unique_name, or unique_name and version"
+      operationId: "getItem"
+      parameters:
+      - name: "table_name"
+        in: "path"
+        description: "Name of the database table to connect to"
+        required: true
+        schema:
+          type: "string"
+      - name: "id"
+        in: "query"
+        description: "UUID of the item to fetch"
+        schema:
+          type: "string"
+      - name: "unique_name"
+        in: "query"
+        description: "The item's unique_name which describes its archetype or ownership"
+        schema:
+          type: "string"
+      - name: "version"
+        in: "query"
+        description: "Version of the item to fetch, used to specify a specific version of an item with a given unique_name"
+        schema:
+          type: "integer"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "schema.json#/question"
+        404:
+          description: "Resource not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+        500:
+          description: "Internal server error."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+    post:
+      tags:
+      - "data"
+      summary: "Create or update a form"
+      description: "Creates a new item or new version of existing item in the given table"
+      operationId: "putItem"
+      parameters:
+      - name: "table_name"
+        in: "path"
+        description: "Name of the database table to connect to"
+        required: true
+        schema:
+          type: "string"
+      requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+        404:
+          description: "Resource not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+
+components:
+  schemas:
+    Response:
+      type: "object"
+      properties:
+        data:
+          oneOf:
+          - $ref: "#/components/schemas/Item"
+          - $ref: "#/components/schemas/ItemArray"
+        err:
+          type: "string"
+    Item:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        unique_name:
+          type: "string"
+        version:
+          type: "integer"
+    ItemArray:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Item"
+
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

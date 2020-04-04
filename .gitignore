@@ -1,0 +1,17 @@
+#Ignore all installed node modules
+node_modules/
+
+#Ignore all installed Terraform modules and states
+/.terraform/
+/terraform.tfstate
+/terraform.tfstate.backup
+
+#Ignore installation artifacts
+*.zip
+*.tgz
+*.gz
+*.tar
+
+#Ignore generated documentation
+/docs/jsdoc/
+/docs/swagger/
