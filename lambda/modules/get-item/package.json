@@ -1,0 +1,19 @@
+{
+  "name": "get-item",
+  "version": "1.0.0",
+  "description": "Lambda function to get an item from database using the Driver Module",
+  "main": "./src/get-item.js",
+  "files": [
+    "/src"
+  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Brian Ellingson",
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk": "^2.654.0",
+    "database-driver": "file:../database-driver",
+    "jest": "^25.2.4"
+  }
+}

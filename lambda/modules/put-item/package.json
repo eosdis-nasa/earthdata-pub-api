@@ -1,7 +1,7 @@
 {
   "name": "database-driver",
   "version": "1.0.0",
-  "description": "A driver module for interacting with the database.",
+  "description": "Lambda function to get an item from database using the Driver Module",
   "main": "./src/index.js",
   "files": [
     "/src"
@@ -11,12 +11,9 @@
   },
   "author": "Brian Ellingson",
   "license": "ISC",
-  "dependencies": {
-    "uuid": "^7.0.2",
-    "deep-equal": "^2.0.2",
-    "jsonschema": "^1.2.5"
-  },
   "devDependencies": {
+    "aws-sdk": "^2.654.0",
+    "database-driver": "file:../database-driver",
     "jest": "^25.2.4"
   }
 }

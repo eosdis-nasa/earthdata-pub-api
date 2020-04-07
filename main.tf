@@ -13,4 +13,6 @@ module "dynamodb_tables" {
 
 module "lambda_functions" {
   source = "./lambda"
+
+  dynamodb_lambda_role_arn = "${module.iam_roles.dynamodb_lambda_role_arn}"
 }

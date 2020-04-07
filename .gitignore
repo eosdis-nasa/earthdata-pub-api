@@ -1,12 +1,14 @@
-#Ignore all installed node modules
+#Ignore all installed node modules and package-locks
 node_modules/
+package-lock.json
 
-#Ignore all installed Terraform modules and states
+#Ignore all installed Terraform modules and Terraform states
 /.terraform/
 /terraform.tfstate
 /terraform.tfstate.backup
 
 #Ignore installation artifacts
+/lambda/artefacts
 *.zip
 *.tgz
 *.gz
@@ -14,4 +16,4 @@ node_modules/
 
 #Ignore generated documentation
 /docs/jsdoc/
-/docs/swagger/
+/docs/api/
