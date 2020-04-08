@@ -17,3 +17,6 @@ package-lock.json
 #Ignore generated documentation
 /docs/jsdoc/
 /docs/api/
+
+#Ignore folder of test scripts
+/test-scripts

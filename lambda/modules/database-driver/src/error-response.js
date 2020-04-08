@@ -5,7 +5,7 @@
  */
 module.exports.generic = {
   data: false,
-  httpStatus: 500,
+  statusCode: 500,
   err: "There was an unhandled exception."
 }
 
@@ -15,7 +15,7 @@ module.exports.generic = {
 */
 module.exports.invalidReference = {
   data: false,
-  httpStatus: 500,
+  statusCode: 500,
   err: "Expanding foreign keys failed, possibly due to an invalid foreign key."
 }
 
@@ -25,8 +25,17 @@ module.exports.invalidReference = {
 */
 module.exports.noChange = {
   data: false,
-  httpStatus: 200,
+  statusCode: 200,
   err: "The new item is equivalent to the previous version."
+}
+
+/** Table Paramater Missing error, the tableName path parameters is missing.
+*  @type {Response}
+*/
+module.exports.tableParameterMissing = {
+  data: false,
+  statusCode: 500,
+  err: "A table name was not specified in the URL path."
 }
 
 /** No Such Table error, the requested table does not exist in the database.
@@ -34,8 +43,18 @@ module.exports.noChange = {
  */
 module.exports.noSuchTable = {
   data: false,
-  httpStatus: 404,
+  statusCode: 404,
   err: "No such table exists"
+}
+
+/** Invalid Query error, either id or uniqueName must be specified in query
+ *    parameters.
+*  @type {Response}
+*/
+module.exports.invalidQuery = {
+  data: false,
+  statusCode: 500,
+  err: "Either id or uniqueName must be specified in the query parameters."
 }
 
 /** Validation Failed error, item to insert does not pass schema validation.
@@ -43,7 +62,7 @@ module.exports.noSuchTable = {
  */
 module.exports.validationFailed = {
   data: false,
-  httpStatus: 200,
+  statusCode: 200,
   err: "The new item did not pass schema validation."
 }
 
@@ -53,7 +72,7 @@ module.exports.validationFailed = {
  */
 module.exports.fromAwsError = function(error) {
   let response = { data: false };
-  response.httpStatus = error.statusCode ? error.statusCode : 500;
+  response.statusCode = error.statusCode ? error.statusCode : 500;
   response.err = error.message ? error.message : "There was an unhandled error.";
   return response;
 }

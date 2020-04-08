@@ -1,10 +1,10 @@
 resource "aws_api_gateway_rest_api" "earthdatapub_api_gateway" {
   name        = "EarthdataPubAPI"
   description = "API to access codingtips application"
-  body        = "${data.template_file.earthdata_pub_openapi.rendered}"
+  body        = data.template_file.earthdata_pub_openapi.rendered
 }
 
-data "template_file" earthdata_pub_openapi {
+data "template_file" "earthdata_pub_openapi" {
   template = "${file("./apigateway/openapi.yml")}"
   vars = {
     get_item_lambda_arn = var.get_item_lambda_arn

@@ -46,10 +46,10 @@ class DynamodbDriver extends BaseDriver {
         }
         else {
           if (data.Items) {
-            resolve({ data: data.Items, httpStatus: 200 });
+            resolve({ data: data.Items, statusCode: 200 });
           }
           else {
-            resolve({ data: true, httpStatus: 200 });
+            resolve({ data: true, statusCode: 200 });
           }
         }
       }
@@ -96,32 +96,40 @@ class DynamodbDriver extends BaseDriver {
     return Promise.all(promises);
   }
 
+
+
   /**
    * Convenience method that routes a request to the appropriate get* method
    *   based on the passed in parameters.
    * @override
    * @param {string} tableName - Item type or table name
    * @param {string} [id] - Id of Item to retrieve
-   * @param {string} [unique_name] - Unique Name of Item to retrieve
+   * @param {string} [uniqueName] - Unique Name of Item to retrieve
    * @param {string} [version] - Version of Item to retrieve
    * @param {bool} [expand = true] - Whether or not to expand foreign keys
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
   async getItems(tableName, id, uniqueName, version, expand = true) {
-    if (id) {
-      return await this.getItemById(tableName, id, expand);
+    if (!tableName) {
+      return ErrorResponse.tableParameterMissing;
     }
-    else if (uniqueName) {
-      if (version) {
-        return await this.getItemByNameAndVersion(tableName, uniqueName, version, expand);
+    if (id || uniqueName) {
+      if (id) {
+        return await this.getItemById(tableName, id, expand);
       }
-      else {
-        return await this.getItemsByName(tableName, uniqueName);
+      else if (uniqueName) {
+        if (version) {
+          return await this.getItemByNameAndVersion(tableName, uniqueName, version, expand);
+        }
+        else {
+          return await this.getItemsByName(tableName, uniqueName);
+        }
       }
     }
     else {
-      return ErrorResponse.generic;
+      return ErrorResponse.invalidQuery;
     }
+    return ErrorResponse.generic;
   }
 
   /**

@@ -1,5 +1,5 @@
 const aws = require('aws-sdk');
-const Driver = require('dynamodb-driver')
+const Driver = require('database-driver').DynamodbDriver;
 const dynamodb = new aws.DynamoDB.DocumentClient();
 const driver = new Driver(dynamodb);
 
