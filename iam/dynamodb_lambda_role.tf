@@ -1,16 +1,16 @@
 resource "aws_iam_role_policy" "dynamodb_lambda_policy" {
   name = "DynamoDBLambdaPolicy"
   role = aws_iam_role.dynamodb_lambda_role.id
-  policy = file("./iam/dynamodb_lambda_policy.json")
+  policy = data.template_file.dynamodb_lambda_policy.rendered
 }
 
-resource "aws_iam_role_policy_attachment" "test-attach" {
+resource "aws_iam_role_policy_attachment" "ngap_vpc_lambda_attach" {
   role       = aws_iam_role.dynamodb_lambda_role.id
-  policy_arn = "arn:aws:iam::252549204803:policy/ngap/system/NGAPShLambdaInVpcBasePolicy"
+  policy_arn = "arn:aws:iam::${var.account_id}:policy/ngap/system/NGAPShLambdaInVpcBasePolicy"
 }
 
 resource "aws_iam_role" "dynamodb_lambda_role" {
   name = "DynamoDBLambdaRole"
-  assume_role_policy = file("./iam/dynamodb_lambda_role.json")
-  permissions_boundary = "arn:aws:iam::252549204803:policy/NGAPShRoleBoundary"
+  assume_role_policy = data.template_file.assume_role.rendered
+  permissions_boundary = "arn:aws:iam::${var.account_id}:policy/NGAPShRoleBoundary"
 }

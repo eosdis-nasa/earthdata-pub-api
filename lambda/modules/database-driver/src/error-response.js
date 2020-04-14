@@ -9,6 +9,15 @@ module.exports.generic = {
   err: "There was an unhandled exception."
 }
 
+/** No Results error, the query was successful but produced no results.
+ *  @type {Response}
+ */
+module.exports.noResults = {
+  data: false,
+  statusCode: 404,
+  err: "The query was successful but produced no results."
+}
+
 /** Invalid Reference error, root item contains a reference to an id that
  *    doesn't exist.
 *  @type {Response}

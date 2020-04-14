@@ -39,6 +39,7 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} A promise that resolves to a Response object
    */
   request(operation, params) {
+    console.info(`[DATABASE] Request payload\n${JSON.stringify(params)}`);
     var promise = new Promise((resolve) => {
       const callback = (err, data) => {
         if (err) {
@@ -46,6 +47,10 @@ class DynamodbDriver extends BaseDriver {
         }
         else {
           if (data.Items) {
+            console.info(`[DATABASE] ${data.Count} items fetched`);
+            if (data.Count <= 0) {
+              resolve(ErrorResponse.noResults);
+            }
             resolve({ data: data.Items, statusCode: 200 });
           }
           else {
@@ -74,7 +79,7 @@ class DynamodbDriver extends BaseDriver {
     for (let key of Object.keys(item)) {
       if (typeof item[key] == 'object') {
         if (item[key].hasOwnProperty("f_ref")) {
-          const promise = new Promise((resolve) => {
+          const promise = new Promise((resolve, reject) => {
             this.getItemById(item[key].f_ref, item[key].id)
             .then((response) => {
               if (response.data) {
@@ -96,8 +101,6 @@ class DynamodbDriver extends BaseDriver {
     return Promise.all(promises);
   }
 
-
-
   /**
    * Convenience method that routes a request to the appropriate get* method
    *   based on the passed in parameters.
@@ -110,26 +113,31 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
   async getItems(tableName, id, uniqueName, version, expand = true) {
+    console.info(`[DATABASE] Attempting to fetch from ${tableName}`)
+    let response = false;
     if (!tableName) {
-      return ErrorResponse.tableParameterMissing;
+      response = ErrorResponse.tableParameterMissing;
     }
-    if (id || uniqueName) {
+    else if (id || uniqueName) {
       if (id) {
-        return await this.getItemById(tableName, id, expand);
+        response = await this.getItemById(tableName, id, expand);
       }
       else if (uniqueName) {
         if (version) {
-          return await this.getItemByNameAndVersion(tableName, uniqueName, version, expand);
+          response =  await this.getItemByNameAndVersion(tableName, uniqueName, version, expand);
         }
         else {
-          return await this.getItemsByName(tableName, uniqueName);
+          response = await this.getItemsByName(tableName, uniqueName);
         }
       }
     }
     else {
-      return ErrorResponse.invalidQuery;
+      response = ErrorResponse.invalidQuery;
     }
-    return ErrorResponse.generic;
+    if (!response) {
+      response = ErrorResponse.generic;
+    }
+    return response;
   }
 
   /**
@@ -198,13 +206,15 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} Response object
    */
   async getItemsByName(tableName, uniqueName) {
+    let response;
     let params = {
       TableName: tableName,
       IndexName: `${tableName}_index`,
       KeyConditionExpression: `unique_name = :unique_name`,
       ExpressionAttributeValues: {":unique_name": uniqueName}
     }
-    return await this.request(this.query, params);
+    response = await this.request(this.query, params);
+    return response;
   }
 
   /**
@@ -215,10 +225,15 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
   async putItem(tableName, item) {
+    console.info(`[DATABASE] Attempting to insert into ${tableName}`)
     let response;
+    //Remove id, version. These are generated for new items and
+    //should beignored for equality check
+    delete item.id;
+    delete item.version;
     const uuid = require('uuid');
     const deepEqual = require('deep-equal');
-    response = await this.getItemsByName(item.unique_name);
+    response = await this.getItemsByName(tableName, item.unique_name);
     if (response.data) {
       let items = response.data;
       const count = items.length;
@@ -227,8 +242,6 @@ class DynamodbDriver extends BaseDriver {
       const newVersion = latest.version + 1;
 
       //Remove id, version before checking item equivalency
-      delete item.id;
-      delete item.version;
       delete latest.id;
       delete latest.version;
 
@@ -245,7 +258,20 @@ class DynamodbDriver extends BaseDriver {
         response = ErrorResponse.noChange;
       }
     }
-    return { data: data, err: err };
+    else {
+      item.id = uuid.v4();
+      item.version = 1;
+      const params = {
+        Item: item,
+        TableName: tableName
+      }
+      response = await this.request(this.put, params);
+    }
+    if (response.data) {
+      response.data = item;
+      console.info(`[DATABASE] New item successfully inserted:\n${JSON.stringify(item)}`);
+    }
+    return response;
   }
 }
 

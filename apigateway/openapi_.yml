@@ -102,11 +102,19 @@ paths:
 components:
   schemas:
     Item:
-      type: object
+      oneOf:
+        - $ref: '#/components/schemas/Question'
+        - $ref: '#/components/schemas/Form'
     ItemArray:
       type: array
       items:
         $ref: '#/components/schemas/Item'
+    TableName:
+      $ref: 'schema.json#/definitions/table_name'
+    Question:
+      $ref: 'schema.json#/question'
+    Form:
+      $ref: 'schema.json#/form'
     Response:
       type: object
       properties:
@@ -119,6 +127,10 @@ components:
         err:
           type: string
           nullable: true
+    UUID:
+      $ref: 'schema.json#/definitions/uuid'
+    ForeignKey:
+      $ref: 'schema.json#/definitions/foreign_key'
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
