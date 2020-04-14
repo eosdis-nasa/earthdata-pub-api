@@ -2,17 +2,17 @@
   "Item": {
     "oneOf": [
       {
-        "$ref": "#/Question"
+        "$ref": "#${schema_path}Question"
       },
       {
-        "$ref": "#/Form"
+        "$ref": "#${schema_path}Form"
       }
     ]
   },
   "ItemArray": {
     "type": "array",
     "items": {
-      "$ref": "#/Item"
+      "$ref": "#${schema_path}Item"
     }
   },
   "Response": {
@@ -22,10 +22,10 @@
         "description": "The response payload containing a single Item, collection of Items, or a boolean indicating success of the operation",
         "oneOf": [
           {
-            "$ref": "#/Item"
+            "$ref": "#${schema_path}Item"
           },
           {
-            "$ref": "#/ItemArray"
+            "$ref": "#${schema_path}ItemArray"
           },
           {
             "type": "boolean"
@@ -43,7 +43,7 @@
     "type": "object",
     "properties": {
       "id": {
-        "$ref": "#/UUID"
+        "$ref": "#${schema_path}UUID"
       },
       "version": {
         "type": "number"
@@ -67,10 +67,10 @@
               "items": {
                 "oneOf": [
                   {
-                    "$ref": "#/Question"
+                    "$ref": "#${schema_path}Question"
                   },
                   {
-                    "$ref": "#/ForeignKey"
+                    "$ref": "#${schema_path}ForeignKey"
                   }
                 ]
               }
@@ -97,7 +97,7 @@
     "type": "object",
     "properties": {
       "id": {
-        "$ref": "#/UUID"
+        "$ref": "#${schema_path}UUID"
       },
       "version": {
         "type": "number"
@@ -169,10 +169,10 @@
     ],
     "properties": {
       "id": {
-        "$ref": "#/UUID"
+        "$ref": "#${schema_path}UUID"
       },
       "f_ref": {
-        "$ref": "#/TableName"
+        "$ref": "#${schema_path}TableName"
       }
     }
   },

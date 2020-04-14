@@ -2,6 +2,18 @@ variable "dynamodb_lambda_role_arn" {
   type = string
 }
 
+variable "api_id" {
+  type = string
+}
+
+variable "region" {
+  type = string
+}
+
+variable "account_id" {
+  type = string
+}
+
 variable "subnet_ids" {
   type = list(string)
   default = ["subnet-04be208d6a441ee8f", "subnet-0b9d5b5ff8056a58d"]

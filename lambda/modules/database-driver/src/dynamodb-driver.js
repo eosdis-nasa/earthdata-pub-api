@@ -79,7 +79,7 @@ class DynamodbDriver extends BaseDriver {
     for (let key of Object.keys(item)) {
       if (typeof item[key] == 'object') {
         if (item[key].hasOwnProperty("f_ref")) {
-          const promise = new Promise((resolve) => {
+          const promise = new Promise((resolve, reject) => {
             this.getItemById(item[key].f_ref, item[key].id)
             .then((response) => {
               if (response.data) {
@@ -227,7 +227,8 @@ class DynamodbDriver extends BaseDriver {
   async putItem(tableName, item) {
     console.info(`[DATABASE] Attempting to insert into ${tableName}`)
     let response;
-    //Remove id, version. These are generated for new items
+    //Remove id, version. These are generated for new items and
+    //should beignored for equality check
     delete item.id;
     delete item.version;
     const uuid = require('uuid');

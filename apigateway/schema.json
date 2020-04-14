@@ -1,26 +1,77 @@
 {
-  "form": {
-    "id": "#/form",
-    "title": "Form",
+  "Item": {
+    "oneOf": [
+      {
+        "$ref": "#/components/schemas/Question"
+      },
+      {
+        "$ref": "#/components/schemas/Form"
+      }
+    ]
+  },
+  "ItemArray": {
+    "type": "array",
+    "items": {
+      "$ref": "#/components/schemas/Item"
+    }
+  },
+  "Response": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "description": "The response payload containing a single Item, collection of Items, or a boolean indicating success of the operation",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Item"
+          },
+          {
+            "$ref": "#/components/schemas/ItemArray"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "err": {
+        "type": "string",
+        "nullable": true
+      }
+    }
+  },
+  "Form": {
     "description": "A template for a form with a collection of sections containing questions.",
     "type": "object",
     "properties": {
-      "id": { "$ref": "#/definitions/uuid" },
-      "version": { "type": "number" },
-      "unique_name": { "type": "string" },
-      "text":  { "type": "string" },
+      "id": {
+        "$ref": "#/components/schemas/UUID"
+      },
+      "version": {
+        "type": "number"
+      },
+      "unique_name": {
+        "type": "string"
+      },
+      "text": {
+        "type": "string"
+      },
       "sections": {
         "type": "array",
         "items": {
           "type": "object",
           "properties": {
-            "heading": { "type": "string" },
+            "heading": {
+              "type": "string"
+            },
             "questions": {
               "type": "array",
-              "items":  {
+              "items": {
                 "oneOf": [
-                  { "$ref": "#/question" },
-                  { "$ref": "#/definitions/foreign_key" }
+                  {
+                    "$ref": "#/components/schemas/Question"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ForeignKey"
+                  }
                 ]
               }
             }
@@ -28,71 +79,109 @@
         }
       }
     },
-    "required": ["unique_name", "text", "sections"]
+    "required": [
+      "unique_name",
+      "text",
+      "sections"
+    ]
   },
-  "question": {
-    "id": "#/question",
-    "title": "Question",
+  "Question": {
     "description": "A grouping of related inputs to be displayed on a form",
-    "required": ["unique_name", "title", "text", "help", "inputs"],
+    "required": [
+      "unique_name",
+      "title",
+      "text",
+      "help",
+      "inputs"
+    ],
     "type": "object",
     "properties": {
-      "id": { "$ref": "#/definitions/uuid" },
-      "version": { "type": "number" },
-      "unique_name": { "type": "string" },
-      "title": { "type": "string" },
-      "text": { "type": "string" },
-      "help": { "type": "string" },
+      "id": {
+        "$ref": "#/components/schemas/UUID"
+      },
+      "version": {
+        "type": "number"
+      },
+      "unique_name": {
+        "type": "string"
+      },
+      "title": {
+        "type": "string"
+      },
+      "text": {
+        "type": "string"
+      },
+      "help": {
+        "type": "string"
+      },
       "inputs": {
         "type": "array",
         "items": {
           "type": "object",
           "properties": {
-            "type": { "type": "string" },
-            "id": { "type": "string" },
-            "label": { "type": "string" },
-            "validation_error_msg": { "type": "string" },
+            "type": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "validation_error_msg": {
+              "type": "string"
+            },
             "validator": {
               "oneOf": [
                 {
                   "type": "array",
-                  "items": { "type": "string" }
+                  "items": {
+                    "type": "string"
+                  }
                 },
-                { "type": "string" }
+                {
+                  "type": "string"
+                }
               ]
             },
-            "required": { "type": "boolean" },
-            "attributes": { "type": "object" }
+            "required": {
+              "type": "boolean"
+            },
+            "attributes": {
+              "type": "object"
+            }
           }
         }
       }
     }
   },
-  "definitions": {
-    "uuid": {
-      "id": "#/definitions/uuid",
-      "title": "UUID",
-      "description": "UUID assigned to an item.",
-      "type": "string",
-      "pattern": "^[a-f|0-9]{8}-[a-f|0-9]{4}-4[a-f|0-9]{3}-[89ab][a-f|0-9]{3}-[a-f|0-9]{12}$"
-    },
-    "foreign_key":  {
-      "id": "#/definitions/foreign_key",
-      "title": "Foreign Key",
-      "description": "A foreign key reference to another table.",
-      "type": "object",
-      "required": ["id", "f_ref"],
-      "properties": {
-        "id": { "$ref": "#/definitions/uuid" },
-        "f_ref": { "$ref": "#/definitions/table_name" }
+  "UUID": {
+    "description": "UUID assigned to an item.",
+    "type": "string",
+    "pattern": "^[a-f|0-9]{8}-[a-f|0-9]{4}-4[a-f|0-9]{3}-[89ab][a-f|0-9]{3}-[a-f|0-9]{12}$"
+  },
+  "ForeignKey": {
+    "description": "A foreign key reference to another table.",
+    "type": "object",
+    "required": [
+      "id",
+      "f_ref"
+    ],
+    "properties": {
+      "id": {
+        "$ref": "#/components/schemas/UUID"
+      },
+      "f_ref": {
+        "$ref": "#/components/schemas/TableName"
       }
-    },
-    "table_name": {
-      "id": "#/definitions/table_name",
-      "title": "Table Name",
-      "description": "The name associated with a table in the database.",
-      "type": "string",
-      "enum": ["question", "form"]
     }
+  },
+  "TableName": {
+    "description": "The name associated with a table in the database.",
+    "type": "string",
+    "enum": [
+      "question",
+      "form"
+    ]
   }
 }

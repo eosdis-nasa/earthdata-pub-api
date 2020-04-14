@@ -5,6 +5,10 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${DIR}
 
+#Copy and edit schema json apigateway, modules, docs
+sed "s/\${schema_path}/\//" ./dynamodb/schema/schema.json > ./lambda/modules/database-driver/src/schema.json
+sed "s/\${schema_path}/\/components\/schemas\//" ./dynamodb/schema/schema.json > ./apigateway/schema.json
+
 #Clear temp directory, and create deployment artefacts folder
 cd lambda
 rm -rf temp
