@@ -1,4 +1,12 @@
 {
+"enumerated_paths": {
+  "question": [
+    ["sections", 0, "questions", 0],
+    ["sections", 0, "questions", 1],
+    ["sections", 1, "questions", 0],
+    ["sections", 1, "questions", 1]
+  ]
+},
 "form": {
   "f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11": {
     "id": "f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11",
@@ -73,6 +81,40 @@
                 "required": true
               }
             ]
+          }
+        ]
+      }
+    ]
+  },
+  "foreign_paths": {
+    "id": "f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11",
+    "version": 1,
+    "unique_name": "FOREIGN_PATHS",
+    "text": "Text",
+    "sections": [
+      {
+        "heading": "First Section",
+        "questions": [
+          {
+            "id": "a1a11aa1-a1a1-41aa-baaa-1aa1a1a1aa11",
+            "f_ref": "question"
+          },
+          {
+            "id": "a1a11aa1-a1a1-41aa-baaa-1aa1a1a1aa11",
+            "f_ref": "question"
+          }
+        ]
+      },
+      {
+        "heading": "Second Section",
+        "questions": [
+          {
+            "id": "a1a11aa1-a1a1-41aa-baaa-1aa1a1a1aa11",
+            "f_ref": "question"
+          },
+          {
+            "id": "a1a11aa1-a1a1-41aa-baaa-1aa1a1a1aa11",
+            "f_ref": "question"
           }
         ]
       }

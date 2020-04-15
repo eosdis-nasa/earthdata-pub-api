@@ -55,6 +55,18 @@ class BaseDriver {
   }
 
   /**
+   * Gets a single Item from a given table by its unique name and version.
+   * @abstract
+   * @param {string} tableName - Item type or table name
+   * @param {string} uniqueName - Unique Name of Item to retrieve
+   * @param {boolean} [expand = false] - Whether or not to expand foreign keys
+   * @return {Promise<Response>} Promise that resolves to a {@link Response}
+   */
+  async getItemLatestByName(tableName, uniqueName, expand = false) {
+    throw new TypeError("This is an abstract method.");
+  }
+
+  /**
    * Gets all versions of an Item from a given table by its Unique Name.
    * @abstract
    * @param {string} tableName - Name of the DynamoDB table to query

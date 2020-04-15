@@ -132,7 +132,6 @@
             "title": "Dataset Restrictions",
             "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy?",
             "help": "NASA Open Data Policy https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy",
-            "required": true,
             "inputs": [
               {
                 "type": "checkbox",
@@ -178,7 +177,6 @@
             "title": "Example File",
             "text": "This is an example of a file input.",
             "help": "This allows a user to specify a local file to upload.",
-            "required": true,
             "inputs": [
               {
                 "type": "file",
@@ -194,7 +192,6 @@
             "title": "Example Date",
             "text": "This is an example of a data input.",
             "help": "This allows a user to select a date. Two date inputs could be combined in a question for a start and end date.",
-            "required": true,
             "inputs": [
               {
                 "type": "date",
@@ -210,7 +207,6 @@
             "title": "Example Spatial Extent",
             "text": "This is an example for the spatial extent widget.",
             "help": "This will be a graphical widget for defining the geographical spatial extent of a dataset.",
-            "required": true,
             "inputs": [
               {
                 "type": "spatial",

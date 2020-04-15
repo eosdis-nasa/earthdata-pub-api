@@ -3,6 +3,16 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-form" {
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "id"
 
+  global_secondary_index {
+    name               = "form_index"
+    hash_key           = "unique_name"
+    range_key          = "version"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["version", "text", "sections", "id", "unique_name"]
+    read_capacity      = 0
+    write_capacity     = 0
+  }
+
   attribute {
     name = "id"
     type = "S"
@@ -18,12 +28,8 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-form" {
     type = "N"
   }
 
-  global_secondary_index {
-    name               = "form_index"
-    hash_key           = "unique_name"
-    range_key          = "version"
-    projection_type    = "INCLUDE"
-    non_key_attributes = ["id", "unique_name", "version", "text", "sections"]
+  point_in_time_recovery {
+    enabled = false
   }
 
   tags = {

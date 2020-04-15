@@ -56,8 +56,8 @@ const getNested = ({item, path}) => {
  * @return {Array.<string|number>}
  */
 const enumeratePaths = ({item, aftPath, forePath}) => {
+  console.log({item, aftPath, forePath})
   let paths = [];
-  console.log(aftPath);
   let key = forePath.shift();
   if (key === "n") {
     if (forePath.length <= 0) {
@@ -75,14 +75,14 @@ const enumeratePaths = ({item, aftPath, forePath}) => {
     }
   }
   else {
-    if (path.length > 1) {
+    if (forePath.length <= 0) {
+      paths.push(aftPath.concat(key));
+    }
+    else {
       let enumerated = enumeratePaths({item: item[key], aftPath: aftPath.concat(key), forePath: forePath.slice(0)});
       enumerated.forEach((path) => {
         paths.push(path);
       });
-    }
-    else {
-      paths.push(aftPath.concat(key));
     }
   }
   return paths;
@@ -114,11 +114,51 @@ module.exports.isTable = function(tableName) {
   return tableMap.hasOwnProperty(tableName);
 }
 
-module.exports.collapseKeys = function(tableName, item) {
-  let referencePaths = refPaths[tableName]["question"];
-  console.log(getForeignKeyPaths(item, referencePaths));
+module.exports.getForeignKeyPaths = function(tableName, item) {
+  let paths = {};
+  for(let [table, path] of Object.entries(refPaths[tableName])) {
+    paths[table] = enumeratePaths({item: item, aftPath: [], forePath: path.slice(0)});
+  }
+  console.log(paths);
+  return paths;
 }
 
-module.exports.getForeignKeyPaths = function(item, path) {
-  return enumeratePaths({item: item, aftPath: [], forePath: path.slice(0)})
+function toFlat(item, flatItem = {}, aftPath = []) {
+  for(let [key, value] of Object.entries(item)) {
+    if (typeof item[key] === 'object') {
+      toFlat(item[key], flatItem, aftPath.concat(key));
+    }
+    else {
+      flatItem[aftPath.concat(key).join("#")] = item[key]
+    }
+  }
+  return flatItem;
+}
+
+function fromFlat(item, nestedItem = {}) {
+  for(let [joinedKeys, value] of Object.entries(item)) {
+    let path = joinedKeys.split("#");
+    temp = nestedItem;
+    for (let [idx, key] of Object.entries(path)) {
+      idx = Number(idx);
+      if (idx == path.length - 1) {
+        temp[key] = value;
+      }
+      else {
+        let nextKey = path[idx + 1];
+        if (!temp[key]) {
+          console.log(key, !isNaN(nextKey), nextKey)
+          if (!isNaN(nextKey)) {
+            console.log("array")
+            temp[key] = [];
+          }
+          else {
+            temp[key] = {};
+          }
+        }
+      }
+      temp = temp[key];
+    }
+  }
+  return nestedItem;
 }

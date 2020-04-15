@@ -23,4 +23,13 @@ describe("Schema Validator", () => {
     });
   });
 
+  describe("getForeignKeyPaths() function", () => {
+    it("should return list of enumerated paths", async () => {
+      let table = "form";
+      let id = "foreign_paths";
+      let expected = Db["enumerated_paths"];
+      let paths = Validator.getForeignKeyPaths(table, Db[table][id]);
+      expect(paths).toEqual(expected);
+    });
+  });
 });

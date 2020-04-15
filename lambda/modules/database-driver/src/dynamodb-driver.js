@@ -112,7 +112,7 @@ class DynamodbDriver extends BaseDriver {
    * @param {bool} [expand = true] - Whether or not to expand foreign keys
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
-  async getItems(tableName, id, uniqueName, version, expand = true) {
+  async getItems(tableName, id, uniqueName, version, latest, expand = true) {
     console.info(`[DATABASE] Attempting to fetch from ${tableName}`)
     let response = false;
     if (!tableName) {
@@ -125,6 +125,9 @@ class DynamodbDriver extends BaseDriver {
       else if (uniqueName) {
         if (version) {
           response =  await this.getItemByNameAndVersion(tableName, uniqueName, version, expand);
+        }
+        else if (latest) {
+          response = await this.getItemLatestByName(tableName, uniqueName, expand);
         }
         else {
           response = await this.getItemsByName(tableName, uniqueName);
@@ -188,6 +191,34 @@ class DynamodbDriver extends BaseDriver {
     response = await this.request(this.query, params);
     if (response.data) {
       response.data = response.data[0];
+      if (expand) {
+        await this.expandKeys(response.data)
+        .catch(() => {
+          response = ErrorResponse.invalidReference;
+        });
+      }
+    }
+    return response;
+  }
+
+  /**
+   * Gets a single Item from a given table by its unique name and version.
+   * @override
+   * @param {string} tableName - Item type or table name
+   * @param {string} uniqueName - Unique Name of Item to retrieve
+   * @return {Promise<Response>} Promise that resolves to a {@link Response}
+   */
+  async getItemLatestByName(tableName, uniqueName, expand = false) {
+    let response;
+    let params = {
+      TableName: tableName,
+      IndexName: `${tableName}_index`,
+      KeyConditionExpression: `unique_name = :unique_name`,
+      ExpressionAttributeValues: {":unique_name": uniqueName}
+    }
+    response = await this.request(this.query, params);
+    if (response.data) {
+      response.data = response.data[response.data.length - 1];
       if (expand) {
         await this.expandKeys(response.data)
         .catch(() => {
