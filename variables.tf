@@ -50,6 +50,7 @@ variable "security_group_ids" {
 
 locals {
   account_id = data.aws_caller_identity.current.account_id
+  stage_suffix = var.stage == "prod" ? "" : "_${var.stage}"
   lambda_execution_policy_arn = var.ngap ? "arn:aws:iam::${local.account_id}:policy/${var.ngap_lambda_policy}" : "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   permissions_boundary_arn = var.ngap ? "arn:aws:iam::${local.account_id}:policy/${var.ngap_role_boundary}" : ""
 }

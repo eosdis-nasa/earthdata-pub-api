@@ -1,5 +1,7 @@
 const BaseDriver = require("./base-driver.js");
+const Schema = require('./schema.js');
 const ErrorResponse = require("./error-response.js");
+const SUFFIX = process.env.TABLE_SUFFIX || "";
 
 /**
  * A driver for interfacing with the AWS DynamoDB Document Client using
@@ -113,10 +115,13 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
   async getItems(tableName, id, uniqueName, version, latest, expand = true) {
-    console.info(`[DATABASE] Attempting to fetch from ${tableName}`)
+    console.info(`[DATABASE] Attempting to fetch from ${tableName}${SUFFIX}`)
     let response = false;
     if (!tableName) {
       response = ErrorResponse.tableParameterMissing;
+    }
+    else if(!Schema.isTable(tableName)) {
+      response = ErrorResponse.noSuchTable;
     }
     else if (id || uniqueName) {
       if (id) {
@@ -154,14 +159,14 @@ class DynamodbDriver extends BaseDriver {
   async getItemById(tableName, id, expand = false) {
     let response;
     let params = {
-      TableName: tableName,
+      TableName: `${tableName}${SUFFIX}`,
       KeyConditionExpression: `id = :id`,
       ExpressionAttributeValues: {":id": id}
     }
     response = await this.request(this.query, params);
     if (response.data) {
       response.data = response.data[0];
-      if (expand) {
+      if (expand && Schema.hasForeignReferences(tableName)) {
         await this.expandKeys(response.data)
         .catch(() => {
           response = ErrorResponse.invalidReference;
@@ -183,15 +188,15 @@ class DynamodbDriver extends BaseDriver {
   async getItemByNameAndVersion(tableName, uniqueName, version, expand = false) {
     let response;
     let params = {
-      TableName: tableName,
-      IndexName: `${tableName}_index`,
+      TableName: `${tableName}${SUFFIX}`,
+      IndexName: `gs_index`,
       KeyConditionExpression: `unique_name = :unique_name and version = :version`,
       ExpressionAttributeValues: {":unique_name": uniqueName, ":version": version}
     }
     response = await this.request(this.query, params);
     if (response.data) {
       response.data = response.data[0];
-      if (expand) {
+      if (expand && Schema.hasForeignReferences(tableName)) {
         await this.expandKeys(response.data)
         .catch(() => {
           response = ErrorResponse.invalidReference;
@@ -211,15 +216,15 @@ class DynamodbDriver extends BaseDriver {
   async getItemLatestByName(tableName, uniqueName, expand = false) {
     let response;
     let params = {
-      TableName: tableName,
-      IndexName: `${tableName}_index`,
+      TableName: `${tableName}${SUFFIX}`,
+      IndexName: `gs_index`,
       KeyConditionExpression: `unique_name = :unique_name`,
       ExpressionAttributeValues: {":unique_name": uniqueName}
     }
     response = await this.request(this.query, params);
     if (response.data) {
       response.data = response.data[response.data.length - 1];
-      if (expand) {
+      if (expand && Schema.hasForeignReferences(tableName)) {
         await this.expandKeys(response.data)
         .catch(() => {
           response = ErrorResponse.invalidReference;
@@ -239,8 +244,8 @@ class DynamodbDriver extends BaseDriver {
   async getItemsByName(tableName, uniqueName) {
     let response;
     let params = {
-      TableName: tableName,
-      IndexName: `${tableName}_index`,
+      TableName: `${tableName}${SUFFIX}`,
+      IndexName: `gs_index`,
       KeyConditionExpression: `unique_name = :unique_name`,
       ExpressionAttributeValues: {":unique_name": uniqueName}
     }
@@ -256,47 +261,52 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
   async putItem(tableName, item) {
-    console.info(`[DATABASE] Attempting to insert into ${tableName}`)
     let response;
-    //Remove id, version. These are generated for new items and
-    //should beignored for equality check
-    delete item.id;
-    delete item.version;
-    const uuid = require('uuid');
-    const deepEqual = require('deep-equal');
-    response = await this.getItemsByName(tableName, item.unique_name);
-    if (response.data) {
-      let items = response.data;
-      const count = items.length;
-      const lastIndex = count - 1;
-      const latest = count > 0 ? items[lastIndex] : { version: 0 };
-      const newVersion = latest.version + 1;
-
-      //Remove id, version before checking item equivalency
-      delete latest.id;
-      delete latest.version;
-
-      if (!deepEqual(item, latest)) {
-        item.id = uuid.v4();
-        item.version = newVersion;
-        const params = {
-          Item: item,
-          TableName: tableName
-        }
-        response = await this.request(this.put, params);
-      }
-      else {
-        response = ErrorResponse.noChange;
-      }
+    if (!tableName) {
+      response = ErrorResponse.tableParameterMissing;
+    }
+    else if(!Schema.isTable(tableName)) {
+      response = ErrorResponse.noSuchTable;
     }
     else {
-      item.id = uuid.v4();
+      console.info(`[DATABASE] Attempting to insert into ${tableName}`);
+      //Set dummy id and version for schema validation
+      item.id = "f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11";
       item.version = 1;
-      const params = {
-        Item: item,
-        TableName: tableName
+      if (Schema.validate(tableName, item)) {
+        //Remove id, version. These are generated for new items and
+        //should beignored for equality check
+        delete item.id;
+        delete item.version;
+        const uuid = require('uuid');
+        const deepEqual = require('deep-equal');
+        response = await this.getItemLatestByName(tableName, item.unique_name);
+        let latest = response.data || { version: 0 }
+        const newVersion = latest.version + 1;
+
+        //Remove id, version before checking item equivalency
+        delete latest.id;
+        delete latest.version;
+
+        console.log(item);
+        console.log(latest);
+        console.log(deepEqual(item, latest));
+        if (!deepEqual(item, latest)) {
+          item.id = uuid.v4();
+          item.version = newVersion;
+          const params = {
+            Item: item,
+            TableName: `${tableName}${SUFFIX}`
+          }
+          response = await this.request(this.put, params);
+        }
+        else {
+          response = ErrorResponse.noChange;
+        }
       }
-      response = await this.request(this.put, params);
+      else {
+        response = ErrorResponse.validationFailed;
+      }
     }
     if (response.data) {
       response.data = item;

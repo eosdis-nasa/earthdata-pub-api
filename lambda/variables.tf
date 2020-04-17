@@ -2,6 +2,10 @@ variable "stage" {
   type = string
 }
 
+variable "stage_suffix" {
+  type = string
+}
+
 variable "dynamodb_lambda_role_arn" {
   type = string
 }

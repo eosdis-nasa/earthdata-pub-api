@@ -1,6 +1,6 @@
 profile = "default"
 region = "us-west-2"
-stage = "test"
+stage = "dev"
 api_gateway_policy = "api_gateway_ngap_sandbox_policy.json"
 ngap = true
 ngap_lambda_policy = "ngap/system/NGAPShLambdaInVpcBasePolicy"

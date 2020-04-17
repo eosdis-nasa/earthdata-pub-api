@@ -2,6 +2,10 @@ variable "stage" {
   type = string
 }
 
+variable "stage_suffix" {
+  type = string
+}
+
 variable "api_gateway_policy" {
   type = string
 }

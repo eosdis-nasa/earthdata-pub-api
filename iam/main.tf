@@ -1,6 +1,6 @@
 resource "aws_iam_role_policy" "dynamodb_lambda_policy" {
-  name = "DynamoDBLambdaPolicy_${var.stage}"
-  role = aws_iam_role.dynamodb_lambda_role.id
+  name   = "DynamoDBLambdaPolicy${var.stage_suffix}"
+  role   = aws_iam_role.dynamodb_lambda_role.id
   policy = data.template_file.dynamodb_lambda_policy.rendered
 }
 
@@ -10,7 +10,7 @@ resource "aws_iam_role_policy_attachment" "ngap_vpc_lambda_attach" {
 }
 
 resource "aws_iam_role" "dynamodb_lambda_role" {
-  name = "DynamoDBLambdaRole_${var.stage}"
-  assume_role_policy = data.template_file.assume_role.rendered
+  name                 = "DynamoDBLambdaRole${var.stage_suffix}"
+  assume_role_policy   = data.template_file.assume_role.rendered
   permissions_boundary = var.permissions_boundary_arn
 }

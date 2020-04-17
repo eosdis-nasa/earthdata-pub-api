@@ -152,7 +152,8 @@
     }
   },
   "components": {
-    "schemas": ${schema_file}
+    "schemas": ${schema_file},
+    "x-amazon-apigateway-policy": ${api_policy}
   },
   "externalDocs": {
     "description": "Find out more about Swagger",

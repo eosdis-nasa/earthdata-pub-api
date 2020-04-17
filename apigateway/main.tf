@@ -1,5 +1,5 @@
 locals {
-  api_name = "EarthdataPubAPI_${var.stage}"
+  api_name = "EarthdataPubAPI${var.stage_suffix}"
 }
 resource "aws_api_gateway_rest_api" "earthdatapub_api_gateway" {
   name        = local.api_name
@@ -19,8 +19,9 @@ data "local_file" "ngap_policy" {
 data "template_file" "earthdata_pub_openapi" {
   template = file("./apigateway/openapi.json")
   vars = {
-    api_name = local.api_name
-    schema_file = data.local_file.schema_file.content
+    api_name            = local.api_name
+    schema_file         = data.local_file.schema_file.content
+    api_policy          = data.local_file.ngap_policy.content
     get_item_lambda_arn = var.get_item_lambda_arn
     put_item_lambda_arn = var.put_item_lambda_arn
   }
@@ -28,5 +29,5 @@ data "template_file" "earthdata_pub_openapi" {
 
 resource "aws_api_gateway_deployment" "earthdatapub_api_gateway_deployment" {
   rest_api_id = aws_api_gateway_rest_api.earthdatapub_api_gateway.id
-  stage_name = var.stage
+  stage_name  = var.stage
 }
