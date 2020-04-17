@@ -22,6 +22,7 @@ sed -i '
 /${schema_file}/ r ../apigateway/schema.json
 s/${schema_file}//
 s/${api_name}/EarthdataPub/g
+s/${api_policy}/{}/g
 ' ./api/openapi.json
 rm -rf node_modules
 rm package-lock.json
