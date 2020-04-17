@@ -1,7 +1,14 @@
-const BaseDriver = require("./base-driver.js");
+const UUID = require('uuid');
+
+const DeepEqual = require('deep-equal');
+
+const BaseDriver = require('./base-driver.js');
+
 const Schema = require('./schema.js');
-const ErrorResponse = require("./error-response.js");
-const SUFFIX = process.env.TABLE_SUFFIX || "";
+
+const ErrorResponse = require('./error-response.js');
+
+const SUFFIX = process.env.TABLE_SUFFIX || '';
 
 /**
  * A driver for interfacing with the AWS DynamoDB Document Client using
@@ -21,14 +28,13 @@ class DynamodbDriver extends BaseDriver {
      * @type {external:DocumentClient}
      */
     this.client = client;
-    /** Reference to bound query method of client
-     * @type {function}
+    /** Reference to bound query and put methods for client
+     * @type {object.<string, function>}
      */
-    this.query = this.client.query.bind(this.client);
-    /** Reference to bound put method of client
-     * @type {function}
-     */
-    this.put = this.client.put.bind(this.client);
+    this.operations = {
+      put: this.client.put.bind(this.client),
+      query: this.client.query.bind(this.client)
+    };
   }
 
   /**
@@ -41,26 +47,24 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} A promise that resolves to a Response object
    */
   request(operation, params) {
+    const method = this.operations[operation];
     console.info(`[DATABASE] Request payload\n${JSON.stringify(params)}`);
-    var promise = new Promise((resolve) => {
+    const promise = new Promise((resolve) => {
       const callback = (err, data) => {
         if (err) {
           return resolve(ErrorResponse.fromAwsError(err));
         }
-        else {
-          if (data.Items) {
-            console.info(`[DATABASE] ${data.Count} items fetched`);
-            if (data.Count <= 0) {
-              resolve(ErrorResponse.noResults);
-            }
-            resolve({ data: data.Items, statusCode: 200 });
+
+        if (data.Items) {
+          console.info(`[DATABASE] ${data.Count} items fetched`);
+          if (data.Count <= 0) {
+            return resolve(ErrorResponse.noResults);
           }
-          else {
-            resolve({ data: true, statusCode: 200 });
-          }
+          return resolve({ data: data.Items, statusCode: 200 });
         }
-      }
-      operation(params, callback);
+        return resolve({ data: true, statusCode: 200 });
+      };
+      method(params, callback);
     });
     return promise;
   }
@@ -71,35 +75,30 @@ class DynamodbDriver extends BaseDriver {
    *   in place and replaces the foreign key reference with an item retrieved
    *   from the database. To prevent referential loops this does not expand
    *   beyond the first level.
+   * @param {string} tableName - The table that contains the item
    * @param {Item} item - A single Item containing foreign reference keys
    * @return {Promise} A promise that resolves when each database query
    *   promise resolves.
    */
-  expandKeys(item) {
-    let err;
-    let promises = [];
-    for (let key of Object.keys(item)) {
-      if (typeof item[key] == 'object') {
-        if (item[key].hasOwnProperty("f_ref")) {
-          const promise = new Promise((resolve, reject) => {
-            this.getItemById(item[key].f_ref, item[key].id)
+  expandKeys(tableName, item) {
+    const promises = [];
+    const tableRefs = Schema.getForeignKeys(tableName, item);
+    Object.entries(tableRefs).forEach(([table, refs]) => {
+      refs.forEach(({ lastIndex, value }) => {
+        const promise = new Promise((resolve, reject) => {
+          this.getItemById(table, value[lastIndex].id)
             .then((response) => {
               if (response.data) {
-                item[key] = response.data;
+                value[lastIndex] = response.data;
                 resolve();
-              }
-              else {
+              } else {
                 reject(ErrorResponse.invalidReference);
               }
             });
-          });
-          promises.push(promise);
-        }
-        else {
-          promises.push(this.expandKeys(item[key]));
-        }
-      }
-    }
+        });
+        promises.push(promise);
+      });
+    });
     return Promise.all(promises);
   }
 
@@ -115,31 +114,25 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
   async getItems(tableName, id, uniqueName, version, latest, expand = true) {
-    console.info(`[DATABASE] Attempting to fetch from ${tableName}${SUFFIX}`)
+    console.info(`[DATABASE] Attempting to fetch from ${tableName}${SUFFIX}`);
     let response = false;
     if (!tableName) {
       response = ErrorResponse.tableParameterMissing;
-    }
-    else if(!Schema.isTable(tableName)) {
+    } else if (!Schema.isTable(tableName)) {
       response = ErrorResponse.noSuchTable;
-    }
-    else if (id || uniqueName) {
+    } else if (id || uniqueName) {
       if (id) {
         response = await this.getItemById(tableName, id, expand);
-      }
-      else if (uniqueName) {
+      } else if (uniqueName) {
         if (version) {
-          response =  await this.getItemByNameAndVersion(tableName, uniqueName, version, expand);
-        }
-        else if (latest) {
+          response = await this.getItemByNameAndVersion(tableName, uniqueName, version, expand);
+        } else if (latest) {
           response = await this.getItemLatestByName(tableName, uniqueName, expand);
-        }
-        else {
+        } else {
           response = await this.getItemsByName(tableName, uniqueName);
         }
       }
-    }
-    else {
+    } else {
       response = ErrorResponse.invalidQuery;
     }
     if (!response) {
@@ -158,19 +151,20 @@ class DynamodbDriver extends BaseDriver {
    */
   async getItemById(tableName, id, expand = false) {
     let response;
-    let params = {
+    const params = {
       TableName: `${tableName}${SUFFIX}`,
-      KeyConditionExpression: `id = :id`,
-      ExpressionAttributeValues: {":id": id}
-    }
-    response = await this.request(this.query, params);
+      KeyConditionExpression: 'id = :id',
+      ExpressionAttributeValues: { ':id': id }
+    };
+    response = await this.request('query', params);
     if (response.data) {
-      response.data = response.data[0];
+      const [item] = response.data;
+      response.data = item;
       if (expand && Schema.hasForeignReferences(tableName)) {
-        await this.expandKeys(response.data)
-        .catch(() => {
-          response = ErrorResponse.invalidReference;
-        });
+        await this.expandKeys(tableName, response.data)
+          .catch(() => {
+            response = ErrorResponse.invalidReference;
+          });
       }
     }
     return response;
@@ -187,20 +181,21 @@ class DynamodbDriver extends BaseDriver {
    */
   async getItemByNameAndVersion(tableName, uniqueName, version, expand = false) {
     let response;
-    let params = {
+    const params = {
       TableName: `${tableName}${SUFFIX}`,
-      IndexName: `gs_index`,
-      KeyConditionExpression: `unique_name = :unique_name and version = :version`,
-      ExpressionAttributeValues: {":unique_name": uniqueName, ":version": version}
-    }
-    response = await this.request(this.query, params);
+      IndexName: 'gs_index',
+      KeyConditionExpression: 'unique_name = :unique_name and version = :version',
+      ExpressionAttributeValues: { ':unique_name': uniqueName, ':version': version }
+    };
+    response = await this.request('query', params);
     if (response.data) {
-      response.data = response.data[0];
+      const [item] = response.data;
+      response.data = item;
       if (expand && Schema.hasForeignReferences(tableName)) {
-        await this.expandKeys(response.data)
-        .catch(() => {
-          response = ErrorResponse.invalidReference;
-        });
+        await this.expandKeys(tableName, response.data)
+          .catch(() => {
+            response = ErrorResponse.invalidReference;
+          });
       }
     }
     return response;
@@ -215,20 +210,20 @@ class DynamodbDriver extends BaseDriver {
    */
   async getItemLatestByName(tableName, uniqueName, expand = false) {
     let response;
-    let params = {
+    const params = {
       TableName: `${tableName}${SUFFIX}`,
-      IndexName: `gs_index`,
-      KeyConditionExpression: `unique_name = :unique_name`,
-      ExpressionAttributeValues: {":unique_name": uniqueName}
-    }
-    response = await this.request(this.query, params);
+      IndexName: 'gs_index',
+      KeyConditionExpression: 'unique_name = :unique_name',
+      ExpressionAttributeValues: { ':unique_name': uniqueName }
+    };
+    response = await this.request('query', params);
     if (response.data) {
       response.data = response.data[response.data.length - 1];
       if (expand && Schema.hasForeignReferences(tableName)) {
-        await this.expandKeys(response.data)
-        .catch(() => {
-          response = ErrorResponse.invalidReference;
-        });
+        await this.expandKeys(tableName, response.data)
+          .catch(() => {
+            response = ErrorResponse.invalidReference;
+          });
       }
     }
     return response;
@@ -242,14 +237,13 @@ class DynamodbDriver extends BaseDriver {
    * @return {Promise<Response>} Response object
    */
   async getItemsByName(tableName, uniqueName) {
-    let response;
-    let params = {
+    const params = {
       TableName: `${tableName}${SUFFIX}`,
-      IndexName: `gs_index`,
-      KeyConditionExpression: `unique_name = :unique_name`,
-      ExpressionAttributeValues: {":unique_name": uniqueName}
-    }
-    response = await this.request(this.query, params);
+      IndexName: 'gs_index',
+      KeyConditionExpression: 'unique_name = :unique_name',
+      ExpressionAttributeValues: { ':unique_name': uniqueName }
+    };
+    const response = await this.request('query', params);
     return response;
   }
 
@@ -264,47 +258,38 @@ class DynamodbDriver extends BaseDriver {
     let response;
     if (!tableName) {
       response = ErrorResponse.tableParameterMissing;
-    }
-    else if(!Schema.isTable(tableName)) {
+    } else if (!Schema.isTable(tableName)) {
       response = ErrorResponse.noSuchTable;
-    }
-    else {
+    } else {
       console.info(`[DATABASE] Attempting to insert into ${tableName}`);
-      //Set dummy id and version for schema validation
-      item.id = "f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11";
+      // Set dummy id and version for schema validation
+      item.id = 'f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11';
       item.version = 1;
       if (Schema.validate(tableName, item)) {
-        //Remove id, version. These are generated for new items and
-        //should beignored for equality check
+        // Remove id, version. These are generated for new items and
+        // should beignored for equality check
         delete item.id;
         delete item.version;
-        const uuid = require('uuid');
-        const deepEqual = require('deep-equal');
         response = await this.getItemLatestByName(tableName, item.unique_name);
-        let latest = response.data || { version: 0 }
+        const latest = response.data || { version: 0 };
         const newVersion = latest.version + 1;
 
-        //Remove id, version before checking item equivalency
+        // Remove id, version before checking item equivalency
         delete latest.id;
         delete latest.version;
 
-        console.log(item);
-        console.log(latest);
-        console.log(deepEqual(item, latest));
-        if (!deepEqual(item, latest)) {
-          item.id = uuid.v4();
+        if (!DeepEqual(item, latest)) {
+          item.id = UUID.v4();
           item.version = newVersion;
           const params = {
             Item: item,
             TableName: `${tableName}${SUFFIX}`
-          }
-          response = await this.request(this.put, params);
-        }
-        else {
+          };
+          response = await this.request('put', params);
+        } else {
           response = ErrorResponse.noChange;
         }
-      }
-      else {
+      } else {
         response = ErrorResponse.validationFailed;
       }
     }

@@ -1,18 +1,13 @@
-const Driver = require("../src/index.js").DynamodbDriver;
-const Stub = require("./dynamo-client-stub.js");
-const ErrorResponse = require("../src/error-response.js");
-const Db = require("./db_sample.json");
+const Driver = require('../src/index.js').DynamodbDriver;
+const Stub = require('./dynamo-client-stub.js');
+const ErrorResponse = require('../src/error-response.js');
+const Db = require('./db_sample.json');
 
-// request(operation, params)
-// expandKeys(item)
-// async getItems(tableName, id, unique_name, version, expand = true)
-// async getItemById(tableName, hkey, expand)
-// async getItemByNameAndVersion(tableName, hkey, rkey, expand)
-// async getItemsByName(tableName, hkey)
+// Suppress console output for running tests
+console = {log: () => {},info: () => {},warn: () => {},error: () => {}}
 
-
-describe("Dynamodb Driver", () => {
-  describe("getItems() function", () => {
+describe('Dynamodb Driver', () => {
+  describe('getItems() function', () => {
 
     it("should return a single item for id query", async () => {
       let client = Stub.client();

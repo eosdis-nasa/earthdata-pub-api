@@ -8,11 +8,11 @@ class BaseDriver {
    * Empty constructor for abstract super class.
    * @throws {TypeError}
    */
-   constructor() {
-     if (this.constructor === BaseDriver) {
-       throw new TypeError("This is an abstract class not meant to be instantiated.");
-     }
-   }
+  constructor() {
+    if (this.constructor === BaseDriver) {
+      throw new TypeError('This is an abstract class not meant to be instantiated.');
+    }
+  }
 
   /**
    * Convenience method that routes a request to the appropriate get* method
@@ -25,8 +25,10 @@ class BaseDriver {
    * @param {bool} [expand = true] - Whether or not to expand foreign keys
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
-  async getItems(tableName, id, uniqueName, version, expand = true) {
-    throw new TypeError("This is an abstract method.");
+  async getItems() {
+    if (this.constructor === BaseDriver) {
+      throw new TypeError('This is an abstract method.');
+    }
   }
 
   /**
@@ -37,8 +39,10 @@ class BaseDriver {
    * @param {boolean} [expand = false] - Whether or not to expand foreign keys
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
-  async getItemById(tableName, id, expand = false) {
-    throw new TypeError("This is an abstract method.");
+  async getItemById() {
+    if (this.constructor === BaseDriver) {
+      throw new TypeError('This is an abstract method.');
+    }
   }
 
   /**
@@ -50,8 +54,10 @@ class BaseDriver {
    * @param {boolean} [expand = false] - Whether or not to expand foreign keys
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
-  async getItemByNameAndVersion(tableName, uniqueName, version, expand = false) {
-    throw new TypeError("This is an abstract method.");
+  async getItemByNameAndVersion() {
+    if (this.constructor === BaseDriver) {
+      throw new TypeError('This is an abstract method.');
+    }
   }
 
   /**
@@ -62,8 +68,10 @@ class BaseDriver {
    * @param {boolean} [expand = false] - Whether or not to expand foreign keys
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
-  async getItemLatestByName(tableName, uniqueName, expand = false) {
-    throw new TypeError("This is an abstract method.");
+  async getItemLatestByName() {
+    if (this.constructor === BaseDriver) {
+      throw new TypeError('This is an abstract method.');
+    }
   }
 
   /**
@@ -73,8 +81,10 @@ class BaseDriver {
    * @param {string} uniqueName - Unique Name of Item to retrieve
    * @return {Promise<Response>} Response object
    */
-  async getItemsByName(tableName, uniqueName) {
-    throw new TypeError("This is an abstract method.");
+  async getItemsByName() {
+    if (this.constructor === BaseDriver) {
+      throw new TypeError('This is an abstract method.');
+    }
   }
 
   /**
@@ -84,8 +94,10 @@ class BaseDriver {
    * @param {Item} item - New item to put into table
    * @return {Promise<Response>} Promise that resolves to a {@link Response}
    */
-  async putItem(tableName, item) {
-    throw new TypeError("This is an abstract method.");
+  async putItem() {
+    if (this.constructor === BaseDriver) {
+      throw new TypeError('This is an abstract method.');
+    }
   }
 }
 
