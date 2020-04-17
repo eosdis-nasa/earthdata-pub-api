@@ -15,3 +15,9 @@
  * @external Validator
  * @see {@link https://www.npmjs.com/package/jsonschema|jsonschema}
  */
+
+ /**
+  * Ajv: Another JSON Schema Validator
+  * @external Ajv
+  * @see {@link https://github.com/epoberezkin/ajv|ajv}
+  */

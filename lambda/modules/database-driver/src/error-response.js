@@ -9,6 +9,15 @@ module.exports.generic = {
   err: "There was an unhandled exception."
 }
 
+/** No Results error, the query was successful but produced no results.
+ *  @type {Response}
+ */
+module.exports.noResults = {
+  data: false,
+  statusCode: 404,
+  err: "The query was successful but produced no results."
+}
+
 /** Invalid Reference error, root item contains a reference to an id that
  *    doesn't exist.
 *  @type {Response}
@@ -44,7 +53,7 @@ module.exports.tableParameterMissing = {
 module.exports.noSuchTable = {
   data: false,
   statusCode: 404,
-  err: "No such table exists"
+  err: "No such table exists."
 }
 
 /** Invalid Query error, either id or uniqueName must be specified in query

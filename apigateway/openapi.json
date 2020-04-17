@@ -1,0 +1,162 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is the API that serves as the central interaction point between the client and back-end services of Earthdata Pub.",
+    "version": "1.0.0",
+    "title": "${api_name}",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "brian.ellingson@uah.edu"
+    }
+  },
+  "tags": [
+    {
+      "name": "data",
+      "description": "Interact with the database",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    }
+  ],
+  "paths": {
+    "/{tableName}": {
+      "parameters": [
+        {
+          "name": "tableName",
+          "in": "path",
+          "description": "Name of the database table to connect to",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/TableName"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Returns 1 or more items from the given database table",
+        "description": "Accepts one of the follow combinations of query parameters: (id), (uniqueName), or (uniqueName & version)",
+        "operationId": "getItem",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "UUID of the item to fetch",
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "uniqueName",
+            "in": "query",
+            "description": "The item's unique name which describes its archetype or ownership",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "Version of the item to fetch, used to specify a specific version of an item with a given uniqueName",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${get_item_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Create or update an item",
+        "description": "Creates a new item or new version of existing item in the given table",
+        "operationId": "putItem",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Item"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${put_item_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": ${schema_file},
+    "x-amazon-apigateway-policy": ${api_policy}
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

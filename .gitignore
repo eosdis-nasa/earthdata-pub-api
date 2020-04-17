@@ -8,7 +8,7 @@ package-lock.json
 /terraform.tfstate.backup
 
 #Ignore installation artifacts
-/lambda/artefacts
+/lambda/artifacts
 *.zip
 *.tgz
 *.gz

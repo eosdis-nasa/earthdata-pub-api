@@ -17,7 +17,12 @@ npm install swagger-ui-dist
 cp node_modules/swagger-ui-dist/* api/
 rm api/index.html
 cp swagger-index.html api/index.html
-cp ../apigateway/openapi.json api/
-cp ../apigateway/schema.json api/
+cp ../apigateway/openapi.json ./api/openapi.json
+sed -i '
+/${schema_file}/ r ../apigateway/schema.json
+s/${schema_file}//
+s/${api_name}/EarthdataPub/g
+s/${api_policy}/{}/g
+' ./api/openapi.json
 rm -rf node_modules
 rm package-lock.json
