@@ -3,7 +3,7 @@
   "info": {
     "description": "This is the API that serves as the central interaction point between the client and back-end services of Earthdata Pub.",
     "version": "1.0.0",
-    "title": "Earthdata Pub API",
+    "title": "${api_name}",
     "termsOfService": "http://swagger.io/terms/",
     "contact": {
       "email": "brian.ellingson@uah.edu"
@@ -152,7 +152,8 @@
     }
   },
   "components": {
-    "schemas": ${schema_file}
+    "schemas": ${schema_file},
+    "x-amazon-apigateway-policy": ${api_policy}
   },
   "externalDocs": {
     "description": "Find out more about Swagger",

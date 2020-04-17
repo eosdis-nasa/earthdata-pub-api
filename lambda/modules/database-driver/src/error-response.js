@@ -53,7 +53,7 @@ module.exports.tableParameterMissing = {
 module.exports.noSuchTable = {
   data: false,
   statusCode: 404,
-  err: "No such table exists"
+  err: "No such table exists."
 }
 
 /** Invalid Query error, either id or uniqueName must be specified in query
