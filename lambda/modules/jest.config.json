@@ -1,0 +1,9 @@
+{
+  "rootDir": "./",
+  "projects": [
+    "<rootDir>/database-driver",
+    "<rootDir>/get-item",
+    "<rootDir>/put-item"
+  ],
+  "testResultsProcessor": "jest-bamboo-formatter"
+}

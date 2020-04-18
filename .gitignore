@@ -7,6 +7,10 @@ package-lock.json
 /terraform.tfstate
 /terraform.tfstate.backup
 
+#Ignore eslint and jest outputs
+eslint.json
+jest.json
+
 #Ignore installation artifacts
 /lambda/artifacts
 *.zip
