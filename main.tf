@@ -43,3 +43,12 @@ module "apigateway_endpoints" {
   get_item_lambda_arn = "${module.lambda_functions.get_item_lambda_arn}"
   put_item_lambda_arn = "${module.lambda_functions.put_item_lambda_arn}"
 }
+
+data "terraform_remote_state" "earthdatapub_state" {
+  backend = "s3"
+  config = {
+    bucket = "earthdatapub-terraform-state"
+    key    = "${var.stage}/terraform.tfstate"
+    region = var.region
+  }
+}

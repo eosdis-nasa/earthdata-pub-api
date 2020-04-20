@@ -4,7 +4,7 @@ locals {
 resource "aws_api_gateway_rest_api" "earthdatapub_api_gateway" {
   name        = local.api_name
   description = "This is the API that serves as the central interaction point between the client and back-end services of Earthdata Pub."
-  body        = data.template_file.earthdata_pub_openapi.rendered
+  body        = data.template_file.earthdatapub_openapi.rendered
   lifecycle {
     ignore_changes = [policy]
   }
@@ -18,7 +18,7 @@ data "local_file" "ngap_policy" {
   filename = "./iam/${var.api_gateway_policy}"
 }
 
-data "template_file" "earthdata_pub_openapi" {
+data "template_file" "earthdatapub_openapi" {
   template = file("./apigateway/openapi.json")
   vars = {
     api_name            = local.api_name
