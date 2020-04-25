@@ -1,11 +1,11 @@
 resource "aws_lambda_layer_version" "database_driver_layer" {
-  filename            = "./lambda/artifacts/database-driver-layer.zip"
+  filename            = "./artifacts/database-driver-layer.zip"
   layer_name          = "databaseDriverLayer"
   compatible_runtimes = ["nodejs12.x"]
 }
 
 resource "aws_lambda_function" "get_item" {
-  filename      = "./lambda/artifacts/get-item-lambda.zip"
+  filename      = "./artifacts/get-item-lambda.zip"
   function_name = "get_item${var.stage_suffix}"
   role          = var.dynamodb_lambda_role_arn
   layers        = [aws_lambda_layer_version.database_driver_layer.id]
@@ -32,7 +32,7 @@ resource "aws_lambda_permission" "apigw_invoke_get_item" {
 }
 
 resource "aws_lambda_function" "put_item" {
-  filename      = "./lambda/artifacts/put-item-lambda.zip"
+  filename      = "./artifacts/put-item-lambda.zip"
   function_name = "put_item${var.stage_suffix}"
   role          = var.dynamodb_lambda_role_arn
   layers        = ["${aws_lambda_layer_version.database_driver_layer.id}"]

@@ -4,7 +4,7 @@
   "source": {
     "include": [
       "./definitions",
-      "../lambda/modules/database-driver/src"
+      "./database-driver/src"
     ],
     "includePattern": ".+\\.js(doc|x)?$",
     "excludePattern": "(^|\\/|\\\\)_"

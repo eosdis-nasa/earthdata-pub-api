@@ -2,13 +2,10 @@
   "name": "earthdata-pub-modules",
   "version": "1.0.0",
   "description": "Collection of lambda functions and layers for Earthdata Pub",
-  "main": "./index.js",
-  "files": [
-    "index.js"
-  ],
   "scripts": {
-    "pretest": "eslint ./ -f node_modules/eslint-bamboo-formatter/reporter.js",
-    "test": "jest --all"
+    "pretest": "eslint ./ -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
+    "test": "jest -c jest.config.json --all",
+    "generate-docs": "jsdoc -c jsdoc.config.json --destination jsdoc --private"
   },
   "author": "Brian Ellingson",
   "license": "ISC",
@@ -24,6 +21,7 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
     "jest": "^25.2.4",
-    "jest-bamboo-formatter": "^1.0.1"
+    "jest-bamboo-formatter": "^1.0.1",
+    "jsdoc": "^3.6.4"
   }
 }
