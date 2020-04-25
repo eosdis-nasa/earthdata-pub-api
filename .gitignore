@@ -6,6 +6,7 @@ package-lock.json
 /.terraform/
 /terraform.tfstate
 /terraform.tfstate.backup
+tfplan
 
 #Ignore eslint and jest outputs
 eslint.json
@@ -19,8 +20,11 @@ jest.json
 *.tar
 
 #Ignore generated documentation
-/docs/jsdoc/
-/docs/api/
+jsdoc/
+apidoc/
+
+#Ignore copied schema file
+/apigateway/schema.json
 
 #Ignore folder of test scripts
 /test-scripts

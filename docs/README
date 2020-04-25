@@ -1,0 +1,6 @@
+Generated documentation from the packaging process are stored here.
+
+jsdoc/
+  JSDoc generated static site with documentation on NodeJS modules.
+apidoc/
+  OpenAPI 3.0 static site with documentation on HTTP API and data models.
