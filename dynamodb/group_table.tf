@@ -7,8 +7,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-group" {
     name               = "gs_index"
     hash_key           = "group_name"
     range_key          = "id"
-    projection_type    = "INCLUDE"
-    non_key_attributes = ["id", "group_name"]
+    projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0
   }

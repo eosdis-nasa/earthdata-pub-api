@@ -7,8 +7,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-user" {
     name               = "gs_index"
     hash_key           = "username"
     range_key          = "id"
-    projection_type    = "INCLUDE"
-    non_key_attributes = ["id", "username", "email", "groups"]
+    projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0
   }
@@ -26,11 +25,6 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-user" {
   attribute {
     name = "email"
     type = "S"
-  }
-
-  attribute {
-    name = "groups"
-    type = "SS"
   }
 
   point_in_time_recovery {

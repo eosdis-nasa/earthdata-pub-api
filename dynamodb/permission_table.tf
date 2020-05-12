@@ -7,8 +7,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-permission" {
     name               = "gs_index"
     hash_key           = "username"
     range_key          = "id"
-    projection_type    = "INCLUDE"
-    non_key_attributes = ["id", "username", "email", "groups"]
+    projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0
   }
