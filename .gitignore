@@ -25,6 +25,7 @@ apidoc/
 
 #Ignore copied schema file
 /apigateway/schema.json
+/lambda/modules/database-driver/src/schema.json
 
 #Ignore folder of test scripts
 /test-scripts

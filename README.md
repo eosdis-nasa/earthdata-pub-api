@@ -49,7 +49,7 @@ Where `<aws_region>` will be replaced with the AWS region you are deploying to. 
 
 Next, copy the template state file into the bucket.
 ```
-aws s3 cp initial.tfstate s3://earthdatapub-terraform-state/<stage>/terraform.tfstate
+aws s3 cp initial.tfstate earthdatapub-terraform-state/<stage>/terraform.tfstate
 ```
 Where `<stage>` is the environment you are deploying to. e.g. dev test ops
 
