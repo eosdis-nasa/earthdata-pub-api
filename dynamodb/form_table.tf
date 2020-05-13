@@ -34,6 +34,6 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-form" {
 
   tags = {
     Name        = "edp-table-form"
-    Environment = "dev"
+    Environment = var.stage
   }
 }
