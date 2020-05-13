@@ -89,6 +89,36 @@
       }
     }
   },
+  "Submission": {
+    "description": "An archival request submission.",
+    "type": "object",
+    "properties": {
+    "id": {
+      "$ref": "#${schema_path}UUID"
+    },
+    "initiator_id": {
+      "$ref": "#${schema_path}UUID"
+    },
+    "workflow_id": {
+      "$ref": "#${schema_path}UUID"
+    },
+    "daac_id": {
+      "$ref": "#${schema_path}UUID"
+    },
+    "current_step": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "data": {
+      "type": "object"
+    }
+  },
   "Workflow": {
     "description": "A series of steps for processing a Submission",
     "type": "object",
