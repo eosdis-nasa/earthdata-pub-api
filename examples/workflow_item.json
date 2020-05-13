@@ -1,0 +1,31 @@
+{
+  "id": "uuid",
+  "version": 1,
+  "workflow_name": "fakedaac_new_data_intake",
+  "daac": "uuid_foreign",
+  "steps": {}
+    "1": {
+      "type": "action",
+      "status": "Processing",
+      "action_id": "foreign_key",
+      "input": {
+        "param_1": "value",
+        "param_2": "value",
+      }
+    },
+    "2": {
+      "type": "form",
+      "status": "Pending Form Submittal",
+      "form_id": "foreign_key",
+      "assignee": "foreign_key"
+    },
+    "3": {
+      "type": "review",
+      "status": "Pending Review",
+      "data": [
+        "data#key_to_review"
+      ],
+      "assignee": "foreign_key"}
+    }
+  }
+}

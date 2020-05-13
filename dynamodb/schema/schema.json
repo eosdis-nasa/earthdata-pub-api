@@ -38,7 +38,7 @@
       }
     }
   },
-  "User":{
+  "User": {
     "description": "The user table schema",
     "type": "object",
     "properties":{
@@ -59,7 +59,7 @@
       }
     }
   },
-  "Group":{
+  "Group": {
     "description": "The group table schema",
     "type": "object",
     "properties":{
@@ -71,7 +71,7 @@
       }
     }
   },
-  "Permission":{
+  "Permission": {
     "description": "The permission table schema",
     "type": "object",
     "properties":{
@@ -86,6 +86,27 @@
       },
       "table": {
         "type": "string"
+      }
+    }
+  },
+  "Workflow": {
+    "description": "A series of steps for processing a Submission",
+    "type": "object",
+      "properties": {
+      "id": {
+        "$ref": "#${schema_path}UUID"
+      },
+      "version": {
+        "type": "number"
+      },
+      "workflow_name": {
+        "type": "string"
+      },
+      "daac": {
+        "$ref": "#${schema_path}UUID"
+      },
+      "steps": {
+        "type": "object"
       }
     }
   },

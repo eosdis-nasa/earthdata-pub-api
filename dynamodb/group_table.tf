@@ -4,7 +4,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-group" {
   hash_key = "id"
 
   global_secondary_index {
-    name               = "gs_index"
+    name               = "gs_group_name"
     hash_key           = "group_name"
     range_key          = "id"
     projection_type    = "ALL"
@@ -28,6 +28,6 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-group" {
 
   tags = {
     Name        = "edp-table-group"
-    Environment = "dev"
+    Environment = var.stage
   }
 }

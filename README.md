@@ -43,7 +43,7 @@ Before deploying for the first time you will need to configure your state manage
 ##### Remote State
 You can create the bucket with the following:
 ```
-aws s3 mb s3://earthdatapub-terraform-state --region <aws_region>
+aws s3 mb earthdatapub-terraform-state --region <aws_region>
 ```
 Where `<aws_region>` will be replaced with the AWS region you are deploying to. e.g. us-east-1 us-west-2
 

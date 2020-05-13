@@ -4,9 +4,27 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-permission" {
   hash_key = "id"
 
   global_secondary_index {
-    name               = "gs_index"
-    hash_key           = "username"
-    range_key          = "id"
+    name               = "gs_grantee"
+    hash_key           = "grantee"
+    range_key          = "table"
+    projection_type    = "ALL"
+    read_capacity      = 0
+    write_capacity     = 0
+  }
+
+  global_secondary_index {
+    name               = "gs_entity_id"
+    hash_key           = "entity_id"
+    range_key          = "grantee"
+    projection_type    = "ALL"
+    read_capacity      = 0
+    write_capacity     = 0
+  }
+
+  global_secondary_index {
+    name               = "gs_table"
+    hash_key           = "table"
+    range_key          = "grantee"
     projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0

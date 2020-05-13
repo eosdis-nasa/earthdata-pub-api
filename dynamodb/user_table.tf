@@ -4,7 +4,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-user" {
   hash_key = "id"
 
   global_secondary_index {
-    name               = "gs_index"
+    name               = "gs_username"
     hash_key           = "username"
     range_key          = "id"
     projection_type    = "ALL"
@@ -33,6 +33,6 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-user" {
 
   tags = {
     Name        = "edp-table-user"
-    Environment = "dev"
+    Environment = var.stage
   }
 }
