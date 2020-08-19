@@ -12,12 +12,10 @@
   },
   "author": "Brian Ellingson",
   "license": "ISC",
-  "dependencies": {
-    "uuid": "^7.0.2",
-    "deep-equal": "^2.0.2",
-    "ajv": "^6.12.0"
-  },
+  "dependencies": {},
+  "bundledDependencies": {},
   "devDependencies": {
+    "aws-sdk": "^2.654.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",

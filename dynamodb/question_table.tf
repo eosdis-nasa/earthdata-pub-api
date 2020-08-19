@@ -2,12 +2,20 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-question" {
   name = "question${var.stage_suffix}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "id"
+  range_key = "version"
 
   global_secondary_index {
-    hash_key           = "unique_name"
-    name               = "gs_index"
-    non_key_attributes = ["version", "unique_name", "text", "help", "id", "inputs", "title"]
+    name               = "id_scan"
+    hash_key           = "id"
+    range_key          = "question_name"
     projection_type    = "INCLUDE"
+    non_key_attributes = ["id", "question_name", "version"]
+  }
+
+  global_secondary_index {
+    hash_key           = "question_name"
+    name               = "question_name"
+    projection_type    = "ALL"
     range_key          = "version"
     read_capacity      = 0
     write_capacity     = 0
@@ -19,7 +27,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-question" {
   }
 
   attribute {
-    name = "unique_name"
+    name = "question_name"
     type = "S"
   }
 

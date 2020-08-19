@@ -1,0 +1,26 @@
+{
+  "name": "notification-handler",
+  "version": "1.0.0",
+  "description": "Notification Handler for creating and sending EDPUB messages",
+  "main": "./src/notification-handler.js",
+  "files": [
+    "/src"
+  ],
+  "scripts": {
+    "pretest": "eslint ./",
+    "test": "jest"
+  },
+  "author": "Brian Ellingson",
+  "license": "ISC",
+  "dependencies": {
+    "database-driver": "file:../database-driver/database-driver-1.0.0.tgz",
+    "message-driver": "file:../message-driver/message-driver-1.0.0.tgz"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.654.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "jest": "^25.2.4"
+  }
+}

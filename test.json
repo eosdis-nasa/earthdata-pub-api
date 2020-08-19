@@ -1,0 +1,249 @@
+{
+  "resource": {
+    "aws_api_gateway_rest_api": {
+      "EarthdataPub": {
+        "name": "EarthdataPub",
+        "description": "This is the API that serves as the central interaction point between the client and back-end services of Earthdata Pub."
+      }
+    },
+    "aws_api_gateway_deployment": {
+      "EarthdataPub": {
+        "depends_on": [
+          "aws_api_gateway_integration.getItem",
+          "aws_api_gateway_integration.putItem",
+          "aws_api_gateway_integration.notify",
+          "aws_api_gateway_integration.getSubscriptions",
+          "aws_api_gateway_integration.subscribe",
+          "aws_api_gateway_integration.Invoke",
+          "aws_api_gateway_integration.RegisterAction",
+          "aws_api_gateway_integration.SubmissionOperation",
+          "aws_api_gateway_integration.Dashboard"
+        ],
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "stage_name": "${var.stage}"
+      }
+    },
+    "aws_api_gateway_method": {
+      "getItem": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_information_table.id}",
+        "http_method": "GET",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {
+          "method.request.querystring.index": false,
+          "method.request.querystring.p_key": false,
+          "method.request.querystring.s_key": false,
+          "method.request.path.table": true
+        }
+      },
+      "putItem": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_information_table.id}",
+        "http_method": "POST",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {
+          "method.request.path.table": true
+        }
+      },
+      "notify": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_notification_notify.id}",
+        "http_method": "POST",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {}
+      },
+      "getSubscriptions": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_notification_subscription.id}",
+        "http_method": "GET",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {}
+      },
+      "subscribe": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_notification_subscription.id}",
+        "http_method": "POST",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {}
+      },
+      "Invoke": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_action_invoke.id}",
+        "http_method": "POST",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {}
+      },
+      "RegisterAction": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_action_register.id}",
+        "http_method": "POST",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {}
+      },
+      "SubmissionOperation": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_submission_operation.id}",
+        "http_method": "POST",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {
+          "method.request.path.operation": true
+        }
+      },
+      "Dashboard": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_dashboard.id}",
+        "http_method": "GET",
+        "authorization": "NONE",
+        "api_key_required": false,
+        "request_parameters": {}
+      }
+    },
+    "aws_api_gateway_resource": {
+      "resource_information": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_rest_api.EarthdataPub.root_resource_id}",
+        "path_part": "information"
+      },
+      "resource_information_table": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_resource.resource_information.id}",
+        "path_part": "{table}"
+      },
+      "resource_notification": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_rest_api.EarthdataPub.root_resource_id}",
+        "path_part": "notification"
+      },
+      "resource_notification_notify": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_resource.resource_notification.id}",
+        "path_part": "notify"
+      },
+      "resource_notification_subscription": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_resource.resource_notification.id}",
+        "path_part": "subscription"
+      },
+      "resource_action": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_rest_api.EarthdataPub.root_resource_id}",
+        "path_part": "action"
+      },
+      "resource_action_invoke": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_resource.resource_action.id}",
+        "path_part": "invoke"
+      },
+      "resource_action_register": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_resource.resource_action.id}",
+        "path_part": "register"
+      },
+      "resource_submission": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_rest_api.EarthdataPub.root_resource_id}",
+        "path_part": "submission"
+      },
+      "resource_submission_operation": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_resource.resource_submission.id}",
+        "path_part": "{operation}"
+      },
+      "resource_dashboard": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "parent_id": "${aws_api_gateway_rest_api.EarthdataPub.root_resource_id}",
+        "path_part": "dashboard"
+      }
+    },
+    "aws_api_gateway_integration": {
+      "getItem": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_information_table.id}",
+        "http_method": "GET",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.information_lambda_arn}"
+      },
+      "putItem": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_information_table.id}",
+        "http_method": "POST",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.information_lambda_arn}"
+      },
+      "notify": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_notification_notify.id}",
+        "http_method": "POST",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.notify_lambda_arn}"
+      },
+      "getSubscriptions": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_notification_subscription.id}",
+        "http_method": "GET",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.subscription_lambda_arn}"
+      },
+      "subscribe": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_notification_subscription.id}",
+        "http_method": "POST",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.subscription_lambda_arn}"
+      },
+      "Invoke": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_action_invoke.id}",
+        "http_method": "POST",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.invoke_lambda_arn}"
+      },
+      "RegisterAction": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_action_register.id}",
+        "http_method": "POST",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.register_lambda_arn}"
+      },
+      "SubmissionOperation": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_submission_operation.id}",
+        "http_method": "POST",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.submission_lambda_arn}"
+      },
+      "Dashboard": {
+        "rest_api_id": "${aws_api_gateway_rest_api.EarthdataPub.id}",
+        "resource_id": "${aws_api_gateway_resource.resource_dashboard.id}",
+        "http_method": "GET",
+        "integration_http_method": "POST",
+        "type": "AWS_PROXY",
+        "uri": "${var.dashboard_lambda_arn}"
+      }
+    }
+  },
+  "output": {
+    "api_arn": {
+      "value": "${aws_api_gateway_rest_api.EarthdataPub.arn}"
+    },
+    "api_id": {
+      "value": "${aws_api_gateway_rest_api.EarthdataPub.id}"
+    }
+  }
+}

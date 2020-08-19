@@ -1,149 +1,109 @@
-const Driver = require('../src/index.js').DynamodbDriver;
-const Stub = require('./dynamo-client-stub.js');
-const ErrorResponse = require('../src/error-response.js');
-const Db = require('./db_sample.json');
+const { Converter } = require('aws-sdk').DynamoDB;
 
-// Suppress console output for running tests
-/* eslint-disable no-global-assign */
-console = {
-  log: () => {}, info: () => {}, warn: () => {}, error: () => {}
-};
+const Driver = require('../src/index.js').DynamodbDriver;
+
+const ErrorMessage = require('../src/error-message.js');
+
+const IndexKeys = require('../src/index-keys.js');
+
+const Db = require('./sample.js');
+
+const DynamoDB = require('./dynamodb-stub.js');
+
+const driver = new Driver(DynamoDB, Converter.marshall, Converter.unmarshall);
 
 describe('Dynamodb Driver', () => {
   describe('getItems() function', () => {
-    it('should return a single item for id query', async () => {
-      const client = Stub.client();
-      const driver = new Driver(client);
-      const getItemsByIdSpy = jest.spyOn(driver, 'getItemById');
-      const table = 'form';
-      const id = 'f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11';
-      let uniqueName;
-      let version;
-      const response = await driver.getItems(table, id, uniqueName, version);
-      expect(getItemsByIdSpy).toBeCalled();
-      expect(Array.isArray(response.data)).toBeFalsy();
+    const table = 'form';
+    const pValue = 'VALID_FORM';
+    const sValue = '1';
+    const index = 'form_name';
+    it('should return items', async () => {
+      const [data] = await driver.getItems(table, pValue, sValue, index);
+      expect(Array.isArray(data)).toBeTruthy();
     });
-
-    it('should return a single item for unique_name and version query', async () => {
-      const client = Stub.client();
-      const driver = new Driver(client);
-      const getItemByNameAndVersionSpy = jest.spyOn(driver, 'getItemByNameAndVersion');
-      const table = 'form';
-      let id;
-      const uniqueName = 'VALID_FORM';
-      const version = 1;
-      const response = await driver.getItems(table, id, uniqueName, version);
-      expect(getItemByNameAndVersionSpy).toBeCalled();
-      expect(Array.isArray(response.data)).toBeFalsy();
+    it('should generate params', async () => {
+      await driver.getItems(table, pValue, sValue, index);
+      expect(DynamoDB.spy.params).toEqual(Db.params.get);
     });
-
-    it('should return an array for unique_name query', async () => {
-      const client = Stub.client();
-      const driver = new Driver(client);
-      const getItemsByNameSpy = jest.spyOn(driver, 'getItemsByName');
-      const table = 'question';
-      let id;
-      const uniqueName = 'poc_info';
-      let version;
-      const response = await driver.getItems(table, id, uniqueName, version);
-      expect(getItemsByNameSpy).toBeCalled();
-      expect(Array.isArray(response.data)).toBeTruthy();
+  });
+  describe('putItem() function', () => {
+    const table = 'form';
+    const item = Db.form;
+    it('should return a truthy response', async () => {
+      const [data] = await driver.putItem(table, item);
+      expect(data).toBeTruthy();
     });
-
-    it('should expand foreign key references on single item queries', async () => {
-      const client = Stub.client();
-      const driver = new Driver(client);
-      const table = 'form';
-      const id = 'f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11';
-      let uniqueName;
-      let version;
-      const expected = Db.form.expanded;
-      const response = await driver.getItems(table, id, uniqueName, version);
-      expect(response.data).toEqual(expected);
+    it('should generate params', async () => {
+      await driver.putItem(table, item);
+      expect(DynamoDB.spy.params).toEqual(Db.params.put);
     });
-
-    describe('produces proper error responses', () => {
-      it('should return error for invalid f_ref', async () => {
-        const client = Stub.client();
-        const driver = new Driver(client);
-        const table = 'form';
-        const id = 'f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff12';
-        let uniqueName;
-        let version;
-        const expected = ErrorResponse.invalidReference;
-        const response = await driver.getItems(table, id, uniqueName, version);
-        expect(response).toEqual(expected);
-      });
-
-      it('should return error for no results', async () => {
-        const client = Stub.client();
-        const driver = new Driver(client);
-        const table = 'form';
-        const id = 'nothing';
-        let uniqueName;
-        let version;
-        const expected = ErrorResponse.noResults;
-        const response = await driver.getItems(table, id, uniqueName, version);
-        expect(response).toEqual(expected);
-      });
-
-      it('should return error for no change', async () => {
-        const client = Stub.client();
-        const driver = new Driver(client);
-        const table = 'question';
-        const id = 'b1b11bb1-b1b1-41bb-bbbb-1bb1b1b1bb11';
-        const item = {};
-        Object.assign(item, Db.question[id]);
-        const expected = ErrorResponse.noChange;
-        const response = await driver.putItem(table, item);
-        expect(response).toEqual(expected);
-      });
-
-      it('should return error for table parameter missing', async () => {
-        const client = Stub.client();
-        const driver = new Driver(client);
-        let table;
-        const id = 'b1b11bb1-b1b1-41bb-bbbb-1bb1b1b1bb11';
-        let uniqueName;
-        let version;
-        const expected = ErrorResponse.tableParameterMissing;
-        const response = await driver.getItems(table, id, uniqueName, version);
-        expect(response).toEqual(expected);
-      });
-
-      it('should return error for no such table', async () => {
-        const client = Stub.client();
-        const driver = new Driver(client);
-        const table = 'cheese';
-        const id = 'b1b11bb1-b1b1-41bb-bbbb-1bb1b1b1bb11';
-        let uniqueName;
-        let version;
-        const expected = ErrorResponse.noSuchTable;
-        const response = await driver.getItems(table, id, uniqueName, version);
-        expect(response).toEqual(expected);
-      });
-
-      it('should return error for invalid query', async () => {
-        const client = Stub.client();
-        const driver = new Driver(client);
-        const table = 'form';
-        let id;
-        let uniqueName;
-        const version = 1;
-        const expected = ErrorResponse.invalidQuery;
-        const response = await driver.getItems(table, id, uniqueName, version);
-        expect(response).toEqual(expected);
-      });
-
-      it('should return error for validation failed', async () => {
-        const client = Stub.client();
-        const driver = new Driver(client);
-        const table = 'question';
-        const item = { fake: 0 };
-        const expected = ErrorResponse.validationFailed;
-        const response = await driver.putItem(table, item);
-        expect(response).toEqual(expected);
-      });
+  });
+  describe('deleteItem() function', () => {
+    const table = 'form';
+    const pValue = 'f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11';
+    const sValue = '1';
+    it('should return a truthy response', async () => {
+      const [data] = await driver.deleteItem(table, pValue, sValue);
+      expect(data).toBeTruthy();
+    });
+    it('should generate params', async () => {
+      await driver.deleteItem(table, pValue, sValue);
+      expect(DynamoDB.spy.params).toEqual(Db.params.delete);
+    });
+  });
+  describe('updateItem() function', () => {
+    const table = 'form';
+    const pValue = 'f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11';
+    const sValue = '1';
+    const updates = {
+      att_one: 1,
+      att_two: 'test_value'
+    };
+    it('should return a truthy response', async () => {
+      const [data] = await driver.updateItem(table, pValue, sValue, updates);
+      expect(data).toBeTruthy();
+    });
+    it('should generate params', async () => {
+      await driver.updateItem(table, pValue, sValue, updates);
+      expect(DynamoDB.spy.params).toEqual(Db.params.update);
+    });
+  });
+  describe('getKeys() function', () => {
+    it('should default to primary when index not specified', () => {
+      const keys = driver.getKeys('form');
+      expect(keys).toEqual(IndexKeys.form.primary);
+    });
+    it('should return request keys by table and index', () => {
+      const keys = driver.getKeys('form', 'form_name');
+      expect(keys).toEqual(IndexKeys.form.form_name);
+    });
+  });
+  describe('isInvalid() function', () => {
+    it('should return false for valid params', () => {
+      const invalid = driver.isInvalid('form', 'form_name');
+      expect(invalid).toBeFalsy();
+    });
+    it('should return noSuchIndex for invalid index', () => {
+      const invalid = driver.isInvalid('form', 'xxxxxxx');
+      expect(invalid).toBeTruthy();
+      expect(invalid).toEqual(ErrorMessage.noSuchIndex);
+    });
+    it('should return noSuchTable for invalid table', () => {
+      const invalid = driver.isInvalid('xxxxxxx', 'xxxxxxx');
+      expect(invalid).toBeTruthy();
+      expect(invalid).toEqual(ErrorMessage.noSuchTable);
+    });
+    it('should return tableParameterMissing when no table specified', () => {
+      const invalid = driver.isInvalid();
+      expect(invalid).toBeTruthy();
+      expect(invalid).toEqual(ErrorMessage.tableParameterMissing);
     });
   });
 });
+
+// Suppress console output
+global.console.log = jest.fn();
+global.console.info = jest.fn();
+global.console.warn = jest.fn();
+global.console.error = jest.fn();

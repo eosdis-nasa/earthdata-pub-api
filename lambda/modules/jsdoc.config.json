@@ -3,8 +3,20 @@
   "recurseDepth": 10,
   "source": {
     "include": [
-      "./definitions",
-      "./database-driver/src"
+      "./action-handler/src",
+      "./notification-handler/src",
+      "./workflow-handler/src",
+      "./dashboard/src",
+      "./information/src",
+      "./invoke/src",
+      "./notify/src",
+      "./register/src",
+      "./submission/src",
+      "./subscription/src",
+      "./actions",
+      "./database-driver/src",
+      "./message-driver/src",
+      "./schema/src"
     ],
     "includePattern": ".+\\.js(doc|x)?$",
     "excludePattern": "(^|\\/|\\\\)_"

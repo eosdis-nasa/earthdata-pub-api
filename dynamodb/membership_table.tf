@@ -2,20 +2,12 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-membership" {
   name = "membership${var.stage_suffix}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "id"
+  range_key = "group_id"
 
   global_secondary_index {
-    name               = "gs_user_id"
-    hash_key           = "user_id"
-    range_key          = "group_id"
-    projection_type    = "ALL"
-    read_capacity      = 0
-    write_capacity     = 0
-  }
-
-  global_secondary_index {
-    name               = "gs_group_id"
+    name               = "group_id"
     hash_key           = "group_id"
-    range_key          = "user_id"
+    range_key          = "id"
     projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0
@@ -23,11 +15,6 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-membership" {
 
   attribute {
     name = "id"
-    type = "S"
-  }
-
-  attribute {
-    name = "user_id"
     type = "S"
   }
 

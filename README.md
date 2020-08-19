@@ -31,7 +31,7 @@ $ git clone https://git.earthdata.nasa.gov/scm/edpub/api.git
 ```
 
 ### Packaging
-Next, run the build script to install dependencies and package components for deployment.
+Next, run the build script to install dependencies and package components for deployment. All generated artifacts will be in the artifacts folder.
 
 ```
 $ ./build.sh
@@ -129,3 +129,8 @@ The `test` command will run the linter and the unit tests generating the followi
 `jest.json`
 
 They are formatted to be compatible with the Mocha Test Parser in [Atlassian Bamboo](https://www.atlassian.com/software/bamboo) for inclusion in a CI pipeline.
+
+
+## Documentation
+
+Earthdata Pub leverages SwaggerUI and JSDoc for developer documentation. Static site documentation for each is generated during the build step and placed in the docs folder and as a zipped file in the artifacts folder.

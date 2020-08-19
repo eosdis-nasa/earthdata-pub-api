@@ -1,40 +1,207 @@
-const UUID = require('uuid');
+const IndexKeys = require('./index-keys.js');
 
-const DeepEqual = require('deep-equal');
-
-const BaseDriver = require('./base-driver.js');
-
-const Schema = require('./schema.js');
-
-const ErrorResponse = require('./error-response.js');
-
-const SUFFIX = process.env.TABLE_SUFFIX || '';
+const ErrorMessage = require('./error-message.js');
 
 /**
- * A driver for interfacing with the AWS DynamoDB Document Client using
+ * A driver for interfacing with the AWS DynamoDB Client using
  *   Earthdata Pub's database schema.
- *   @implements {Driver}
  */
-class DynamodbDriver extends BaseDriver {
+class DynamodbDriver {
   /**
-   * Create a driver instance connected to a given AWS DynamoDB Document Client.
-   * @param {external:DocumentClient} client - Instance of AWS DynamoDB Document
-   *   Client.
+   * Create a driver instance connected to a given AWS DynamoDB Client.
+   * The tableSuffix member is a string that indicates the environment.
+   * i.e. '_dev' '_test'. Earthdata Pub appends this to the table names
+   * to isolate working tables from operational tables.
+   * It is recommended to use the following for the marshall and unmarshall
+   * functions:
+   * AWS.DynamoDB.Converter.marshall
+   * AWS.DynamoDB.Converter.unmarshall
+   * @param {object} client - AWS DynamoDB Client instance
+   * @param {function} marshall - marshall to Dynamo format
+   * @param {function} unmarshall - unmarshall from Dynamo format
+   * @param {string} tableSuffix - suffix appended to table name for environment
    */
-  constructor(client) {
-    super();
-    /**
-     * Reference to a {@link DocumentClient}
-     * @type {external:DocumentClient}
-     */
-    this.client = client;
-    /** Reference to bound query and put methods for client
-     * @type {object.<string, function>}
-     */
+  constructor(client, marshall, unmarshall, tableSuffix = '') {
+    this.indexKeys = IndexKeys;
+    this.errors = ErrorMessage;
+    this.marshall = marshall;
+    this.unmarshall = unmarshall;
+    this.env = tableSuffix;
     this.operations = {
-      put: this.client.put.bind(this.client),
-      query: this.client.query.bind(this.client)
+      getItems: {
+        method: client.query.bind(client),
+        parse: (data) => data.Items.map(this.unmarshall)
+      },
+      putItem: {
+        method: client.putItem.bind(client),
+        parse: (data, params) => !!data ? this.unmarshall(params.Item) : false
+      },
+      updateItem: {
+        method: client.updateItem.bind(client),
+        parse: (data) => !!data
+      },
+      deleteItem: {
+        method: client.deleteItem.bind(client),
+        parse: (data) => !!data
+      }
     };
+  }
+
+  /**
+   * Gets items from a DynamoDB table.
+   * @param {string} tableName - The table that contains the item
+   * @param {string} pValue - Value of partition key
+   * @param {string} [sValue] - Value of sort key
+   * @param {string} [index='primary'] - Index to query
+   * @param {boolean} [latest=false] - Reverse scan order
+   * @return {Promise} A promise that resolves to the query result
+   */
+  getItems(tableName, pValue, sValue, index = 'primary', latest = false) {
+    const invalid = this.isInvalid(tableName, index);
+    if (invalid) {
+      return [false, invalid];
+    }
+    const {
+      pKey, pType, sKey, sType
+    } = this.getKeys(tableName, index);
+    const params = {
+      TableName: `${tableName}${this.env}`,
+      ...(index !== 'primary' ? { IndexName: index } : {}),
+      KeyConditionExpression: `${pKey} = :${pKey}${sKey && sValue ? ` and ${sKey} = :${sKey}` : ''}`,
+      ExpressionAttributeValues: {
+        [`:${pKey}`]: { [pType]: pValue },
+        ...(sKey && sValue ? { [`:${sKey}`]: { [sType]: sValue } } : {})
+      },
+      ScanIndexForward: !latest
+    };
+    return this.request('getItems', params);
+  }
+
+  /**
+   * Inserts a new item or updates an existing item in a given table.
+   * @param {string} tableName - Item type or table name
+   * @param {Item} item - New item to put into table
+   * @return {Promise} Promise that resolves when the put operation succeeds
+   */
+  putItem(tableName, item) {
+    const invalid = this.isInvalid(tableName);
+    if (invalid) {
+      return [false, invalid];
+    }
+    console.info(`[DATABASE] Attempting to insert into ${tableName}`);
+    const params = {
+      Item: this.marshall(item),
+      TableName: `${tableName}${this.env}`
+    };
+    return this.request('putItem', params);
+  }
+
+  /**
+   * Delete items from a DynamoDB table.
+   * @param {string} tableName - The table that contains the item
+   * @param {string} pValue - Value of partition key
+   * @param {string} sValue - Value of sort key
+   * @return {Promise} A promise that resolves to the result
+   */
+  deleteItem(tableName, pValue, sValue) {
+    const invalid = this.isInvalid(tableName);
+    if (invalid) {
+      return [false, invalid];
+    }
+    const {
+      pKey, pType, sKey, sType
+    } = this.getKeys(tableName);
+    const params = {
+      TableName: `${tableName}${this.env}`,
+      Key: {
+        [pKey]: { [pType]: pValue },
+        ...(sKey && sValue ? { [sKey]: { [sType]: sValue } } : {})
+      }
+    };
+    return this.request('deleteItem', params);
+  }
+
+  /**
+   * Update specific attributes in an item in a DynamoDB table
+   * @param {string} tableName - The table that contains the item
+   * @param {string} pValue - Value of partition key
+   * @param {string} sValue - Value of sort key
+   * @param {Object} updates - A mapping of keys to update and new values
+   * @return {Promise} A promise that resolves to the result
+   */
+  updateItem(tableName, pValue, sValue, updates) {
+    const invalid = this.isInvalid(tableName);
+    if (invalid) {
+      return [false, invalid];
+    }
+    const {
+      pKey, pType, sKey, sType
+    } = this.getKeys(tableName);
+    const params = {
+      TableName: `${tableName}${this.env}`,
+      Key: {
+        [pKey]: { [pType]: pValue },
+        ...(sKey && sValue ? { [sKey]: { [sType]: sValue } } : {})
+      },
+      ExpressionAttributeNames: Object.keys(updates)
+        .reduce((names, key) => {
+          names[`#${key}`] = key;
+          return names;
+        }, {}),
+      ExpressionAttributeValues: this.marshall(Object.entries(updates)
+        .reduce((values, [key, val]) => {
+          values[`:${key}`] = val;
+          return values;
+        }, {})),
+      UpdateExpression: `SET ${Object.keys(updates)
+        .map((key) => `#${key} = :${key}`)
+        .join(', ')}`
+    };
+    return this.request('updateItem', params);
+  }
+
+  /**
+   * Replaces nested foreign references with fresh copies retrieved from
+   *   the database. This prevents a nested foreign object from being
+   *   updated accidently.
+   * @params {module:Schema.ReferenceMap} refMap - Map of foreign
+   *   references contained in an item
+   * @return {Promise} A promise that resolves once all nested objects are
+   *   refreshed
+   */
+  refreshNestedObjects(refMap) {
+    return Promise.all(Object.entries(refMap)
+      .map(([fTable, refs]) => {
+        console.log(fTable);
+        return Promise.all(refs.map(async ({ ref, key }) => {
+          const refId = ref[key].id;
+          const [[stored]] = await this.getItems(fTable, refId);
+          ref[key] = stored;
+        }));
+      }));
+  }
+
+  /**
+   * Verify that all of the foreign references exist.
+   * @params {module:Schema.ReferenceMap} refMap - Map of foreign
+   *   references contained in an item
+   * @return {Promise} A promise that resolves to a boolean indicating if
+   *   all referenced items exist
+   */
+  verifyReferences(refMap) {
+    return new Promise(async (resolve) => {
+      await Object.entries(refMap)
+      .forEach(async ([fTable, refs]) => {
+        await refs.forEach(async ({ ref, key }) => {
+          const refId = ref[key];
+          const [items] = await this.getItems(fTable, refId);
+          if (items.length == 0) {
+            resolve(false);
+          }
+        });
+      });
+      resolve(true);
+    });
   }
 
   /**
@@ -42,27 +209,18 @@ class DynamodbDriver extends BaseDriver {
    *   allow making subsequent operations without callback chains.
    * @param {function} operation - Should be one of external:DocumentClient.put
    *   or external:DocumentClient.query
-   * @param {DynamoQueryParams} params - Query params for external:DocumentClient
-   *   operation
-   * @return {Promise<Response>} A promise that resolves to a Response object
+   * @param {object} params - Request params for DynamoDB operation
+   * @return {Promise} A promise that resolves to operation result
    */
   request(operation, params) {
-    const method = this.operations[operation];
-    console.info(`[DATABASE] Request payload\n${JSON.stringify(params)}`);
+    const { method, parse } = this.operations[operation];
+    console.info(`[DATABASE] Request payload: \n${JSON.stringify(params)}`);
     const promise = new Promise((resolve) => {
       const callback = (err, data) => {
         if (err) {
-          return resolve(ErrorResponse.fromAwsError(err));
+          return resolve([false, this.errors.fromAwsError(err)]);
         }
-
-        if (data.Items) {
-          console.info(`[DATABASE] ${data.Count} items fetched`);
-          if (data.Count <= 0) {
-            return resolve(ErrorResponse.noResults);
-          }
-          return resolve({ data: data.Items, statusCode: 200 });
-        }
-        return resolve({ data: true, statusCode: 200 });
+        return resolve([parse(data, params)]);
       };
       method(params, callback);
     });
@@ -70,234 +228,39 @@ class DynamodbDriver extends BaseDriver {
   }
 
   /**
-   * Expands foreign keys in a query result by checking for the presence of
-   *   foreighn key references denoted by the f_ref key. Modifies the given item
-   *   in place and replaces the foreign key reference with an item retrieved
-   *   from the database. To prevent referential loops this does not expand
-   *   beyond the first level.
+   * Get index information for a given index of a table.
    * @param {string} tableName - The table that contains the item
-   * @param {Item} item - A single Item containing foreign reference keys
-   * @return {Promise} A promise that resolves when each database query
-   *   promise resolves.
+   * @param {string} index - Index to query, or null for primary index
+   * @return {object} A mapping of key names and types
    */
-  expandKeys(tableName, item) {
-    const promises = [];
-    const tableRefs = Schema.getForeignKeys(tableName, item);
-    Object.entries(tableRefs).forEach(([table, refs]) => {
-      refs.forEach(({ lastIndex, value }) => {
-        const promise = new Promise((resolve, reject) => {
-          this.getItemById(table, value[lastIndex].id)
-            .then((response) => {
-              if (response.data) {
-                value[lastIndex] = response.data;
-                resolve();
-              } else {
-                reject(ErrorResponse.invalidReference);
-              }
-            });
-        });
-        promises.push(promise);
-      });
-    });
-    return Promise.all(promises);
+  getKeys(tableName, index = 'primary') {
+    return this.indexKeys[tableName][index];
   }
 
   /**
-   * Convenience method that routes a request to the appropriate get* method
-   *   based on the passed in parameters.
-   * @override
-   * @param {string} tableName - Item type or table name
-   * @param {string} [id] - Id of Item to retrieve
-   * @param {string} [uniqueName] - Unique Name of Item to retrieve
-   * @param {string} [version] - Version of Item to retrieve
-   * @param {bool} [expand = true] - Whether or not to expand foreign keys
-   * @return {Promise<Response>} Promise that resolves to a {@link Response}
+   * Check if tableName and index are invalid.
+   * @param {string} tableName - The table that contains the item
+   * @param {string} index - Index to query, or null for primary index
+   * @return {boolean | string} A boolean of false indicating no error, or an
+   *   error string.
    */
-  async getItems(tableName, id, uniqueName, version, latest, expand = true) {
-    console.info(`[DATABASE] Attempting to fetch from ${tableName}${SUFFIX}`);
-    let response = false;
-    if (!tableName) {
-      response = ErrorResponse.tableParameterMissing;
-    } else if (!Schema.isTable(tableName)) {
-      response = ErrorResponse.noSuchTable;
-    } else if (id || uniqueName) {
-      if (id) {
-        response = await this.getItemById(tableName, id, expand);
-      } else if (uniqueName) {
-        if (version) {
-          response = await this.getItemByNameAndVersion(tableName, uniqueName, version, expand);
-        } else if (latest) {
-          response = await this.getItemLatestByName(tableName, uniqueName, expand);
+  isInvalid(tableName, index = 'primary') {
+    let error = false;
+
+    if (tableName) {
+      if (this.indexKeys[tableName]) {
+        if (this.indexKeys[tableName][index]) {
+          // Do nothing
         } else {
-          response = await this.getItemsByName(tableName, uniqueName);
-        }
-      }
-    } else {
-      response = ErrorResponse.invalidQuery;
-    }
-    if (!response) {
-      response = ErrorResponse.generic;
-    }
-    return response;
-  }
-
-  /**
-   * Gets a single Item from a given table by its id.
-   * @override
-   * @param {string} tableName - Item type or table name
-   * @param {string} id - Id of Item to retrieve
-   * @param {boolean} [expand = false] - Whether or not to expand foreign keys
-   * @return {Promise<Response>} Promise that resolves to a {@link Response}
-   */
-  async getItemById(tableName, id, expand = false) {
-    let response;
-    const params = {
-      TableName: `${tableName}${SUFFIX}`,
-      KeyConditionExpression: 'id = :id',
-      ExpressionAttributeValues: { ':id': id }
-    };
-    response = await this.request('query', params);
-    if (response.data) {
-      const [item] = response.data;
-      response.data = item;
-      if (expand && Schema.hasForeignReferences(tableName)) {
-        await this.expandKeys(tableName, response.data)
-          .catch(() => {
-            response = ErrorResponse.invalidReference;
-          });
-      }
-    }
-    return response;
-  }
-
-  /**
-   * Gets a single Item from a given table by its unique name and version.
-   * @override
-   * @param {string} tableName - Item type or table name
-   * @param {string} uniqueName - Unique Name of Item to retrieve
-   * @param {(string|number)} version - Version of Item to retrieve
-   * @param {boolean} [expand = false] - Whether or not to expand foreign keys
-   * @return {Promise<Response>} Promise that resolves to a {@link Response}
-   */
-  async getItemByNameAndVersion(tableName, uniqueName, version, expand = false) {
-    let response;
-    const params = {
-      TableName: `${tableName}${SUFFIX}`,
-      IndexName: 'gs_index',
-      KeyConditionExpression: 'unique_name = :unique_name and version = :version',
-      ExpressionAttributeValues: { ':unique_name': uniqueName, ':version': version }
-    };
-    response = await this.request('query', params);
-    if (response.data) {
-      const [item] = response.data;
-      response.data = item;
-      if (expand && Schema.hasForeignReferences(tableName)) {
-        await this.expandKeys(tableName, response.data)
-          .catch(() => {
-            response = ErrorResponse.invalidReference;
-          });
-      }
-    }
-    return response;
-  }
-
-  /**
-   * Gets a single Item from a given table by its unique name and version.
-   * @override
-   * @param {string} tableName - Item type or table name
-   * @param {string} uniqueName - Unique Name of Item to retrieve
-   * @return {Promise<Response>} Promise that resolves to a {@link Response}
-   */
-  async getItemLatestByName(tableName, uniqueName, expand = false) {
-    let response;
-    const params = {
-      TableName: `${tableName}${SUFFIX}`,
-      IndexName: 'gs_index',
-      KeyConditionExpression: 'unique_name = :unique_name',
-      ExpressionAttributeValues: { ':unique_name': uniqueName }
-    };
-    response = await this.request('query', params);
-    if (response.data) {
-      response.data = response.data[response.data.length - 1];
-      if (expand && Schema.hasForeignReferences(tableName)) {
-        await this.expandKeys(tableName, response.data)
-          .catch(() => {
-            response = ErrorResponse.invalidReference;
-          });
-      }
-    }
-    return response;
-  }
-
-  /**
-   * Gets all versions of an Item from a given table by its Unique Name.
-   * @override
-   * @param {string} tableName - Name of the DynamoDB table to query
-   * @param {string} uniqueName - Unique Name of Item to retrieve
-   * @return {Promise<Response>} Response object
-   */
-  async getItemsByName(tableName, uniqueName) {
-    const params = {
-      TableName: `${tableName}${SUFFIX}`,
-      IndexName: 'gs_index',
-      KeyConditionExpression: 'unique_name = :unique_name',
-      ExpressionAttributeValues: { ':unique_name': uniqueName }
-    };
-    const response = await this.request('query', params);
-    return response;
-  }
-
-  /**
-   * Inserts a new item to a given table.
-   * @override
-   * @param {string} tableName - Item type or table name
-   * @param {Item} item - New item to put into table
-   * @return {Promise<Response>} Promise that resolves to a {@link Response}
-   */
-  async putItem(tableName, item) {
-    let response;
-    if (!tableName) {
-      response = ErrorResponse.tableParameterMissing;
-    } else if (!Schema.isTable(tableName)) {
-      response = ErrorResponse.noSuchTable;
-    } else {
-      console.info(`[DATABASE] Attempting to insert into ${tableName}`);
-      // Set dummy id and version for schema validation
-      item.id = 'f1f11ff1-f1f1-41ff-bfff-1ff1f1f1ff11';
-      item.version = 1;
-      if (Schema.validate(tableName, item)) {
-        // Remove id, version. These are generated for new items and
-        // should beignored for equality check
-        delete item.id;
-        delete item.version;
-        response = await this.getItemLatestByName(tableName, item.unique_name);
-        const latest = response.data || { version: 0 };
-        const newVersion = latest.version + 1;
-
-        // Remove id, version before checking item equivalency
-        delete latest.id;
-        delete latest.version;
-
-        if (!DeepEqual(item, latest)) {
-          item.id = UUID.v4();
-          item.version = newVersion;
-          const params = {
-            Item: item,
-            TableName: `${tableName}${SUFFIX}`
-          };
-          response = await this.request('put', params);
-        } else {
-          response = ErrorResponse.noChange;
+          error = this.errors.noSuchIndex;
         }
       } else {
-        response = ErrorResponse.validationFailed;
+        error = this.errors.noSuchTable;
       }
+    } else {
+      error = this.errors.tableParameterMissing;
     }
-    if (response.data) {
-      response.data = item;
-      console.info(`[DATABASE] New item successfully inserted:\n${JSON.stringify(item)}`);
-    }
-    return response;
+    return error;
   }
 }
 

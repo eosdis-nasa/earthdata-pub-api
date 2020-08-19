@@ -1,0 +1,12 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action" : [
+        "sqs:SendMessage"
+      ],
+      "Effect" : "Allow",
+      "Resource" : [ "${edpub_queue_arn}"]
+    }
+  ]
+}

@@ -4,28 +4,41 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-submission" {
   hash_key = "id"
 
   global_secondary_index {
-    name               = "gs_initiator_id"
+    name               = "initiator_id_scan"
     hash_key           = "initiator_id"
     range_key          = "daac_id"
-    projection_type    = "ALL"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["id", "initiator_id", "state", "daac_id", "workflow_id"]
     read_capacity      = 0
     write_capacity     = 0
   }
 
   global_secondary_index {
-    name               = "gs_workflow_id"
+    name               = "workflow_id_scan"
     hash_key           = "workflow_id"
     range_key          = "initiator_id"
-    projection_type    = "ALL"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["id", "initiator_id", "state", "daac_id", "workflow_id"]
     read_capacity      = 0
     write_capacity     = 0
   }
 
   global_secondary_index {
-    name               = "gs_daac_id"
+    name               = "daac_id_scan"
     hash_key           = "daac_id"
     range_key          = "workflow_id"
-    projection_type    = "ALL"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["id", "initiator_id", "state", "daac_id", "workflow_id"]
+    read_capacity      = 0
+    write_capacity     = 0
+  }
+
+  global_secondary_index {
+    name               = "state_scan"
+    hash_key           = "state"
+    range_key          = "daac_id"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["id", "initiator_id", "state", "daac_id", "workflow_id"]
     read_capacity      = 0
     write_capacity     = 0
   }
@@ -42,6 +55,11 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-submission" {
 
   attribute {
     name = "workflow_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "state"
     type = "S"
   }
 

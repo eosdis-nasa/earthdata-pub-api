@@ -10,16 +10,20 @@
     "plugin:jest/recommended"
   ],
   "globals": {
+    "crypto": true,
+    "assert": true,
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },
   "parserOptions": {
     "ecmaVersion": 2018
   },
-  "ignorePatterns": ["node_modules/", "/definitions/", "/jsdoc/"],
+  "ignorePatterns": ["node_modules/", "/jsdoc/", "/test-data/"],
   "rules": {
     "comma-dangle": ["error", "never"],
+    "class-methods-use-this": 0,
     "no-param-reassign": ["error", { "props": false }],
-    "no-console": ["error", { "allow": ["info", "error"]}]
+    "no-console": ["error", { "allow": ["info", "error"]}],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": true}]
   }
 }

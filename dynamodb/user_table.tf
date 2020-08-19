@@ -4,9 +4,18 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-user" {
   hash_key = "id"
 
   global_secondary_index {
-    name               = "gs_username"
-    hash_key           = "username"
-    range_key          = "id"
+    name               = "email"
+    hash_key           = "email"
+    range_key          = "user_name"
+    projection_type    = "ALL"
+    read_capacity      = 0
+    write_capacity     = 0
+  }
+
+  global_secondary_index {
+    name               = "user_name"
+    hash_key           = "user_name"
+    range_key          = "email"
     projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0
@@ -18,7 +27,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-user" {
   }
 
   attribute {
-    name = "username"
+    name = "user_name"
     type = "S"
   }
 

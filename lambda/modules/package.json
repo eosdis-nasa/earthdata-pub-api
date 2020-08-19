@@ -4,17 +4,28 @@
   "description": "Collection of lambda functions and layers for Earthdata Pub",
   "scripts": {
     "pretest": "eslint ./ -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
-    "test": "jest -c jest.config.json --all",
+    "test": "jest -c jest.config.js --all",
     "generate-docs": "jsdoc -c jsdoc.config.json --destination jsdoc --private"
   },
   "author": "Brian Ellingson",
   "license": "ISC",
   "dependencies": {
-    "database-driver": "file:database-driver",
-    "get-item": "file:get-item",
-    "put-item": "file:put-item"
+    "action-handler": "file:./action-handler",
+    "dashboard": "file:./dashboard",
+    "database-driver": "file:./database-driver",
+    "information": "file:./information",
+    "invoke": "file:./invoke",
+    "message-driver": "file:./message-driver",
+    "notification-handler": "file:./notification-handler",
+    "notify": "file:./notify",
+    "register": "file:./register",
+    "schema-util": "file:./schema-util",
+    "submission": "file:./submission",
+    "subscription": "file:./subscription",
+    "workflow-handler": "file:./workflow-handler"
   },
   "devDependencies": {
+    "aws-sdk": "^2.654.0",
     "eslint": "^6.8.0",
     "eslint-bamboo-formatter": "^0.1.1",
     "eslint-config-airbnb-base": "^14.1.0",

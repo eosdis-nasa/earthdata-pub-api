@@ -4,7 +4,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-daac" {
   hash_key = "id"
 
   global_secondary_index {
-    name               = "gs_short_name"
+    name               = "short_name"
     hash_key           = "short_name"
     projection_type    = "ALL"
     read_capacity      = 0

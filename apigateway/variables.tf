@@ -10,10 +10,30 @@ variable "api_gateway_policy" {
   type = string
 }
 
-variable "get_item_lambda_arn" {
+variable "information_lambda_arn" {
   type = string
 }
 
-variable "put_item_lambda_arn" {
+variable "invoke_lambda_arn" {
+  type = string
+}
+
+variable "notify_lambda_arn" {
+  type = string
+}
+
+variable "register_lambda_arn" {
+  type = string
+}
+
+variable "submission_lambda_arn" {
+  type = string
+}
+
+variable "subscription_lambda_arn" {
+  type = string
+}
+
+variable "dashboard_lambda_arn" {
   type = string
 }

@@ -5,48 +5,29 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd ${DIR}
 
+PROFILE=${1:-"sandbox"}
 
-#Copy and edit schema json apigateway, modules, docs
-sed "s/\${schema_path}/\//" ./dynamodb/schema/schema.json > ./lambda/modules/database-driver/src/schema.json
-sed "s/\${schema_path}/\/components\/schemas\//" ./dynamodb/schema/schema.json > ./apigateway/schema.json
+if [[ $PROFILE == "localstack" ]]
+then
+  TARGET="localstack"
+else
+  TARGET="aws"
+fi
 
+# Set up functions
+source ./scripts/utils.sh
 
 #Clear old artifacts and temp directory
-rm -rf ${DIR}/docs/jsdoc
-rm -rf ${DIR}/docs/apidoc
-rm ${DIR}/artifacts/*.zip
-rm -rf temp
-mkdir temp
+clear_artifacts
 
+replace 'module:./lambda/modules/schema-util/src/models.js' 'string:#/components/schemas/' 'all:#/' './apigateway/schema.json'
 
-#Package nodejs modules
-cd ${DIR}/temp
-npm pack ${DIR}/lambda/modules/database-driver
-#Add more layer modules here <--
+cp ${DIR}/apigateway/spec/openapi.json ${DIR}/apigateway/openapi.json
 
-
-#Install nodejs modules in layers and package in zip
-mkdir nodejs
-cd nodejs
-npm install ../database-driver-1.0.0.tgz
-cd ..
-zip -r ${DIR}/artifacts/database-driver-layer.zip nodejs
-rm -rf ${DIR}/temp/*
-#Add more layer modules here <--
-
-
-#Package lambda functions
-cp -R ${DIR}/lambda/modules/get-item/src/* ./.
-zip -r ${DIR}/artifacts/get-item-lambda.zip .
-rm -rf ${DIR}/temp/*
-cp -R ${DIR}/lambda/modules/put-item/src/* ./.
-zip -r ${DIR}/artifacts/put-item-lambda.zip .
-rm -rf ${DIR}/temp/*
-
-
-#Generate and package documentation
+#Install dependencies and generate docs
 cd ${DIR}/lambda/modules
-npm install
+./build.sh
+
 npm run generate-docs
 zip -r ${DIR}/artifacts/jsdoc.zip jsdoc
 mv jsdoc ${DIR}/docs
@@ -57,20 +38,49 @@ mkdir apidoc
 cp node_modules/swagger-ui-dist/* apidoc/
 rm apidoc/index.html
 cp ${DIR}/docs/swagger-index.html apidoc/index.html
-cp ${DIR}/apigateway/openapi.json apidoc/openapi.json
+cp ${DIR}/apigateway/openapi.json ./openapi.json
+cp ${DIR}/apigateway/schema.json ./schema.json
 #Populate placeholders
-sed -i 's/${schema_file}/${schema_file}\n/' ./apidoc/openapi.json
-sed -i \
--e '/${schema_file}/ r ../apigateway/schema.json' \
--e 's/${schema_file}//' \
--e 's/${api_name}/EarthdataPub/g' \
--e 's/${api_policy}/{}/g' \
-./apidoc/openapi.json
-
-
+replace 'raw:./openapi.json' 'string:{}' 'one:${api_policy}' './openapi.json'
+replace 'raw:./openapi.json' 'string:EarthdataPub' 'one:${api_name}' './openapi.json'
+replace 'raw:./openapi.json' 'raw:./schema.json' 'one:${schema_file}' './openapi.json'
+prettify_json './openapi.json' './openapi.json'
+mv openapi.json apidoc/openapi.json
 zip -r ${DIR}/artifacts/apidoc.zip apidoc
 mv apidoc ${DIR}/docs
+rm -rf ${DIR}/temp/*
 
-#Change back root directory and remove temp folder
+#Package lambda layers
+package_layer database-driver
+package_layer message-driver
+package_layer schema-util
+#Add more layer modules here <--
+
+#Package lambda functions
+package_lambda action-handler
+package_lambda dashboard
+package_lambda information
+package_lambda invoke
+package_lambda notification-handler
+package_lambda notify
+package_lambda register
+package_lambda submission
+package_lambda subscription
+package_lambda workflow-handler
+#Add more lambda functions here <--
+
+cd ${DIR}
+
+if [[ $TARGET == "localstack" ]]
+then
+  oas_to_hcl "./docs/apidoc/openapi.json" "./apigateway/localstack/main.tf.json"
+else
+  cp ${DIR}/lambda/layers/* ${DIR}/lambda/
+fi
+
+cp ${DIR}/apigateway/${TARGET}/* ${DIR}/apigateway/
+cp ${DIR}/profiles/${PROFILE}/main.tf ${DIR}/main.tf
+
+#Change back to root directory and remove temp folder
 cd ${DIR}
 rm -rf ${DIR}/temp

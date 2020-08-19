@@ -2,29 +2,21 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-permission" {
   name = "permission${var.stage_suffix}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "id"
+  range_key = "entity_id"
 
   global_secondary_index {
-    name               = "gs_grantee"
-    hash_key           = "grantee"
-    range_key          = "table"
+    name               = "table_name"
+    hash_key           = "table_name"
+    range_key          = "id"
     projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0
   }
 
   global_secondary_index {
-    name               = "gs_entity_id"
+    name               = "entity_id"
     hash_key           = "entity_id"
-    range_key          = "grantee"
-    projection_type    = "ALL"
-    read_capacity      = 0
-    write_capacity     = 0
-  }
-
-  global_secondary_index {
-    name               = "gs_table"
-    hash_key           = "table"
-    range_key          = "grantee"
+    range_key          = "id"
     projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0
@@ -36,17 +28,12 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-permission" {
   }
 
   attribute {
-    name = "grantee"
+    name = "table_name"
     type = "S"
   }
 
   attribute {
     name = "entity_id"
-    type = "S"
-  }
-
-  attribute {
-    name = "table"
     type = "S"
   }
 
@@ -56,6 +43,6 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-permission" {
 
   tags = {
     Name        = "edp-table-permission"
-    Environment = "dev"
+    Environment = var.stage
   }
 }

@@ -2,11 +2,20 @@
 node_modules/
 package-lock.json
 
-#Ignore all installed Terraform modules and Terraform states
+#Ignore all dynamic and generated components
+/main.tf
+/apigateway/main.tf
+/apigateway/main.tf.json
+/apigateway/openapi.json
+/apigateway/schema.json
+/lambda/layers.tf
+/lambda/override.tf
 /.terraform/
 /terraform.tfstate
 /terraform.tfstate.backup
 tfplan
+jsdoc/
+apidoc/
 
 #Ignore eslint and jest outputs
 eslint.json
@@ -18,14 +27,6 @@ jest.json
 *.tgz
 *.gz
 *.tar
-
-#Ignore generated documentation
-jsdoc/
-apidoc/
-
-#Ignore copied schema file
-/apigateway/schema.json
-/lambda/modules/database-driver/src/schema.json
 
 #Ignore folder of test scripts
 /test-scripts

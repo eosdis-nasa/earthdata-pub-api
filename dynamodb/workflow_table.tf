@@ -4,7 +4,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-workflow" {
   hash_key = "id"
 
   global_secondary_index {
-    name               = "gs_workflow_name"
+    name               = "workflow_name"
     hash_key           = "workflow_name"
     range_key          = "version"
     projection_type    = "ALL"
@@ -13,7 +13,7 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-workflow" {
   }
 
   global_secondary_index {
-    name               = "gs_daac_id"
+    name               = "daac_id"
     hash_key           = "daac_id"
     range_key          = "workflow_name"
     projection_type    = "ALL"

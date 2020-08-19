@@ -4,9 +4,8 @@ resource "aws_dynamodb_table" "edp-dynamodb-table-group" {
   hash_key = "id"
 
   global_secondary_index {
-    name               = "gs_group_name"
+    name               = "group_name"
     hash_key           = "group_name"
-    range_key          = "id"
     projection_type    = "ALL"
     read_capacity      = 0
     write_capacity     = 0
