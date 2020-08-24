@@ -1,0 +1,325 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is the API that serves as the central interaction point between the client and back-end services of Earthdata Pub.",
+    "version": "1.0.0",
+    "title": "EarthdataPub",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "brian.ellingson@uah.edu"
+    }
+  },
+  "tags": [
+    {
+      "name": "information",
+      "description": "Fetch questions, forms, workflows",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "notification",
+      "description": "Interact with the notification system. Send a note, subscribe or unsubscribe to events.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "action",
+      "description": "Interact with the action system. Invoke an action, or register a custom action.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "submission",
+      "description": "Manage submissions, fill forms, review.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "dashboard",
+      "description": "Various endpoints for populating the dashboard pages.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    }
+  ],
+  "paths": {
+    "/information/{table}": {
+      "parameters": [
+        {
+          "name": "table",
+          "in": "path",
+          "description": "Name of the database table to connect to",
+          "required": true,
+          "schema": { "type": "string" }
+        }
+      ],
+      "get": {
+        "tags": [ "information" ],
+        "summary": "Returns items from a table",
+        "description": "Returns items from a DynamoDB table based on query parameters.",
+        "operationId": "getItem",
+        "parameters": [
+          {
+            "name": "index",
+            "in": "query",
+            "description": "Index to query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "p_key",
+            "in": "query",
+            "description": "Value of the primary key to query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "s_key",
+            "in": "query",
+            "description": "Value of the sort key to query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Response" }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${information_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      },
+      "post": {
+        "tags": [ "information" ],
+        "summary": "Create or update an item",
+        "description": "Creates a new item or new version of existing item in the given table",
+        "operationId": "putItem",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InformationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Response" }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${information_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      }
+    },
+    "/notification/notify": {
+      "post": {
+        "tags": [ "notification" ],
+        "summary": "Send a notify request",
+        "description": "Send a request to notify an individual or group.",
+        "operationId": "notify",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NotifyRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${notify_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      }
+    },
+    "/notification/subscription": {
+      "get": {
+        "tags": [ "notification" ],
+        "summary": "Get subscriptions",
+        "description": "Get a list of subscriptions for the current user.",
+        "operationId": "getSubscriptions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Response" }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${subscription_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      },
+      "post": {
+        "tags": [ "notification" ],
+        "summary": "Subscribe or unscubscribe to an event",
+        "description": "Subscribe or unsubscribe to events raised by given entities.",
+        "operationId": "subscribe",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SubscriptionRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${subscription_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      }
+    },
+    "/action/invoke": {
+      "post": {
+        "tags": [ "action" ],
+        "summary": "Invoke an action.",
+        "description": "Invoke an action to be processed on a given submission.",
+        "operationId": "Invoke",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InvokeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${invoke_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      }
+    },
+    "/action/register": {
+      "post": {
+        "tags": [ "action" ],
+        "summary": "Register an action",
+        "description": "Register a new custom action.",
+        "operationId": "RegisterAction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${register_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      }
+    },
+    "/submission/{operation}": {
+      "parameters": [
+        {
+          "name": "operation",
+          "in": "path",
+          "description": "Which submission operation to perform.",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "tags": [ "submission" ],
+        "summary": "Perform an operation for a Submission",
+        "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
+        "operationId": "SubmissionOperation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SubmissionRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "tags": [ "dashboard" ],
+        "summary": "Dashboard populate",
+        "description": "Endpoint to populate various dashboard pages.",
+        "operationId": "Dashboard",
+        "responses": {
+          "200": { "description": "OK" }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${dashboard_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": ${schema_file}
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

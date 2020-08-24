@@ -1,0 +1,40 @@
+{
+  "name": "earthdata-pub-modules",
+  "version": "1.0.0",
+  "description": "Collection of lambda functions and layers for Earthdata Pub",
+  "scripts": {
+    "build:localstack": "./scripts/build.sh localstack",
+    "lint": "eslint ./src/nodejs -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
+    "test": "jest -c jest.config.js --all",
+    "generate-docs": "./scripts/generate-jsdoc.sh & ./scripts/generate-apidoc.sh"
+  },
+  "author": "Brian Ellingson",
+  "license": "ISC",
+  "dependencies": {
+    "action-handler": "file:./src/nodejs/action-handler",
+    "dashboard": "file:./src/nodejs/dashboard",
+    "database-driver": "file:./src/nodejs/database-driver",
+    "information": "file:./src/nodejs/information",
+    "invoke": "file:./src/nodejs/invoke",
+    "message-driver": "file:./src/nodejs/message-driver",
+    "notification-handler": "file:./src/nodejs/notification-handler",
+    "notify": "file:./src/nodejs/notify",
+    "register": "file:./src/nodejs/register",
+    "schema-util": "file:./src/nodejs/schema-util",
+    "submission": "file:./src/nodejs/submission",
+    "subscription": "file:./src/nodejs/subscription",
+    "workflow-handler": "file:./src/nodejs/workflow-handler"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.654.0",
+    "eslint": "^6.8.0",
+    "eslint-bamboo-formatter": "^0.1.1",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^23.8.2",
+    "jest": "^25.2.4",
+    "jest-bamboo-formatter": "^1.0.1",
+    "jsdoc": "^3.6.4",
+    "swagger-ui-dist": "^3.32.4"
+  }
+}

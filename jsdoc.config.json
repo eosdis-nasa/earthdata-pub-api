@@ -1,0 +1,36 @@
+{
+  "plugins": [],
+  "recurseDepth": 10,
+  "source": {
+    "include": [
+      "./src/nodejs/action-handler/src",
+      "./src/nodejs/notification-handler/src",
+      "./src/nodejs/workflow-handler/src",
+      "./src/nodejs/dashboard/src",
+      "./src/nodejs/information/src",
+      "./src/nodejs/invoke/src",
+      "./src/nodejs/notify/src",
+      "./src/nodejs/register/src",
+      "./src/nodejs/submission/src",
+      "./src/nodejs/subscription/src",
+      "./src/nodejs/actions",
+      "./src/nodejs/database-driver/src",
+      "./src/nodejs/message-driver/src",
+      "./src/nodejs/schema-util/src"
+    ],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc","closure"]
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "opts": {
+    "destination": "./docs/jsdoc"
+  }
+}

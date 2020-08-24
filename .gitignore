@@ -1,19 +1,19 @@
 #Ignore all installed node modules and package-locks
 node_modules/
-package-lock.json
+/src/nodejs/*/package-lock.json
 
 #Ignore all dynamic and generated components
-/main.tf
-/apigateway/main.tf
-/apigateway/main.tf.json
-/apigateway/openapi.json
-/apigateway/schema.json
-/lambda/layers.tf
-/lambda/override.tf
-/.terraform/
-/terraform.tfstate
-/terraform.tfstate.backup
-tfplan
+/terraform/main.tf
+/terraform/apigateway/main.tf
+/terraform/apigateway/main.tf.json
+/terraform/apigateway/openapi.json
+/terraform/apigateway/schema.json
+/terraform/lambda/layers.tf
+/terraform/lambda/override.tf
+/terraform/.terraform/
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.backup
+/terraformtfplan
 jsdoc/
 apidoc/
 

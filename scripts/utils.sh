@@ -1,13 +1,31 @@
 clear_artifacts() {
-  rm ${DIR}/main.tf
   rm ${DIR}/artifacts/*.zip
-  rm ${DIR}/apigateway/main.tf*
-  rm ${DIR}/lambda/layers.tf
-  rm ${DIR}/lambda/override.tf
+  rm ${DIR}/terraform/main.tf
+  rm ${DIR}/terraform/apigateway/main.tf*
+  rm ${DIR}/terraform/apigateway/openapi.json
+  rm ${DIR}/terraform/apigateway/schema.json
+  rm ${DIR}/terraform/lambda/layers.tf
+  rm ${DIR}/terraform/lambda/override.tf
+  rm -rf ${DIR}/src/nodejs/*/node_modules
+  rm ${DIR}/src/nodejs/*/package-lock.json
+  rm ${DIR}/src/nodejs/*/*.tgz
   rm -rf ${DIR}/docs/jsdoc
   rm -rf ${DIR}/docs/apidoc
   rm -rf temp
   mkdir temp
+}
+
+install_layer() {
+  cd ${DIR}/src/nodejs/${1}
+  npm install --production --force
+  npm pack
+  cd ${DIR}
+}
+
+install_lambda() {
+  cd ${DIR}/src/nodejs/${1}
+  npm install --production --force
+  cd ${DIR}
 }
 
 package_layer() {
@@ -16,22 +34,24 @@ package_layer() {
     cd ${DIR}/temp
     mkdir nodejs
     cd nodejs
-    npm install --production ${DIR}/lambda/modules/${1}/${1}-1.0.0.tgz
+    npm install --production ${DIR}/src/nodejs/${1}/${1}-1.0.0.tgz
     cd ..
     zip -r ${DIR}/artifacts/${1}-layer.zip nodejs
     rm -rf nodejs
+    cd ${DIR}
   fi
 }
 
 package_lambda() {
   cd ${DIR}/temp
-  cp -R ${DIR}/lambda/modules/${1}/src/* ./.
-  cp ${DIR}/profiles/${PROFILE}/client-config.js .
+  cp -R ${DIR}/src/nodejs/${1}/src/* ./.
+  cp ${DIR}/terraform/profiles/${PROFILE}/client-config.js .
   if [[ $TARGET == "localstack" ]]
   then
-    cp -R ${DIR}/lambda/modules/${1}/node_modules ./.
+    cp -R ${DIR}/src/nodejs/${1}/node_modules ./.
   fi
   zip -r ${DIR}/artifacts/${1}-lambda.zip .
+  cd ${DIR}
   rm -rf ${DIR}/temp/*
 }
 

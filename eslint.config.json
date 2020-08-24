@@ -1,0 +1,29 @@
+{
+  "env": {
+    "commonjs": true,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:jest/recommended"
+  ],
+  "globals": {
+    "crypto": true,
+    "assert": true,
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "ignorePatterns": ["node_modules/", "/jsdoc/", "/src/nodejs/test-data/"],
+  "rules": {
+    "comma-dangle": ["error", "never"],
+    "class-methods-use-this": 0,
+    "no-param-reassign": ["error", { "props": false }],
+    "no-console": ["error", { "allow": ["info", "error"]}],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": true}]
+  }
+}
