@@ -29,17 +29,15 @@ install_lambda() {
 }
 
 package_layer() {
-  if [[ $TARGET == "aws" ]]
-  then
-    cd ${DIR}/temp
-    mkdir nodejs
-    cd nodejs
-    npm install --production ${DIR}/src/nodejs/${1}/${1}-1.0.0.tgz
-    cd ..
-    zip -r ${DIR}/artifacts/${1}-layer.zip nodejs
-    rm -rf nodejs
-    cd ${DIR}
-  fi
+  cd ${DIR}/temp
+  mkdir nodejs
+  cd nodejs
+  mkdir node_modules
+  npm install --no-save ${DIR}/src/nodejs/${1}/${1}-1.0.0.tgz
+  cd ..
+  zip -r ${DIR}/artifacts/${1}-layer.zip nodejs
+  rm -rf nodejs
+  cd ${DIR}
 }
 
 package_lambda() {

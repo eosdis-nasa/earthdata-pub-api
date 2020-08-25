@@ -1,5 +1,4 @@
 function radioDefault({ id, enums }) {
-  console.log(enums);
   return { [id]: enums[0] };
 }
 
@@ -31,9 +30,8 @@ const defaultMap = {
 };
 
 function defaultValue({
-  id, type, enums, required
+  id, type, enums
 }) {
-  console.log(defaultMap[type]({ id, enums }));
   return defaultMap[type]({ id, enums });
 }
 
@@ -41,7 +39,6 @@ function getFormDefaults(form) {
   return form.sections.reduce((acc, section) => {
     section.questions.forEach((question) => {
       question.inputs.forEach((input) => {
-        console.log(input);
         Object.assign(acc, defaultValue(input));
       });
     });

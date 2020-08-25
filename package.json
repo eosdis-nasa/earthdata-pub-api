@@ -4,6 +4,7 @@
   "description": "Collection of lambda functions and layers for Earthdata Pub",
   "scripts": {
     "build:localstack": "./scripts/build.sh localstack",
+    "build:sandbox": "./scripts/build.sh sandbox",
     "lint": "eslint ./src/nodejs -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
     "test": "jest -c jest.config.js --all",
     "generate-docs": "./scripts/generate-jsdoc.sh & ./scripts/generate-apidoc.sh"
@@ -13,14 +14,14 @@
   "dependencies": {
     "action-handler": "file:./src/nodejs/action-handler",
     "dashboard": "file:./src/nodejs/dashboard",
-    "database-driver": "file:./src/nodejs/database-driver",
+    "database-driver": "file:src/nodejs/database-driver",
     "information": "file:./src/nodejs/information",
     "invoke": "file:./src/nodejs/invoke",
-    "message-driver": "file:./src/nodejs/message-driver",
+    "message-driver": "file:src/nodejs/message-driver",
     "notification-handler": "file:./src/nodejs/notification-handler",
     "notify": "file:./src/nodejs/notify",
     "register": "file:./src/nodejs/register",
-    "schema-util": "file:./src/nodejs/schema-util",
+    "schema-util": "file:src/nodejs/schema-util",
     "submission": "file:./src/nodejs/submission",
     "subscription": "file:./src/nodejs/subscription",
     "workflow-handler": "file:./src/nodejs/workflow-handler"
@@ -36,5 +37,9 @@
     "jest-bamboo-formatter": "^1.0.1",
     "jsdoc": "^3.6.4",
     "swagger-ui-dist": "^3.32.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.earthdata.nasa.gov/scm/edpub/api.git"
   }
 }

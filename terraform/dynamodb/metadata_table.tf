@@ -1,4 +1,4 @@
-resource "aws_dynamodb_table" "edp-dynamodb-table-submission" {
+resource "aws_dynamodb_table" "edp-dynamodb-table-metadata" {
   name = "metadata${var.stage_suffix}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "id"

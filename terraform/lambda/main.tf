@@ -1,7 +1,7 @@
 # Action Handler Lambda
 
 resource "aws_lambda_function" "action_handler" {
-  filename      = "./artifacts/action-handler-lambda.zip"
+  filename      = "../artifacts/action-handler-lambda.zip"
   function_name = "action_handler${var.stage_suffix}"
   role          = var.action_handler_lambda_role_arn
   handler       = "action-handler.handler"
@@ -37,7 +37,7 @@ resource "aws_lambda_event_source_mapping" "action_handler_sqs_event" {
 # Dashboard Lambda
 
 resource "aws_lambda_function" "dashboard" {
-  filename      = "./artifacts/dashboard-lambda.zip"
+  filename      = "../artifacts/dashboard-lambda.zip"
   function_name = "dashboard${var.stage_suffix}"
   role          = var.dashboard_lambda_role_arn
   handler       = "dashboard.handler"
@@ -66,7 +66,7 @@ resource "aws_lambda_permission" "dashboard" {
 # Information Lambda
 
 resource "aws_lambda_function" "information" {
-  filename      = "./artifacts/information-lambda.zip"
+  filename      = "../artifacts/information-lambda.zip"
   function_name = "information${var.stage_suffix}"
   role          = var.information_lambda_role_arn
   handler       = "information.handler"
@@ -95,7 +95,7 @@ resource "aws_lambda_permission" "information" {
 # Invoke Lambda
 
 resource "aws_lambda_function" "invoke" {
-  filename      = "./artifacts/invoke-lambda.zip"
+  filename      = "../artifacts/invoke-lambda.zip"
   function_name = "invoke${var.stage_suffix}"
   role          = var.invoke_lambda_role_arn
   handler       = "invoke.handler"
@@ -123,7 +123,7 @@ resource "aws_lambda_permission" "invoke" {
 # Notify Lambda
 
 resource "aws_lambda_function" "notify" {
-  filename      = "./artifacts/notify-lambda.zip"
+  filename      = "../artifacts/notify-lambda.zip"
   function_name = "notify${var.stage_suffix}"
   role          = var.notify_lambda_role_arn
   handler       = "notify.handler"
@@ -151,7 +151,7 @@ resource "aws_lambda_permission" "notify" {
 # Notification Handler Lambda
 
 resource "aws_lambda_function" "notification_handler" {
-  filename      = "./artifacts/notification-handler-lambda.zip"
+  filename      = "../artifacts/notification-handler-lambda.zip"
   function_name = "notification_handler${var.stage_suffix}"
   role          = var.notification_handler_lambda_role_arn
   handler       = "notification-handler.handler"
@@ -192,7 +192,7 @@ resource "aws_sns_topic_subscription" "notification_handler_lambda" {
 # Register Lambda
 
 resource "aws_lambda_function" "register" {
-  filename      = "./artifacts/register-lambda.zip"
+  filename      = "../artifacts/register-lambda.zip"
   function_name = "register${var.stage_suffix}"
   role          = var.register_lambda_role_arn
   handler       = "register.handler"
@@ -221,7 +221,7 @@ resource "aws_lambda_permission" "register" {
 # Submission Lambda
 
 resource "aws_lambda_function" "submission" {
-  filename      = "./artifacts/submission-lambda.zip"
+  filename      = "../artifacts/submission-lambda.zip"
   function_name = "submission${var.stage_suffix}"
   role          = var.submission_lambda_role_arn
   handler       = "submission.handler"
@@ -251,7 +251,7 @@ resource "aws_lambda_permission" "submission" {
 # Subscription Lambda
 
 resource "aws_lambda_function" "subscription" {
-  filename      = "./artifacts/subscription-lambda.zip"
+  filename      = "../artifacts/subscription-lambda.zip"
   function_name = "subscription${var.stage_suffix}"
   role          = var.subscription_lambda_role_arn
   handler       = "subscription.handler"
@@ -280,7 +280,7 @@ resource "aws_lambda_permission" "subscription" {
 # Workflow Handler Lambda
 
 resource "aws_lambda_function" "workflow_handler" {
-  filename      = "./artifacts/workflow-handler-lambda.zip"
+  filename      = "../artifacts/workflow-handler-lambda.zip"
   function_name = "workflow_handler${var.stage_suffix}"
   role          = var.workflow_handler_lambda_role_arn
   handler       = "workflow-handler.handler"

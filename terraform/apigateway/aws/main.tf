@@ -12,7 +12,7 @@ resource "aws_api_gateway_rest_api" "EarthdataPub" {
 }
 
 data "template_file" "earthdatapub_openapi" {
-  template = file("./terraform/apigateway/openapi.json")
+  template = file("./apigateway/openapi.json")
   vars = {
     information_lambda_arn    = var.information_lambda_arn
     invoke_lambda_arn         = var.invoke_lambda_arn

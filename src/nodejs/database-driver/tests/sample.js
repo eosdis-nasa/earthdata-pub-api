@@ -1,7 +1,7 @@
 module.exports.params = {
   get: {
     TableName: 'form',
-    Index: 'form_name',
+    IndexName: 'form_name',
     KeyConditionExpression: 'form_name = :form_name and version = :version',
     ExpressionAttributeValues: {
       ':form_name': {
@@ -10,7 +10,8 @@ module.exports.params = {
       ':version': {
         N: '1'
       }
-    }
+    },
+    ScanIndexForward: true
   },
   put: {
     Item: {

@@ -180,26 +180,27 @@ class DynamodbDriver {
 
   /**
    * Verify that all of the foreign references exist.
+   * *Not implimented, needs retooling and testing
    * @params {module:Schema.ReferenceMap} refMap - Map of foreign
    *   references contained in an item
    * @return {Promise} A promise that resolves to a boolean indicating if
    *   all referenced items exist
    */
-  verifyReferences(refMap) {
-    return new Promise(async (resolve) => {
-      await Object.entries(refMap)
-        .forEach(async ([fTable, refs]) => {
-          await refs.forEach(async ({ ref, key }) => {
-            const refId = ref[key];
-            const [items] = await this.getItems(fTable, refId);
-            if (items.length === 0) {
-              resolve(false);
-            }
-          });
-        });
-      resolve(true);
-    });
-  }
+  // verifyReferences(refMap) {
+  //   return new Promise(async (resolve) => {
+  //     await Object.entries(refMap)
+  //       .forEach(async ([fTable, refs]) => {
+  //         await refs.forEach(async ({ ref, key }) => {
+  //           const refId = ref[key];
+  //           const [items] = await this.getItems(fTable, refId);
+  //           if (items.length === 0) {
+  //             resolve(false);
+  //           }
+  //         });
+  //       });
+  //     resolve(true);
+  //   });
+  // }
 
   /**
    * Initiates a request with the client. Wraps the operation in a promise to
