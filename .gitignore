@@ -1,6 +1,6 @@
 #Ignore all installed node modules and package-locks
 node_modules/
-/src/nodejs/*/package-lock.json
+package-lock.json
 
 #Ignore all dynamic and generated components
 /terraform/main.tf
