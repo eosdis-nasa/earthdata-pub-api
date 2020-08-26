@@ -46,9 +46,9 @@ package_lambda() {
   cp ${DIR}/terraform/profiles/${PROFILE}/client-config.js .
   if [[ $TARGET == "localstack" ]]
   then
-    cp -R ${DIR}/src/nodejs/${1}/node_modules ./.
+    cp -RL ${DIR}/src/nodejs/${1}/node_modules ./.
   fi
-  zip -r ${DIR}/artifacts/${1}-lambda.zip .
+  zip -r ${DIR}/artifacts/${1}-lambda.zip . -x *.tgz
   cd ${DIR}
   rm -rf ${DIR}/temp/*
 }

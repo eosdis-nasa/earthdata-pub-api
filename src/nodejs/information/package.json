@@ -13,8 +13,8 @@
   "author": "Brian Ellingson",
   "license": "ISC",
   "dependencies": {
-    "database-driver": "file:../database-driver/database-driver-1.0.0.tgz",
-    "schema-util": "file:../schema-util/schema-util-1.0.0.tgz"
+    "database-driver": "file:../database-driver",
+    "schema-util": "file:../schema-util"
   },
   "devDependencies": {
     "aws-sdk": "^2.654.0",
