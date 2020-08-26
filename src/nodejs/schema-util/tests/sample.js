@@ -352,3 +352,31 @@ module.exports.questions = [
     }
   }
 ];
+
+module.exports.action = {
+  id: '3a92a22a-b47d-4c54-b075-bfe348b8de98',
+  action_name: 'console_log',
+  description: 'A sample action that simply logs the submission entity in its current state.',
+  version: 1,
+  file_key: '1734c8d3b028f603483d60ab3ab8a61cf6a41f93709cf47fa01d30a90ee2282c',
+  input_schema: {
+    type: 'object',
+    properties: {
+      submission_id: { type: 'string' }
+    }
+  }
+};
+
+module.exports.invalid_schema = {
+  id: 3870298740329847,
+  action_name: 'console_log',
+  description: 'A sample action with an invalid id.',
+  version: 1,
+  file_key: '1734c8d3b028f603483d60ab3ab8a61cf6a41f93709cf47fa01d30a90ee2282c',
+  input_schema: {
+    type: 'object',
+    properties: {
+      submission_id: { type: 'string' }
+    }
+  }
+};
