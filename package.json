@@ -7,7 +7,7 @@
     "build:sandbox": "bash ./scripts/build.sh sandbox",
     "lint": "eslint ./src/nodejs -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
     "test": "jest -c jest.config.js --all",
-    "generate-docs": "bash ./scripts/generate-jsdoc.sh & bash ./scripts/generate-apidoc.sh"
+    "generate-docs": "bash ./scripts/generate-jsdoc.sh; bash ./scripts/generate-apidoc.sh"
   },
   "author": "Brian Ellingson",
   "license": "ISC",
