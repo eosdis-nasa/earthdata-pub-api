@@ -13,15 +13,11 @@ describe('Schema', () => {
       const actionItem = sample.action;
       expect(Schema.validate(tableName, actionItem)).toBe(true);
     });
-  });
-  describe('validate() function', () => {
     it('should return False with invalid schema', () => {
       const tableName = 'action';
       const actionItem = sample.invalid_schema;
       expect(Schema.validate(tableName, actionItem)).toBe(false);
     });
-  });
-  describe('validate() function', () => {
     it('should return False with invalid table name', () => {
       const tableName = 'invalid_name';
       const actionItem = sample.action;
