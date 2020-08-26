@@ -231,7 +231,7 @@ function validate(tableName, item) {
     }
     return isValid;
   }
-  console.info(`[ERROR] There is no schema for that table or it is not a valid table.`);
+  console.info('[ERROR] There is no schema for that table or it is not a valid table.');
   return false;
 }
 module.exports.validate = validate;
