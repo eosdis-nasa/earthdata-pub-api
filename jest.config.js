@@ -12,7 +12,8 @@ module.exports = {
     '<rootDir>/src/nodejs/register',
     '<rootDir>/src/nodejs/submission',
     '<rootDir>/src/nodejs/subscription',
-    '<rootDir>/src/nodejs/workflow-handler'
+    '<rootDir>/src/nodejs/workflow-handler',
+    '<rootDir>/src/nodejs/schema-util'
   ],
   testResultsProcessor: 'jest-bamboo-formatter'
 };

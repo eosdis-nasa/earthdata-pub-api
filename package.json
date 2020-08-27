@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Collection of lambda functions and layers for Earthdata Pub",
   "scripts": {
-    "build:localstack": "./scripts/build.sh localstack",
-    "build:sandbox": "./scripts/build.sh sandbox",
+    "build:localstack": "bash ./scripts/build.sh localstack",
+    "build:sandbox": "bash ./scripts/build.sh sandbox",
     "lint": "eslint ./src/nodejs -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
     "test": "jest -c jest.config.js --all",
-    "generate-docs": "./scripts/generate-jsdoc.sh & ./scripts/generate-apidoc.sh"
+    "generate-docs": "bash ./scripts/generate-jsdoc.sh; bash ./scripts/generate-apidoc.sh"
   },
   "author": "Brian Ellingson",
   "license": "ISC",

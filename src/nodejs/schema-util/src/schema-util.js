@@ -140,7 +140,7 @@ module.exports.deepEqual = deepEqual;
  * @return {boolean} Whether the object contains the key or not
  */
 function hasKey(obj, key) {
-  return Object.prototype.hasOwnProperty.call(obj, key);
+  return obj ? Object.prototype.hasOwnProperty.call(obj, key) : false;
 }
 module.exports.hasKey = hasKey;
 
@@ -223,12 +223,16 @@ function enumeratePaths({ ref, aft, fore }) {
  */
 function validate(tableName, item) {
   const table = TableMeta[tableName];
-  const evaluate = ajv.getSchema(table.schema);
-  const isValid = evaluate(item);
-  if (!isValid) {
-    console.info(`[ERROR] Validation errors: \n${validate.errors}`);
+  if (hasKey(table, 'schema')) {
+    const evaluate = ajv.getSchema(table.schema);
+    const isValid = evaluate(item);
+    if (!isValid) {
+      console.info(`[ERROR] Validation errors: \n${validate.errors}`);
+    }
+    return isValid;
   }
-  return isValid;
+  console.info('[ERROR] There is no schema for that table or it is not a valid table.');
+  return false;
 }
 module.exports.validate = validate;
 
