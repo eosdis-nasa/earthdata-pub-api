@@ -20,7 +20,8 @@ const dbDriver = new DynamodbDriver(
 );
 
 async function getMethod(event, user) {
-  return dbDriver.getItems('subscription', user.id);
+  const response = await dbDriver.getItems('subscription', user.id);
+  return response;
 }
 
 async function postMethod(event, user) {

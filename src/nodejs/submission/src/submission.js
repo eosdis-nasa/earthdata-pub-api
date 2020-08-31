@@ -55,6 +55,7 @@ function constructMessage(submission, type, nextStep = false) {
 }
 
 async function initializeMethod(body, user) {
+  // Initialize a new Submission
   const submission = {
     workflow_id: body.workflow_id,
     workflow: { id: body.workflow_id },
@@ -66,18 +67,38 @@ async function initializeMethod(body, user) {
     form_data: {},
     action_data: {}
   };
+  const metadata = { metadata: {} };
   Schema.attachNewId(submission);
+  metadata.id = submission.id;
   const referenceMap = Schema.getForeignObjects('submission', submission);
   await dbDriver.refreshNestedObjects(referenceMap);
-  submission.step = submission.workflow.entry;
+  submission.step = 'init';
   const response = await dbDriver.putItem('submission', submission);
+  await dbDriver.putItem('metadata', metadata);
   constructMessage(submission, 'initialize');
   return response;
 }
 
+async function metadataMethod(body) {
+  // Fetch or Insert Metadata for a Submission
+  if (body.action === 'insert') {
+    const response = await dbDriver.getItems('metadata', body.submission_id);
+    return response;
+  } else if (body.action === 'fetch') {
+    const metadata = {
+      id: body.submission_id,
+      metadata: body.metadata
+    };
+    const response = await dbDriver.putItem('metadata', metadata);
+    return response;
+  }
+}
+
 async function statusMethod(body) {
+  // Fetch a Submission and its Metadata along with data for its current Workflow step
   const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  const data = { submission };
+  const [[metadata]] = await dbDriver.getItems('metadata', body.submission_id);
+  const data = { submission, metadata };
   const { steps } = submission.workflow;
   const current = steps[submission.step];
   if (current.type === 'form') {
@@ -108,8 +129,7 @@ async function submitMethod(body, user) {
 }
 
 async function saveMethod(body, user) {
-  // Saves an in progress form to finish and submit at a later
-  // time.
+  // Saves an in progress form to finish and submit at a later time
   const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
   const { steps } = submission.workflow;
   const current = steps[submission.step];
@@ -126,14 +146,20 @@ async function reviewMethod(body) {
   // Similar to submit, but for reviews. In case of rejecting a Submission
   // during review users can send a comment with reason for rejection.
   const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  constructMessage(submission, 'review');
+  if (body.approval) {
+    const message = constructMessage(submission, 'review', true);
+    await msgDriver.sendSns(message);
+    return [true];
+  }
 }
 
 async function resumeMethod(body) {
   // Method for external services to submit result of their actions
   // (e.g. a metadata editor) and return control to the Workflow Handler
   const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  constructMessage(submission, 'resume');
+  const message = constructMessage(submission, 'resume', true);
+  await msgDriver.sendSns(message);
+  return [true];
 }
 
 async function lockMethod(body, user) {
@@ -154,6 +180,7 @@ async function unlockMethod(body) {
 
 const methodMap = {
   initialize: initializeMethod,
+  metadata: metadataMethod,
   status: statusMethod,
   submit: submitMethod,
   save: saveMethod,

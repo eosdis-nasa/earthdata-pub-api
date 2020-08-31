@@ -44,6 +44,7 @@ module "lambda_functions" {
   edpub_queue_url = module.sqs_queues.edpub_queue_url
   edpub_topic_arn = module.sns_topics.edpub_topic_arn
   edpub_email_topic_arn = module.sns_topics.edpub_email_topic_arn
+  edpub_metrics_topic_arn = module.sns_topics.edpub_metrics_topic_arn
   edpub_action_bucket = module.s3_buckets.edpub_action_bucket
 }
 

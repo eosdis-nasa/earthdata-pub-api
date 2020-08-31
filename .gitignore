@@ -2,6 +2,9 @@
 node_modules/
 package-lock.json
 
+#Ignore npm debug logs
+npm-debug.log
+
 #Ignore all dynamic and generated components
 /terraform/main.tf
 /terraform/apigateway/main.tf

@@ -14,6 +14,8 @@ const { DynamodbDriver } = require('database-driver');
 
 const { MessageDriver } = require('message-driver');
 
+const HttpHelper = require('./http-helper.js');
+
 const ClientConfig = require('./client-config.js');
 
 const dbDriver = new DynamodbDriver(
@@ -52,6 +54,8 @@ function constructSnsMessage(submission) {
       snsMessage.body.text += ' The next step is filling a form.';
     } else if (state === 'review') {
       snsMessage.body.text += ' The next step is a review.';
+    } else if (state === 'service') {
+      snsMessage.body.text += ' The next step is using an external service.';
     }
   }
   return snsMessage;
@@ -73,37 +77,39 @@ function constructSqsMessage(submission) {
   return sqsMessage;
 }
 
-async function callService(submission) {
+async function callService(submission, metadata, secret) {
   const { workflow, step } = submission;
   const serviceStep = workflow[step];
   const [[service]] = await dbDriver.getItems('service', serviceStep.service_id);
-  console.info(service);
-  // Make POST to service.endpoint with submission and secret key as payload
+  if (service.payload) {
+    service.payload = { submission, metadata, secret };
+  }
+  await HttpHelper.send(service);
 }
 
 async function processRecord(record) {
   const { attributes } = msgDriver.parseRecord(record);
   const [[submission]] = await dbDriver.getItems('submission', attributes.submission_id);
-  const { workflow } = submission;
+  const [[metadata]] = await dbDriver.getItems('metadata', attribute.submission_id);
+  const { workflow, completed } = submission;
+  const steps = workflow.steps;
   const current = submission.step;
-  const next = workflow[current].next_step;
-  if (next) {
-    submission.step = next;
-  } else {
-    submission.step = 'done';
-  }
-  submission.completed[current] = true;
+  const next = current === 'init' ? workflow.entry : steps[current].next_step || 'done';
+  submission.step = next;
+  completed[current] = true;
   submission.lock = false;
   await dbDriver.putItem('submission', submission);
   const snsMessage = constructSnsMessage(submission);
   await msgDriver.sendSns(snsMessage);
-  if (next) {
+  if (next !== 'done') {
     const step = workflow[next];
     if (step.type === 'action') {
       const sqsMessage = constructSqsMessage(submission);
       await msgDriver.sendSqs(sqsMessage);
     } else if (step.type === 'service') {
-      await callService(submission);
+      const secret = Schema.generateId();
+      await dbDriver.putItem('secret', { id: submission.id, secret });
+      await callService(submission, metadata, secret);
     }
   }
 }
