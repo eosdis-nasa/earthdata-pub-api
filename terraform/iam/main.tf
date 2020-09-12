@@ -74,6 +74,25 @@ resource "aws_iam_role_policy_attachment" "invoke_execution_role_attach" {
   policy_arn = var.lambda_execution_policy_arn
 }
 
+# Metrics Handler IAM Role
+
+resource "aws_iam_role_policy" "metrics_handler_lambda_policy" {
+  name   = "MetricsHandlerLambdaPolicy${var.stage_suffix}"
+  role   = aws_iam_role.metrics_handler_lambda_role.id
+  policy = data.template_file.metrics_handler_lambda_policy.rendered
+}
+
+resource "aws_iam_role" "metrics_handler_lambda_role" {
+  name                 = "MetricsHandlerLambdaRole${var.stage_suffix}"
+  assume_role_policy   = data.template_file.assume_role.rendered
+  permissions_boundary = var.permissions_boundary_arn
+}
+
+resource "aws_iam_role_policy_attachment" "metrics_handler_execution_role_attach" {
+  role       = aws_iam_role.metrics_handler_lambda_role.id
+  policy_arn = var.lambda_execution_policy_arn
+}
+
 # Notification Handler IAM Role
 
 resource "aws_iam_role_policy" "notification_handler_lambda_policy" {

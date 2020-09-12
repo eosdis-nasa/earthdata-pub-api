@@ -26,6 +26,10 @@ variable "edpub_email_topic_arn" {
   type = string
 }
 
+variable "edpub_metrics_topic_arn" {
+  type = string
+}
+
 variable "lambda_execution_policy_arn" {
   type = string
 }

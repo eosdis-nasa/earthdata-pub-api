@@ -4,6 +4,7 @@
   "source": {
     "include": [
       "./src/nodejs/action-handler/src",
+      "./src/nodejs/metrics-handler/src",
       "./src/nodejs/notification-handler/src",
       "./src/nodejs/workflow-handler/src",
       "./src/nodejs/dashboard/src",

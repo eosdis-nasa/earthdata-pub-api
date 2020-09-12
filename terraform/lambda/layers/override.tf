@@ -27,6 +27,12 @@ resource "aws_lambda_function" "invoke" {
   ]
 }
 
+resource "aws_lambda_function" "metrics_handler" {
+  layers = [
+    aws_lambda_layer_version.message_driver.arn
+  ]
+}
+
 resource "aws_lambda_function" "notification_handler" {
   layers = [
     aws_lambda_layer_version.database_driver.arn,

@@ -41,6 +41,16 @@ data "template_file" "invoke_lambda_policy" {
   }
 }
 
+data "template_file" "metrics_handler_lambda_policy" {
+  template = file("./iam/metrics_handler_lambda_policy.json")
+  vars = {
+    region = var.region
+    account_id = var.account_id
+    edpub_metrics_topic_arn = var.edpub_metrics_topic_arn
+    edpub_topic_arn = var.edpub_topic_arn
+  }
+}
+
 data "template_file" "notification_handler_lambda_policy" {
   template = file("./iam/notification_handler_lambda_policy.json")
   vars = {

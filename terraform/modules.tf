@@ -8,6 +8,7 @@ module "iam_roles" {
   edpub_queue_arn = module.sqs_queues.edpub_queue_arn
   edpub_topic_arn = module.sns_topics.edpub_topic_arn
   edpub_email_topic_arn = module.sns_topics.edpub_email_topic_arn
+  edpub_metrics_topic_arn = module.sns_topics.edpub_metrics_topic_arn
   lambda_execution_policy_arn = local.lambda_execution_policy_arn
   permissions_boundary_arn = local.permissions_boundary_arn
 }
@@ -38,6 +39,7 @@ module "lambda_functions" {
   invoke_lambda_role_arn = module.iam_roles.invoke_lambda_role_arn
   action_handler_lambda_role_arn = module.iam_roles.action_handler_lambda_role_arn
   workflow_handler_lambda_role_arn = module.iam_roles.workflow_handler_lambda_role_arn
+  metrics_handler_lambda_role_arn = module.iam_roles.metrics_handler_lambda_role_arn
   api_id = module.apigateway_endpoints.api_id
   use_layers = local.use_layers
   edpub_queue_arn = module.sqs_queues.edpub_queue_arn
