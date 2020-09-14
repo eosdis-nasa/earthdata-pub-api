@@ -28,7 +28,7 @@ function handler(event) {
     sender: record.Sns.TopicArn,
     timestamp: new Date().toISOString()
   }, null, 4);
-  return  msgDriver.sendSns({ subject: 'Metrics Logging', body: `${log}`, attributes: {} });
+  return msgDriver.sendSns({ subject: 'Metrics Logging', body: `${log}`, attributes: {} });
 }
 
 exports.handler = handler;
