@@ -3,7 +3,7 @@ const http = require('http')
 function send({ endpoint, options, headers, method, code, payload }) {
   const data = payload ? JSON.stringify(payload) : false;
   const url = new URL(endpoint);
-  const options = {
+  const reqOptions = {
     hostname: url.hostname,
     port: url.port,
     path: url.pathname.concat(url.search),
@@ -18,7 +18,7 @@ function send({ endpoint, options, headers, method, code, payload }) {
     ...options
   };
   const promise = new Promise((resolve) => {
-    const req = http.request(options, (res) => {
+    const req = http.request(reqOptions, (res) => {
       const chunks = [];
       res.on('data', (chunk) => {
         chunks.push(chunk);
