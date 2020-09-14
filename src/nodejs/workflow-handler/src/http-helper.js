@@ -25,8 +25,6 @@ function send({ endpoint, options, headers, method, code, payload }) {
       });
       res.on('end', () => {
         if (res.statusCode == code) {
-          const message = chunks.length > 0 ? chunks.join('') : false;
-          console.info(`[INFO] Request resolved successfully.${message ? `Response: ${message}`}`);
           resolve(true);
         }
         else {
