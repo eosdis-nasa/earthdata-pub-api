@@ -15,9 +15,7 @@ const msgDriver = new MessageDriver({
   topicArn: process.env.SNS_TOPIC
 });
 
-/* eslint-disable no-unused-vars no-console*/
 function handler(event) {
-  console.log(event);
   const record = event.Records[0];
 
   const subject = record.Sns.Subject ? record.Sns.Subject : '';
@@ -30,8 +28,7 @@ function handler(event) {
     sender: record.Sns.TopicArn,
     timestamp: new Date().toISOString()
   }, null, 4);
-  const messagePromise = msgDriver.sendSns({ subject: 'Metrics Logging', body: `${log}`, attributes: {} });
+  return  msgDriver.sendSns({ subject: 'Metrics Logging', body: `${log}`, attributes: {} });
 }
-/* eslint-disable no-unused-vars no-console*/
 
 exports.handler = handler;
