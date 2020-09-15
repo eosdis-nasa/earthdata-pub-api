@@ -34,8 +34,8 @@
     "2": false,
     "3": false
   },
-  "step": "1",
+  "step": "init",
   "lock": false,
-  "form_data": {},
+  "forms_data": {},
   "action_data": {}
 }

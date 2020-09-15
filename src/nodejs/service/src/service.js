@@ -34,7 +34,7 @@ function constructMessage(submission, type, nextStep = false) {
   const message = {
     body: {
       subject: `Submission ID ${submission.id}`,
-      text: messageText[type]
+      text: ''
     },
     attributes: {
       notification: 'true',
@@ -51,7 +51,7 @@ async function metadataMethod(body) {
   if (body.action === 'insert') {
     const response = await dbDriver.getItems('metadata', body.submission_id);
     return response;
-  } else if (body.action === 'fetch') {
+  } if (body.action === 'fetch') {
     const metadata = {
       id: body.submission_id,
       metadata: body.metadata
@@ -59,6 +59,7 @@ async function metadataMethod(body) {
     const response = await dbDriver.putItem('metadata', metadata);
     return response;
   }
+  return [false, 'Noop'];
 }
 
 async function resumeMethod(body, submission) {
@@ -76,11 +77,13 @@ const methodMap = {
 
 async function handler(event, context) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
+  console.info(`[CONTEXT]\n${JSON.stringify(context)}`);
+  console.info(Schema);
 
   const body = JSON.parse(event.body);
   const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  const workflow = submission.workflow;
-  const steps = workflow.steps;
+  const { workflow } = submission;
+  const { steps } = workflow;
   const current = submission.step;
   const state = steps[current];
   if (state.type === 'service') {
@@ -96,11 +99,15 @@ async function handler(event, context) {
       if (err) {
         console.error(`[ERROR] ${err}`);
       }
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ data, err })
+      };
     }
   }
   return {
     statusCode: 200,
-    body: JSON.stringify({ data, err })
+    body: JSON.stringify({ err: 'Bad request.' })
   };
 }
 

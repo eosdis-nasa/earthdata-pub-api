@@ -33,6 +33,7 @@ install_lambda action-handler
 install_lambda dashboard
 install_lambda information
 install_lambda invoke
+install_lambda metrics-handler
 install_lambda notification-handler
 install_lambda notify
 install_lambda register
@@ -53,6 +54,7 @@ package_lambda action-handler
 package_lambda dashboard
 package_lambda information
 package_lambda invoke
+package_lambda metrics-handler
 package_lambda notification-handler
 package_lambda notify
 package_lambda register

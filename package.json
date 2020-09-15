@@ -18,6 +18,7 @@
     "information": "file:./src/nodejs/information",
     "invoke": "file:./src/nodejs/invoke",
     "message-driver": "file:src/nodejs/message-driver",
+    "metrics-handler": "file:./src/nodejs/metrics-handler",
     "notification-handler": "file:./src/nodejs/notification-handler",
     "notify": "file:./src/nodejs/notify",
     "register": "file:./src/nodejs/register",

@@ -14,6 +14,10 @@ output "invoke_lambda_role_arn" {
   value = aws_iam_role.invoke_lambda_role.arn
 }
 
+output "metrics_handler_lambda_role_arn" {
+  value = aws_iam_role.metrics_handler_lambda_role.arn
+}
+
 output "notification_handler_lambda_role_arn" {
   value = aws_iam_role.notification_handler_lambda_role.arn
 }

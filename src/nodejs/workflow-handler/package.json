@@ -13,6 +13,7 @@
   "author": "Brian Ellingson",
   "license": "ISC",
   "dependencies": {
+    "schema-util": "file:../schema-util",
     "database-driver": "file:../database-driver",
     "message-driver": "file:../message-driver"
   },

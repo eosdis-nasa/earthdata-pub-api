@@ -54,6 +54,10 @@ variable "workflow_handler_lambda_role_arn" {
   type = string
 }
 
+variable "metrics_handler_lambda_role_arn" {
+  type = string
+}
+
 variable "use_layers" {
   type = string
 }

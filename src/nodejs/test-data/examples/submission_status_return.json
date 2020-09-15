@@ -1,0 +1,77 @@
+{
+  "id": "5268441e-3bdb-49a5-8fe6-cd853bfaa829",
+  "workflow_id": "4bc927f2-f34a-4033-afe3-02520cc7dcf7",
+  "workflow": {
+    "id": "4bc927f2-f34a-4033-afe3-02520cc7dcf7",
+    "version": 1,
+    "workflow_name": "sample_workflow",
+    "initiator_id": "54ce2972-39a7-49d4-af07-6b014a3bddfe",
+    "daac_id": "15df4fda-ed0d-417f-9124-558fb5e5b561",
+    "entry": "1",
+    "steps": {
+      "1": {
+        "type": "form",
+        "form_id": "6c544723-241c-4896-a38c-adbc0a364293",
+        "next_step": "2"
+      },
+      "2": {
+        "type": "action",
+        "action_id": "3a92a22a-b47d-4c54-b075-bfe348b8de98",
+        "input": {},
+        "next_step": "3",
+        "prev_step": "1"
+      },
+      "3": {
+        "type": "review",
+        "step": "2",
+        "reviewer": "54ce2972-39a7-49d4-af07-6b014a3bddfe",
+        "prev_step": "2"
+      }
+    }
+  },
+  "completed": {
+    "1": true,
+    "2": false,
+    "3": false
+  },
+  "step": "2",
+  "lock": false,
+  "forms": {
+    "6c544723-241c-4896-a38c-adbc0a364293": {
+      "id": "6c544723-241c-4896-a38c-adbc0a364293",
+      "version": 1,
+      "form_name": "archival_interest",
+      "text": "To express interest in archiving a data product, please fill out the following form.",
+      "sections": [
+        {
+          "heading": "Contact Information",
+          "questions": [
+            {
+              "id": "80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2",
+              "version": 1,
+              "question_name": "data_producer_info",
+              "title": "Primary Data Producer",
+              "text": "Who is the primary person responsible for the collection or creation of this data product?",
+              "help": "Often this is the Principle Investigator, Project Scientist, or Project Manager",
+              "inputs": [
+                {
+                  "type": "text",
+                  "id": "data_producer_info_name",
+                  "label": "Name",
+                  "validation_error_msg": "Please enter a name for the point of contact.",
+                  "required": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+  "form_data": {
+    "6c544723-241c-4896-a38c-adbc0a364293": {
+      "data_producer_info_name": "Brian Ellingson"
+    }
+  },
+  "action_data": {},
+  "metadata": {}
+}

@@ -64,8 +64,8 @@ async function initializeMethod(body, user) {
     completed: {},
     step: '1',
     lock: false,
-    form_data: {},
-    action_data: {}
+    forms_data: {},
+    actions_data: {}
   };
   const metadata = { metadata: {} };
   Schema.attachNewId(submission);
@@ -84,7 +84,7 @@ async function metadataMethod(body) {
   if (body.action === 'insert') {
     const response = await dbDriver.getItems('metadata', body.submission_id);
     return response;
-  } else if (body.action === 'fetch') {
+  } if (body.action === 'fetch') {
     const metadata = {
       id: body.submission_id,
       metadata: body.metadata
@@ -92,26 +92,27 @@ async function metadataMethod(body) {
     const response = await dbDriver.putItem('metadata', metadata);
     return response;
   }
+  return [false, 'Noop'];
 }
 
 async function statusMethod(body) {
   // Fetch a Submission and its Metadata along with data for its current Workflow step
   const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
   const [[metadata]] = await dbDriver.getItems('metadata', body.submission_id);
-  const data = { submission, metadata };
+  submission.metadata = metadata;
   const { steps } = submission.workflow;
   const current = steps[submission.step];
   if (current.type === 'form') {
     const [[form]] = await dbDriver.getItems('form', current.form_id);
-    data.form = form;
+    submission.form = form;
   } else if (current.type === 'review') {
-    data.review = current.review_data;
+    submission.review = current.review_data;
     if (current.review_data.type === 'form_data') {
       const [[form]] = await dbDriver.getItems('form', current.review_data.id);
-      data.form = form;
+      submission.form = form;
     }
   }
-  return [data];
+  return [submission];
 }
 
 async function submitMethod(body, user) {
@@ -151,6 +152,7 @@ async function reviewMethod(body) {
     await msgDriver.sendSns(message);
     return [true];
   }
+  return [false, 'Bad request.'];
 }
 
 async function resumeMethod(body) {

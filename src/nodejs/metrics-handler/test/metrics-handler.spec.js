@@ -1,9 +1,9 @@
-const Submission = require('../src/submission.js');
+const MetricsHandler = require('../src/metrics-handler.js');
 
-describe('Submission', () => {
+describe('Metrics Handler', () => {
   describe('handler() function', () => {
-    it('should ', async () => {
-      expect(Submission).toBeTruthy();
+    it('placeholder test', async () => {
+      expect(MetricsHandler).toBeTruthy();
     });
   });
 });

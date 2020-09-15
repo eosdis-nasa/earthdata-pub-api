@@ -120,6 +120,47 @@ resource "aws_lambda_permission" "invoke" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/action/invoke"
 }
 
+# Metrics Handler Lambda
+
+resource "aws_lambda_function" "metrics_handler" {
+  filename      = "../artifacts/metrics-handler-lambda.zip"
+  function_name = "metrics_handler${var.stage_suffix}"
+  role          = var.metrics_handler_lambda_role_arn
+  handler       = "metrics-handler.handler"
+  runtime       = "nodejs12.x"
+  timeout       = 10
+  environment {
+    variables = {
+      TABLE_SUFFIX = var.stage_suffix
+      REGION       = var.region
+      SNS_TOPIC    = var.edpub_metrics_topic_arn
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "metrics_handler" {
+  statement_id  = "AllowExecutionFromSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.metrics_handler.function_name
+  principal     = "sns.amazonaws.com"
+  source_arn    = var.edpub_topic_arn
+}
+
+data "local_file" "metrics_handler_filter" {
+  filename = "./sns/metrics_handler_filter.json"
+}
+
+resource "aws_sns_topic_subscription" "metrics_handler_lambda" {
+  topic_arn     = var.edpub_topic_arn
+  protocol      = "lambda"
+  endpoint      = aws_lambda_function.metrics_handler.arn
+  filter_policy = data.local_file.metrics_handler_filter.content
+}
+
 # Notify Lambda
 
 resource "aws_lambda_function" "notify" {
@@ -131,7 +172,7 @@ resource "aws_lambda_function" "notify" {
   timeout       = 10
   environment {
     variables = {
-      SNS_TOPIC = var.edpub_topic_arn
+      SNS_TOPIC = var.edpub_email_topic_arn
     }
   }
   vpc_config {
