@@ -1,6 +1,6 @@
 const Submission = require('../src/submission.js');
 
-describe('Subscription', () => {
+describe('Submission', () => {
   describe('handler() function', () => {
     it('should ', async () => {
       expect(Submission).toBeTruthy();

@@ -14,6 +14,8 @@ const { DynamodbDriver } = require('database-driver');
 
 const { MessageDriver } = require('message-driver');
 
+const Schema = require('schema-util');
+
 const HttpHelper = require('./http-helper.js');
 
 const ClientConfig = require('./client-config.js');
@@ -90,9 +92,9 @@ async function callService(submission, metadata, secret) {
 async function processRecord(record) {
   const { attributes } = msgDriver.parseRecord(record);
   const [[submission]] = await dbDriver.getItems('submission', attributes.submission_id);
-  const [[metadata]] = await dbDriver.getItems('metadata', attribute.submission_id);
+  const [[metadata]] = await dbDriver.getItems('metadata', attributes.submission_id);
   const { workflow, completed } = submission;
-  const steps = workflow.steps;
+  const { steps } = workflow;
   const current = submission.step;
   const next = current === 'init' ? workflow.entry : steps[current].next_step || 'done';
   submission.step = next;

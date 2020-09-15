@@ -1,9 +1,9 @@
-const Submission = require('../src/submission.js');
+const Service = require('../src/service.js');
 
-describe('Subscription', () => {
+describe('Service', () => {
   describe('handler() function', () => {
     it('should ', async () => {
-      expect(Submission).toBeTruthy();
+      expect(Service).toBeTruthy();
     });
   });
 });

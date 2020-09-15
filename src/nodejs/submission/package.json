@@ -1,8 +1,8 @@
 {
-  "name": "subscription",
+  "name": "submission",
   "version": "1.0.0",
-  "description": "Manage subscriptions for notification.",
-  "main": "./src/subscription.js",
+  "description": "Manage submissions.",
+  "main": "./src/submission.js",
   "files": [
     "/src"
   ],
