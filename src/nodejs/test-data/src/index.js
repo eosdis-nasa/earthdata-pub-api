@@ -15,7 +15,7 @@ const { DynamoDB } = require('aws-sdk');
 const Schema = require('schema-util');
 
 const config = {
-  endpoint: 'http://localhost:4569',
+  endpoint: 'http://localhost:4566',
   region: 'us-east-1',
   accessKeyId: "fake",
   secretAccessKey: "fake"
