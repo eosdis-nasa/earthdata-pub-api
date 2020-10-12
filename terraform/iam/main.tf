@@ -36,22 +36,22 @@ resource "aws_iam_role_policy_attachment" "dashboard_execution_role_attach" {
   policy_arn = var.lambda_execution_policy_arn
 }
 
-# Information IAM Role
+# Data IAM Role
 
-resource "aws_iam_role_policy" "information_lambda_policy" {
-  name   = "InformationLambdaPolicy${var.stage_suffix}"
-  role   = aws_iam_role.information_lambda_role.id
-  policy = data.template_file.information_lambda_policy.rendered
+resource "aws_iam_role_policy" "data_lambda_policy" {
+  name   = "DataLambdaPolicy${var.stage_suffix}"
+  role   = aws_iam_role.data_lambda_role.id
+  policy = data.template_file.data_lambda_policy.rendered
 }
 
-resource "aws_iam_role" "information_lambda_role" {
-  name                 = "InformationLambdaRole${var.stage_suffix}"
+resource "aws_iam_role" "data_lambda_role" {
+  name                 = "DataLambdaRole${var.stage_suffix}"
   assume_role_policy   = data.template_file.assume_role.rendered
   permissions_boundary = var.permissions_boundary_arn
 }
 
-resource "aws_iam_role_policy_attachment" "information_execution_role_attach" {
-  role       = aws_iam_role.information_lambda_role.id
+resource "aws_iam_role_policy_attachment" "data_execution_role_attach" {
+  role       = aws_iam_role.data_lambda_role.id
   policy_arn = var.lambda_execution_policy_arn
 }
 

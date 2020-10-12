@@ -58,6 +58,14 @@ module.exports = {
     description: 'Request body sent to external notification request handler.',
     type: 'object'
   },
+  MetricsRequest: {
+    description: 'Request body for logging a client-side event.',
+    type: 'object',
+    properties: {
+      event_type: { type: 'object' },
+      event_data: { type: 'object' }
+    }
+  },
   Response: {
     description: 'Response from Information endpoint',
     type: 'object',

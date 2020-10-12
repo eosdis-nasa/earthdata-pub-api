@@ -2,8 +2,8 @@ output "action_handler_lambda_arn" {
   value = aws_lambda_function.action_handler.invoke_arn
 }
 
-output "information_lambda_arn" {
-  value = aws_lambda_function.information.invoke_arn
+output "data_lambda_arn" {
+  value = aws_lambda_function.data.invoke_arn
 }
 
 output "invoke_lambda_arn" {

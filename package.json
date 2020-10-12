@@ -15,7 +15,7 @@
     "action-handler": "file:./src/nodejs/action-handler",
     "dashboard": "file:./src/nodejs/dashboard",
     "database-driver": "file:src/nodejs/database-driver",
-    "information": "file:./src/nodejs/information",
+    "data": "file:./src/nodejs/data",
     "invoke": "file:./src/nodejs/invoke",
     "message-driver": "file:src/nodejs/message-driver",
     "metrics-handler": "file:./src/nodejs/metrics-handler",

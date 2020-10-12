@@ -6,8 +6,8 @@ output "dashboard_lambda_role_arn" {
   value = aws_iam_role.dashboard_lambda_role.arn
 }
 
-output "information_lambda_role_arn" {
-  value = aws_iam_role.information_lambda_role.arn
+output "data_lambda_role_arn" {
+  value = aws_iam_role.data_lambda_role.arn
 }
 
 output "invoke_lambda_role_arn" {

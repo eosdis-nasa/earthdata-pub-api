@@ -63,13 +63,13 @@ resource "aws_lambda_permission" "dashboard" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/dashboard"
 }
 
-# Information Lambda
+# data Lambda
 
-resource "aws_lambda_function" "information" {
-  filename      = "../artifacts/information-lambda.zip"
-  function_name = "information${var.stage_suffix}"
-  role          = var.information_lambda_role_arn
-  handler       = "information.handler"
+resource "aws_lambda_function" "data" {
+  filename      = "../artifacts/data-lambda.zip"
+  function_name = "data${var.stage_suffix}"
+  role          = var.data_lambda_role_arn
+  handler       = "data.handler"
   runtime       = "nodejs12.x"
   timeout       = 10
   environment {
@@ -84,10 +84,10 @@ resource "aws_lambda_function" "information" {
   }
 }
 
-resource "aws_lambda_permission" "information" {
+resource "aws_lambda_permission" "data" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.information.function_name
+  function_name = aws_lambda_function.data.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }

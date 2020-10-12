@@ -29,7 +29,7 @@ module "lambda_functions" {
   stage_suffix = local.stage_suffix
   subnet_ids = local.subnet_ids
   security_group_ids = local.security_group_ids
-  information_lambda_role_arn = module.iam_roles.information_lambda_role_arn
+  data_lambda_role_arn = module.iam_roles.data_lambda_role_arn
   notify_lambda_role_arn = module.iam_roles.notify_lambda_role_arn
   subscription_lambda_role_arn = module.iam_roles.subscription_lambda_role_arn
   submission_lambda_role_arn = module.iam_roles.submission_lambda_role_arn
@@ -55,7 +55,7 @@ module "apigateway_endpoints" {
 
   stage = local.stage
   stage_suffix = local.stage_suffix
-  information_lambda_arn = module.lambda_functions.information_lambda_arn
+  data_lambda_arn = module.lambda_functions.data_lambda_arn
   notify_lambda_arn = module.lambda_functions.notify_lambda_arn
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn
   subscription_lambda_arn = module.lambda_functions.subscription_lambda_arn

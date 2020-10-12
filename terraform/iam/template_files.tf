@@ -24,8 +24,8 @@ data "template_file" "dashboard_lambda_policy" {
   }
 }
 
-data "template_file" "information_lambda_policy" {
-  template = file("./iam/information_lambda_policy.json")
+data "template_file" "data_lambda_policy" {
+  template = file("./iam/data_lambda_policy.json")
   vars = {
     region = var.region
     account_id = var.account_id

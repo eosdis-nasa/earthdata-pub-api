@@ -4,7 +4,7 @@ module.exports = {
     '<rootDir>/src/nodejs/action-handler',
     '<rootDir>/src/nodejs/dashboard',
     '<rootDir>/src/nodejs/database-driver',
-    '<rootDir>/src/nodejs/information',
+    '<rootDir>/src/nodejs/data',
     '<rootDir>/src/nodejs/invoke',
     '<rootDir>/src/nodejs/message-driver',
     '<rootDir>/src/nodejs/metrics-handler',

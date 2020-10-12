@@ -12,7 +12,9 @@
   },
   "author": "Brian Ellingson",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "pg": "^8.4.0"
+  },
   "bundledDependencies": {},
   "devDependencies": {
     "aws-sdk": "^2.654.0",

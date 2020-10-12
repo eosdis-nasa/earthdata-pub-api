@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  local_api:
+    image: node:12.16.1
+    restart: always
+    volumes:
+      - ./src/local-server:/var/local-server
+      - ./src/nodejs:/var/nodejs
+    working_dir: /var/local-server
+    command: ["npm", "start"]
+    ports:
+      - 8080:8080
+  goaws:
+    image: pafortin/goaws
+    volumes:
+      - ./src/local-server/goaws-conf:/conf
+    ports:
+      - 4100:4100
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: edpub
+      POSTGRES_PASSWORD: edpub
+    volumes:
+      - ./src/postgres/:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+  pg_admin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: edpub@edpub.com
+      PGADMIN_DEFAULT_PASSWORD: edpub
+    ports:
+      - 80:80

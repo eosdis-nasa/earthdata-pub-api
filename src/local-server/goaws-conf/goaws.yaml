@@ -1,0 +1,25 @@
+Local:
+  Host: goaws
+  Port: 4100
+  Region: us-east-1
+  AccountId: "000000000000"
+  LogToFile: false
+  LogFile: .st/goaws_messages.log
+  QueueAttributeDefaults:
+    VisibilityTimeout: 30
+    ReceiveMessageWaitTimeSeconds: 0
+  Queues:
+    - Name: edpub_queue_local.fifo
+      ReceiveMessageWaitTimeSeconds: 20
+  Topics:
+    - Name: edpub_topic
+      Subscriptions:
+        - Protocol: http
+          Endpoint: http://local_api/goawsmq
+          TopicArn: arn:aws:sns:us-east-1:000000000000:edpub_topic
+          Raw: true
+    - Name: edpub_email_topic
+    - Name: edpub_metrics_topic
+  RandomLatency:
+    Min: 0
+    Max: 0

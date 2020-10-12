@@ -8,7 +8,7 @@
       "./src/nodejs/notification-handler/src",
       "./src/nodejs/workflow-handler/src",
       "./src/nodejs/dashboard/src",
-      "./src/nodejs/information/src",
+      "./src/nodejs/data/src",
       "./src/nodejs/invoke/src",
       "./src/nodejs/notify/src",
       "./src/nodejs/register/src",

@@ -1,0 +1,1 @@
+const findAll = `SELECT `

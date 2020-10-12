@@ -1,8 +1,8 @@
 {
-  "name": "information",
+  "name": "data",
   "version": "1.0.0",
-  "description": "Lambda function to access information tables in the database",
-  "main": "./src/information.js",
+  "description": "Lambda function to access tables in the database",
+  "main": "./src/data.js",
   "files": [
     "/src"
   ],

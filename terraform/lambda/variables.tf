@@ -14,7 +14,7 @@ variable "account_id" {
   type = string
 }
 
-variable "information_lambda_role_arn" {
+variable "data_lambda_role_arn" {
   type = string
 }
 

@@ -1,9 +1,9 @@
-const Information = require('../src/information.js');
+const Data = require('../src/data.js');
 
-describe('Information', () => {
+describe('Data', () => {
   describe('handler() function', () => {
     it('should parse path and query and cast appropriately', async () => {
-      expect(Information).toBeTruthy();
+      expect(Data).toBeTruthy();
     });
   });
 });
