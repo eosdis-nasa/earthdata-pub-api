@@ -8,8 +8,8 @@ module.exports.actionfindById = function actionfindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -18,8 +18,8 @@ module.exports.actionfindAll = function actionfindAll(req, res, next) {
     resource: 'action',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -29,8 +29,8 @@ module.exports.daacfindById = function daacfindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -39,8 +39,8 @@ module.exports.daacfindAll = function daacfindAll(req, res, next) {
     resource: 'daac',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -50,8 +50,8 @@ module.exports.formfindById = function formfindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -66,8 +66,8 @@ module.exports.formfindAll = function formfindAll(req, res, next) {
     resource: 'form',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -77,8 +77,8 @@ module.exports.groupfindById = function groupfindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -94,8 +94,8 @@ module.exports.notefindById = function notefindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -104,8 +104,8 @@ module.exports.notefindAll = function notefindAll(req, res, next) {
     resource: 'note',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -115,8 +115,8 @@ module.exports.questionfindById = function questionfindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -131,8 +131,8 @@ module.exports.questionfindAll = function questionfindAll(req, res, next) {
     resource: 'question',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -142,8 +142,8 @@ module.exports.servicefindById = function servicefindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -152,8 +152,8 @@ module.exports.servicefindAll = function servicefindAll(req, res, next) {
     resource: 'service',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -163,8 +163,8 @@ module.exports.submissionfindById = function submissionfindById(req, res, next) 
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -173,8 +173,8 @@ module.exports.submissionfindAll = function submissionfindAll(req, res, next) {
     resource: 'submission',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -184,8 +184,8 @@ module.exports.userfindById = function userfindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -194,8 +194,8 @@ module.exports.userfindAll = function userfindAll(req, res, next) {
     resource: 'user',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -205,8 +205,8 @@ module.exports.workflowfindById = function workflowfindById(req, res, next) {
     operation: 'findById',
     params: { path: { id: req.id.value }}
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -221,8 +221,8 @@ module.exports.workflowfindAll = function workflowfindAll(req, res, next) {
     resource: 'workflow',
     operation: 'findAll'
   }
-  dataHandler(lambdaEvent).then(({ body }) => {
-    res.send(JSON.parse(body));
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 

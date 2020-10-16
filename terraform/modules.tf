@@ -13,13 +13,6 @@ module "iam_roles" {
   permissions_boundary_arn = local.permissions_boundary_arn
 }
 
-module "dynamodb_tables" {
-  source = "./dynamodb"
-
-  stage = local.stage
-  stage_suffix = local.stage_suffix
-}
-
 module "lambda_functions" {
   source = "./lambda"
 

@@ -142,13 +142,17 @@ INSERT INTO daac VALUES ('6b3ea184-57c5-4fc5-a91b-e49708f91b67', 'PO.DAAC', 'Phy
 INSERT INTO daac VALUES ('00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1', 'SEDAC', 'Socioeconomic Data and Applications Data Center (SEDAC)', 'http://sedac.ciesin.columbia.edu/', 'NASA''s Socioeconomic Data and Applications Center (SEDAC) is operated by the Center for International Earth Science Information Network (CIESIN), a unit of the Earth Institute at Columbia University based at the Lamont-Doherty Earth Observatory in Palisades, New York.\nSEDAC''s missions are to synthesize Earth science and socioeconomic data and information in ways useful to a wide range of decision makers and other applied users, and to provide an “Information Gateway” between the socioeconomic and Earth science data and information domains.\nSEDAC datasets can be accessed via the dataset section of the SEDAC web site.', 'f0a89bc6-707f-4a34-8041-1593934c2e42');
 
 -- Workflow(id, version, workflow_name, description)
+INSERT INTO workflow VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 1, 'transition_workflow', 'This workflow performs no actions and is used for initializing submissions under special circumstances.');
 INSERT INTO workflow VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 1, 'archival_interest_workflow', 'This is the default initial workflow for a new archival request.');
 
 -- Step(workflow_id, step_name, type, action_id, form_id, service_id, data)
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'init');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'close', 'close');
 INSERT INTO step(workflow_id, step_name, type) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'init');
 INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'archival_interest_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
 INSERT INTO step(workflow_id, step_name, type) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'close', 'close');
 
 -- StepEdge(workflow_id, step_name, next_step_name)
+INSERT INTO step_edge VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'close');
 INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'archival_interest_form');
 INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'archival_interest_form', 'close');

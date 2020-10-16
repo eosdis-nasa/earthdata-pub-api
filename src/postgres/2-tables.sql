@@ -199,6 +199,7 @@ CREATE TABLE IF NOT EXISTS submission (
   id UUID DEFAULT UUID_GENERATE_V4(),
   initiator_edpuser_id UUID NOT NULL,
   daac_short_name VARCHAR,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (initiator_edpuser_id) REFERENCES edpuser (id),
   FOREIGN KEY (daac_short_name) REFERENCES daac (short_name)
@@ -206,20 +207,21 @@ CREATE TABLE IF NOT EXISTS submission (
 
 CREATE TABLE IF NOT EXISTS submission_status (
   id UUID NOT NULL,
-  workflow_id UUID,
-  step_name VARCHAR,
+  workflow_id UUID NOT NULL,
+  step_name VARCHAR NOT NULL,
+  last_change TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (workflow_id, step_name) REFERENCES step (workflow_id, step_name)
 );
 
 CREATE TABLE IF NOT EXISTS submission_workflow (
-  submission_id UUID NOT NULL,
+  id UUID NOT NULL,
   workflow_id UUID NOT NULL,
   start_time TIMESTAMP NOT NULL DEFAULT NOW(),
   complete_time TIMESTAMP,
-  PRIMARY KEY (submission_id, workflow_id),
-  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  PRIMARY KEY (id, workflow_id),
+  FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (workflow_id) REFERENCES workflow (id)
 );
 
@@ -239,7 +241,7 @@ CREATE TABLE IF NOT EXISTS submission_action_data (
 
 CREATE TABLE IF NOT EXISTS submission_form_data (
   id UUID NOT NULL,
-  metadata JSONB DEFAULT '{}'::JSONB,
+  form_data JSONB DEFAULT '{}'::JSONB,
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES submission (id)
 );

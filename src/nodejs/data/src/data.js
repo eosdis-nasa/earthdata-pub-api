@@ -50,8 +50,8 @@ const operations = {
 };
 
 async function handler(event) {
-  const user = PgAdapter.execute(
-    { table: 'user', operation:'findById' },
+  const user = await PgAdapter.execute(
+    { resource: 'user', operation:'findById' },
     { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' }});
   // After integration of auth, user will be pulled from context
 
@@ -60,10 +60,7 @@ async function handler(event) {
 
   const operation = operations[event.operation];
   const data = await operation(event);
-  return {
-    statusCode: 200,
-    body: JSON.stringify(data)
-  };
+  return data;
 }
 
 module.exports.handler = handler;

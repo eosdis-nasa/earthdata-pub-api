@@ -4,7 +4,7 @@ const http = require('http');
 
 const path = require('path');
 
-const express = require("express");
+const express = require('express');
 
 const bodyParser = require('body-parser');
 
@@ -28,9 +28,19 @@ const bodyParser = require('body-parser');
 // consumer.start();
 
 const app = express();
+
 app.use(bodyParser.json({
   strict: false
 }));
+
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
+});
+
 const oasTools = require('oas-tools');
 const jsyaml = require('js-yaml');
 const serverPort = 8080;
@@ -59,14 +69,9 @@ oasTools.initialize(oasDoc, app, function() {
   });
 });
 
-app.get('/favicon.ico', express.static('favicon.ico'));
-
-app.get('/info', function(req, res) {
-  res.send({
-    info: "This API was generated using oas-generator!",
-    name: oasDoc.info.title
-  });
-});
+app.options('/', function(req, res) {
+  res.send();
+})
 
 app.post('/goawsmq', function(req, res) {
   res.send(req);

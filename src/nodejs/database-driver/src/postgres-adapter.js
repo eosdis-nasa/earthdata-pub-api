@@ -75,20 +75,23 @@ function setNested(obj, multiKey, value) {
 
 async function execute({ resource, operation }, params) {
   const client = new Client(config);
+  let response;
   try {
     client.connect();
+    console.log(resource, operation);
     const query = statements[resource][operation];
     const { text, values } = getValueList(query, params);
     const { rows } = await client.query({ text, values, rowMode:'object' });
-    return parse[operation](rows);
+    response = parse[operation](rows);
   }
   catch(e) {
     console.log(e);
-    return {err: e};
+    response = e;
   }
   finally {
     client.end();
   }
+  return response;
 }
 
 module.exports.execute = execute;
