@@ -4,7 +4,8 @@ SELECT
 	submission_status.workflow_id,
 	workflow.workflow_name,
 	step.step_name,
-	step.status,
+	step.step_type,
+	step.status_message,
 	submission.created_at,
 	submission_status.last_change,
     (EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock" FROM submission
@@ -13,6 +14,7 @@ NATURAL JOIN (
   SELECT
     workflow_id,
     step_name,
+		type step_type,
     (CASE
 	  WHEN type = 'init' THEN 'Initialized'
       WHEN type = 'form' THEN 'Pending Form Submittal'
@@ -20,7 +22,7 @@ NATURAL JOIN (
 	  WHEN type = 'service' THEN 'Pending Service Completion'
 	  WHEN type = 'action' THEN 'Processing Action'
 	  WHEN type = 'close' THEN 'Ready'
-	END) status
+	END) status_message
 	FROM step) step
 LEFT JOIN workflow ON workflow.id = submission_status.workflow_id`;
 
@@ -47,7 +49,7 @@ NATURAL JOIN (
     step_name,
     (CASE
 	  WHEN type = 'init' THEN 'Initialized'
-      WHEN type = 'form' THEN 'Pending Form Submittal'
+    WHEN type = 'form' THEN 'Pending Form Submittal'
 	  WHEN type = 'review' THEN 'Pending Review'
 	  WHEN type = 'service' THEN 'Pending Service Completion'
 	  WHEN type = 'action' THEN 'Processing Action'

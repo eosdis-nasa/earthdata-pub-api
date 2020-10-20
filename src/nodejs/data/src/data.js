@@ -38,6 +38,18 @@ async function findAll(event) {
     operation: event.operation
   }
   const params = {}
+  if (event.params) {
+    if (event.params.query) {
+      if (event.params.query.sort) {
+        params.sort = event.params.query.sort;
+        params.order = event.params.query.order || "ASC";
+      }
+      if (event.params.query.per_page) {
+        params.limit = event.params.query.per_page;
+        params.offset = (event.params.query.page || 0) * params.limit;
+      }
+    }
+  }
   return await PgAdapter.execute(query, params);
 }
 

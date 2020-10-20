@@ -8,6 +8,8 @@ const express = require('express');
 
 const bodyParser = require('body-parser');
 
+const auth = require('./auth.js');
+
 // const AWS = require('aws-sdk');
 //
 // const { Consumer } = require('sqs-consumer');
@@ -36,7 +38,7 @@ app.use(bodyParser.json({
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,authorization');
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 });
@@ -60,19 +62,33 @@ oasTools.configure(options_object);
 
 oasTools.initialize(oasDoc, app, function() {
   http.createServer(app).listen(serverPort, function() {
-    console.log("App running at http://localhost:" + serverPort);
-    console.log("________________________________________________________________");
+    console.log(`App running at http://localhost:${serverPort}`);
+    console.log("_____________________________________________________");
     if (options_object.docs !== false) {
-      console.log('API docs (Swagger UI) available on http://localhost:' + serverPort + '/docs');
-      console.log("________________________________________________________________");
+      console.log(`API docs at http://localhost:${serverPort}/docs`);
+      console.log("___________________________________________________");
     }
   });
 });
 
-app.options('/', function(req, res) {
+app.options('/*', function(req, res) {
   res.send();
-})
+});
+
+app.get('/token', auth.tokenEndpoint);
+app.post('/refresh', auth.refreshEndpoint);
+app.delete('/token/:token', auth.deleteTokenEndpoint);
+app.delete('/tokenDelete/:token', auth.deleteTokenEndpoint);
 
 app.post('/goawsmq', function(req, res) {
   res.send(req);
+});
+
+
+app.get('/instanceMeta', function(req, res) {
+  res.send();
+});
+
+app.get('/granules', function(req, res) {
+  res.send();
 });

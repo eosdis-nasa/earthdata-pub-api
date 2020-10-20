@@ -1,16 +1,7 @@
 const { Client } = require('pg');
-const actionQuery = require('./query/action.js');
-const daacQuery = require('./query/daac.js');
-const formQuery = require('./query/form.js');
-const groupQuery = require('./query/group.js');
-const noteQuery = require('./query/note.js');
-const permissionQuery = require('./query/permission.js');
-const questionQuery = require('./query/question.js');
-const serviceQuery = require('./query/service.js');
-const submissionQuery = require('./query/submission.js');
-const subscriptionQuery = require('./query/subscription.js');
-const userQuery = require('./query/user.js');
-const workflowQuery = require('./query/workflow.js');
+const statements = require('./query/statements.js');
+const parse = require('./query/parse.js');
+const { getValueList } = require('./utils.js');
 
 const config = {
   user: 'edpub',
@@ -20,67 +11,20 @@ const config = {
   port: 5432
 }
 
-const statements = {
-  action: actionQuery,
-  daac: daacQuery,
-  form: formQuery,
-  group: groupQuery,
-  note: noteQuery,
-  permission: permissionQuery,
-  question: questionQuery,
-  service: serviceQuery,
-  submission: submissionQuery,
-  subscription: subscriptionQuery,
-  user: userQuery,
-  workflow: workflowQuery,
-}
-
-const parse = {
-  findById: ([rows]) => { return rows },
-  findAll: (rows) => { return rows },
-  putItem: ([rows]) => { return row }
-}
-
-function getValueList(query, params) {
-  let count = 0;
-  const values = [];
-  const text = query.replace(/\{\{(.*?)\}\}/g, function(match, token) {
-    values.push(getNested(params, token.split('.')));
-    return `$${++count}`;
-  });
-  return { text, values }
-}
-
-function getNested(obj, multiKey) {
-  const [key, ...remaining] = multiKey;
-  if (remaining < 1) {
-    return obj[key];
-  }
-  else {
-    return getNested(obj[key], remaining);
-  }
-}
-
-function setNested(obj, multiKey, value) {
-  const [key, ...remaining] = multiKey;
-  if (remaining.length < 1) {
-    obj[key] = value;
-  } else {
-    if (!obj[key]) {
-      obj[key] = {};
-    }
-    setNested(obj[key], remaing, value);
-  }
-}
-
 async function execute({ resource, operation }, params) {
   const client = new Client(config);
   let response;
   try {
     client.connect();
-    console.log(resource, operation);
-    const query = statements[resource][operation];
+    let query = statements[resource][operation];
+    if (params.sort) {
+      query = sort(query, params.sort, params.order);
+    }
+    if (params.limit) {
+      query = limit(query);
+    }
     const { text, values } = getValueList(query, params);
+    console.log(text, values);
     const { rows } = await client.query({ text, values, rowMode:'object' });
     response = parse[operation](rows);
   }
@@ -94,6 +38,14 @@ async function execute({ resource, operation }, params) {
   return response;
 }
 
+function limit(query) {
+  return `${query} LIMIT {{limit}} OFFSET {{offset}}`;
+}
+
+function sort(query, sort, order = "ASC") {
+  const [sanSort] = sort.split(' ');
+  const [sanOrder] = order.split(' ');
+  return `${query} ORDER BY ${sanSort} ${sanOrder}`;
+}
+
 module.exports.execute = execute;
-module.exports.getNested = getNested;
-module.exports.setNested = setNested;

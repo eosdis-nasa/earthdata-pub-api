@@ -581,17 +581,38 @@
         "summary": "Get questions",
         "description": "Returns list of questions",
         "operationId": "question_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["id", "question_name", "version", "title", "text", "help", "created_at"]
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",

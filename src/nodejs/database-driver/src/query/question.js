@@ -6,8 +6,11 @@ const findAllEx = `
     SELECT
       input.question_id,
       JSONB_AGG(JSONB_BUILD_OBJECT(
+        'id', input.id,
         'type', input.type,
-        'label', input.label) ORDER BY input.list_order) inputs
+        'label', input.label,
+        'attributes', input.attributes,
+        'enums', input.enums) ORDER BY input.list_order) inputs
     FROM input
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
 const findById = `${findAllEx} WHERE question.id = {{question.id}}`;

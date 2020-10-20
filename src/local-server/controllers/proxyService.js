@@ -129,7 +129,14 @@ module.exports.questionput = function questionput(req, res, next) {
 module.exports.questionfindAll = function questionfindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'question',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);

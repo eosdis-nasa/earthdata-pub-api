@@ -25,8 +25,11 @@ const findById = `
     		SELECT
     			input.question_id,
     			JSONB_AGG(JSONB_BUILD_OBJECT(
-    				'type', input.type,
-    				'label', input.label) ORDER BY input.list_order) inputs
+            'id', input.id,
+            'type', input.type,
+            'label', input.label,
+            'attributes', input.attributes,
+            'enums', input.enums) ORDER BY input.list_order) inputs
     		FROM input
         GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id
   	  GROUP BY section_question.section_id) question_agg ON section.id = question_agg.section_id

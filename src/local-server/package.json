@@ -23,6 +23,7 @@
     "express": "^4.16.3",
     "invoke": "file:../nodejs/invoke",
     "js-yaml": "^3.3.0",
+    "jsonwebtoken": "^8.5.1",
     "message-driver": "file:../nodejs/message-driver",
     "metrics-handler": "file:../nodejs/metrics-handler",
     "nodemon": "^2.0.4",
