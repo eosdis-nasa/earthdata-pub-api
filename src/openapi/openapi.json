@@ -24,6 +24,13 @@
       "url": "http://database.docs/#TODO"
     }
   }, {
+    "name": "model",
+    "description": "Retrieve JSON schema models",
+    "externalDocs": {
+      "description": "Read the docs",
+      "url": "http://database.docs/#TODO"
+    }
+  }, {
     "name": "action",
     "description": "Interact with the action system. Invoke an action, or register a custom action.",
     "externalDocs": {
@@ -59,15 +66,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get action",
         "description": "Returns a single action by ID",
-        "operationId": "action_findById",
+        "operationId": "actionFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -97,18 +102,38 @@
         "tags": ["data"],
         "summary": "Get actions",
         "description": "Returns list of actions",
-        "operationId": "action_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "actionFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -142,15 +167,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get DAAC",
         "description": "Returns a single DAAC by ID",
-        "operationId": "daac_findById",
+        "operationId": "daacFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -180,18 +203,38 @@
         "tags": ["data"],
         "summary": "Get DAACs",
         "description": "Returns list of DAACs",
-        "operationId": "daac_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "daacFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -225,15 +268,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get form",
         "description": "Returns a single form by ID",
-        "operationId": "form_findById",
+        "operationId": "formFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -263,18 +304,38 @@
         "tags": ["data"],
         "summary": "Get forms",
         "description": "Returns list of forms",
-        "operationId": "form_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "formFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -305,7 +366,7 @@
         "tags": ["data"],
         "summary": "Create or update an form",
         "description": "Create a new form or update an existing form",
-        "operationId": "form_put",
+        "operationId": "formPut",
         "requestBody": {
           "content": {
             "application/json": {
@@ -342,15 +403,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get group",
         "description": "Returns a single group by ID",
-        "operationId": "group_findById",
+        "operationId": "groupFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -380,18 +439,38 @@
         "tags": ["data"],
         "summary": "Get groups",
         "description": "Returns list of groups",
-        "operationId": "group_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "groupFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -425,15 +504,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get note",
         "description": "Returns a single note by ID",
-        "operationId": "note_findById",
+        "operationId": "noteFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -463,18 +540,38 @@
         "tags": ["data"],
         "summary": "Get notes",
         "description": "Returns list of notes",
-        "operationId": "note_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "noteFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -508,15 +605,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get question",
         "description": "Returns a single question by ID",
-        "operationId": "question_findById",
+        "operationId": "questionFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -546,18 +641,38 @@
         "tags": ["data"],
         "summary": "Get questions",
         "description": "Returns list of questions",
-        "operationId": "question_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "questionFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -588,7 +703,7 @@
         "tags": ["data"],
         "summary": "Create or update an question",
         "description": "Create a new question or update an existing question",
-        "operationId": "question_put",
+        "operationId": "questionPut",
         "requestBody": {
           "content": {
             "application/json": {
@@ -625,15 +740,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get service",
         "description": "Returns a single service by ID",
-        "operationId": "service_findById",
+        "operationId": "serviceFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -663,18 +776,38 @@
         "tags": ["data"],
         "summary": "Get services",
         "description": "Returns list of services",
-        "operationId": "service_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "serviceFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -708,15 +841,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get submission",
         "description": "Returns a single submission by ID",
-        "operationId": "submission_findById",
+        "operationId": "submissionFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -746,18 +877,38 @@
         "tags": ["data"],
         "summary": "Get submissions",
         "description": "Returns list of submissions",
-        "operationId": "submission_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "submissionFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -791,15 +942,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get user",
         "description": "Returns a single user by ID",
-        "operationId": "user_findById",
+        "operationId": "userFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -829,18 +978,38 @@
         "tags": ["data"],
         "summary": "Get users",
         "description": "Returns list of users",
-        "operationId": "user_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "userFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -874,15 +1043,13 @@
         "in": "path",
         "description": "UUID of entity",
         "required": true,
-        "schema": {
-          "type": "string"
-        }
+        "schema":  { "$ref": "#/components/schemas/UUID" }
       }],
       "get": {
         "tags": ["data"],
         "summary": "Get workflow",
         "description": "Returns a single workflow by ID",
-        "operationId": "workflow_findById",
+        "operationId": "workflowFindById",
         "responses": {
           "200": {
             "description": "OK",
@@ -912,18 +1079,38 @@
         "tags": ["data"],
         "summary": "Get workflows",
         "description": "Returns list of workflows",
-        "operationId": "workflow_findAll",
-        "parameters": [{
-          "name": "params",
-          "in": "query",
-          "description": "Parameters for filtering query.",
-          "schema": {
-            "type": "object",
-            "additionalProperties": {
+        "operationId": "workflowFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": { "type": "number" }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -954,7 +1141,7 @@
         "tags": ["data"],
         "summary": "Create or update an workflow",
         "description": "Creates a new workflow or new version of existing workflow",
-        "operationId": "workflow_put",
+        "operationId": "workflowPut",
         "requestBody": {
           "content": {
             "application/json": {
@@ -978,6 +1165,43 @@
         },
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        },
+        "x-router-controller": "proxy"
+      }
+    },
+    "/model/{model}": {
+      "parameters": [{
+        "name": "model",
+        "in": "path",
+        "description": "Name of JSON schema model to retrieve",
+        "required": true,
+        "schema":  { "$ref": "#/components/schemas/UUID" }
+      }],
+      "get": {
+        "tags": ["model"],
+        "summary": "Get model",
+        "description": "Returns a single note by ID",
+        "operationId": "getModel",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${model_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws_proxy"
@@ -1024,7 +1248,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubscriptionRequest"
+                "$ref": "#/components/schemas/SubscribeRequest"
               }
             }
           }
@@ -1048,12 +1272,12 @@
         "tags": ["action"],
         "summary": "Invoke an action.",
         "description": "Invoke an action to be processed on a given submission.",
-        "operationId": "Invoke",
+        "operationId": "actionInvoke",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InvokeRequest"
+                "$ref": "#/components/schemas/ActionInvokeRequest"
               }
             }
           }
@@ -1077,12 +1301,12 @@
         "tags": ["action"],
         "summary": "Register an action",
         "description": "Register a new custom action.",
-        "operationId": "RegisterAction",
+        "operationId": "actionRegister",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterRequest"
+                "$ref": "#/components/schemas/ActionRegisterRequest"
               }
             }
           }
@@ -1115,12 +1339,12 @@
         "tags": ["submission"],
         "summary": "Perform an operation for a Submission",
         "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
-        "operationId": "SubmissionOperation",
+        "operationId": "submissionOperation",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionRequest"
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
               }
             }
           }
@@ -1139,32 +1363,12 @@
         "x-router-controller": "proxy"
       }
     },
-    "/dashboard": {
-      "get": {
-        "tags": ["dashboard"],
-        "summary": "Dashboard populate",
-        "description": "Endpoint to populate various dashboard pages.",
-        "operationId": "Dashboard",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "uri": "${dashboard_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws_proxy"
-        },
-        "x-router-controller": "proxy"
-      }
-    },
     "/metrics": {
       "get": {
         "tags": ["metrics"],
         "summary": "Fetches metrics",
         "description": "Operation to retrieve metrics for display on dashboard.",
-        "operationId": "getMetrics",
+        "operationId": "getLogEvents",
         "parameters": [{
           "name": "start",
           "in": "query",
@@ -1218,12 +1422,12 @@
         "tags": ["metrics"],
         "summary": "Post a client-side event.",
         "description": "Sends a client-side event to the system to be logged. Typically this would be an error.",
-        "operationId": "putMetric",
+        "operationId": "putLogEvent",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/MetricsRequest"
+                "$ref": "#/components/schemas/LogEventRequest"
               }
             }
           }
@@ -1251,7 +1455,7 @@
     }
   },
   "components": {
-    "schemas": ${schema_file}
+    "schemas": {}
   },
   "externalDocs": {
     "description": "Find out more about Swagger",

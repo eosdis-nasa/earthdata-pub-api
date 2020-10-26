@@ -45,8 +45,9 @@ const crypto = require('crypto');
  *  @private
  *  @type {object}
  */
-const Models = require('./models.js');
+const { allModels, getModel } = require('./models/index.js');
 
+module.exports.getModel = getModel;
 /**
  * An object mapping table names to foreign object paths for expanding. This
  *   is used to ensure a referenced item contained within another matches the
@@ -57,19 +58,11 @@ const Models = require('./models.js');
 const TableMeta = require('./table-meta.js');
 
 /**
- * An module with remapping methods for tables whose objects are remapped
- *   between client and persistent storage.
- * @private
- * @type {object}
- */
-const Remap = require('./remap.js');
-
-/**
  * A validator utility
  * @private
  * @type {external:Ajv}
  */
-const ajv = new Ajv({ schemas: [Models] });
+const ajv = new Ajv({ schemas: [allModels('/')] });
 
 /**
 * Generate a new random character. This function is used internally by
@@ -143,29 +136,6 @@ function hasKey(obj, key) {
   return obj ? Object.prototype.hasOwnProperty.call(obj, key) : false;
 }
 module.exports.hasKey = hasKey;
-
-/**
- * Check if a table's objects should be remapped.
- * @param {string} tableName - The table to check
- * @return {boolean} Whether the objects should be remapped
- */
-function shouldRemap(tableName) {
-  const table = TableMeta[tableName];
-  return table.remap;
-}
-module.exports.shouldRemap = shouldRemap;
-
-/**
- * Check if a table's objects should be remapped.
- * @param {string} tableName - The table whose schema will be used for
- * @param {Item} item - The item to be remapped
- * @param {boolean} inbound - Whether the item is inbound or outbound
- * @return {boolean} Whether or not the Item pass validation;
- */
-function remapItem(tableName, item, inbound = true) {
-  return Remap[tableName][inbound ? 'in' : 'out'](item);
-}
-module.exports.remapItem = remapItem;
 
 /**
  * Checks if a string is a valid numeric index i.e. zero or a positive integer

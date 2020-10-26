@@ -44,10 +44,6 @@ package_lambda() {
   cd ${DIR}/temp
   cp -R ${DIR}/src/nodejs/${1}/src/* ./.
   cp ${DIR}/terraform/profiles/${PROFILE}/client-config.js .
-  if [[ $TARGET == "localstack" ]]
-  then
-    cp -RL ${DIR}/src/nodejs/${1}/node_modules ./.
-  fi
   zip -r ${DIR}/artifacts/${1}-lambda.zip . -x *.tgz
   cd ${DIR}
   rm -rf ${DIR}/temp/*
@@ -88,6 +84,16 @@ replace() {
     const outFile = '${4}';
 
     fs.writeFileSync(outFile, baseStr.replace(pattern, replStr));
+  "
+}
+
+compile_oas_schema() {
+  node -e "
+    const schemaUtil = require('./src/nodejs/schema-util/src/models/index.js');
+    const models = schemaUtil.allModels('/components/schemas/');
+    const oas = JSON.parse(fs.readFileSync('./src/openapi/openapi.json'));
+    oas.components.schemas = models;
+    fs.writeFileSync('${1}', JSON.stringify(oas, null, 2));
   "
 }
 

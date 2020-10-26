@@ -18,10 +18,12 @@ source ./scripts/utils.sh
 clear_artifacts
 
 #Copy and modify schema and openapi definition
-replace 'module:./src/nodejs/schema-util/src/models.js' 'string:#/components/schemas/' 'all:#/' './terraform/apigateway/schema.json'
-replace 'raw:./src/openapi/openapi.json' 'raw:./terraform/apigateway/schema.json' 'one:${schema_file}' './terraform/apigateway/openapi.json'
-prettify_json './terraform/apigateway/openapi.json' './terraform/apigateway/openapi.json'
+# replace 'module:./src/nodejs/schema-util/src/models.js' 'string:#/components/schemas/' 'all:#/' './terraform/apigateway/schema.json'
+# replace 'raw:./src/openapi/openapi.json' 'raw:./terraform/apigateway/schema.json' 'one:${schema_file}' './terraform/apigateway/openapi.json'
+# prettify_json './terraform/apigateway/openapi.json' './terraform/apigateway/openapi.json'
+compile_oas_schema './terraform/apigateway/openapi.json'
 
+cp ./terraform/apigateway/openapi.json ./src/local-server/api/openapi.json
 
 #Install individual modules
 install_layer database-driver
@@ -30,13 +32,14 @@ install_layer schema-util
 #Add more layer modules here <--
 
 install_lambda action-handler
-install_lambda dashboard
 install_lambda data
 install_lambda invoke
 install_lambda metrics-handler
+install_lambda model
 install_lambda notification-handler
 install_lambda notify
 install_lambda register
+install_lambda service
 install_lambda submission
 install_lambda subscription
 install_lambda workflow-handler
@@ -58,6 +61,7 @@ package_lambda metrics-handler
 package_lambda notification-handler
 package_lambda notify
 package_lambda register
+package_lambda service
 package_lambda submission
 package_lambda subscription
 package_lambda workflow-handler
@@ -66,13 +70,12 @@ package_lambda workflow-handler
 #Generate jsdoc and swagger apidoc
 npm run generate-docs
 
-
-if [[ $TARGET == "localstack" ]]
-then
-  oas_to_hcl "./terraform/apigateway/openapi.json" "./terraform/apigateway/localstack/main.tf.json"
-else
-  cp ${DIR}/terraform/lambda/layers/* ${DIR}/terraform/lambda/
-fi
+# if [[ $TARGET == "localstack" ]]
+# then
+#   oas_to_hcl "./terraform/apigateway/openapi.json" "./terraform/apigateway/localstack/main.tf.json"
+# else
+#   cp ${DIR}/terraform/lambda/layers/* ${DIR}/terraform/lambda/
+# fi
 
 cp ${DIR}/terraform/apigateway/${TARGET}/* ${DIR}/terraform/apigateway/
 cp ${DIR}/terraform/profiles/${PROFILE}/main.tf ${DIR}/terraform/main.tf

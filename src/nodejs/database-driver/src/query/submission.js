@@ -64,6 +64,11 @@ SELECT submission_metadata.*
 FROM submission_metadata
 WHERE submission_metadata.id = {{submission.id}}`;
 
+const updateMetadata = `
+UPDATE submission_metadata
+SET metadata = {{submission.metadata}}::JSONB
+WHERE id = {{submission.id}}`;
+
 const getFormData = `
 SELECT submission_form_data.*
 FROM submission_form_data
@@ -94,3 +99,4 @@ WHERE submission_status.id = {{submission.id}}`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
+module.exports.updateMetadata = updateMetadata;

@@ -8,6 +8,7 @@ module.exports = {
     '<rootDir>/src/nodejs/invoke',
     '<rootDir>/src/nodejs/message-driver',
     '<rootDir>/src/nodejs/metrics-handler',
+    '<rootDir>/src/nodejs/model',
     '<rootDir>/src/nodejs/notification-handler',
     '<rootDir>/src/nodejs/notify',
     '<rootDir>/src/nodejs/register',

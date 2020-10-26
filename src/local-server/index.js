@@ -47,7 +47,7 @@ const oasTools = require('oas-tools');
 const jsyaml = require('js-yaml');
 const serverPort = 8080;
 
-const spec = fs.readFileSync(path.join(__dirname, '/api/oas-doc.json'), 'utf8');
+const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
 const oasDoc = jsyaml.safeLoad(spec);
 
 const options_object = {

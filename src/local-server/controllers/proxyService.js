@@ -1,8 +1,9 @@
 'use strict'
 const dataHandler = require('data').handler;
+const modelHandler = require('model').handler;
+const submissionHandler = require('submission').handler;
 
-
-module.exports.actionfindById = function actionfindById(req, res, next) {
+module.exports.actionFindById = function actionFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'action',
     operation: 'findById',
@@ -13,17 +14,24 @@ module.exports.actionfindById = function actionfindById(req, res, next) {
   });
 };
 
-module.exports.actionfindAll = function actionfindAll(req, res, next) {
+module.exports.actionFindAll = function actionFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'action',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);
   });
 };
 
-module.exports.daacfindById = function daacfindById(req, res, next) {
+module.exports.daacFindById = function daacFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'daac',
     operation: 'findById',
@@ -34,17 +42,24 @@ module.exports.daacfindById = function daacfindById(req, res, next) {
   });
 };
 
-module.exports.daacfindAll = function daacfindAll(req, res, next) {
+module.exports.daacFindAll = function daacFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'daac',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);
   });
 };
 
-module.exports.formfindById = function formfindById(req, res, next) {
+module.exports.formFindById = function formFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'form',
     operation: 'findById',
@@ -55,23 +70,30 @@ module.exports.formfindById = function formfindById(req, res, next) {
   });
 };
 
-module.exports.formput = function formput(req, res, next) {
+module.exports.formPut = function formPut(req, res, next) {
   res.send({
     message: 'This is the mockup controller for formput'
   });
 };
 
-module.exports.formfindAll = function formfindAll(req, res, next) {
+module.exports.formFindAll = function formFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'form',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);
   });
 };
 
-module.exports.groupfindById = function groupfindById(req, res, next) {
+module.exports.groupFindById = function groupFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'group',
     operation: 'findById',
@@ -82,13 +104,13 @@ module.exports.groupfindById = function groupfindById(req, res, next) {
   });
 };
 
-module.exports.groupfindAll = function groupfindAll(req, res, next) {
+module.exports.groupFindAll = function groupFindAll(req, res, next) {
   res.send({
     message: 'This is the mockup controller for groupfindAll'
   });
 };
 
-module.exports.notefindById = function notefindById(req, res, next) {
+module.exports.noteFindById = function noteFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'note',
     operation: 'findById',
@@ -99,17 +121,24 @@ module.exports.notefindById = function notefindById(req, res, next) {
   });
 };
 
-module.exports.notefindAll = function notefindAll(req, res, next) {
+module.exports.noteFindAll = function noteFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'note',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);
   });
 };
 
-module.exports.questionfindById = function questionfindById(req, res, next) {
+module.exports.questionFindById = function questionFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'question',
     operation: 'findById',
@@ -120,13 +149,13 @@ module.exports.questionfindById = function questionfindById(req, res, next) {
   });
 };
 
-module.exports.questionput = function questionput(req, res, next) {
+module.exports.questionPut = function questionPut(req, res, next) {
   res.send({
     message: 'This is the mockup controller for questionput'
   });
 };
 
-module.exports.questionfindAll = function questionfindAll(req, res, next) {
+module.exports.questionFindAll = function questionFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'question',
     operation: 'findAll',
@@ -143,7 +172,7 @@ module.exports.questionfindAll = function questionfindAll(req, res, next) {
   });
 };
 
-module.exports.servicefindById = function servicefindById(req, res, next) {
+module.exports.serviceFindById = function serviceFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'service',
     operation: 'findById',
@@ -154,17 +183,24 @@ module.exports.servicefindById = function servicefindById(req, res, next) {
   });
 };
 
-module.exports.servicefindAll = function servicefindAll(req, res, next) {
+module.exports.serviceFindAll = function serviceFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'service',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);
   });
 };
 
-module.exports.submissionfindById = function submissionfindById(req, res, next) {
+module.exports.submissionFindById = function submissionFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'submission',
     operation: 'findById',
@@ -175,17 +211,24 @@ module.exports.submissionfindById = function submissionfindById(req, res, next) 
   });
 };
 
-module.exports.submissionfindAll = function submissionfindAll(req, res, next) {
+module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'submission',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);
   });
 };
 
-module.exports.userfindById = function userfindById(req, res, next) {
+module.exports.userFindById = function userFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'user',
     operation: 'findById',
@@ -196,17 +239,24 @@ module.exports.userfindById = function userfindById(req, res, next) {
   });
 };
 
-module.exports.userfindAll = function userfindAll(req, res, next) {
+module.exports.userFindAll = function userFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'user',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);
   });
 };
 
-module.exports.workflowfindById = function workflowfindById(req, res, next) {
+module.exports.workflowFindById = function workflowFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'workflow',
     operation: 'findById',
@@ -217,16 +267,23 @@ module.exports.workflowfindById = function workflowfindById(req, res, next) {
   });
 };
 
-module.exports.workflowput = function workflowput(req, res, next) {
+module.exports.workflowPut = function workflowPut(req, res, next) {
   res.send({
     message: 'This is the mockup controller for workflowput'
   });
 };
 
-module.exports.workflowfindAll = function workflowfindAll(req, res, next) {
+module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'workflow',
-    operation: 'findAll'
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
   }
   dataHandler(lambdaEvent).then((body) => {
     res.send(body);
@@ -251,38 +308,45 @@ module.exports.subscribe = function subscribe(req, res, next) {
   });
 };
 
-module.exports.Invoke = function Invoke(req, res, next) {
+module.exports.actionInvoke = function actionInvoke(req, res, next) {
   res.send({
     message: 'This is the mockup controller for Invoke'
   });
 };
 
-module.exports.RegisterAction = function RegisterAction(req, res, next) {
+module.exports.actionRegister = function actionRegister(req, res, next) {
   res.send({
     message: 'This is the mockup controller for RegisterAction'
   });
 };
 
-module.exports.SubmissionOperation = function SubmissionOperation(req, res, next) {
-  res.send({
-    message: 'This is the mockup controller for SubmissionOperation'
+module.exports.submissionOperation = function SubmissionOperation(req, res, next) {
+  const lambdaEvent = {
+    operation: req.operation.value,
+    payload: req.payload.value,
+  }
+  submissionHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
-module.exports.Dashboard = function Dashboard(req, res, next) {
-  res.send({
-    message: 'This is the mockup controller for Dashboard'
-  });
-};
-
-module.exports.getMetrics = function getMetrics(req, res, next) {
+module.exports.getLogEvents = function getLogEvents(req, res, next) {
   res.send({
     message: 'This is the mockup controller for getMetrics'
   });
 };
 
-module.exports.putMetric = function putMetric(req, res, next) {
+module.exports.putLogEvent = function putLogEvent(req, res, next) {
   res.send({
     message: 'This is the mockup controller for putMetric'
+  });
+};
+
+module.exports.getModel = function getModel(req, res, next) {
+  const lambdaEvent = {
+    model: req.model.value
+  }
+  modelHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };

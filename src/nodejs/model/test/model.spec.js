@@ -1,9 +1,9 @@
-const Dashboard = require('../src/dashboard.js');
+const Model = require('../src/model.js');
 
-describe('Dashboard', () => {
+describe('Model', () => {
   describe('handler() function', () => {
-    it('should ', async () => {
-      expect(Dashboard).toBeTruthy();
+    it('should be truthy', async () => {
+      expect(Model).toBeTruthy();
     });
   });
 });

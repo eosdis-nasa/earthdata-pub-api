@@ -6,27 +6,20 @@
  * @module Submission
  */
 
-const { DynamoDB, SNS } = require('aws-sdk');
+//const { DynamoDB, SNS } = require('aws-sdk');
 
-const { DynamodbDriver } = require('database-driver');
+const { PgAdapter } = require('database-driver');
 
-const { MessageDriver } = require('message-driver');
+//const { MessageDriver } = require('message-driver');
 
 const Schema = require('schema-util');
 
 const ClientConfig = require('./client-config.js');
 
-const dbDriver = new DynamodbDriver(
-  new DynamoDB(ClientConfig.dynamodb),
-  DynamoDB.Converter.marshall,
-  DynamoDB.Converter.unmarshall,
-  process.env.TABLE_SUFFIX
-);
-
-const msgDriver = new MessageDriver({
-  snsClient: new SNS(ClientConfig.sns),
-  topicArn: process.env.SNS_TOPIC
-});
+// const msgDriver = new MessageDriver({
+//   snsClient: new SNS(ClientConfig.sns),
+//   topicArn: process.env.SNS_TOPIC
+// });
 
 const messageText = {
   initialize: 'A new submission has been initialized.',
@@ -39,148 +32,148 @@ const messageText = {
 };
 
 function constructMessage(submission, type, nextStep = false) {
-  const message = {
-    body: {
-      subject: `Submission ID ${submission.id}`,
-      text: messageText[type]
-    },
-    attributes: {
-      notification: 'true',
-      submission_id: submission.id,
-      workflow_id: submission.workflow_id,
-      ...(nextStep ? { next_step: 'true' } : {})
-    }
-  };
-  return message;
+  // const message = {
+  //   body: {
+  //     subject: `Submission ID ${submission.id}`,
+  //     text: messageText[type]
+  //   },
+  //   attributes: {
+  //     notification: 'true',
+  //     submission_id: submission.id,
+  //     workflow_id: submission.workflow_id,
+  //     ...(nextStep ? { next_step: 'true' } : {})
+  //   }
+  // };
+  // return message;
 }
 
 async function initializeMethod(body, user) {
   // Initialize a new Submission
-  const submission = {
-    workflow_id: body.workflow_id,
-    workflow: { id: body.workflow_id },
-    daac_id: body.daac_id,
-    initiator_id: user.id,
-    completed: {},
-    step: '1',
-    lock: false,
-    forms_data: {},
-    actions_data: {}
-  };
-  const metadata = { metadata: {} };
-  Schema.attachNewId(submission);
-  metadata.id = submission.id;
-  const referenceMap = Schema.getForeignObjects('submission', submission);
-  await dbDriver.refreshNestedObjects(referenceMap);
-  submission.step = 'init';
-  const response = await dbDriver.putItem('submission', submission);
-  await dbDriver.putItem('metadata', metadata);
-  constructMessage(submission, 'initialize');
-  return response;
+  //   id UUID DEFAULT UUID_GENERATE_V4(),
+  //   initiator_edpuser_id UUID NOT NULL,
+  //   daac_short_name VARCHAR,
+  //   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  // const params = {
+  //   submission: {},
+  //   user}
+  //   : { id: body.workflow_id },
+  //   daac_id: body.daac_id,
+  //   initiator_id: user.id,
+  //   completed: {},
+  //   step: '1',
+  //   lock: false,
+  //   forms_data: {},
+  //   actions_data: {}
+  // };
+  // const metadata = { metadata: {} };
+  // Schema.attachNewId(submission);
+  // metadata.id = submission.id;
+  // const referenceMap = Schema.getForeignObjects('submission', submission);
+  // await dbDriver.refreshNestedObjects(referenceMap);
+  // submission.step = 'init';
+  // const response = await dbDriver.putItem('submission', submission);
+  // await dbDriver.putItem('metadata', metadata);
+  // constructMessage(submission, 'initialize');
+  // return response;
 }
 
-async function metadataMethod(body) {
-  // Fetch or Insert Metadata for a Submission
-  if (body.action === 'insert') {
-    const response = await dbDriver.getItems('metadata', body.submission_id);
-    return response;
-  } if (body.action === 'fetch') {
-    const metadata = {
-      id: body.submission_id,
-      metadata: body.metadata
-    };
-    const response = await dbDriver.putItem('metadata', metadata);
-    return response;
+async function metadataMethod(event) {
+  // Update Metadata for a Submission
+  const { id, metadata } = event.payload;
+  const params = {
+    submission: { id, metadata: JSON.stringify(metadata) }
   }
-  return [false, 'Noop'];
+  const response = await PgAdapter.execute(
+    { resource: 'submission', operation:'updateMetadata' }, params);
+  return response;
 }
 
 async function statusMethod(body) {
   // Fetch a Submission and its Metadata along with data for its current Workflow step
-  const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  const [[metadata]] = await dbDriver.getItems('metadata', body.submission_id);
-  submission.metadata = metadata;
-  const { steps } = submission.workflow;
-  const current = steps[submission.step];
-  if (current.type === 'form') {
-    const [[form]] = await dbDriver.getItems('form', current.form_id);
-    submission.form = form;
-  } else if (current.type === 'review') {
-    submission.review = current.review_data;
-    if (current.review_data.type === 'form_data') {
-      const [[form]] = await dbDriver.getItems('form', current.review_data.id);
-      submission.form = form;
-    }
-  }
-  return [submission];
+  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
+  // const [[metadata]] = await dbDriver.getItems('metadata', body.submission_id);
+  // submission.metadata = metadata;
+  // const { steps } = submission.workflow;
+  // const current = steps[submission.step];
+  // if (current.type === 'form') {
+  //   const [[form]] = await dbDriver.getItems('form', current.form_id);
+  //   submission.form = form;
+  // } else if (current.type === 'review') {
+  //   submission.review = current.review_data;
+  //   if (current.review_data.type === 'form_data') {
+  //     const [[form]] = await dbDriver.getItems('form', current.review_data.id);
+  //     submission.form = form;
+  //   }
+  // }
+  // return [submission];
 }
 
 async function submitMethod(body, user) {
   // Submit a form and resume the Workflow
-  const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  const { steps } = submission.workflow;
-  const current = steps[submission.step];
-  if (current.type === 'form' && submission.lock === user.id) {
-    const data = submission.form_data;
-    data[current.form_id] = body;
-    submission.lock = false;
-    await dbDriver.putItem('submission', submission);
-    msgDriver.sendSns(constructMessage(submission, 'submit', true));
-  }
+  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
+  // const { steps } = submission.workflow;
+  // const current = steps[submission.step];
+  // if (current.type === 'form' && submission.lock === user.id) {
+  //   const data = submission.form_data;
+  //   data[current.form_id] = body;
+  //   submission.lock = false;
+  //   await dbDriver.putItem('submission', submission);
+  //   msgDriver.sendSns(constructMessage(submission, 'submit', true));
+  // }
 }
 
 async function saveMethod(body, user) {
   // Saves an in progress form to finish and submit at a later time
-  const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  const { steps } = submission.workflow;
-  const current = steps[submission.step];
-  if (current.type === 'form' && submission.lock === user.id) {
-    const data = submission.form_data;
-    data[current.form_id] = body;
-    submission.lock = false;
-    await dbDriver.putItem('submission', submission);
-    msgDriver.sendSns(constructMessage(submission, 'save'));
-  }
+  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
+  // const { steps } = submission.workflow;
+  // const current = steps[submission.step];
+  // if (current.type === 'form' && submission.lock === user.id) {
+  //   const data = submission.form_data;
+  //   data[current.form_id] = body;
+  //   submission.lock = false;
+  //   await dbDriver.putItem('submission', submission);
+  //   msgDriver.sendSns(constructMessage(submission, 'save'));
+  // }
 }
 
 async function reviewMethod(body) {
   // Similar to submit, but for reviews. In case of rejecting a Submission
   // during review users can send a comment with reason for rejection.
-  const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  if (body.approval) {
-    const message = constructMessage(submission, 'review', true);
-    await msgDriver.sendSns(message);
-    return [true];
-  }
-  return [false, 'Bad request.'];
+  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
+  // if (body.approval) {
+  //   const message = constructMessage(submission, 'review', true);
+  //   await msgDriver.sendSns(message);
+  //   return [true];
+  // }
+  // return [false, 'Bad request.'];
 }
 
 async function resumeMethod(body) {
   // Method for external services to submit result of their actions
   // (e.g. a metadata editor) and return control to the Workflow Handler
-  const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  const message = constructMessage(submission, 'resume', true);
-  await msgDriver.sendSns(message);
-  return [true];
+  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
+  // const message = constructMessage(submission, 'resume', true);
+  // await msgDriver.sendSns(message);
+  // return [true];
 }
 
 async function lockMethod(body, user) {
-  const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  submission.lock = user.id;
-  const response = await dbDriver.putItem('submission', submission);
-  constructMessage(submission, 'lock');
-  return response;
+  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
+  // submission.lock = user.id;
+  // const response = await dbDriver.putItem('submission', submission);
+  // constructMessage(submission, 'lock');
+  // return response;
 }
 
 async function unlockMethod(body) {
-  const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  submission.lock = false;
-  const response = await dbDriver.putItem('submission', submission);
-  constructMessage(submission, 'unlock');
-  return response;
+  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
+  // submission.lock = false;
+  // const response = await dbDriver.putItem('submission', submission);
+  // constructMessage(submission, 'unlock');
+  // return response;
 }
 
-const methodMap = {
+const operations = {
   initialize: initializeMethod,
   metadata: metadataMethod,
   status: statusMethod,
@@ -192,28 +185,18 @@ const methodMap = {
   unlock: unlockMethod
 };
 
-async function handler(event, context) {
+async function handler(event) {
+  const user = await PgAdapter.execute(
+    { resource: 'user', operation:'findById' },
+    { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' }});
+  // After integration of auth, user will be pulled from context
+
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  console.info(`[USER]\n${JSON.stringify(context.identity)}`);
+  console.info(`[USER]\n${JSON.stringify(user)}`);
 
-  // After integration of auth user will be pulled from context
-  const user = {
-    id: '54ce2972-39a7-49d4-af07-6b014a3bddfe',
-    user_name: 'Brian Ellingson',
-    email: 'brian.ellingson@uah.edu'
-  };
-
-  const body = JSON.parse(event.body);
-  const method = event.pathParameters.operation;
-  const operation = methodMap[method];
-  const [data, err] = await operation(body, user);
-  if (err) {
-    console.error(`[ERROR] ${err}`);
-  }
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ data, err })
-  };
+  const operation = operations[event.operation];
+  const data = await operation(event);
+  return data;
 }
 
 exports.handler = handler;
