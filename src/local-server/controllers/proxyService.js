@@ -110,6 +110,24 @@ module.exports.groupFindAll = function groupFindAll(req, res, next) {
   });
 };
 
+
+module.exports.roleFindById = function roleFindById(req, res, next) {
+  const lambdaEvent = {
+    resource: 'role',
+    operation: 'findById',
+    params: { path: { id: req.id.value }}
+  }
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.roleFindAll = function roleFindAll(req, res, next) {
+  res.send({
+    message: 'This is the mockup controller for groupfindAll'
+  });
+};
+
 module.exports.noteFindById = function noteFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'note',

@@ -1,0 +1,38 @@
+resource "aws_api_gateway_rest_api" "EarthdataPub" {
+  name        = "EarthdataPub"
+  description = "This is the API that serves as the central interaction point between the client and back-end services of Earthdata Pub."
+  body        = data.template_file.edpub_oas.rendered
+  policy      = data.local_file.edpub_api_policy.content
+  # endpoint_configuration {
+  #   types = ["PRIVATE"]
+  #   vpc_endpoint_ids = [var.vpc_endpoint_id]
+  # }
+  lifecycle {
+    ignore_changes = [policy]
+  }
+}
+
+data "template_file" "edpub_oas" {
+  template = file("./apigateway/openapi.json")
+  vars = {
+    data_lambda_arn       = var.data_lambda_arn
+    invoke_lambda_arn     = var.invoke_lambda_arn
+    notify_lambda_arn     = var.notify_lambda_arn
+    metrics_lambda_arn    = var.metrics_lambda_arn
+    model_lambda_arn      = var.model_lambda_arn
+    subscribe_lambda_arn  = var.subscribe_lambda_arn
+    submission_lambda_arn = var.submission_lambda_arn
+    register_lambda_arn   = var.register_lambda_arn
+    cognito_user_pool_arn = var.cognito_user_pool_arn
+    cognito_login_url     = var.cognito_login_url
+  }
+}
+
+data "local_file" "edpub_api_policy" {
+  filename = "./apigateway/edpub_api_policy.json"
+}
+
+resource "aws_api_gateway_deployment" "earthdatapub_api_gateway_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.EarthdataPub.id
+  stage_name  = var.stage
+}

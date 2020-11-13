@@ -6,41 +6,44 @@
  * @see module:Actions
  */
 
-const { DynamoDB } = require('aws-sdk');
+const PgAdapter = require('database-driver');
 
-const DatabaseDriver = require('database-driver').DynamodbDriver;
+const MessageDriver = require('message-driver');
 
-const ClientConfig = require('./client-config.js');
+async function registerAction(event) {
+  console.info('Not Implemented', event);
+}
 
-const dbDriver = new DatabaseDriver(
-  new DynamoDB(ClientConfig.dynamodb),
-  DynamoDB.Converter.marshall,
-  DynamoDB.Converter.unmarshall,
-  process.env.TABLE_SUFFIX
-);
+async function registerService(event) {
+  console.info('Not Implemented', event);
+}
 
-async function handler(event, context) {
+async function registerUser(event) {
+  console.info('Not Implemented', event);
+}
+
+const operations = {
+  action: registerAction,
+  service: registerService,
+  user: registerUser
+};
+
+async function handler(event) {
+  const user = await PgAdapter.execute(
+    { resource: 'user', operation: 'findById' },
+    { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' } }
+  );
+  // After integration of auth, user will be pulled from context
+
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  console.info(`[USER]\n${JSON.stringify(context.identity)}`);
+  console.info(`[USER]\n${JSON.stringify(user)}`);
 
-  // After integration of auth user will be pulled from context
-  const user = {
-    id: '54ce2972-39a7-49d4-af07-6b014a3bddfe',
-    user_name: 'Brian Ellingson',
-    email: 'brian.ellingson@uah.edu'
-  };
-  let data;
-  let err;
+  // Temporary to prevent lint errors
+  console.info(MessageDriver);
 
-  console.info(dbDriver, user);
-
-  if (err) {
-    console.error(`[ERROR] ${err}`);
-  }
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ data, err })
-  };
+  const operation = operations[event.register];
+  const data = await operation(event);
+  return data;
 }
 
 exports.handler = handler;

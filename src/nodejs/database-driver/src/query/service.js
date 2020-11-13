@@ -1,4 +1,4 @@
-const findAll = `SELECT service.* FROM service`;
+const findAll = 'SELECT service.* FROM service';
 const findById = `${findAll} WHERE service.id = {{service.id}}`;
 const findByName = `${findAll} WHERE service.service_name = {{service.service_name}}`;
 

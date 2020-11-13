@@ -1,4 +1,4 @@
-const findAll = `SELECT question.* FROM question`;
+const findAll = 'SELECT question.* FROM question';
 const findAllEx = `
   SELECT question.*, inputs
   FROM question
@@ -10,6 +10,8 @@ const findAllEx = `
         'type', input.type,
         'label', input.label,
         'attributes', input.attributes,
+        'required_if', input.required_if,
+        'show_if', input.show_if,
         'enums', input.enums) ORDER BY input.list_order) inputs
     FROM input
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
@@ -18,7 +20,7 @@ const findByName = `${findAllEx} WHERE question.question_name = {{question.quest
 const findBySectionId = `${findAllEx} WHERE question.id IN (
   SELECT section_question.question_id
   FROM section_question
-  WHERE section_question.section_id = {{section.id}})`
+  WHERE section_question.section_id = {{section.id}})`;
 
 module.exports.findAll = findAll;
 module.exports.findAllEx = findAllEx;

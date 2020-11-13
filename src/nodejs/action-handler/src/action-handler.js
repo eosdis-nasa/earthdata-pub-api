@@ -10,9 +10,9 @@ const AWS = require('aws-sdk');
 
 const Schema = require('schema-util');
 
-const { DynamodbDriver } = require('database-driver');
+const MessageDriver = require('message-driver');
 
-const { MessageDriver } = require('message-driver');
+const PgAdapter = require('database-driver');
 
 const fs = require('fs');
 
@@ -20,34 +20,7 @@ const ClientConfig = require('./client-config.js');
 
 const s3 = new AWS.S3(ClientConfig.s3);
 
-const dbDriver = new DynamodbDriver(
-  new AWS.DynamoDB(ClientConfig.dynamodb),
-  AWS.DynamoDB.Converter.marshall,
-  AWS.DynamoDB.Converter.unmarshall,
-  process.env.TABLE_SUFFIX
-);
-
-const msgDriver = new MessageDriver({
-  snsClient: new AWS.SNS(ClientConfig.sns),
-  topicArn: process.env.SNS_TOPIC
-});
-
-const BUCKET = process.env.ACTION_BUCKET;
-
-function constructMessage({ body, attributes }) {
-  return {
-    body: {
-      subject: `Submission ID ${body.input.submission_id}`,
-      text: `Action ID ${body.action_id} has completed processing.`
-    },
-    attributes: {
-      action_id: body.action_id,
-      submission_id: body.input.submission_id,
-      ...(attributes.invoke_type === 'workflow'
-        ? { next_step: 'true' } : {})
-    }
-  };
-}
+const BUCKET = process.env.ACTION_S3;
 
 function fetchAction(key, local) {
   return new Promise((resolve) => {
@@ -60,18 +33,31 @@ function fetchAction(key, local) {
 }
 
 async function processRecord(record) {
-  const { body, attributes } = msgDriver.parseRecord(record);
-  const { action_id: actionId, submission_id: submissionId } = body;
-  const [[actionItem]] = await dbDriver.getItems('action', actionId);
-  const [[submissionItem]] = await dbDriver.getItems('submission', submissionId);
-  const local = `tmp/${Schema.generateId()}`;
-  await fetchAction(actionItem.file_key, local);
+  const triggerMessage = MessageDriver.parseRecord(record);
+  const { action_id: actionId, submission_id: submissionId, data } = triggerMessage;
+  const action = await PgAdapter.execute({ resource: 'action', operation: 'findById' },
+    { action: { id: actionId } });
+  const submission = await PgAdapter.execute({ resource: 'submission', operation: 'findById' },
+    { submission: { id: submissionId } });
+  const local = `/tmp/${Schema.generateId()}`;
+  await fetchAction(action.file_key, local);
   // eslint-disable-next-line
-  const action = require(local);
-  const output = await action.execute(submissionItem, body.input);
-  const message = constructMessage({ body, attributes });
-  await dbDriver.putItem('submission', submissionItem);
-  await msgDriver.sendSqs(message);
+  const { execute } = require(local);
+  const output = await execute({
+    submission, data, AWS, PgAdapter, MessageDriver, Schema
+  });
+  Object.assign(action, { output });
+  await PgAdapter.execute({ resource: 'submission', operation: 'updateActionData' },
+    { submission, action });
+  const status = await PgAdapter.execute({ resource: 'submission', operation: 'getStatus' },
+    { submission });
+  const eventMessage = {
+    event_type: 'workflow_promote_step',
+    submission_id: status.id,
+    workflow_id: status.workflow_id,
+    step_name: status.step_name
+  };
+  await MessageDriver.sendEvent(eventMessage);
   return output;
 }
 

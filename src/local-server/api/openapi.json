@@ -51,14 +51,6 @@
       }
     },
     {
-      "name": "dashboard",
-      "description": "Various endpoints for populating the dashboard pages.",
-      "externalDocs": {
-        "description": "Read the docs",
-        "url": "http://database.docs/#TODO"
-      }
-    },
-    {
       "name": "metrics",
       "description": "Retrieve system metrics or submit client side events to be logged.",
       "externalDocs": {
@@ -1523,7 +1515,6 @@
         "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
         "operationId": "submissionOperation",
         "requestBody": {
-          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -1637,7 +1628,7 @@
           }
         },
         "x-amazon-apigateway-integration": {
-          "uri": "${dashboard_lambda_arn}",
+          "uri": "${metrics_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws_proxy"
@@ -1647,6 +1638,20 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "Authorizer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "x-amazon-apigateway-authtype": "cognito_user_pools",
+        "x-amazon-apigateway-authorizer": {
+          "type": "cognito_user_pools",
+          "providerARNs": [
+            "${cognito_user_pool_arn}"
+          ]
+        }
+      }
+    },
     "schemas": {
       "Action": {
         "description": "An action that can be invoked by a workflow or externally.",
@@ -1772,7 +1777,13 @@
           "id": {
             "$ref": "#/components/schemas/UUID"
           },
-          "group_name": {
+          "short_name": {
+            "type": "string"
+          },
+          "long_name": {
+            "type": "string"
+          },
+          "description": {
             "type": "string"
           }
         }
@@ -1927,6 +1938,40 @@
                 "required": {
                   "type": "boolean"
                 },
+                "required_if": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "show_if": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
                 "attributes": {
                   "type": "object"
                 },
@@ -1994,12 +2039,6 @@
           "step": {
             "type": "string"
           },
-          "form_data": {
-            "type": "object"
-          },
-          "action_data": {
-            "type": "object"
-          },
           "created_at": {
             "type": "string"
           },
@@ -2007,6 +2046,12 @@
             "type": "string"
           },
           "metadata": {
+            "type": "object"
+          },
+          "action_data": {
+            "type": "object"
+          },
+          "form_data": {
             "type": "object"
           },
           "lock": {

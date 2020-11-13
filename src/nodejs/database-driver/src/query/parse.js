@@ -1,20 +1,17 @@
-function findById([row]) {
+function one([row]) {
   return row;
 }
 
-function findAll(rows) {
+function many(rows) {
   return rows;
 }
 
-function putItem([row]) {
-  return row;
-}
-
-function updateMetadata(rows) {
-  return rows;
-}
-
-module.exports.findById = findById;
-module.exports.findAll = findAll;
-module.exports.putItem = putItem;
-module.exports.updateMetadata = updateMetadata;
+module.exports.findById = one;
+module.exports.findAll = many;
+module.exports.findAllEx = many;
+module.exports.putItem = one;
+module.exports.updateMetadata = one;
+module.exports.initialize = one;
+module.exports.getState = one;
+module.exports.promoteStep = one;
+module.exports.applyWorkflow = one;

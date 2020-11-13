@@ -1,5 +1,3 @@
-module.exports.model = (path) => {
-  return { $ref: `#${path}LogEvent` }
-}
+module.exports.model = (path) => ({ $ref: `#${path}LogEvent` });
 
 module.exports.refs = ['UUID', 'LogEvent'];

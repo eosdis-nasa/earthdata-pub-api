@@ -1,13 +1,11 @@
-module.exports.model = (path) => {
-  return {
-    description: 'Request body sent to data endpoint.',
-    oneOf: [
-      { $ref: `#${path}Form` },
-      { $ref: `#${path}Question` },
-      { $ref: `#${path}Workflow` }
-    ]
-  }
-}
+module.exports.model = (path) => ({
+  description: 'Request body sent to data endpoint.',
+  oneOf: [
+    { $ref: `#${path}Form` },
+    { $ref: `#${path}Question` },
+    { $ref: `#${path}Workflow` }
+  ]
+});
 
 module.exports.refs = [
   'Form',

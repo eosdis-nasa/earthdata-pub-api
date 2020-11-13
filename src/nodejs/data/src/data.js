@@ -6,43 +6,31 @@
  * @module Data
  */
 
-const { PgAdapter, ErrorMessage } = require('database-driver');
-
-const Schema = require('schema-util');
-
-const ClientConfig = require('./client-config.js');
-
-function marshalQueryParams(params) {
-  return Object.entries(params).reduce((acc, [key, value]) => {
-    const multiKey = key.split('.');
-    PgAdapter.setNested(acc, multiKey, value);
-    return acc;
-  }, {});
-}
+const PgAdapter = require('database-driver');
 
 async function findById(event) {
   const query = {
     resource: event.resource,
     operation: event.operation
-  }
+  };
   const { id } = event.params.path;
   const params = {
-    [event.resource]: { id: event.params.path.id }
-  }
-  return await PgAdapter.execute(query, params);
+    [event.resource]: { id }
+  };
+  return PgAdapter.execute(query, params);
 }
 
 async function findAll(event) {
   const query = {
     resource: event.resource,
     operation: event.operation
-  }
-  const params = {}
+  };
+  const params = {};
   if (event.params) {
     if (event.params.query) {
       if (event.params.query.sort) {
         params.sort = event.params.query.sort;
-        params.order = event.params.query.order || "ASC";
+        params.order = event.params.query.order || 'ASC';
       }
       if (event.params.query.per_page) {
         params.limit = event.params.query.per_page;
@@ -50,21 +38,25 @@ async function findAll(event) {
       }
     }
   }
-  return await PgAdapter.execute(query, params);
+  return PgAdapter.execute(query, params);
 }
 
-async function putItem(event) {}
+async function putItem(event) {
+  console.info('Not Implemented', event);
+  return {};
+}
 
 const operations = {
-  findById: findById,
-  findAll: findAll,
-  putItem: putItem
+  findById,
+  findAll,
+  putItem
 };
 
 async function handler(event) {
   const user = await PgAdapter.execute(
-    { resource: 'user', operation:'findById' },
-    { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' }});
+    { resource: 'user', operation: 'findById' },
+    { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' } }
+  );
   // After integration of auth, user will be pulled from context
 
   console.info(`[EVENT]\n${JSON.stringify(event)}`);

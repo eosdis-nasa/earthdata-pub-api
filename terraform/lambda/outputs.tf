@@ -14,8 +14,16 @@ output "notify_lambda_arn" {
   value = aws_lambda_function.notify.invoke_arn
 }
 
-output "subscription_lambda_arn" {
-  value = aws_lambda_function.subscription.invoke_arn
+output "metrics_lambda_arn" {
+  value = aws_lambda_function.metrics.invoke_arn
+}
+
+output "model_lambda_arn" {
+  value = aws_lambda_function.model.invoke_arn
+}
+
+output "subscribe_lambda_arn" {
+  value = aws_lambda_function.subscribe.invoke_arn
 }
 
 output "submission_lambda_arn" {
@@ -24,10 +32,6 @@ output "submission_lambda_arn" {
 
 output "register_lambda_arn" {
   value = aws_lambda_function.register.invoke_arn
-}
-
-output "dashboard_lambda_arn" {
-  value = aws_lambda_function.dashboard.invoke_arn
 }
 
 output "notification_handler_lambda_arn" {

@@ -1,4 +1,4 @@
-FROM node:12.16.2
+FROM node:12.16.1
 
 RUN \
 apt-get update -y && \

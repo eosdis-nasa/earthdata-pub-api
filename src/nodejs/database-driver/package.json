@@ -2,7 +2,7 @@
   "name": "database-driver",
   "version": "1.0.0",
   "description": "A driver module for interacting with the database.",
-  "main": "./src/index.js",
+  "main": "./src/postgres-adapter.js",
   "files": [
     "/src"
   ],

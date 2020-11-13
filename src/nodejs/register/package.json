@@ -13,7 +13,8 @@
   "author": "Brian Ellingson",
   "license": "ISC",
   "dependencies": {
-    "database-driver": "file:../database-driver"
+    "database-driver": "file:../database-driver",
+    "message-driver": "file:../message-driver"
   },
   "devDependencies": {
     "aws-sdk": "^2.654.0",

@@ -9,17 +9,19 @@ Local:
     VisibilityTimeout: 30
     ReceiveMessageWaitTimeSeconds: 0
   Queues:
-    - Name: edpub_queue_local.fifo
+    - Name: edpub_action_sqs.fifo
       ReceiveMessageWaitTimeSeconds: 20
   Topics:
-    - Name: edpub_topic
+    - Name: edpub_event_sns
       Subscriptions:
         - Protocol: http
-          Endpoint: http://local_api/goawsmq
-          TopicArn: arn:aws:sns:us-east-1:000000000000:edpub_topic
-          Raw: true
-    - Name: edpub_email_topic
-    - Name: edpub_metrics_topic
+          Endpoint: http://local_api:8080/goaws/workflow_handler
+          TopicArn: arn:aws:sns:us-east-1:000000000000:edpub_event_sns
+          FilterPolicy: '{"event_type": ["workflow_promote_step"]}'
+        - QueueName: edpub_action_sqs.fifo
+          FilterPolicy: '{"event_type": ["action_invoke_request"]}'
+    - Name: edpub_email_sns
+    - Name: edpub_metrics_sns
   RandomLatency:
     Min: 0
     Max: 0

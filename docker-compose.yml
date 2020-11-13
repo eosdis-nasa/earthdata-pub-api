@@ -8,6 +8,17 @@ services:
       - ./src/local-server:/var/local-server
       - ./src/nodejs:/var/nodejs
     working_dir: /var/local-server
+    environment:
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=fake
+      - AWS_SECRET_ACCESS_KEY=fake
+      - EVENT_SNS=arn:aws:sns:us-east-1:000000000000:edpub_event_sns
+      - SNS_ENDPOINT=http://goaws:4100
+      - PG_USER=edpub
+      - PG_HOST=postgres
+      - PG_DB=edpub
+      - PG_PASS=edpub
+      - PG_PORT=5432
     command: ["npm", "start"]
     ports:
       - 8080:8080

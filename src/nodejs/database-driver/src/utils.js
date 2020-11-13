@@ -1,21 +1,10 @@
-function getValueList(query, params) {
-  let count = 0;
-  const values = [];
-  const text = query.replace(/\{\{(.*?)\}\}/g, function(match, token) {
-    values.push(getNested(params, token.split('.')));
-    return `$${++count}`;
-  });
-  return { text, values }
-}
-
 function getNested(obj, multiKey) {
   const [key, ...remaining] = multiKey;
   if (remaining < 1) {
     return obj[key];
   }
-  else {
-    return getNested(obj[key], remaining);
-  }
+
+  return getNested(obj[key], remaining);
 }
 
 function setNested(obj, multiKey, value) {
@@ -26,8 +15,19 @@ function setNested(obj, multiKey, value) {
     if (!obj[key]) {
       obj[key] = {};
     }
-    setNested(obj[key], remaing, value);
+    setNested(obj[key], remaining, value);
   }
+}
+
+function getValueList(query, params) {
+  let count = 0;
+  const values = [];
+  const text = query.replace(/\{\{(.*?)\}\}/g, (match, token) => {
+    values.push(getNested(params, token.split('.')));
+    count += 1;
+    return `$${count}`;
+  });
+  return { text, values };
 }
 
 module.exports.getValueList = getValueList;

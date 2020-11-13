@@ -1,18 +1,55 @@
+# Database Driver Layer
+
+resource "aws_lambda_layer_version" "database_driver" {
+  filename            = "../artifacts/database-driver-layer.zip"
+  layer_name          = "databaseDriverLayer"
+  compatible_runtimes = ["nodejs12.x"]
+  source_code_hash    = filesha256("../artifacts/database-driver-layer.zip")
+}
+
+# Message Driver Layer
+
+resource "aws_lambda_layer_version" "message_driver" {
+  filename            = "../artifacts/message-driver-layer.zip"
+  layer_name          = "messageDriverLayer"
+  compatible_runtimes = ["nodejs12.x"]
+  source_code_hash    = filesha256("../artifacts/message-driver-layer.zip")
+}
+
+# Schema Layer
+
+resource "aws_lambda_layer_version" "schema_util" {
+  filename            = "../artifacts/schema-util-layer.zip"
+  layer_name          = "schemaUtilLayer"
+  compatible_runtimes = ["nodejs12.x"]
+  source_code_hash    = filesha256("../artifacts/schema-util-layer.zip")
+}
+
 # Action Handler Lambda
 
 resource "aws_lambda_function" "action_handler" {
   filename      = "../artifacts/action-handler-lambda.zip"
-  function_name = "action_handler${var.stage_suffix}"
-  role          = var.action_handler_lambda_role_arn
+  function_name = "action_handler"
+  role          = var.edpub_lambda_role_arn
   handler       = "action-handler.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/action-handler-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      TABLE_SUFFIX  = var.stage_suffix
-      REGION        = var.region
-      ACTION_BUCKET = var.edpub_action_bucket
-      SNS_TOPIC     = var.edpub_topic_arn
+      ACTION_S3 = var.edpub_action_s3_id
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -26,56 +63,38 @@ resource "aws_lambda_permission" "action_handler" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.action_handler.function_name
   principal     = "sqs.amazonaws.com"
-  source_arn    = var.edpub_queue_arn
+  source_arn    = var.edpub_action_sqs_arn
 }
 
 resource "aws_lambda_event_source_mapping" "action_handler_sqs_event" {
-  event_source_arn = var.edpub_queue_arn
+  event_source_arn = var.edpub_action_sqs_arn
   function_name    = aws_lambda_function.action_handler.function_name
 }
 
-# Dashboard Lambda
-
-resource "aws_lambda_function" "dashboard" {
-  filename      = "../artifacts/dashboard-lambda.zip"
-  function_name = "dashboard${var.stage_suffix}"
-  role          = var.dashboard_lambda_role_arn
-  handler       = "dashboard.handler"
-  runtime       = "nodejs12.x"
-  timeout       = 10
-  environment {
-    variables = {
-      TABLE_SUFFIX = var.stage_suffix
-      REGION       = var.region
-    }
-  }
-  vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
-  }
-}
-
-resource "aws_lambda_permission" "dashboard" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.dashboard.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/dashboard"
-}
-
-# data Lambda
+# Data Lambda
 
 resource "aws_lambda_function" "data" {
   filename      = "../artifacts/data-lambda.zip"
-  function_name = "data${var.stage_suffix}"
-  role          = var.data_lambda_role_arn
+  function_name = "data"
+  role          = var.edpub_lambda_role_arn
   handler       = "data.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/data-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      TABLE_SUFFIX = var.stage_suffix
-      REGION       = var.region
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -96,14 +115,26 @@ resource "aws_lambda_permission" "data" {
 
 resource "aws_lambda_function" "invoke" {
   filename      = "../artifacts/invoke-lambda.zip"
-  function_name = "invoke${var.stage_suffix}"
-  role          = var.invoke_lambda_role_arn
+  function_name = "invoke"
+  role          = var.edpub_lambda_role_arn
   handler       = "invoke.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/invoke-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      SQS_QUEUE = var.edpub_queue_url
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -120,20 +151,70 @@ resource "aws_lambda_permission" "invoke" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/action/invoke"
 }
 
+# Metrics Lambda
+
+resource "aws_lambda_function" "metrics" {
+  filename      = "../artifacts/metrics-lambda.zip"
+  function_name = "metrics"
+  role          = var.edpub_lambda_role_arn
+  handler       = "metrics.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/metrics-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "metrics" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.metrics.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
+}
+
 # Metrics Handler Lambda
 
 resource "aws_lambda_function" "metrics_handler" {
   filename      = "../artifacts/metrics-handler-lambda.zip"
-  function_name = "metrics_handler${var.stage_suffix}"
-  role          = var.metrics_handler_lambda_role_arn
+  function_name = "metrics_handler"
+  role          = var.edpub_lambda_role_arn
   handler       = "metrics-handler.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/metrics-handler-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      TABLE_SUFFIX = var.stage_suffix
-      REGION       = var.region
-      SNS_TOPIC    = var.edpub_metrics_topic_arn
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -147,7 +228,7 @@ resource "aws_lambda_permission" "metrics_handler" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.metrics_handler.function_name
   principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_topic_arn
+  source_arn    = var.edpub_event_sns_arn
 }
 
 data "local_file" "metrics_handler_filter" {
@@ -155,24 +236,76 @@ data "local_file" "metrics_handler_filter" {
 }
 
 resource "aws_sns_topic_subscription" "metrics_handler_lambda" {
-  topic_arn     = var.edpub_topic_arn
+  topic_arn     = var.edpub_event_sns_arn
   protocol      = "lambda"
   endpoint      = aws_lambda_function.metrics_handler.arn
   filter_policy = data.local_file.metrics_handler_filter.content
+}
+
+# Data Lambda
+
+resource "aws_lambda_function" "model" {
+  filename      = "../artifacts/model-lambda.zip"
+  function_name = "model"
+  role          = var.edpub_lambda_role_arn
+  handler       = "model.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/model-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "model" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.model.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
 # Notify Lambda
 
 resource "aws_lambda_function" "notify" {
   filename      = "../artifacts/notify-lambda.zip"
-  function_name = "notify${var.stage_suffix}"
-  role          = var.notify_lambda_role_arn
+  function_name = "notify"
+  role          = var.edpub_lambda_role_arn
   handler       = "notify.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/notify-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      SNS_TOPIC = var.edpub_email_topic_arn
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -193,16 +326,26 @@ resource "aws_lambda_permission" "notify" {
 
 resource "aws_lambda_function" "notification_handler" {
   filename      = "../artifacts/notification-handler-lambda.zip"
-  function_name = "notification_handler${var.stage_suffix}"
-  role          = var.notification_handler_lambda_role_arn
+  function_name = "notification_handler"
+  role          = var.edpub_lambda_role_arn
   handler       = "notification-handler.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/notification-handler-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      TABLE_SUFFIX = var.stage_suffix
-      REGION       = var.region
-      SNS_TOPIC    = var.edpub_email_topic_arn
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -216,7 +359,7 @@ resource "aws_lambda_permission" "notification_handler" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.notification_handler.function_name
   principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_topic_arn
+  source_arn    = var.edpub_event_sns_arn
 }
 
 data "local_file" "notification_handler_filter" {
@@ -224,7 +367,7 @@ data "local_file" "notification_handler_filter" {
 }
 
 resource "aws_sns_topic_subscription" "notification_handler_lambda" {
-  topic_arn     = var.edpub_topic_arn
+  topic_arn     = var.edpub_event_sns_arn
   protocol      = "lambda"
   endpoint      = aws_lambda_function.notification_handler.arn
   filter_policy = data.local_file.notification_handler_filter.content
@@ -234,15 +377,26 @@ resource "aws_sns_topic_subscription" "notification_handler_lambda" {
 
 resource "aws_lambda_function" "register" {
   filename      = "../artifacts/register-lambda.zip"
-  function_name = "register${var.stage_suffix}"
-  role          = var.register_lambda_role_arn
+  function_name = "register"
+  role          = var.edpub_lambda_role_arn
   handler       = "register.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/register-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      TABLE_SUFFIX = var.stage_suffix
-      REGION       = var.region
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -263,16 +417,26 @@ resource "aws_lambda_permission" "register" {
 
 resource "aws_lambda_function" "submission" {
   filename      = "../artifacts/submission-lambda.zip"
-  function_name = "submission${var.stage_suffix}"
-  role          = var.submission_lambda_role_arn
+  function_name = "submission"
+  role          = var.edpub_lambda_role_arn
   handler       = "submission.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/submission-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      TABLE_SUFFIX = var.stage_suffix
-      SNS_TOPIC    = var.edpub_topic_arn
-      REGION       = var.region
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -286,22 +450,33 @@ resource "aws_lambda_permission" "submission" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.submission.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/submission"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/submission/*"
 }
 
-# Subscription Lambda
+# Subscribe Lambda
 
-resource "aws_lambda_function" "subscription" {
-  filename      = "../artifacts/subscription-lambda.zip"
-  function_name = "subscription${var.stage_suffix}"
-  role          = var.subscription_lambda_role_arn
-  handler       = "subscription.handler"
+resource "aws_lambda_function" "subscribe" {
+  filename      = "../artifacts/subscribe-lambda.zip"
+  function_name = "subscribe"
+  role          = var.edpub_lambda_role_arn
+  handler       = "subscribe.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/subscribe-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      TABLE_SUFFIX = var.stage_suffix
-      REGION       = var.region
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -310,29 +485,38 @@ resource "aws_lambda_function" "subscription" {
   }
 }
 
-resource "aws_lambda_permission" "subscription" {
+resource "aws_lambda_permission" "subscribe" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.subscription.function_name
+  function_name = aws_lambda_function.subscribe.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification/subscription"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification/subscribe"
 }
 
 # Workflow Handler Lambda
 
 resource "aws_lambda_function" "workflow_handler" {
   filename      = "../artifacts/workflow-handler-lambda.zip"
-  function_name = "workflow_handler${var.stage_suffix}"
-  role          = var.workflow_handler_lambda_role_arn
+  function_name = "workflow_handler"
+  role          = var.edpub_lambda_role_arn
   handler       = "workflow-handler.handler"
+  layers = [
+    aws_lambda_layer_version.database_driver.arn,
+    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
   runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/workflow-handler-lambda.zip")
   timeout       = 10
   environment {
     variables = {
-      TABLE_SUFFIX = var.stage_suffix
-      REGION       = var.region
-      SQS_QUEUE    = var.edpub_queue_url
-      SNS_TOPIC    = var.edpub_email_topic_arn
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
     }
   }
   vpc_config {
@@ -346,7 +530,7 @@ resource "aws_lambda_permission" "workflow_handler" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.workflow_handler.function_name
   principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_topic_arn
+  source_arn    = var.edpub_event_sns_arn
 }
 
 data "local_file" "workflow_handler_filter" {
@@ -354,7 +538,7 @@ data "local_file" "workflow_handler_filter" {
 }
 
 resource "aws_sns_topic_subscription" "workflow_handler" {
-  topic_arn     = var.edpub_topic_arn
+  topic_arn     = var.edpub_event_sns_arn
   protocol      = "lambda"
   endpoint      = aws_lambda_function.workflow_handler.arn
   filter_policy = data.local_file.workflow_handler_filter.content

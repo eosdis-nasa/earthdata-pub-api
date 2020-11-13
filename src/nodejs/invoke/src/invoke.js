@@ -6,38 +6,30 @@
  * @see module:ActionHandler
  */
 
-const { SQS } = require('aws-sdk');
+const MessageDriver = require('message-driver');
 
-const { MessageDriver } = require('message-driver');
-
-const ClientConfig = require('./client-config.js');
-
-const msgDriver = new MessageDriver({
-  sqsClient: new SQS(ClientConfig.sqs),
-  queueUrl: process.env.SQS_QUEUE
-});
+const PgAdapter = require('database-driver');
 
 async function handler(event) {
-  const message = JSON.parse(event.body);
+  const user = await PgAdapter.execute(
+    { resource: 'user', operation: 'findById' },
+    { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' } }
+  );
+  // After integration of auth, user will be pulled from context
 
-  // After integration of auth user will be pulled from context
-  const user = {
-    id: '54ce2972-39a7-49d4-af07-6b014a3bddfe',
-    user_name: 'Brian Ellingson',
-    email: 'brian.ellingson@uah.edu'
+  console.info(`[EVENT]\n${JSON.stringify(event)}`);
+  console.info(`[USER]\n${JSON.stringify(user)}`);
+
+  const eventMessage = {
+    event_type: 'action_request',
+    action_id: event.payload.action_id,
+    submission_id: event.payload.submission_id,
+    data: event.payload.data
   };
 
-  message.attributes = {
-    notification: true,
-    invoked_by: user.id,
-    invoke_type: 'user'
-  };
+  await MessageDriver.sendEvent(eventMessage);
 
-  const response = await msgDriver.sendSqs(message);
-  return {
-    statusCode: 200,
-    body: JSON.stringify(response)
-  };
+  return { message: 'Action requested' };
 }
 
 exports.handler = handler;

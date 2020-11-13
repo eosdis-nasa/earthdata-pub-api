@@ -1,0 +1,42 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action" : [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+      ],
+      "Effect" : "Allow",
+      "Resource" : [ "${edpub_action_sqs_arn}"]
+    },
+    {
+      "Action" : [
+          "sns:Publish",
+          "sns:",
+          "sns:Subscribe",
+          "sns:Unsubscribe",
+          "sns:ListSubscriptions",
+          "sns:ListSubscriptionsByTopic",
+          "sns:ConfirmSubscription",
+          "sns:GetEndpointAttributes",
+          "sns:SetEndpointAttributes",
+          "sns:GetSubscriptionAttributes",
+          "sns:SetSubscriptionAttributes"
+      ],
+      "Effect" : "Allow",
+      "Resource" : [
+        "${edpub_event_sns_arn}",
+        "${edpub_email_sns_arn}",
+        "${edpub_metrics_sns_arn}"]
+    },
+    {
+      "Action" : [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Effect" : "Allow",
+      "Resource" : [ "${edpub_action_s3_arn}"]
+    }
+  ]
+}

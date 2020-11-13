@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "database-driver": "file:../database-driver",
+    "message-driver": "file:../message-driver",
     "schema-util": "file:../schema-util"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-const findAll = `SELECT edpuser.* FROM edpuser`;
+const findAll = 'SELECT edpuser.* FROM edpuser';
 const findById = `${findAll} WHERE edpuser.id = {{user.id}}`;
 const findByGroupId = `${findAll}
   WHERE edpuser.id IN (

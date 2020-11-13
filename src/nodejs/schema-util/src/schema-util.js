@@ -48,14 +48,6 @@ const crypto = require('crypto');
 const { allModels, getModel } = require('./models/index.js');
 
 module.exports.getModel = getModel;
-/**
- * An object mapping table names to foreign object paths for expanding. This
- *   is used to ensure a referenced item contained within another matches the
- *   copy in its own table.
- * @private
- * @type {object}
- */
-const TableMeta = require('./table-meta.js');
 
 /**
  * A validator utility
@@ -191,64 +183,63 @@ function enumeratePaths({ ref, aft, fore }) {
  *   validation
  * @return {boolean} Whether or not the Item pass validation;
  */
-function validate(tableName, item) {
-  const table = TableMeta[tableName];
-  if (hasKey(table, 'schema')) {
-    const evaluate = ajv.getSchema(table.schema);
-    const isValid = evaluate(item);
-    if (!isValid) {
-      console.info(`[ERROR] Validation errors: \n${validate.errors}`);
-    }
-    return isValid;
-  }
-  console.info('[ERROR] There is no schema for that table or it is not a valid table.');
-  return false;
-}
-module.exports.validate = validate;
+// function validate(tableName, item) {
+//   if (hasKey(table, 'schema')) {
+//     const evaluate = ajv.getSchema(table.schema);
+//     const isValid = evaluate(item);
+//     if (!isValid) {
+//       console.info(`[ERROR] Validation errors: \n${validate.errors}`);
+//     }
+//     return isValid;
+//   }
+//   console.info('[ERROR] There is no schema for that table or it is not a valid table.');
+//   return false;
+// }
+// module.exports.validate = validate;
 
 /**
  * Checks if a table has nested foreign objects.
  * @param {string} tableName - The table to check for
  * @return {boolean} Whether or not the table items contain foreign references
  */
-function hasNestedObjects(tableName) {
-  const table = TableMeta[tableName];
-  if (hasKey(table, 'foreign')) {
-    const { foreign } = table;
-    return hasKey(foreign, 'nested');
-  }
-  return false;
-}
-module.exports.hasNestedObjects = hasNestedObjects;
+// function hasNestedObjects(tableName) {
+//   const table = TableMeta[tableName];
+//   if (hasKey(table, 'foreign')) {
+//     const { foreign } = table;
+//     return hasKey(foreign, 'nested');
+//   }
+//   return false;
+// }
+// module.exports.hasNestedObjects = hasNestedObjects;
 
 /**
  * Checks if a table has id references to foreign objects.
  * @param {string} tableName - The table to check for
  * @return {boolean} Whether or not the table items contain foreign references
  */
-function hasReference(tableName) {
-  const table = TableMeta[tableName];
-  if (hasKey(table, 'foreign')) {
-    const { foreign } = table;
-    return hasKey(foreign, 'ref');
-  }
-  return false;
-}
-module.exports.hasReference = hasReference;
+// function hasReference(tableName) {
+//   const table = TableMeta[tableName];
+//   if (hasKey(table, 'foreign')) {
+//     const { foreign } = table;
+//     return hasKey(foreign, 'ref');
+//   }
+//   return false;
+// }
+// module.exports.hasReference = hasReference;
 
 /**
  * Checks if a table contains versioned items.
  * @param {string} tableName - The table to check for
  * @return {(string|boolean)} The versioning index of the table or false if none
  */
-function isVersioned(tableName) {
-  const table = TableMeta[tableName];
-  if (hasKey(table, 'versioned')) {
-    return table.versioned;
-  }
-  return false;
-}
-module.exports.isVersioned = isVersioned;
+// function isVersioned(tableName) {
+//   const table = TableMeta[tableName];
+//   if (hasKey(table, 'versioned')) {
+//     return table.versioned;
+//   }
+//   return false;
+// }
+// module.exports.isVersioned = isVersioned;
 
 /**
  * Gets a mapping of modifiable references to foreign objects in an item.
@@ -259,19 +250,19 @@ module.exports.isVersioned = isVersioned;
  * @param {boolean} nested - Get nested objects otherwise get foreign references
  * @return {ReferenceMap} Foreign reference paths
  */
-function getForeignObjects(tableName, item, nested = true) {
-  const foreignType = nested ? 'nested' : 'ref';
-  const paths = {};
-  const table = TableMeta[tableName];
-  const { foreign } = table;
-  Object.entries(foreign[foreignType]).forEach(([foreignTable, path]) => {
-    paths[foreignTable] = enumeratePaths({
-      ref: item, aft: [], fore: path.slice(0)
-    });
-  });
-  return paths;
-}
-module.exports.getForeignObjects = getForeignObjects;
+// function getForeignObjects(tableName, item, nested = true) {
+//   const foreignType = nested ? 'nested' : 'ref';
+//   const paths = {};
+//   const table = TableMeta[tableName];
+//   const { foreign } = table;
+//   Object.entries(foreign[foreignType]).forEach(([foreignTable, path]) => {
+//     paths[foreignTable] = enumeratePaths({
+//       ref: item, aft: [], fore: path.slice(0)
+//     });
+//   });
+//   return paths;
+// }
+// module.exports.getForeignObjects = getForeignObjects;
 
 /**
  * Sets a nested value within an object at a given path. The original item is

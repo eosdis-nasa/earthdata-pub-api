@@ -1,0 +1,15 @@
+account_id = "050629596886"
+access_key = "AKIAQXSOCK3LA7ATBMOQ"
+secret_key = "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"
+region = "us-west-2"
+stage = "prod"
+vpc_id = "vpc-0a66d8dd42e05a25a"
+vpc_endpoint_id = "vpce-02e3aff6c2bd5d6e2"
+security_group_ids = ["sg-0385f9ac38f2563d3"]
+subnet_ids = ["subnet-0471db5355dc61624", "subnet-01c90c48c505497ef"]
+lambda_execution_policy_arn = "arn:aws:iam::050629596886:policy/ngap/system/NGAPShLambdaInVpcBasePolicy"
+permissions_boundary_arn = "arn:aws:iam::050629596886:policy/NGAPShWCognitoRoleBoundary"
+rds_cluster_identifier = "edpub"
+db_password = "Paultt2BeWcg9ArKlVu4"
+auth_callback_urls = ["http://localhost:3000/auth"]
+auth_logout_urls = ["http://localhost:3000/logout"]

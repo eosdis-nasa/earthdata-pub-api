@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Collection of lambda functions and layers for Earthdata Pub",
   "scripts": {
-    "build:localstack": "bash ./scripts/build.sh localstack",
-    "build:sandbox": "bash ./scripts/build.sh sandbox",
+    "build": "bash ./scripts/build.sh",
     "lint": "eslint ./src/nodejs -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
     "test": "jest -c jest.config.js --all",
     "generate-docs": "bash ./scripts/generate-jsdoc.sh; bash ./scripts/generate-apidoc.sh"
@@ -17,6 +16,7 @@
     "data": "file:./src/nodejs/data",
     "invoke": "file:./src/nodejs/invoke",
     "message-driver": "file:src/nodejs/message-driver",
+    "metrics": "file:/src/nodejs/metrics",
     "metrics-handler": "file:./src/nodejs/metrics-handler",
     "model": "file:./src/nodejs/model",
     "notification-handler": "file:./src/nodejs/notification-handler",

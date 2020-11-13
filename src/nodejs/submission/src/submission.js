@@ -6,106 +6,70 @@
  * @module Submission
  */
 
-//const { DynamoDB, SNS } = require('aws-sdk');
+const PgAdapter = require('database-driver');
 
-const { PgAdapter } = require('database-driver');
+const MessageDriver = require('message-driver');
 
-//const { MessageDriver } = require('message-driver');
-
-const Schema = require('schema-util');
-
-const ClientConfig = require('./client-config.js');
-
-// const msgDriver = new MessageDriver({
-//   snsClient: new SNS(ClientConfig.sns),
-//   topicArn: process.env.SNS_TOPIC
-// });
-
-const messageText = {
-  initialize: 'A new submission has been initialized.',
-  form: 'A form has been submitted for the submission.',
-  review: 'A review was completed for the submission.',
-  save: 'Form content has been saved and the submission has been unlocked',
-  lock: 'The submission was locked to fill a form.',
-  unlock: 'The submission was unlocked.',
-  resume: 'The workflow has been resumed by an external service.'
-};
-
-function constructMessage(submission, type, nextStep = false) {
-  // const message = {
-  //   body: {
-  //     subject: `Submission ID ${submission.id}`,
-  //     text: messageText[type]
-  //   },
-  //   attributes: {
-  //     notification: 'true',
-  //     submission_id: submission.id,
-  //     workflow_id: submission.workflow_id,
-  //     ...(nextStep ? { next_step: 'true' } : {})
-  //   }
-  // };
-  // return message;
+async function resumeMethod(body, user) {
+  const { id } = body.payload;
+  const status = await PgAdapter.execute({ resource: 'submission', operation: 'getState' },
+    { submission: { id } });
+  const eventMessage = {
+    event_type: 'workflow_promote_step',
+    submission_id: status.id,
+    workflow_id: status.workflow_id,
+    step_name: status.step_name,
+    user_id: user.id
+  };
+  await MessageDriver.sendEvent(eventMessage);
+  return status;
 }
 
 async function initializeMethod(body, user) {
-  // Initialize a new Submission
-  //   id UUID DEFAULT UUID_GENERATE_V4(),
-  //   initiator_edpuser_id UUID NOT NULL,
-  //   daac_short_name VARCHAR,
-  //   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  // const params = {
-  //   submission: {},
-  //   user}
-  //   : { id: body.workflow_id },
-  //   daac_id: body.daac_id,
-  //   initiator_id: user.id,
-  //   completed: {},
-  //   step: '1',
-  //   lock: false,
-  //   forms_data: {},
-  //   actions_data: {}
-  // };
-  // const metadata = { metadata: {} };
-  // Schema.attachNewId(submission);
-  // metadata.id = submission.id;
-  // const referenceMap = Schema.getForeignObjects('submission', submission);
-  // await dbDriver.refreshNestedObjects(referenceMap);
-  // submission.step = 'init';
-  // const response = await dbDriver.putItem('submission', submission);
-  // await dbDriver.putItem('metadata', metadata);
-  // constructMessage(submission, 'initialize');
-  // return response;
+  const submission = await PgAdapter.execute({ resource: 'submission', operation: 'initialize' },
+    { user });
+  const eventMessage = {
+    event_type: 'submission_initialized',
+    submission_id: submission.id,
+    user_id: user.id
+  };
+  await MessageDriver.sendEvent(eventMessage);
+  await resumeMethod({ payload: { id: submission.id } }, user);
+  return submission;
 }
 
-async function metadataMethod(event) {
+async function applyMethod(body, user) {
+  const { id, workflow_id: workflowId } = body.payload;
+  const status = await PgAdapter.execute({ resource: 'submission', operation: 'getState' },
+    { submission: { id } });
+  // Check if in ready state and if the proposed workflow has been run previously
+  await PgAdapter.execute({ resource: 'submission', operation: 'applyWorkflow' },
+    { submission: { id }, workflow: { id: workflowId } });
+  const eventMessage = {
+    event_type: 'submission_workflow_started',
+    submission_id: id,
+    workflow_id: workflowId
+  };
+  await MessageDriver.sendEvent(eventMessage);
+  await resumeMethod(body, user);
+  return status;
+}
+
+async function metadataMethod(body, user) {
   // Update Metadata for a Submission
-  const { id, metadata } = event.payload;
-  const params = {
-    submission: { id, metadata: JSON.stringify(metadata) }
-  }
-  const response = await PgAdapter.execute(
-    { resource: 'submission', operation:'updateMetadata' }, params);
+  const { id, metadata } = body.payload;
+  const response = await PgAdapter.execute({ resource: 'submission', operation: 'updateMetadata' },
+    { submission: { id, metadata: JSON.stringify(metadata) } });
+  const submission = await PgAdapter.execute({ resource: 'submission', operation: 'findShortById' },
+    { submission: { id } });
+  const eventMessage = {
+    event_type: 'submission_metadata_updated',
+    submission_id: id,
+    user_id: user.id,
+    daac_id: submission.daac_id
+  };
+  await MessageDriver.sendEvent(eventMessage);
   return response;
-}
-
-async function statusMethod(body) {
-  // Fetch a Submission and its Metadata along with data for its current Workflow step
-  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  // const [[metadata]] = await dbDriver.getItems('metadata', body.submission_id);
-  // submission.metadata = metadata;
-  // const { steps } = submission.workflow;
-  // const current = steps[submission.step];
-  // if (current.type === 'form') {
-  //   const [[form]] = await dbDriver.getItems('form', current.form_id);
-  //   submission.form = form;
-  // } else if (current.type === 'review') {
-  //   submission.review = current.review_data;
-  //   if (current.review_data.type === 'form_data') {
-  //     const [[form]] = await dbDriver.getItems('form', current.review_data.id);
-  //     submission.form = form;
-  //   }
-  // }
-  // return [submission];
 }
 
 async function submitMethod(body, user) {
@@ -120,6 +84,7 @@ async function submitMethod(body, user) {
   //   await dbDriver.putItem('submission', submission);
   //   msgDriver.sendSns(constructMessage(submission, 'submit', true));
   // }
+  console.info('Not Implemented', body, user);
 }
 
 async function saveMethod(body, user) {
@@ -134,9 +99,10 @@ async function saveMethod(body, user) {
   //   await dbDriver.putItem('submission', submission);
   //   msgDriver.sendSns(constructMessage(submission, 'save'));
   // }
+  console.info('Not Implemented', body, user);
 }
 
-async function reviewMethod(body) {
+async function reviewMethod(body, user) {
   // Similar to submit, but for reviews. In case of rejecting a Submission
   // during review users can send a comment with reason for rejection.
   // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
@@ -146,15 +112,7 @@ async function reviewMethod(body) {
   //   return [true];
   // }
   // return [false, 'Bad request.'];
-}
-
-async function resumeMethod(body) {
-  // Method for external services to submit result of their actions
-  // (e.g. a metadata editor) and return control to the Workflow Handler
-  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  // const message = constructMessage(submission, 'resume', true);
-  // await msgDriver.sendSns(message);
-  // return [true];
+  console.info('Not Implemented', body, user);
 }
 
 async function lockMethod(body, user) {
@@ -163,20 +121,22 @@ async function lockMethod(body, user) {
   // const response = await dbDriver.putItem('submission', submission);
   // constructMessage(submission, 'lock');
   // return response;
+  console.info('Not Implemented', body, user);
 }
 
-async function unlockMethod(body) {
+async function unlockMethod(body, user) {
   // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
   // submission.lock = false;
   // const response = await dbDriver.putItem('submission', submission);
   // constructMessage(submission, 'unlock');
   // return response;
+  console.info('Not Implemented', body, user);
 }
 
 const operations = {
   initialize: initializeMethod,
+  apply: applyMethod,
   metadata: metadataMethod,
-  status: statusMethod,
   submit: submitMethod,
   save: saveMethod,
   review: reviewMethod,
@@ -187,15 +147,16 @@ const operations = {
 
 async function handler(event) {
   const user = await PgAdapter.execute(
-    { resource: 'user', operation:'findById' },
-    { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' }});
+    { resource: 'user', operation: 'findById' },
+    { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' } }
+  );
   // After integration of auth, user will be pulled from context
 
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   console.info(`[USER]\n${JSON.stringify(user)}`);
 
   const operation = operations[event.operation];
-  const data = await operation(event);
+  const data = await operation(event, user);
   return data;
 }
 

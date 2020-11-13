@@ -45,13 +45,6 @@
       "url": "http://database.docs/#TODO"
     }
   }, {
-    "name": "dashboard",
-    "description": "Various endpoints for populating the dashboard pages.",
-    "externalDocs": {
-      "description": "Read the docs",
-      "url": "http://database.docs/#TODO"
-    }
-  }, {
     "name": "metrics",
     "description": "Retrieve system metrics or submit client side events to be logged.",
     "externalDocs": {
@@ -1445,7 +1438,7 @@
           }
         },
         "x-amazon-apigateway-integration": {
-          "uri": "${dashboard_lambda_arn}",
+          "uri": "${metrics_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws_proxy"
@@ -1455,6 +1448,18 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "Authorizer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "x-amazon-apigateway-authtype": "cognito_user_pools",
+        "x-amazon-apigateway-authorizer": {
+          "type": "cognito_user_pools",
+          "providerARNs": [ "${cognito_user_pool_arn}" ]
+        }
+      }
+    },
     "schemas": {}
   },
   "externalDocs": {

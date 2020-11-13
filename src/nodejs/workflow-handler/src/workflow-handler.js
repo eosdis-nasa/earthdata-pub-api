@@ -8,112 +8,85 @@
  * @see module:ActionHandler
  */
 
-const { DynamoDB, SNS, SQS } = require('aws-sdk');
+const PgAdapter = require('database-driver');
 
-const { DynamodbDriver } = require('database-driver');
+const MessageDriver = require('message-driver');
 
-const { MessageDriver } = require('message-driver');
-
-const Schema = require('schema-util');
-
-const HttpHelper = require('./http-helper.js');
-
-const ClientConfig = require('./client-config.js');
-
-const dbDriver = new DynamodbDriver(
-  new DynamoDB(ClientConfig.dynamodb),
-  DynamoDB.Converter.marshall,
-  DynamoDB.Converter.unmarshall,
-  process.env.TABLE_SUFFIX
-);
-
-const msgDriver = new MessageDriver({
-  snsClient: new SNS(ClientConfig.sns),
-  topicArn: process.env.SNS_TOPIC,
-  sqsClient: new SQS(ClientConfig.sqs),
-  queueUrl: process.env.SQS_QUEUE
-});
-
-function constructSnsMessage(submission) {
-  const { id, step, workflow } = submission;
-  const snsMessage = {
-    body: {
-      subject: `Submission ID ${id}`,
-      text: `Submission ID ${id} has progressed to the next stage of processing.`
-    },
-    attributes: {
-      notification: 'true',
-      submission_id: id,
-      invoked_by: workflow.id,
-      invoke_type: 'workflow'
-    }
+async function actionMethod(status) {
+  const eventMessage = {
+    event_type: 'action_request',
+    action_id: status.action_id,
+    submission_id: status.id,
+    workflow_id: status.workflow_id,
+    step_name: status.step_name,
+    data: status.data
   };
-  if (step === 'done') {
-    snsMessage.body.text += ' The submission has finished being processed by the workflow.';
-  } else {
-    const state = workflow.steps[step].type;
-    if (state === 'form') {
-      snsMessage.body.text += ' The next step is filling a form.';
-    } else if (state === 'review') {
-      snsMessage.body.text += ' The next step is a review.';
-    } else if (state === 'service') {
-      snsMessage.body.text += ' The next step is using an external service.';
-    }
-  }
-  return snsMessage;
+  await MessageDriver.sendEvent(eventMessage);
 }
 
-function constructSqsMessage(submission) {
-  const { id, step, workflow } = submission;
-  // eslint-disable-next-line
-  const body = (({ action_id, input, ...toss }) => ({ action_id, input }))(workflow[step]);
-  const sqsMessage = {
-    body,
-    attributes: {
-      invoked_by: workflow.id,
-      invoke_type: 'workflow',
-      submission_id: id,
-      workflow_id: workflow.id
-    }
+async function formMethod(status) {
+  const eventMessage = {
+    event_type: 'form_request',
+    form_id: status.form_id,
+    submission_id: status.id,
+    workflow_id: status.workflow_id,
+    step_name: status.step_name,
+    data: status.data
   };
-  return sqsMessage;
+  await MessageDriver.sendEvent(eventMessage);
 }
 
-async function callService(submission, metadata, secret) {
-  const { workflow, step } = submission;
-  const serviceStep = workflow[step];
-  const [[service]] = await dbDriver.getItems('service', serviceStep.service_id);
-  if (service.payload) {
-    service.payload = { submission, metadata, secret };
-  }
-  await HttpHelper.send(service);
+async function reviewMethod(status) {
+  const eventMessage = {
+    event_type: 'review_request',
+    submission_id: status.id,
+    workflow_id: status.workflow_id,
+    step_name: status.step_name,
+    data: status.data
+  };
+  await MessageDriver.sendEvent(eventMessage);
 }
+
+async function serviceMethod(status) {
+  const eventMessage = {
+    event_type: 'service_call',
+    service_id: status.service_id,
+    submission_id: status.id,
+    workflow_id: status.workflow_id,
+    step_name: status.step_name,
+    data: status.data
+  };
+  await MessageDriver.sendEvent(eventMessage);
+}
+
+async function closeMethod(status) {
+  const eventMessage = {
+    event_type: 'workflow_completed',
+    submission_id: status.id,
+    workflow_id: status.workflow_id,
+    step_name: status.step_name,
+    data: status.data
+  };
+  await MessageDriver.sendEvent(eventMessage);
+}
+
+const stepMethods = {
+  action: actionMethod,
+  form: formMethod,
+  review: reviewMethod,
+  service: serviceMethod,
+  close: closeMethod
+};
 
 async function processRecord(record) {
-  const { attributes } = msgDriver.parseRecord(record);
-  const [[submission]] = await dbDriver.getItems('submission', attributes.submission_id);
-  const [[metadata]] = await dbDriver.getItems('metadata', attributes.submission_id);
-  const { workflow, completed } = submission;
-  const { steps } = workflow;
-  const current = submission.step;
-  const next = current === 'init' ? workflow.entry : steps[current].next_step || 'done';
-  submission.step = next;
-  completed[current] = true;
-  submission.lock = false;
-  await dbDriver.putItem('submission', submission);
-  const snsMessage = constructSnsMessage(submission);
-  await msgDriver.sendSns(snsMessage);
-  if (next !== 'done') {
-    const step = workflow[next];
-    if (step.type === 'action') {
-      const sqsMessage = constructSqsMessage(submission);
-      await msgDriver.sendSqs(sqsMessage);
-    } else if (step.type === 'service') {
-      const secret = Schema.generateId();
-      await dbDriver.putItem('secret', { id: submission.id, secret });
-      await callService(submission, metadata, secret);
-    }
-  }
+  const { eventMessage } = MessageDriver.parseRecord(record);
+  const { submission_id: id } = eventMessage;
+  await PgAdapter.execute({ resource: 'submission', operation: 'promoteStep' },
+    { submission: { id } });
+  const status = await PgAdapter.execute({ resource: 'submission', operation: 'getState' },
+    { submission: { id } });
+  const method = stepMethods[status.type];
+  await method(status);
 }
 
 async function handler(event) {

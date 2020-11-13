@@ -5,6 +5,7 @@ module.exports.group = require('./group.js');
 module.exports.note = require('./note.js');
 module.exports.permission = require('./permission.js');
 module.exports.question = require('./question.js');
+module.exports.role = require('./role.js');
 module.exports.service = require('./service.js');
 module.exports.submission = require('./submission.js');
 module.exports.subscription = require('./subscription.js');

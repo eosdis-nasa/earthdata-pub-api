@@ -2,7 +2,7 @@
   "name": "message-driver",
   "version": "1.0.0",
   "description": "A driver module to abstract interactions with SQS and SNS.",
-  "main": "./src/index.js",
+  "main": "./src/message-driver.js",
   "files": [
     "/src"
   ],
@@ -15,6 +15,7 @@
   "dependencies": {},
   "bundledDependencies": {},
   "devDependencies": {
+    "aws-sdk": "^2.783.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",

@@ -1,121 +1,80 @@
-const parseRecord = require('./record-parser.js');
-/**
- * A driver to abstract sending messages to AWS SNS and SQS.
- */
-class MessageDriver {
-  /**
-   * Create a driver to simplify interaction with AWS SNS and SQS.
-   * @param {object} opts - Client instances and connection parameters
-   * @param {object} opts.snsClient - AWS SNS Client instance
-   * @param {string} opts.topicArn - ARN for an AWS SNS Topic to connect
-   * @param {object} opts.sqsClient - AWS SQS Client instance
-   * @param {string} opts.queueUrl - URL for an AWS SQS Queue to connect
-   */
-  constructor({
-    snsClient, topicArn, sqsClient, queueUrl
-  }) {
-    this.snsClient = snsClient;
-    this.topicArn = topicArn;
-    this.sqsClient = sqsClient;
-    this.queueUrl = queueUrl;
-    this.parseRecord = parseRecord;
+const AWS = require('aws-sdk');
 
-    this.operations = {
-      ...(this.snsClient
-        ? {
-          sendSns: this.snsClient.publish.bind(this.snsClient)
-        } : {}),
-      ...(this.sqsClient
-        ? {
-          sendSqs: this.sqsClient.sendMessage.bind(this.sqsClient)
-        } : {})
-    };
-  }
+const { eventSns, snsConfig } = require('./client-config.js');
 
-  /**
-   * Sends a simple format message to SNS
-   * @param {object} msg - A message in a simple general format
-   * @return {Promise} A promise that resolves when the message is sent
-   */
-  sendSns(message) {
-    if (this.snsClient) {
-      const params = this.constructSnsMessage(message);
-      return this.request('sendSns', params);
-    }
-    return undefined;
-  }
+const sns = new AWS.SNS(snsConfig);
 
-  /**
-   * Sends a simple format message to SQS
-   * @param {object} msg - A message in a simple general format
-   * @return {Promise} A promise that resolves when the message is sent
-   */
-  sendSqs(message) {
-    if (this.sqsClient) {
-      const params = this.constructSqsMessage(message);
-      return this.request('sendSqs', params);
-    }
-    return undefined;
+function marshalAttribute(attribute) {
+  if (Array.isArray(attribute)) {
+    return { DataType: 'String.Array', StringValue: JSON.stringify(attribute) };
+  } if (typeof attribute === 'string') {
+    return { DataType: 'String', StringValue: attribute };
+  } if (typeof attribute === 'number') {
+    return { DateType: 'Number', StringValue: `${attribute}` };
   }
-
-  /**
-   * Converts a simple message into required format for SNS
-   * @param {object} msg - A message in a simple general format
-   * @return {object} Converted SNS message ready to send
-   */
-  constructSnsMessage(msg) {
-    const params = {
-      Message: JSON.stringify(msg.body),
-      MessageAttributes: this.constructAttributes(msg.attributes),
-      TopicArn: this.topicArn,
-      ...(msg.subject ? { Subject: msg.subject } : {})
-    };
-    return params;
-  }
-
-  /**
-   * Converts a simple message into required format for SQS
-   * @param {object} msg - A message in a simple general format
-   * @return {object} Converted SQS message ready to send
-   */
-  constructSqsMessage(msg) {
-    const params = {
-      MessageBody: JSON.stringify(msg.body),
-      MessageAttributes: this.constructAttributes(msg.attributes),
-      QueueUrl: this.queueUrl
-    };
-    return params;
-  }
-
-  /**
-   * Remap a simple key-value map to required input for a message.
-   * @param {object} attributes - Key value map of message attributes
-   * @return {object} A map with values denoted by value type
-   */
-  constructAttributes(attributes) {
-    return Object.entries(attributes).reduce((formatted, [key, val]) => {
-      formatted[key] = {
-        DataType: 'String',
-        StringValue: val.toString()
-      };
-      return formatted;
-    }, {});
-  }
-
-  request(operation, params) {
-    const method = this.operations[operation];
-    const promise = new Promise((resolve) => {
-      const callback = (err, data) => {
-        if (err) {
-          console.error(`[ERROR] ${err}`);
-          return resolve(err);
-        }
-        return resolve(data);
-      };
-      method(params, callback);
-    });
-    return promise;
-  }
+  return {};
 }
 
-module.exports = MessageDriver;
+function marshalAttributes(eventMessage) {
+  return Object.entries(eventMessage).reduce((attributes, [key, val]) => {
+    if (key !== 'data') {
+      Object.assign(attributes, { [key]: marshalAttribute(val) });
+    }
+    return attributes;
+  }, {});
+}
+
+function sendEvent(eventMessage) {
+  const params = {
+    Subject: 'event',
+    Message: JSON.stringify(eventMessage),
+    MessageAttributes: marshalAttributes(eventMessage),
+    TopicArn: eventSns
+  };
+  return sns.publish(params).promise().catch((e) => { console.error(e); });
+}
+
+function parseAttributesFromParams(params) {
+  const attributes = {
+    ...(params.action && { action_id: params.action.id }),
+    ...(params.conversation && { conversation_id: params.conversation.id }),
+    ...(params.daac && { daac_id: params.daac.id }),
+    ...(params.form && { form_id: params.form.id }),
+    ...(params.group && { group_id: params.group.id }),
+    ...(params.question && { question_id: params.question.id }),
+    ...(params.role && { role_id: params.role.id }),
+    ...(params.service && { service_id: params.service.id }),
+    ...(params.submission && { submission_id: params.submission.id }),
+    ...(params.user && { user_id: params.user.id }),
+    ...(params.workflow && { workflow_id: params.workflow.id })
+  };
+  return attributes;
+}
+
+function parseSnsMessage(message) {
+  return {
+    subject: message.Subject,
+    eventMessage: JSON.parse(message.Message),
+    timestamp: new Date(message.Timestamp).toISOString()
+  };
+}
+
+function parseSqsMessage(message) {
+  return {
+    eventMessage: JSON.parse(message.body),
+    timestamp: new Date(message.attributes.ApproximateReceiveTimestamp).toISOString()
+  };
+}
+
+function parseRecord(record) {
+  if (record.Sns) {
+    return parseSnsMessage(record.Sns);
+  } if (record.Sqs) {
+    return parseSqsMessage(record.Sqs);
+  }
+  return {};
+}
+
+module.exports.sendEvent = sendEvent;
+module.exports.parseRecord = parseRecord;
+module.exports.parseAttributesFromParams = parseAttributesFromParams;

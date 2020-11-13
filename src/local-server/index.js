@@ -10,24 +10,25 @@ const bodyParser = require('body-parser');
 
 const auth = require('./auth.js');
 
-// const AWS = require('aws-sdk');
-//
-// const { Consumer } = require('sqs-consumer');
-//
-// AWS.config.update({
-//   region: 'us-east-1',
-//   accessKeyId: 'fake',
-//   secretAccessKey: 'fake'
-// });
-//
-// const consumer = Consumer.create({
-//   queueUrl: 'http://goaws/edpub_queue_local.fifo',
-//   handleMessage: async (message) => {
-//     console.log(message);
-//   }
-// });
-//
-// consumer.start();
+const workflowHandler = require('workflow-handler').handler;
+
+//const actionHandler = require('action-handler').handler;
+
+const AWS = require('aws-sdk');
+
+const { Consumer } = require('sqs-consumer');
+
+const consumer = Consumer.create({
+  sqs: new AWS.SQS({ endpoint: process.env.SNS_ENDPOINT }),
+  queueUrl: 'http://goaws:4100/000000000000/edpub_action_sqs.fifo',
+  pollingWaitTimeMs: 15000,
+  //handleMessage: actionHandler
+  handleMessage:  async (message) => {
+    console.log(message);
+  }
+});
+
+consumer.start();
 
 const app = express();
 
@@ -80,8 +81,13 @@ app.post('/refresh', auth.refreshEndpoint);
 app.delete('/token/:token', auth.deleteTokenEndpoint);
 app.delete('/tokenDelete/:token', auth.deleteTokenEndpoint);
 
-app.post('/goawsmq', function(req, res) {
-  res.send(req);
+app.post('/goaws/workflow_handler', function(req, res) {
+  if (req.body.MessageAttributes.event_type.Value === 'workflow_promote_step') {
+    const records = { Records: [ { Sns: { ...req.body } }] };
+    workflowHandler(records);
+  }
+  res.statusCode = 200;
+  res.send();
 });
 
 

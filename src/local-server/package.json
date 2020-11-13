@@ -4,7 +4,6 @@
   "description": "Local test server for EDPUB",
   "main": "index.js",
   "scripts": {
-    "prestart": "npm install",
     "start": "nodemon index.js"
   },
   "keywords": [
@@ -25,6 +24,7 @@
     "jsonwebtoken": "^8.5.1",
     "message-driver": "file:../nodejs/message-driver",
     "model": "file:../nodejs/model",
+    "metrics": "file:../nodejs/metrics",
     "metrics-handler": "file:../nodejs/metrics-handler",
     "nodemon": "^2.0.4",
     "notification-handler": "file:../nodejs/notification-handler",
@@ -32,10 +32,9 @@
     "oas-tools": "^2.1.8",
     "register": "file:../nodejs/register",
     "schema-util": "file:../nodejs/schema-util",
-    "service": "file:../nodejs/service",
     "sqs-consumer": "^5.4.0",
     "submission": "file:../nodejs/submission",
-    "subscription": "file:../nodejs/subscription",
+    "subscribe": "file:../nodejs/subscribe",
     "workflow-handler": "file:../nodejs/workflow-handler"
   }
 }

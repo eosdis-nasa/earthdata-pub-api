@@ -1,11 +1,6 @@
 clear_artifacts() {
   rm ${DIR}/artifacts/*.zip
-  rm ${DIR}/terraform/main.tf
-  rm ${DIR}/terraform/apigateway/main.tf*
   rm ${DIR}/terraform/apigateway/openapi.json
-  rm ${DIR}/terraform/apigateway/schema.json
-  rm ${DIR}/terraform/lambda/layers.tf
-  rm ${DIR}/terraform/lambda/override.tf
   rm -rf ${DIR}/src/nodejs/*/node_modules
   rm ${DIR}/src/nodejs/*/package-lock.json
   rm ${DIR}/src/nodejs/*/*.tgz
@@ -43,8 +38,7 @@ package_layer() {
 package_lambda() {
   cd ${DIR}/temp
   cp -R ${DIR}/src/nodejs/${1}/src/* ./.
-  cp ${DIR}/terraform/profiles/${PROFILE}/client-config.js .
-  zip -r ${DIR}/artifacts/${1}-lambda.zip . -x *.tgz
+  zip -r ${DIR}/artifacts/${1}-lambda.zip .
   cd ${DIR}
   rm -rf ${DIR}/temp/*
 }

@@ -1,85 +1,94 @@
 module "iam_roles" {
   source = "./iam"
 
-  region = local.region
-  account_id = local.account_id
-  stage = local.stage
-  stage_suffix = local.stage_suffix
-  edpub_queue_arn = module.sqs_queues.edpub_queue_arn
-  edpub_topic_arn = module.sns_topics.edpub_topic_arn
-  edpub_email_topic_arn = module.sns_topics.edpub_email_topic_arn
-  edpub_metrics_topic_arn = module.sns_topics.edpub_metrics_topic_arn
-  lambda_execution_policy_arn = local.lambda_execution_policy_arn
-  permissions_boundary_arn = local.permissions_boundary_arn
+  region = var.region
+  account_id = var.account_id
+  stage = var.stage
+  edpub_action_sqs_arn = module.sqs_queues.edpub_action_sqs_arn
+  edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
+  edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
+  edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
+  edpub_action_s3_arn = module.s3_buckets.edpub_action_s3_arn
+  lambda_execution_policy_arn = var.lambda_execution_policy_arn
+  permissions_boundary_arn = var.permissions_boundary_arn
+}
+
+module "cognito" {
+  source = "./cognito"
+
+  region = var.region
+  stage = var.stage
+  auth_callback_urls = var.auth_callback_urls
+  auth_logout_urls = var.auth_logout_urls
 }
 
 module "lambda_functions" {
   source = "./lambda"
 
-  region = local.region
-  account_id = local.account_id
-  stage = local.stage
-  stage_suffix = local.stage_suffix
-  subnet_ids = local.subnet_ids
-  security_group_ids = local.security_group_ids
-  data_lambda_role_arn = module.iam_roles.data_lambda_role_arn
-  notify_lambda_role_arn = module.iam_roles.notify_lambda_role_arn
-  subscription_lambda_role_arn = module.iam_roles.subscription_lambda_role_arn
-  submission_lambda_role_arn = module.iam_roles.submission_lambda_role_arn
-  register_lambda_role_arn = module.iam_roles.register_lambda_role_arn
-  dashboard_lambda_role_arn = module.iam_roles.dashboard_lambda_role_arn
-  notification_handler_lambda_role_arn = module.iam_roles.notification_handler_lambda_role_arn
-  invoke_lambda_role_arn = module.iam_roles.invoke_lambda_role_arn
-  action_handler_lambda_role_arn = module.iam_roles.action_handler_lambda_role_arn
-  workflow_handler_lambda_role_arn = module.iam_roles.workflow_handler_lambda_role_arn
-  metrics_handler_lambda_role_arn = module.iam_roles.metrics_handler_lambda_role_arn
+  region = var.region
+  account_id = var.account_id
+  stage = var.stage
+  subnet_ids = var.subnet_ids
+  security_group_ids = var.security_group_ids
+  edpub_lambda_role_arn = module.iam_roles.edpub_lambda_role_arn
   api_id = module.apigateway_endpoints.api_id
-  use_layers = local.use_layers
-  edpub_queue_arn = module.sqs_queues.edpub_queue_arn
-  edpub_queue_url = module.sqs_queues.edpub_queue_url
-  edpub_topic_arn = module.sns_topics.edpub_topic_arn
-  edpub_email_topic_arn = module.sns_topics.edpub_email_topic_arn
-  edpub_metrics_topic_arn = module.sns_topics.edpub_metrics_topic_arn
-  edpub_action_bucket = module.s3_buckets.edpub_action_bucket
+  edpub_action_sqs_arn = module.sqs_queues.edpub_action_sqs_arn
+  edpub_action_sqs_url = module.sqs_queues.edpub_action_sqs_url
+  edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
+  edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
+  edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
+  edpub_action_s3_id = module.s3_buckets.edpub_action_s3_id
+  db_host = module.rds.db_host
+  db_port = module.rds.db_port
+  db_database = module.rds.db_database
+  db_user = module.rds.db_user
+  db_password = var.db_password
 }
 
 module "apigateway_endpoints" {
   source = "./apigateway"
 
-  stage = local.stage
-  stage_suffix = local.stage_suffix
+  stage = var.stage
   data_lambda_arn = module.lambda_functions.data_lambda_arn
   notify_lambda_arn = module.lambda_functions.notify_lambda_arn
+  metrics_lambda_arn = module.lambda_functions.metrics_lambda_arn
+  model_lambda_arn = module.lambda_functions.model_lambda_arn
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn
-  subscription_lambda_arn = module.lambda_functions.subscription_lambda_arn
+  subscribe_lambda_arn = module.lambda_functions.subscribe_lambda_arn
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn
   register_lambda_arn = module.lambda_functions.register_lambda_arn
-  dashboard_lambda_arn = module.lambda_functions.dashboard_lambda_arn
+  cognito_user_pool_arn = module.cognito.cognito_user_pool_arn
+  cognito_login_url = module.cognito.cognito_login_url
+  vpc_endpoint_id = var.vpc_endpoint_id
+}
+
+module "rds" {
+  source = "./rds"
+
+  rds_cluster_identifier = var.rds_cluster_identifier
 }
 
 module "sns_topics" {
   source = "./sns"
 
-  region = local.region
-  account_id = local.account_id
-  stage = local.stage
-  stage_suffix = local.stage_suffix
+  region = var.region
+  account_id = var.account_id
+  stage = var.stage
 }
 
 module "sqs_queues" {
   source = "./sqs"
 
-  region = local.region
-  account_id = local.account_id
-  stage = local.stage
-  stage_suffix = local.stage_suffix
+  region = var.region
+  account_id = var.account_id
+  stage = var.stage
+  edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
 }
 
 module "s3_buckets" {
   source = "./s3"
 
-  region = local.region
-  account_id = local.account_id
-  stage = local.stage
-  stage_suffix = local.s3_stage_suffix
+  region = var.region
+  account_id = var.account_id
+  stage = var.stage
 }

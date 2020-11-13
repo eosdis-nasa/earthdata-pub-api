@@ -38,6 +38,14 @@ module.exports.groupFindAll = function groupFindAll(req, res, next) {
   proxyService.groupFindAll(req.swagger.params, res, next);
 };
 
+module.exports.roleFindById = function roleFindById(req, res, next) {
+  proxyService.roleFindById(req.swagger.params, res, next);
+};
+
+module.exports.roleFindAll = function roleFindAll(req, res, next) {
+  proxyService.roleFindAll(req.swagger.params, res, next);
+};
+
 module.exports.noteFindById = function noteFindById(req, res, next) {
   proxyService.noteFindById(req.swagger.params, res, next);
 };
