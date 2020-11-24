@@ -10,8 +10,6 @@ clear_artifacts
 #Copy and modify schema and openapi definition
 compile_oas_schema './terraform/apigateway/openapi.json'
 
-cp ./terraform/apigateway/openapi.json ./src/local-server/api/openapi.json
-
 #Copy database setup and seed scripts
 cp ./src/postgres/*.sql ./src/nodejs/database-driver/src/
 

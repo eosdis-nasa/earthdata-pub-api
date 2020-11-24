@@ -560,6 +560,122 @@
         "x-router-controller": "proxy"
       }
     },
+    "/data/role/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get role",
+        "description": "Returns a single role by ID",
+        "operationId": "roleFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        },
+        "x-router-controller": "proxy"
+      }
+    },
+    "/data/roles": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get roles",
+        "description": "Returns list of roles",
+        "operationId": "roleFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        },
+        "x-router-controller": "proxy"
+      }
+    },
     "/data/note/{id}": {
       "parameters": [
         {

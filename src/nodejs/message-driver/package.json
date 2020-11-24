@@ -15,7 +15,7 @@
   "dependencies": {},
   "bundledDependencies": {},
   "devDependencies": {
-    "aws-sdk": "^2.783.0",
+    "aws-sdk": "^2.797.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",

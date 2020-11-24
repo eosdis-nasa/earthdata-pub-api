@@ -23,6 +23,12 @@ install_lambda() {
   cd ${DIR}
 }
 
+local_install() {
+  cd ${DIR}/src/nodejs/${1}
+  npm install
+  cd ${DIR}
+}
+
 package_layer() {
   cd ${DIR}/temp
   mkdir nodejs

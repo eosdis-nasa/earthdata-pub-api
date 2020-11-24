@@ -105,8 +105,19 @@ module.exports.groupFindById = function groupFindById(req, res, next) {
 };
 
 module.exports.groupFindAll = function groupFindAll(req, res, next) {
-  res.send({
-    message: 'This is the mockup controller for groupfindAll'
+  const lambdaEvent = {
+    resource: 'group',
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
+  }
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -123,8 +134,19 @@ module.exports.roleFindById = function roleFindById(req, res, next) {
 };
 
 module.exports.roleFindAll = function roleFindAll(req, res, next) {
-  res.send({
-    message: 'This is the mockup controller for groupfindAll'
+  const lambdaEvent = {
+    resource: 'role',
+    operation: 'findAll',
+    params: { query: {
+        sort: req.sort.value,
+        order: req.order.value,
+        per_page: req.per_page.value,
+        page: req.page.value
+      }
+    }
+  }
+  dataHandler(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
