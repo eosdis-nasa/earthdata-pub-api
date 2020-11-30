@@ -19,6 +19,7 @@ const findById = `
           'question_name', question.question_name,
           'version', question.version,
           'text', question.text,
+          'help', question.help,
           'required', question.required,
           'required_if', section_question.required_if,
           'show_if', section_question.show_if,

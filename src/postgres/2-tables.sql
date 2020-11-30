@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
   form_name VARCHAR NOT NULL,
+  title VARCHAR NOT NULL,
   version SMALLINT,
   description VARCHAR,
   text VARCHAR NOT NULL,
