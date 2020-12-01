@@ -137,3 +137,7 @@ module.exports.putLogEvent = function putLogEvent(req, res, next) {
 module.exports.getModel = function getModel(req, res, next) {
   proxyService.getModel(req.swagger.params, res, next);
 };
+
+module.exports.getVersion = function getVersion(req, res, next) {
+  proxyService.getVersion(req.swagger.params, res, next);
+};

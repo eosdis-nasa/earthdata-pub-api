@@ -32,6 +32,7 @@
     "schema-util": "file:./src/nodejs/schema-util",
     "submission": "file:./src/nodejs/submission",
     "subscribe": "file:./src/nodejs/subscribe",
+    "version": "file:./src/nodejs/version",
     "workflow-handler": "file:./src/nodejs/workflow-handler"
   },
   "devDependencies": {

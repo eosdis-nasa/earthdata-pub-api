@@ -1,5 +1,5 @@
--- Form(id, form_name, version, text, description)
-INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'archival_interest', 1, 'The archival interest form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.', 'To express interest in archiving a data product, please fill out the following form.');
+-- Form(id, form_name, title, version, text, description)
+INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'archival_interest', 'Archival Interest Form', 1, 'The archival interest form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.', 'To express interest in archiving a data product, please fill out the following form.');
 
 -- Section(id, form_id, heading, list_order)
 INSERT INTO section VALUES ('458aa77d-8313-4093-aeac-dde2e892910a', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 0, '[]', '[]');

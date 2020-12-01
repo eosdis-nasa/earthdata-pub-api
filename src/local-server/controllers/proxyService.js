@@ -2,6 +2,7 @@
 const dataHandler = require('data').handler;
 const modelHandler = require('model').handler;
 const submissionHandler = require('submission').handler;
+const versionHandler = require('version').handler;
 
 module.exports.actionFindById = function actionFindById(req, res, next) {
   const lambdaEvent = {
@@ -387,6 +388,13 @@ module.exports.getModel = function getModel(req, res, next) {
     model: req.model.value
   }
   modelHandler(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.getVersion = function getVersion(req, res, next) {
+  const lambdaEvent = {}
+  versionHandler(lambdaEvent).then((body) => {
     res.send(body);
   });
 };

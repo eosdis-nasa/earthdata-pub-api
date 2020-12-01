@@ -57,6 +57,14 @@
         "description": "Read the docs",
         "url": "http://database.docs/#TODO"
       }
+    },
+    {
+      "name": "version",
+      "description": "Retrieve version of the API.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
     }
   ],
   "paths": {
@@ -1751,6 +1759,41 @@
         },
         "x-router-controller": "proxy"
       }
+    },
+    "/version": {
+      "get": {
+        "tags": [
+          "version"
+        ],
+        "summary": "Get version",
+        "description": "Returns the current API version for compatibility checks.",
+        "operationId": "getVersion",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Version"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${version_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        },
+        "x-router-controller": "proxy"
+      }
     }
   },
   "components": {
@@ -2235,6 +2278,18 @@
         "description": "Univerally Unique Identifier",
         "type": "string",
         "pattern": "^[a-f|0-9]{8}-[a-f|0-9]{4}-4[a-f|0-9]{3}-[89ab][a-f|0-9]{3}-[a-f|0-9]{12}$"
+      },
+      "Version": {
+        "description": "An object containing versioning information of the API.",
+        "type": "object",
+        "properties": {
+          "response_version": {
+            "type": "string"
+          },
+          "api_version": {
+            "type": "string"
+          }
+        }
       },
       "Workflow": {
         "description": "A series of steps for processing a Submission",

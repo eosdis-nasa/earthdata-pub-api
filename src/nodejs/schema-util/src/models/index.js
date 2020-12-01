@@ -20,6 +20,7 @@ const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const User = require('./user.js');
 const UUID = require('./uuid.js');
+const Version = require('./version.js');
 const Workflow = require('./workflow.js');
 const WorkflowActionStep = require('./workflow-action-step.js');
 const WorkflowCloseStep = require('./workflow-close-step.js');
@@ -53,6 +54,7 @@ const models = {
   Subscription,
   User,
   UUID,
+  Version,
   Workflow,
   WorkflowActionStep,
   WorkflowCloseStep,

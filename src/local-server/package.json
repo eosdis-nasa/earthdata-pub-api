@@ -35,6 +35,7 @@
     "sqs-consumer": "^5.4.0",
     "submission": "file:../nodejs/submission",
     "subscribe": "file:../nodejs/subscribe",
+    "version": "file:../nodejs/version",
     "workflow-handler": "file:../nodejs/workflow-handler"
   }
 }

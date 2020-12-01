@@ -9,6 +9,7 @@ services:
       - ./src/nodejs:/var/nodejs
     working_dir: /var/local-server
     environment:
+      - API_VERSION=1.0.0
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=fake
       - AWS_SECRET_ACCESS_KEY=fake
