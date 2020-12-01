@@ -362,6 +362,7 @@ module.exports.actionRegister = function actionRegister(req, res, next) {
 };
 
 module.exports.submissionOperation = function SubmissionOperation(req, res, next) {
+  console.log(req);
   const lambdaEvent = {
     operation: req.operation.value,
     payload: req.payload.value,

@@ -368,6 +368,7 @@
         "description": "Create a new form or update an existing form",
         "operationId": "formPut",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -806,6 +807,7 @@
         "description": "Create a new question or update an existing question",
         "operationId": "questionPut",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -1244,6 +1246,7 @@
         "description": "Creates a new workflow or new version of existing workflow",
         "operationId": "workflowPut",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -1317,6 +1320,7 @@
         "description": "Send a request to notify an individual or group.",
         "operationId": "notify",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -1346,6 +1350,7 @@
         "description": "Subscribe or unsubscribe to events raised by given entities.",
         "operationId": "subscribe",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -1375,6 +1380,7 @@
         "description": "Invoke an action to be processed on a given submission.",
         "operationId": "actionInvoke",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -1404,6 +1410,7 @@
         "description": "Register a new custom action.",
         "operationId": "actionRegister",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -1442,6 +1449,7 @@
         "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
         "operationId": "submissionOperation",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
@@ -1525,6 +1533,7 @@
         "description": "Sends a client-side event to the system to be logged. Typically this would be an error.",
         "operationId": "putLogEvent",
         "requestBody": {
+          "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
