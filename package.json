@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Collection of lambda functions and layers for Earthdata Pub",
   "scripts": {
+    "clean-modules": "rm -rf package-lock.json node_modules/ src/*/package-lock.json src/*/node_modules/",
     "build-docker-image": "docker build . -f ./Dockefile -t edpub-build",
     "build": "bash ./scripts/build.sh",
     "build-in-docker": "docker run --rm -v `pwd`:`pwd` -w `pwd` edpub-build npm run build",
