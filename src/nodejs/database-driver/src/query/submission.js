@@ -100,11 +100,8 @@ WHERE submission_form_data.id = {{submission.id}}`;
 const updateFormData = `
 INSERT INTO submission_form_data(id, form_id, data) VALUES
 ({{submission.id}}, {{form.id}}, {{form.data}}::JSONB)
-ON CONFLICT (id, form_id) DO
-UPDATE submission_form_data SET
-data = {{form.data}}::JSONB
-WHERE id = {{submission.id}}
-AND form_id = {{form.id}}
+ON CONFLICT (id, form_id) DO UPDATE SET
+data = EXCLUDED.data
 RETURNING *`;
 
 const getActionData = `
@@ -118,11 +115,8 @@ WHERE submission_action_data.id = {{submission.id}}`;
 const updateActionData = `
 INSERT INTO submission_action_data(id, action_id, data) VALUES
 ({{submission.id}}, {{action.id}}, {{action.data}}::JSONB)
-ON CONFLICT (id, action_id) DO
-UPDATE submission_action_data SET
-data = {{action.data}}::JSONB
-WHERE id = {{submission.id}}
-AND action_id = {{action.id}}
+ON CONFLICT (id, action_id) DO UPDATE SET
+data = EXCLUDED.data
 RETURNING *`;
 
 const getState = `
