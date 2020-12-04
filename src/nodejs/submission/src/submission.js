@@ -73,14 +73,19 @@ async function metadataMethod(body, user) {
 }
 
 async function saveMethod(body, user) {
-  const { id, form_id: formId, data: data } = body.payload;
+  let { id, form_id: formId, data: data } = body.payload;
+  if (!id) {
+    const submission = await initializeMethod(body, user);
+    id = submission.id;
+  }
   const response = await PgAdapter.execute({ resource: 'submission', operation: 'updateFormData' }, { submission: { id }, form: { id: formId, data: JSON.stringify(data) } });
   return response;
 }
 
 async function submitMethod(body, user) {
-  const { id, form_id: formId } = body.payload;
+  let { id, form_id: formId } = body.payload;
   const response = await saveMethod(body, user);
+  id = response.id;
   const eventMessage = {
     event_type: 'submission_form_submitted',
     submission_id: id,
