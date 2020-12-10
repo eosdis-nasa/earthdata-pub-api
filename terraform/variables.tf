@@ -19,11 +19,14 @@ variable "vpc_id" {
 variable "vpc_endpoint_id" {
   type = string
 }
-variable "auth_logout_urls" {
-  type = list(string)
+variable "api_root_url" {
+  type = string
 }
-variable "auth_callback_urls" {
-  type = list(string)
+variable "auth_logout_path" {
+  type = string
+}
+variable "auth_callback_path" {
+  type = string
 }
 variable "security_group_ids" {
   type = list(string)
@@ -41,5 +44,8 @@ variable "rds_cluster_identifier" {
   type = string
 }
 variable "db_password" {
+  type = string
+}
+variable "api_version" {
   type = string
 }

@@ -76,10 +76,10 @@ app.options('/*', function(req, res) {
   res.send();
 });
 
-app.get('/token', auth.tokenEndpoint);
-app.post('/refresh', auth.refreshEndpoint);
-app.delete('/token/:token', auth.deleteTokenEndpoint);
-app.delete('/tokenDelete/:token', auth.deleteTokenEndpoint);
+// app.get('/token', auth.tokenEndpoint);
+// app.post('/refresh', auth.refreshEndpoint);
+// app.delete('/token/:token', auth.deleteTokenEndpoint);
+// app.delete('/tokenDelete/:token', auth.deleteTokenEndpoint);
 
 app.post('/goaws/workflow_handler', function(req, res) {
   if (req.body.MessageAttributes.event_type.Value === 'workflow_promote_step') {

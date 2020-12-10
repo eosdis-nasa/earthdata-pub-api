@@ -52,6 +52,7 @@ resource "aws_cognito_user_pool_domain" "edpub_cognito" {
 resource "aws_cognito_user_pool_client" "edpub_cognito" {
   name = "edpub-${var.stage}"
   user_pool_id = aws_cognito_user_pool.edpub_cognito.id
+  generate_secret = true
   read_attributes = ["name", "email"]
   refresh_token_validity = 10
   explicit_auth_flows = [

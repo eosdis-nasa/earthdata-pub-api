@@ -138,6 +138,10 @@ module.exports.getModel = function getModel(req, res, next) {
   proxyService.getModel(req.swagger.params, res, next);
 };
 
+module.exports.getToken = function getToken(req, res, next) {
+  proxyService.getToken(req.swagger.params, res, next);
+};
+
 module.exports.getVersion = function getVersion(req, res, next) {
   proxyService.getVersion(req.swagger.params, res, next);
 };

@@ -6,12 +6,12 @@ package-lock.json
 npm-debug.log
 
 #Ignore all dynamic and generated components
+/terraform/env.tfvars
 /terraform/apigateway/openapi.json
-/terraform/lambda/layers.tf
 /terraform/.terraform/
 /terraform/terraform.tfstate
 /terraform/terraform.tfstate.backup
-/terraformtfplan
+/terraform/tfplan
 jsdoc/
 apidoc/
 

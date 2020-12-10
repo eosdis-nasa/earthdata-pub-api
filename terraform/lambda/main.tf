@@ -242,7 +242,7 @@ resource "aws_sns_topic_subscription" "metrics_handler_lambda" {
   filter_policy = data.local_file.metrics_handler_filter.content
 }
 
-# Data Lambda
+# Model Lambda
 
 resource "aws_lambda_function" "model" {
   filename      = "../artifacts/model-lambda.zip"
@@ -542,4 +542,33 @@ resource "aws_sns_topic_subscription" "workflow_handler" {
   protocol      = "lambda"
   endpoint      = aws_lambda_function.workflow_handler.arn
   filter_policy = data.local_file.workflow_handler_filter.content
+}
+
+# Version Lambda
+
+resource "aws_lambda_function" "version" {
+  filename      = "../artifacts/version-lambda.zip"
+  function_name = "version"
+  role          = var.edpub_lambda_role_arn
+  handler       = "version.handler"
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/version-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      API_VERSION = var.api_version
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "version" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.version.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }

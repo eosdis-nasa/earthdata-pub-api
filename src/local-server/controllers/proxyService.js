@@ -2,6 +2,7 @@
 const dataHandler = require('data').handler;
 const modelHandler = require('model').handler;
 const submissionHandler = require('submission').handler;
+const authHandler = require('auth').handler
 const versionHandler = require('version').handler;
 
 module.exports.actionFindById = function actionFindById(req, res, next) {
@@ -390,6 +391,19 @@ module.exports.getModel = function getModel(req, res, next) {
   }
   modelHandler(lambdaEvent).then((body) => {
     res.send(body);
+  });
+};
+
+module.exports.getToken = function getToken(req, res, next) {
+  const lambdaEvent = {
+    authorization: req.Authorization.value,
+    code: req.code.value,
+    state: req.state.value
+  }
+  authHandler(lambdaEvent).then((body) => {
+    res.status(307)
+    .set({ Location: body })
+    .send('Redirecting');
   });
 };
 

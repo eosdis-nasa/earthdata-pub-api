@@ -1563,6 +1563,66 @@
         "x-router-controller": "proxy"
       }
     },
+    "/token": {
+      "get": {
+        "tags": ["token"],
+        "parameters": [{
+          "name": "code",
+          "in": "query",
+          "description": "Authorization code from identity provider.",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "description": "A redirect url to redirect to after successful authentication.",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "Authorization",
+          "in": "header",
+          "description": "Authorization Bearer Token",
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "summary": "Authentication and token management",
+        "description": "Handles authentication and token management with an identity provider.",
+        "operationId": "getToken",
+        "responses": {
+          "307": {
+            "description": "Redirect"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Version"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${auth_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws_proxy"
+        },
+        "x-router-controller": "proxy"
+      }
+    },
     "/version": {
       "get": {
         "tags": ["version"],

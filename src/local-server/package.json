@@ -22,6 +22,8 @@
     "invoke": "file:../nodejs/invoke",
     "js-yaml": "^3.3.0",
     "jsonwebtoken": "^8.5.1",
+    "auth": "file:../nodejs/auth",
+    "auth-util": "file:../nodejs/auth-util",
     "message-driver": "file:../nodejs/message-driver",
     "model": "file:../nodejs/model",
     "metrics": "file:../nodejs/metrics",

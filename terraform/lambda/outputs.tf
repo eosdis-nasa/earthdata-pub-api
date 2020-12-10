@@ -37,3 +37,7 @@ output "register_lambda_arn" {
 output "notification_handler_lambda_arn" {
   value = aws_lambda_function.notification_handler.invoke_arn
 }
+
+output "version_lambda_arn" {
+  value = aws_lambda_function.version.invoke_arn
+}
