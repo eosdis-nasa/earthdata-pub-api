@@ -72,34 +72,33 @@ async function metadataMethod(body, user) {
   return response;
 }
 
-async function submitMethod(body, user) {
-  // Submit a form and resume the Workflow
-  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  // const { steps } = submission.workflow;
-  // const current = steps[submission.step];
-  // if (current.type === 'form' && submission.lock === user.id) {
-  //   const data = submission.form_data;
-  //   data[current.form_id] = body;
-  //   submission.lock = false;
-  //   await dbDriver.putItem('submission', submission);
-  //   msgDriver.sendSns(constructMessage(submission, 'submit', true));
-  // }
-  console.info('Not Implemented', body, user);
+async function saveMethod(body, user) {
+  let { id, form_id: formId, data: data } = body.payload;
+  if (!id) {
+    const submission = await initializeMethod(body, user);
+    id = submission.id;
+  }
+  const response = await PgAdapter.execute({ resource: 'submission', operation: 'updateFormData' }, { submission: { id }, form: { id: formId, data: JSON.stringify(data) } });
+  return response;
 }
 
-async function saveMethod(body, user) {
-  // Saves an in progress form to finish and submit at a later time
-  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  // const { steps } = submission.workflow;
-  // const current = steps[submission.step];
-  // if (current.type === 'form' && submission.lock === user.id) {
-  //   const data = submission.form_data;
-  //   data[current.form_id] = body;
-  //   submission.lock = false;
-  //   await dbDriver.putItem('submission', submission);
-  //   msgDriver.sendSns(constructMessage(submission, 'save'));
-  // }
-  console.info('Not Implemented', body, user);
+async function submitMethod(body, user) {
+  let { id, form_id: formId } = body.payload;
+  const response = await saveMethod(body, user);
+  id = response.id;
+  const eventMessage = {
+    event_type: 'submission_form_submitted',
+    submission_id: id,
+    form_id: formId,
+    user_id: user.id
+  };
+  await MessageDriver.sendEvent(eventMessage);
+  const status = await PgAdapter.execute({ resource: 'submission', operation: 'getState' },
+    { submission: { id } });
+  if (status.type === 'form' && status.form_id === formId) {
+    await resumeMethod(body, user);
+  }
+  return response;
 }
 
 async function reviewMethod(body, user) {
