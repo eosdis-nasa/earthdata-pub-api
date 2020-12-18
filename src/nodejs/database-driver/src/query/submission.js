@@ -2,7 +2,7 @@ const findAll = `
 SELECT
   submission.id,
   submission_status.workflow_id,
-  workflow.workflow_name,
+  workflow.short_name,
   step.step_name,
   step.step_type,
   step.status_message,
@@ -17,7 +17,7 @@ NATURAL JOIN (
     type step_type,
     (CASE
     WHEN type = 'init' THEN 'Initialized'
-      WHEN type = 'form' THEN 'Pending Form Submittal'
+    WHEN type = 'form' THEN 'Pending Form Submittal'
     WHEN type = 'review' THEN 'Pending Review'
     WHEN type = 'service' THEN 'Pending Service Completion'
     WHEN type = 'action' THEN 'Processing Action'
@@ -35,7 +35,7 @@ const findById = `
 SELECT
   submission.id,
   submission_status.workflow_id,
-  workflow.workflow_name,
+  workflow.short_name,
   step.step_name,
   step.status,
   COALESCE(submission_action_data.action_data, '{}'::JSONB) action_data,
