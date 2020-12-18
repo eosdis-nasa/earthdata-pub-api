@@ -10,6 +10,14 @@ module.exports.model = (path) => ({
     },
     email: {
       type: 'string'
+    },
+    roles: {
+      type: 'array',
+      items: { $ref: `#${path}Role` }
+    },
+    groups: {
+      type: 'array',
+      items: { $ref: `#${path}Group` }
     }
   }
 });

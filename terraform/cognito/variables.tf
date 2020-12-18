@@ -6,10 +6,10 @@ variable "region" {
   type = string
 }
 
-variable "auth_callback_urls" {
-  type = list(string)
+variable "auth_callback_url" {
+  type = string
 }
 
-variable "auth_logout_urls" {
-  type = list(string)
+variable "auth_logout_url" {
+  type = string
 }

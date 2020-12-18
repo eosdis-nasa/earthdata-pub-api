@@ -73,3 +73,39 @@ variable "security_group_ids" {
 variable "api_version" {
   type = string
 }
+
+variable "cognito_url" {
+  type = string
+}
+
+variable "cognito_login_path" {
+  type = string
+}
+
+variable "cognito_authorize_path" {
+  type = string
+}
+
+variable "cognito_token_path" {
+  type = string
+}
+
+variable "cognito_user_path" {
+  type = string
+}
+
+variable "cognito_client_id" {
+  type = string
+}
+
+variable "cognito_client_secret" {
+  type = string
+}
+
+variable "cognito_callback_url" {
+  type = string
+}
+
+variable "cognito_state_url" {
+  type = string
+}

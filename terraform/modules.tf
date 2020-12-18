@@ -18,8 +18,8 @@ module "cognito" {
 
   region = var.region
   stage = var.stage
-  auth_callback_urls = var.auth_callback_urls
-  auth_logout_urls = var.auth_logout_urls
+  auth_callback_url = var.api_auth_callback_url
+  auth_logout_url = var.api_auth_logout_url
 }
 
 module "lambda_functions" {
@@ -28,6 +28,7 @@ module "lambda_functions" {
   region = var.region
   account_id = var.account_id
   stage = var.stage
+  api_version = var.api_version
   subnet_ids = var.subnet_ids
   security_group_ids = var.security_group_ids
   edpub_lambda_role_arn = module.iam_roles.edpub_lambda_role_arn
@@ -43,12 +44,22 @@ module "lambda_functions" {
   db_database = module.rds.db_database
   db_user = module.rds.db_user
   db_password = var.db_password
+  cognito_url = module.cognito.cognito_url
+  cognito_login_path = module.cognito.cognito_login_path
+  cognito_authorize_path = module.cognito.cognito_authorize_path
+  cognito_token_path = module.cognito.cognito_token_path
+  cognito_user_path = module.cognito.cognito_user_path
+  cognito_client_id = module.cognito.cognito_client_id
+  cognito_client_secret = module.cognito.cognito_client_secret
+  cognito_callback_url = var.api_auth_callback_url
+  cognito_state_url = var.client_login_url
 }
 
 module "apigateway_endpoints" {
   source = "./apigateway"
 
   stage = var.stage
+  auth_lambda_arn = module.lambda_functions.auth_lambda_arn
   data_lambda_arn = module.lambda_functions.data_lambda_arn
   notify_lambda_arn = module.lambda_functions.notify_lambda_arn
   metrics_lambda_arn = module.lambda_functions.metrics_lambda_arn
@@ -57,8 +68,8 @@ module "apigateway_endpoints" {
   subscribe_lambda_arn = module.lambda_functions.subscribe_lambda_arn
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn
   register_lambda_arn = module.lambda_functions.register_lambda_arn
+  version_lambda_arn = module.lambda_functions.version_lambda_arn
   cognito_user_pool_arn = module.cognito.cognito_user_pool_arn
-  cognito_login_url = module.cognito.cognito_login_url
   vpc_endpoint_id = var.vpc_endpoint_id
 }
 

@@ -19,15 +19,6 @@ variable "vpc_id" {
 variable "vpc_endpoint_id" {
   type = string
 }
-variable "api_root_url" {
-  type = string
-}
-variable "auth_logout_path" {
-  type = string
-}
-variable "auth_callback_path" {
-  type = string
-}
 variable "security_group_ids" {
   type = list(string)
 }
@@ -47,5 +38,20 @@ variable "db_password" {
   type = string
 }
 variable "api_version" {
+  type = string
+}
+variable "api_root_url" {
+  type = string
+}
+variable "api_auth_logout_url" {
+  type = string
+}
+variable "api_auth_callback_url" {
+  type = string
+}
+variable "client_root_url" {
+  type = string
+}
+variable "client_login_url" {
   type = string
 }

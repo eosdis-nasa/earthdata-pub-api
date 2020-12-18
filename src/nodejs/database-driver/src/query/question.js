@@ -16,7 +16,7 @@ const findAllEx = `
     FROM input
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
 const findById = `${findAllEx} WHERE question.id = {{question.id}}`;
-const findByName = `${findAllEx} WHERE question.question_name = {{question.question_name}}`;
+const findByName = `${findAllEx} WHERE question.short_name = {{question.short_name}}`;
 const findBySectionId = `${findAllEx} WHERE question.id IN (
   SELECT section_question.question_id
   FROM section_question

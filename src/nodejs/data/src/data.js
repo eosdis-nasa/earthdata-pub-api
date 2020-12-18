@@ -46,10 +46,16 @@ async function putItem(event) {
   return {};
 }
 
+async function seed(event) {
+  let response = await PgAdapter.seed();
+  return response;
+}
+
 const operations = {
   findById,
   findAll,
-  putItem
+  putItem,
+  seed
 };
 
 async function handler(event) {

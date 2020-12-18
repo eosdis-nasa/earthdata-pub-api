@@ -15,6 +15,7 @@ resource "aws_api_gateway_rest_api" "EarthdataPub" {
 data "template_file" "edpub_oas" {
   template = file("./apigateway/openapi.json")
   vars = {
+    auth_lambda_arn       = var.auth_lambda_arn
     data_lambda_arn       = var.data_lambda_arn
     invoke_lambda_arn     = var.invoke_lambda_arn
     notify_lambda_arn     = var.notify_lambda_arn
@@ -23,8 +24,8 @@ data "template_file" "edpub_oas" {
     subscribe_lambda_arn  = var.subscribe_lambda_arn
     submission_lambda_arn = var.submission_lambda_arn
     register_lambda_arn   = var.register_lambda_arn
+    version_lambda_arn    = var.version_lambda_arn
     cognito_user_pool_arn = var.cognito_user_pool_arn
-    cognito_login_url     = var.cognito_login_url
   }
 }
 

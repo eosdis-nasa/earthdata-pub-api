@@ -62,9 +62,9 @@ resource "aws_cognito_user_pool_client" "edpub_cognito" {
       "ALLOW_USER_SRP_AUTH"
   ]
   supported_identity_providers = ["COGNITO"]
-  callback_urls = var.auth_callback_urls
-  logout_urls = var.auth_logout_urls
-  allowed_oauth_flows = ["code"]
+  callback_urls = [ var.auth_callback_url ]
+  logout_urls = [ var.auth_logout_url ]
+  allowed_oauth_flows = ["code", "implicit"]
   allowed_oauth_scopes = ["email", "openid"]
   allowed_oauth_flows_user_pool_client = true
   prevent_user_existence_errors = "ENABLED"

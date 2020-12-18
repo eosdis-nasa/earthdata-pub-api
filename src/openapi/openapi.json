@@ -9,73 +9,112 @@
       "email": "brian.ellingson@uah.edu"
     }
   },
-  "tags": [{
-    "name": "data",
-    "description": "Fetch questions, forms, workflows",
-    "externalDocs": {
-      "description": "Read the docs",
-      "url": "http://database.docs/#TODO"
+  "tags": [
+    {
+      "name": "data",
+      "description": "Fetch questions, forms, workflows",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "notification",
+      "description": "Interact with the notification system. Send a note, subscribe or unsubscribe to events.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "model",
+      "description": "Retrieve JSON schema models",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "action",
+      "description": "Interact with the action system. Invoke an action, or register a custom action.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "submission",
+      "description": "Manage submissions, fill forms, review.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "metrics",
+      "description": "Retrieve system metrics or submit client side events to be logged.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "auth",
+      "description": "Authentication endpoint.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "version",
+      "description": "Retrieve version of the API.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
     }
-  }, {
-    "name": "notification",
-    "description": "Interact with the notification system. Send a note, subscribe or unsubscribe to events.",
-    "externalDocs": {
-      "description": "Read the docs",
-      "url": "http://database.docs/#TODO"
-    }
-  }, {
-    "name": "model",
-    "description": "Retrieve JSON schema models",
-    "externalDocs": {
-      "description": "Read the docs",
-      "url": "http://database.docs/#TODO"
-    }
-  }, {
-    "name": "action",
-    "description": "Interact with the action system. Invoke an action, or register a custom action.",
-    "externalDocs": {
-      "description": "Read the docs",
-      "url": "http://database.docs/#TODO"
-    }
-  }, {
-    "name": "submission",
-    "description": "Manage submissions, fill forms, review.",
-    "externalDocs": {
-      "description": "Read the docs",
-      "url": "http://database.docs/#TODO"
-    }
-  }, {
-    "name": "metrics",
-    "description": "Retrieve system metrics or submit client side events to be logged.",
-    "externalDocs": {
-      "description": "Read the docs",
-      "url": "http://database.docs/#TODO"
-    }
-  }, {
-    "name": "version",
-    "description": "Retrieve version of the API.",
-    "externalDocs": {
-      "description": "Read the docs",
-      "url": "http://database.docs/#TODO"
-    }
-  }],
+  ],
   "paths": {
     "/data/action/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get action",
         "description": "Returns a single action by ID",
         "operationId": "actionFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -92,14 +131,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findById\",\"params\":{ \"action\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/actions": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get actions",
         "description": "Returns list of actions",
         "operationId": "actionFindAll",
@@ -118,25 +172,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -156,27 +234,63 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/daac/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get DAAC",
         "description": "Returns a single DAAC by ID",
         "operationId": "daacFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -193,14 +307,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findById\",\"params\":{ \"daac\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/daacs": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get DAACs",
         "description": "Returns list of DAACs",
         "operationId": "daacFindAll",
@@ -219,25 +348,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -257,27 +410,63 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/form/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get form",
         "description": "Returns a single form by ID",
         "operationId": "formFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -294,14 +483,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{ \"form\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/forms": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get forms",
         "description": "Returns list of forms",
         "operationId": "formFindAll",
@@ -320,25 +524,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -358,12 +586,27 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       },
       "post": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Create or update an form",
         "description": "Create a new form or update an existing form",
         "operationId": "formPut",
@@ -380,6 +623,23 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -393,27 +653,60 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/group/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get group",
         "description": "Returns a single group by ID",
         "operationId": "groupFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -430,14 +723,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findById\",\"params\":{ \"group\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/groups": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get groups",
         "description": "Returns list of groups",
         "operationId": "groupFindAll",
@@ -456,25 +764,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -494,27 +826,63 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/role/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get role",
         "description": "Returns a single role by ID",
         "operationId": "roleFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -531,14 +899,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findById\",\"params\":{ \"role\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/roles": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get roles",
         "description": "Returns list of roles",
         "operationId": "roleFindAll",
@@ -557,25 +940,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -595,27 +1002,63 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/note/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get note",
         "description": "Returns a single note by ID",
         "operationId": "noteFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -632,14 +1075,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findById\",\"params\":{ \"note\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/notes": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get notes",
         "description": "Returns list of notes",
         "operationId": "noteFindAll",
@@ -658,25 +1116,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -696,27 +1178,63 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/question/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get question",
         "description": "Returns a single question by ID",
         "operationId": "questionFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -733,14 +1251,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findById\",\"params\":{ \"question\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/questions": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get questions",
         "description": "Returns list of questions",
         "operationId": "questionFindAll",
@@ -759,25 +1292,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -797,12 +1354,27 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       },
       "post": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Create or update an question",
         "description": "Create a new question or update an existing question",
         "operationId": "questionPut",
@@ -819,6 +1391,23 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -832,27 +1421,60 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/service/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get service",
         "description": "Returns a single service by ID",
         "operationId": "serviceFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -869,14 +1491,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findById\",\"params\":{ \"service\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/services": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get services",
         "description": "Returns list of services",
         "operationId": "serviceFindAll",
@@ -895,25 +1532,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -933,27 +1594,63 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/submission/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get submission",
         "description": "Returns a single submission by ID",
         "operationId": "submissionFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -970,14 +1667,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findById\",\"params\":{ \"submission\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/submissions": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get submissions",
         "description": "Returns list of submissions",
         "operationId": "submissionFindAll",
@@ -996,25 +1708,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1034,27 +1770,63 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/user/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get user",
         "description": "Returns a single user by ID",
         "operationId": "userFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1071,14 +1843,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findById\",\"params\":{ \"user\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/users": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get users",
         "description": "Returns list of users",
         "operationId": "userFindAll",
@@ -1097,25 +1884,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1135,27 +1946,63 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/workflow/{id}": {
-      "parameters": [{
-        "name": "id",
-        "in": "path",
-        "description": "UUID of entity",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get workflow",
         "description": "Returns a single workflow by ID",
         "operationId": "workflowFindById",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1172,14 +2019,29 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findById\",\"params\":{ \"workflow\": {\"id\": \"$req.path.get('id')\"}}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/data/workflows": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get workflows",
         "description": "Returns list of workflows",
         "operationId": "workflowFindAll",
@@ -1198,25 +2060,49 @@
             "description": "Sort field",
             "schema": {
               "type": "string",
-              "enum": ["asc", "desc"]
+              "enum": [
+                "asc",
+                "desc"
+              ]
             }
           },
           {
             "name": "per_page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "Sort field",
-            "schema": { "type": "number" }
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1236,12 +2122,27 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       },
       "post": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Create or update an workflow",
         "description": "Creates a new workflow or new version of existing workflow",
         "operationId": "workflowPut",
@@ -1258,6 +2159,23 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1271,27 +2189,60 @@
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/model/{model}": {
-      "parameters": [{
-        "name": "model",
-        "in": "path",
-        "description": "Name of JSON schema model to retrieve",
-        "required": true,
-        "schema":  { "$ref": "#/components/schemas/UUID" }
-      }],
+      "parameters": [
+        {
+          "name": "model",
+          "in": "path",
+          "description": "Name of JSON schema model to retrieve",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
       "get": {
-        "tags": ["model"],
+        "tags": [
+          "model"
+        ],
         "summary": "Get model",
         "description": "Returns a single note by ID",
         "operationId": "getModel",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1308,14 +2259,29 @@
           "uri": "${model_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"model\": \"$req.path.get('model')\"}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/notification/notify": {
       "post": {
-        "tags": ["notification"],
+        "tags": [
+          "notification"
+        ],
         "summary": "Send a notify request",
         "description": "Send a request to notify an individual or group.",
         "operationId": "notify",
@@ -1331,21 +2297,53 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "x-amazon-apigateway-integration": {
           "uri": "${notify_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "$input.json('$')"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/notification/subscribe": {
       "post": {
-        "tags": ["notification"],
+        "tags": [
+          "notification"
+        ],
         "summary": "Subscribe or unscubscribe to an event",
         "description": "Subscribe or unsubscribe to events raised by given entities.",
         "operationId": "subscribe",
@@ -1361,21 +2359,53 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "x-amazon-apigateway-integration": {
           "uri": "${subscribe_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "$input.json('$')"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/action/invoke": {
       "post": {
-        "tags": ["action"],
+        "tags": [
+          "action"
+        ],
         "summary": "Invoke an action.",
         "description": "Invoke an action to be processed on a given submission.",
         "operationId": "actionInvoke",
@@ -1391,21 +2421,53 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "x-amazon-apigateway-integration": {
           "uri": "${invoke_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "$input.json('$')"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/action/register": {
       "post": {
-        "tags": ["action"],
+        "tags": [
+          "action"
+        ],
         "summary": "Register an action",
         "description": "Register a new custom action.",
         "operationId": "actionRegister",
@@ -1421,30 +2483,64 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "x-amazon-apigateway-integration": {
           "uri": "${register_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "$input.json('$')"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/submission/{operation}": {
-      "parameters": [{
-        "name": "operation",
-        "in": "path",
-        "description": "Which submission operation to perform.",
-        "required": true,
-        "schema": {
-          "type": "string"
+      "parameters": [
+        {
+          "name": "operation",
+          "in": "path",
+          "description": "Which submission operation to perform.",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
         }
-      }],
+      ],
       "post": {
-        "tags": ["submission"],
+        "tags": [
+          "submission"
+        ],
         "summary": "Perform an operation for a Submission",
         "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
         "operationId": "submissionOperation",
@@ -1460,56 +2556,110 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "x-amazon-apigateway-integration": {
           "uri": "${submission_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) #set($id = $body.get('id')) #set($form_id = $body.get('form_id')) #set($workflow_id = $body.get('workflow_id')) #set($data = $body.get('data')) #set($metadata = $body.get('metadata')) {\"operation\":\"$req.path.get('operation')\" #if($id =='%2F'),\"id\": \"$id\"#end #if($form_id =='%2F'),\"form_id\":\"$form_id\"#end #if($workflow_id=='%2F'),\"workflow_id\":\"$workflow_id\"#end #if($data=='%2F'),\"data\":\"$data\"#end #if($metadata=='%2F'),\"metadata\":\"$metadata\"#end}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/metrics": {
       "get": {
-        "tags": ["metrics"],
+        "tags": [
+          "metrics"
+        ],
         "summary": "Fetches metrics",
         "description": "Operation to retrieve metrics for display on dashboard.",
         "operationId": "getLogEvents",
-        "parameters": [{
-          "name": "start",
-          "in": "query",
-          "description": "Start of the time range to view",
-          "schema": {
-            "type": "string"
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Start of the time range to view",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "End of the time range to view",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "event_type",
+            "in": "query",
+            "description": "Type of events to view, e.g. workflow_transitions, errors, logins",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "True will return a count of events of the given type within the time range, false will return the individual events and their associated data.",
+            "schema": {
+              "type": "string"
+            }
           }
-        }, {
-          "name": "end",
-          "in": "query",
-          "description": "End of the time range to view",
-          "schema": {
-            "type": "string"
-          }
-        }, {
-          "name": "eventType",
-          "in": "query",
-          "description": "Type of events to view, e.g. workflow_transitions, errors, logins",
-          "schema": {
-            "type": "string"
-          }
-        }, {
-          "name": "count",
-          "in": "query",
-          "description": "True will return a count of events of the given type within the time range, false will return the individual events and their associated data.",
-          "schema": {
-            "type": "string"
-          }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1523,12 +2673,27 @@
           "uri": "${metrics_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req=$input.params()) {#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       },
       "post": {
-        "tags": ["metrics"],
+        "tags": [
+          "metrics"
+        ],
         "summary": "Post a client-side event.",
         "description": "Sends a client-side event to the system to be logged. Typically this would be an error.",
         "operationId": "putLogEvent",
@@ -1545,6 +2710,23 @@
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1558,80 +2740,133 @@
           "uri": "${metrics_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/token": {
       "get": {
-        "tags": ["token"],
-        "parameters": [{
-          "name": "code",
-          "in": "query",
-          "description": "Authorization code from identity provider.",
-          "schema": {
-            "type": "string"
+        "tags": [
+          "token"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Authorization code from identity provider.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "A redirect url to redirect to after successful authentication.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization Bearer Token",
+            "schema": {
+              "type": "string"
+            }
           }
-        },
-        {
-          "name": "state",
-          "in": "query",
-          "description": "A redirect url to redirect to after successful authentication.",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "Authorization",
-          "in": "header",
-          "description": "Authorization Bearer Token",
-          "schema": {
-            "type": "string"
-          }
-        }],
+        ],
         "summary": "Authentication and token management",
         "description": "Handles authentication and token management with an identity provider.",
         "operationId": "getToken",
         "responses": {
           "307": {
-            "description": "Redirect"
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
+            "description": "Redirect",
+            "headers": {
+              "Access-Control-Allow-Origin": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Version"
-                  }
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
-          },
-          "500": {
-            "description": "Bad Request"
           }
         },
         "x-amazon-apigateway-integration": {
           "uri": "${auth_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req=$input.params()) {#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "307",
+              "responseParameters": {
+                "method.response.header.Location": "integration.response.body.redirect",
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }
     },
     "/version": {
       "get": {
-        "tags": ["version"],
+        "tags": [
+          "version"
+        ],
         "summary": "Get version",
         "description": "Returns the current API version for compatibility checks.",
         "operationId": "getVersion",
         "responses": {
           "200": {
             "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
@@ -1651,7 +2886,17 @@
           "uri": "${version_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
-          "type": "aws_proxy"
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "''*''",
+                "method.response.header.Access-Control-Allow-Methods": "''*''",
+                "method.response.header.Access-Control-Allow-Headers": "''Content-Type,X-Amz-Date,Authorization,X-Api-Key''"
+              }
+            }
+          }
         },
         "x-router-controller": "proxy"
       }

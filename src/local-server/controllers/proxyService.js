@@ -362,7 +362,7 @@ module.exports.actionRegister = function actionRegister(req, res, next) {
   });
 };
 
-module.exports.submissionOperation = function SubmissionOperation(req, res, next) {
+module.exports.submissionOperation = function submissionOperation(req, res, next) {
   console.log(req);
   const lambdaEvent = {
     operation: req.operation.value,
@@ -402,7 +402,7 @@ module.exports.getToken = function getToken(req, res, next) {
   }
   authHandler(lambdaEvent).then((body) => {
     res.status(307)
-    .set({ Location: body })
+    .set({ Location: body.redirect })
     .send('Redirecting');
   });
 };

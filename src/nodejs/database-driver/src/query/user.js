@@ -11,9 +11,17 @@ const findByGroupName = `${findAll}
     FROM edpuser_edpgroup
     WHERE edpuser_edpgroup.edpgroup_id IN (
       SELECT edpgroup.id FROM edpgroup
-      WHERE edpgroup.group_name = {{group.group_name}})`;
+      WHERE edpgroup.short_name = {{group.short_name}})`;
+
+const loginUser = `
+INSERT INTO edpuser VALUES
+({{user.id}}, {{user.name}}, {{user.username}}, {{user.email}}, NOW(), NOW())
+ON CONFLICT (id) DO UPDATE SET
+last_login = EXCLUDED.last_login
+RETURNING *`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByGroupId = findByGroupId;
 module.exports.findByGroupName = findByGroupName;
+module.exports.loginUser = loginUser;

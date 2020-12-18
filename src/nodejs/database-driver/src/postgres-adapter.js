@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const { Client } = require('pg');
 
 const statements = require('./query/statements.js');
@@ -52,11 +54,11 @@ async function seed() {
   const response = {};
   try {
     client.connect();
-    await client.query(fs.readFileSync('./1-init.sql'));
-    await client.query(fs.readFileSync('./2-tables.sql'));
-    await client.query(fs.readFileSync('./3-functions.sql'));
-    await client.query(fs.readFileSync('./4-triggers.sql'));
-    await client.query(fs.readFileSync('./5-seed.sql'));
+    console.info(await client.query(fs.readFileSync(`${__dirname}/1-init.sql`).toString()));
+    console.info(await client.query(fs.readFileSync(`${__dirname}/2-tables.sql`).toString()));
+    console.info(await client.query(fs.readFileSync(`${__dirname}/3-functions.sql`).toString()));
+    console.info(await client.query(fs.readFileSync(`${__dirname}/4-triggers.sql`).toString()));
+    console.info(await client.query(fs.readFileSync(`${__dirname}/5-seed.sql`).toString()));
     Object.assign(response, { data: 'Successfully seeded!' });
   } catch (e) {
     Object.assign(response, { error: e });
@@ -66,4 +68,10 @@ async function seed() {
   return response.data || response.error;
 }
 
+async function clear() {
+
+}
+
 module.exports.execute = execute;
+module.exports.seed = seed;
+module.exports.clear = clear;

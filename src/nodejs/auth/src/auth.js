@@ -2,15 +2,20 @@
  * Lambda to handle authentication interactions with identity provider.
  * @module Version
  */
-const authUtil = require('auth-util');
+const PgAdapter = require('database-driver');
+const AuthUtil = require('auth-util');
 
 async function handler(event) {
   const { code, state, authorization } = event;
   if(code) {
-    return authUtil.redirectWithToken(event);
+    const { redirect, user } = await AuthUtil.redirectWithToken(event);
+    PgAdapter.execute({ resource: 'user', operation: 'loginUser'}, { user });
+
+    return { redirect };
   }
   else {
-    return authUtil.redirectGetCode(event);
+    const { redirect } = await AuthUtil.redirectGetCode(event);
+    return { redirect };
   }
 }
 

@@ -2,6 +2,10 @@ variable "stage" {
   type = string
 }
 
+variable "auth_lambda_arn" {
+  type = string
+}
+
 variable "data_lambda_arn" {
   type = string
 }
@@ -34,11 +38,11 @@ variable "subscribe_lambda_arn" {
   type = string
 }
 
-variable "cognito_user_pool_arn" {
+variable "version_lambda_arn" {
   type = string
 }
 
-variable "cognito_login_url" {
+variable "cognito_user_pool_arn" {
   type = string
 }
 

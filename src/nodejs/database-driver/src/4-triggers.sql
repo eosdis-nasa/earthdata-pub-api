@@ -1,3 +1,6 @@
+DROP TRIGGER IF EXISTS insert_submission ON submission;
+DROP TRIGGER IF EXISTS update_submission_status ON submission_status;
+
 CREATE TRIGGER insert_submission AFTER INSERT ON submission
 FOR EACH ROW EXECUTE PROCEDURE init_submission();
 

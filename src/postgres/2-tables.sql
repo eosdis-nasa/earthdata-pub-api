@@ -1,13 +1,85 @@
+DROP TABLE IF EXISTS form CASCADE;
+
+DROP TABLE IF EXISTS section CASCADE;
+
+DROP TABLE IF EXISTS question CASCADE;
+
+DROP TABLE IF EXISTS section_question CASCADE;
+
+DROP TABLE IF EXISTS input CASCADE;
+
+DROP TABLE IF EXISTS action CASCADE;
+
+DROP TABLE IF EXISTS service CASCADE;
+
+DROP TABLE IF EXISTS service_secret CASCADE;
+
+DROP TABLE IF EXISTS edpuser CASCADE;
+
+DROP TABLE IF EXISTS edpgroup CASCADE;
+
+DROP TABLE IF EXISTS edpgroup_parent CASCADE;
+
+DROP TABLE IF EXISTS edprole CASCADE;
+
+DROP TABLE IF EXISTS edpuser_edpgroup CASCADE;
+
+DROP TABLE IF EXISTS edpuser_edprole CASCADE;
+
+DROP TABLE IF EXISTS daac CASCADE;
+
+DROP TABLE IF EXISTS conversation CASCADE;
+
+DROP TABLE IF EXISTS note CASCADE;
+
+DROP TABLE IF EXISTS note_edpuser CASCADE;
+
+DROP TABLE IF EXISTS conversation_edpuser CASCADE;
+
+DROP TABLE IF EXISTS workflow CASCADE;
+
+DROP TABLE IF EXISTS step CASCADE;
+
+DROP TABLE IF EXISTS step_edge CASCADE;
+
+DROP TABLE IF EXISTS submission CASCADE;
+
+DROP TABLE IF EXISTS submission_status CASCADE;
+
+DROP TABLE IF EXISTS submission_workflow CASCADE;
+
+DROP TABLE IF EXISTS submission_metadata CASCADE;
+
+DROP TABLE IF EXISTS submission_action_data CASCADE;
+
+DROP TABLE IF EXISTS submission_form_data CASCADE;
+
+DROP TABLE IF EXISTS submission_lock CASCADE;
+
+DROP TABLE IF EXISTS edpuser_permission_submission CASCADE;
+
+DROP TABLE IF EXISTS edpgroup_permission_submission CASCADE;
+
+DROP TABLE IF EXISTS edpuser_subscription_submission CASCADE;
+
+DROP TABLE IF EXISTS edpuser_subscription_workflow CASCADE;
+
+DROP TABLE IF EXISTS edpgroup_subscription_submission CASCADE;
+
+DROP TABLE IF EXISTS edpgroup_subscription_workflow CASCADE;
+
+DROP TABLE IF EXISTS metrics CASCADE;
+
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
-  form_name VARCHAR NOT NULL,
-  title VARCHAR NOT NULL,
+  short_name VARCHAR NOT NULL,
   version SMALLINT,
+  long_name VARCHAR NOT NULL,
   description VARCHAR,
   text VARCHAR NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
-  UNIQUE (form_name, version)
+  UNIQUE (short_name, version)
 );
 
 CREATE TABLE IF NOT EXISTS section (
@@ -24,15 +96,15 @@ CREATE TABLE IF NOT EXISTS section (
 
 CREATE TABLE IF NOT EXISTS question (
   id UUID DEFAULT UUID_GENERATE_V4(),
-  question_name VARCHAR NOT NULL,
+  short_name VARCHAR NOT NULL,
   version SMALLINT,
-  title VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
   text VARCHAR NOT NULL,
   help VARCHAR NOT NULL,
   required BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
-  UNIQUE (question_name, version)
+  UNIQUE (short_name, version)
 );
 
 CREATE TABLE IF NOT EXISTS section_question (
@@ -63,18 +135,20 @@ CREATE TABLE IF NOT EXISTS input (
 
 CREATE TABLE IF NOT EXISTS action (
   id UUID DEFAULT UUID_GENERATE_V4(),
-  action_name VARCHAR NOT NULL,
+  short_name VARCHAR NOT NULL,
   version SMALLINT,
+  long_name VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
   file_key VARCHAR NOT NULL,
   input_schema JSONB DEFAULT '{}'::jsonb,
   PRIMARY KEY (id),
-  UNIQUE (action_name)
+  UNIQUE (short_name)
 );
 
 CREATE TABLE IF NOT EXISTS service (
   id UUID DEFAULT UUID_GENERATE_V4(),
-  service_name VARCHAR NOT NULL,
+  short_name VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
   endpoint VARCHAR NOT NULL,
   options JSONB DEFAULT '{}'::jsonb,
@@ -83,7 +157,7 @@ CREATE TABLE IF NOT EXISTS service (
   code SMALLINT NOT NULL,
   payload BOOLEAN NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE (service_name)
+  UNIQUE (short_name)
 );
 
 CREATE TABLE IF NOT EXISTS service_secret (
@@ -95,18 +169,18 @@ CREATE TABLE IF NOT EXISTS service_secret (
 
 CREATE TABLE IF NOT EXISTS edpuser (
   id UUID DEFAULT UUID_GENERATE_V4(),
-  full_name VARCHAR NOT NULL,
+  name VARCHAR NOT NULL,
+  username VARCHAR NOT NULL,
   email VARCHAR NOT NULL,
   registered TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP DEFAULT NOW(),
-  PRIMARY KEY (id),
-  UNIQUE (email)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS edpgroup (
   id UUID DEFAULT UUID_GENERATE_V4(),
-  long_name VARCHAR NOT NULL,
   short_name VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (short_name),
@@ -123,8 +197,8 @@ CREATE TABLE IF NOT EXISTS edpgroup_parent (
 
 CREATE TABLE IF NOT EXISTS edprole (
   id UUID DEFAULT UUID_GENERATE_V4(),
-  long_name VARCHAR NOT NULL,
   short_name VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (short_name),
@@ -199,12 +273,13 @@ CREATE TABLE IF NOT EXISTS conversation_edpuser (
 
 CREATE TABLE IF NOT EXISTS workflow (
   id UUID DEFAULT UUID_GENERATE_V4(),
+  short_name VARCHAR NOT NULL,
   version SMALLINT NOT NULL,
-  workflow_name VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
-  UNIQUE (workflow_name, version)
+  UNIQUE (short_name, version)
 );
 
 CREATE TABLE IF NOT EXISTS step (

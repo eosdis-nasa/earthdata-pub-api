@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "action-handler": "file:./src/nodejs/action-handler",
+    "auth": "file:./src/nodejs/auth",
     "database-driver": "file:./src/nodejs/database-driver",
     "data": "file:./src/nodejs/data",
     "invoke": "file:./src/nodejs/invoke",

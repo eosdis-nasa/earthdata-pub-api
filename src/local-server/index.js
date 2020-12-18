@@ -6,13 +6,19 @@ const path = require('path');
 
 const express = require('express');
 
+const oasTools = require('oas-tools');
+
+const jsyaml = require('js-yaml');
+
 const bodyParser = require('body-parser');
 
-const auth = require('./auth.js');
+const localAuth = require('./local-auth.js');
 
 const workflowHandler = require('workflow-handler').handler;
 
 //const actionHandler = require('action-handler').handler;
+
+const serverPort = 8080;
 
 const AWS = require('aws-sdk');
 
@@ -44,14 +50,25 @@ app.use(function (req, res, next) {
   next();
 });
 
-const oasTools = require('oas-tools');
-const jsyaml = require('js-yaml');
-const serverPort = 8080;
+app.use(localAuth.check);
+
+app.get('/auth/login', localAuth.login);
+app.post('/auth/login', localAuth.token)
+app.get('/auth/user_list', localAuth.userList);
+
+app.options('/*', function(req, res) {
+  res.send();
+});
+
+app.get('/favicon.ico', function(req, res) {
+  res.status(200);
+  res.sendFile(`${__dirname}/static/favicon.ico`);
+});
 
 const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
 const oasDoc = jsyaml.safeLoad(spec);
 
-const options_object = {
+const oasOptions = {
   controllers: path.join(__dirname, './controllers'),
   loglevel: 'info',
   strict: false,
@@ -59,21 +76,18 @@ const options_object = {
   validator: true
 };
 
-oasTools.configure(options_object);
+
+oasTools.configure(oasOptions);
 
 oasTools.initialize(oasDoc, app, function() {
   http.createServer(app).listen(serverPort, function() {
     console.log(`App running at http://localhost:${serverPort}`);
     console.log("_____________________________________________________");
-    if (options_object.docs !== false) {
+    if (oasOptions.docs !== false) {
       console.log(`API docs at http://localhost:${serverPort}/docs`);
       console.log("___________________________________________________");
     }
   });
-});
-
-app.options('/*', function(req, res) {
-  res.send();
 });
 
 // app.get('/token', auth.tokenEndpoint);
@@ -91,10 +105,6 @@ app.post('/goaws/workflow_handler', function(req, res) {
 });
 
 
-app.get('/instanceMeta', function(req, res) {
-  res.send();
-});
 
-app.get('/granules', function(req, res) {
-  res.send();
-});
+app.get('/instanceMeta', function(req, res) { res.status(200); res.send({}); });
+app.get('/granules', function(req, res) { res.status(200); res.send([]); });

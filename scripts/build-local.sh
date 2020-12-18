@@ -11,12 +11,14 @@ compile_oas_schema './src/local-server/api/openapi.json'
 cp ./src/postgres/*.sql ./src/nodejs/database-driver/src/
 
 #Install individual modules
+local_install auth-util
 local_install database-driver
 local_install message-driver
 local_install schema-util
 #Add more layer modules here <--
 
 local_install action-handler
+local_install auth
 local_install data
 local_install invoke
 local_install metrics

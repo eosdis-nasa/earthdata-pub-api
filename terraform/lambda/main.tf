@@ -1,3 +1,12 @@
+# Auth Util Layer
+
+resource "aws_lambda_layer_version" "auth_util" {
+  filename            = "../artifacts/auth-util-layer.zip"
+  layer_name          = "authUtilLayer"
+  compatible_runtimes = ["nodejs12.x"]
+  source_code_hash    = filesha256("../artifacts/auth-util-layer.zip")
+}
+
 # Database Driver Layer
 
 resource "aws_lambda_layer_version" "database_driver" {
@@ -542,6 +551,54 @@ resource "aws_sns_topic_subscription" "workflow_handler" {
   protocol      = "lambda"
   endpoint      = aws_lambda_function.workflow_handler.arn
   filter_policy = data.local_file.workflow_handler_filter.content
+}
+
+# Auth Lambda
+
+resource "aws_lambda_function" "auth" {
+  filename      = "../artifacts/auth-lambda.zip"
+  function_name = "auth"
+  role          = var.edpub_lambda_role_arn
+  handler       = "auth.handler"
+  layers        = [
+    aws_lambda_layer_version.auth_util.arn,
+    aws_lambda_layer_version.database_driver.arn
+  ]
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/auth-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION              = var.region
+      EVENT_SNS           = var.edpub_event_sns_arn
+      PG_USER             = var.db_user
+      PG_HOST             = var.db_host
+      PG_DB               = var.db_database
+      PG_PASS             = var.db_password
+      PG_PORT             = var.db_port
+      AUTH_PROVIDER_URL   = var.cognito_url
+      AUTH_LOGIN_PATH     = var.cognito_login_path
+      AUTH_AUTHORIZE_PATH = var.cognito_authorize_path
+      AUTH_TOKEN_PATH     = var.cognito_token_path
+      AUTH_USER_PATH      = var.cognito_user_path
+      AUTH_CLIENT_ID      = var.cognito_client_id
+      AUTH_CLIENT_SECRET  = var.cognito_client_secret
+      AUTH_CALLBACK_URL   = var.cognito_callback_url
+      AUTH_STATE_URL      = var.cognito_state_url
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "auth" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.auth.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
 # Version Lambda

@@ -2,6 +2,10 @@ output "action_handler_lambda_arn" {
   value = aws_lambda_function.action_handler.invoke_arn
 }
 
+output "auth_lambda_arn" {
+  value = aws_lambda_function.auth.invoke_arn
+}
+
 output "data_lambda_arn" {
   value = aws_lambda_function.data.invoke_arn
 }

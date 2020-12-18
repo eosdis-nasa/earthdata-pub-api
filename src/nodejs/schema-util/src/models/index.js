@@ -13,6 +13,7 @@ const NotifyRequest = require('./notify-request.js');
 const Permission = require('./permission.js');
 const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
+const Role = require('./role.js');
 const Service = require('./service.js');
 const Submission = require('./submission.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
@@ -47,6 +48,7 @@ const models = {
   Permission,
   Question,
   QuestionList,
+  Role,
   Service,
   Submission,
   SubmissionOperationRequest,

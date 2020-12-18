@@ -7,7 +7,7 @@ workflow_id UUID;
 BEGIN
   SELECT workflow.id INTO workflow_id
   FROM workflow
-  WHERE workflow.workflow_name = 'init_workflow'
+  WHERE workflow.short_name = 'init_workflow'
   ORDER BY workflow.version DESC
   LIMIT 1;
 RETURN workflow_id;

@@ -16,10 +16,10 @@ const findById = `
       SELECT
         section_question.section_id,
         JSONB_AGG(JSONB_BUILD_OBJECT(
-          'question_name', question.question_name,
+          'short_name', question.short_name,
           'version', question.version,
           'text', question.text,
-          'title', question.title,
+          'long_name', question.long_name,
           'help', question.help,
           'required', question.required,
           'required_if', section_question.required_if,
