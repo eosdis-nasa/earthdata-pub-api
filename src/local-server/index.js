@@ -50,15 +50,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(localAuth.check);
-
 app.get('/auth/login', localAuth.login);
 app.post('/auth/login', localAuth.token)
 app.get('/auth/user_list', localAuth.userList);
 
-app.options('/*', function(req, res) {
-  res.send();
-});
 
 app.get('/favicon.ico', function(req, res) {
   res.status(200);
@@ -73,7 +68,11 @@ const oasOptions = {
   loglevel: 'info',
   strict: false,
   router: true,
-  validator: true
+  validator: true,
+  oasSecurity: true,
+  securityFile: {
+    Authorizer: localAuth.verifyToken
+  }
 };
 
 

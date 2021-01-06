@@ -3,10 +3,10 @@ resource "aws_api_gateway_rest_api" "EarthdataPub" {
   description = "This is the API that serves as the central interaction point between the client and back-end services of Earthdata Pub."
   body        = data.template_file.edpub_oas.rendered
   policy      = data.local_file.edpub_api_policy.content
-  # endpoint_configuration {
-  #   types = ["PRIVATE"]
-  #   vpc_endpoint_ids = [var.vpc_endpoint_id]
-  # }
+  endpoint_configuration {
+    types = ["PRIVATE"]
+    vpc_endpoint_ids = [var.vpc_endpoint_id]
+  }
   lifecycle {
     ignore_changes = [policy]
   }

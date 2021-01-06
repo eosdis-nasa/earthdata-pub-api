@@ -12,7 +12,8 @@ const {
 const PgAdapter = require('database-driver');
 const exp = 30 * 60 * 1000;
 
-const tokenSecret = randomId('tokensecret');
+const issuer = 'Earthdata Pub Dev';
+const tokenSecret = 'earthdata_pub_dev';
 const redirectEndpoint = `http://localhost:8080/token`;
 
 function check(req, res, next) {
@@ -22,7 +23,7 @@ function check(req, res, next) {
     if (type === 'Bearer') {
       const { sub } = jwt.decode(token);
       if (sub) {
-        Object.assign(req, { user_id: sub });
+        Object.assign(req, { user_id: { value: sub } });
       }
     }
   }
@@ -48,11 +49,11 @@ function token(req, res) {
       sub: user.id,
       scope: 'openid',
       auth_time: authTime,
-      iss: 'Eartdata Pub Dev',
+      iss: issuer,
       exp: authTime + exp,
       iat: authTime
     });
-    const newToken = jwt.sign(user, tokenSecret);
+    const newToken = jwt.sign(user, tokenSecret, { algorithm: 'HS256'});
     const redirect = new URL('http://localhost:3000/auth')
     redirect.searchParams.set('token', newToken);
     res.status(200)
@@ -68,6 +69,25 @@ function userList(req, res) {
   });
 }
 
+function verifyToken(req, secDef, token, next) {
+  const bearerRegex = /^Bearer\s/;
+
+  if (token && bearerRegex.test(token)) {
+    var newToken = token.replace(bearerRegex, '');
+    jwt.verify(newToken, tokenSecret, { issuer },
+      (error, decoded) => {
+        if (error === null && decoded) {
+          Object.assign(req, { user_id: decoded.sub });
+          return next();
+        }
+        return next(req.res.sendStatus(401));
+      }
+    );
+  } else {
+    return next(req.res.sendStatus(403));
+  }
+}
+
 function randomString(numBytes = 20) {
   return crypto.randomBytes(numBytes).toString('hex');
 }
@@ -77,60 +97,11 @@ function randomId(id, numBytes = 5) {
 }
 
 
-/**
- * An express middleware that checks if an incoming express
- * request is authenticated
- *
- * @param {Object} req - express request object
- * @param {Object} res - express response object
- * @param {Function} next - express middleware callback function
- * @returns {Promise<Object>} - promise of an express response object
- */
-async function ensureAuthorized(req, res, next) {
-  // Verify that the Authorization header was set in the request
-  const authorizationKey = req.headers.authorization;
-  if (!authorizationKey) {
-    return res.boom.unauthorized('Authorization header missing');
-  }
-  // Parse the Authorization header
-  const [scheme, jwtToken] = req.headers.authorization.trim().split(/\s+/);
-
-  // Verify that the Authorization type was "Bearer"
-  if (scheme !== 'Bearer') {
-    return res.boom.unauthorized('Authorization scheme must be Bearer');
-  }
-
-  if (!jwtToken) {
-    return res.boom.unauthorized('Missing token');
-  }
-
-  let userName;
-  try {
-    ({ username: userName } = verifyJwtToken(jwtToken));
-
-    if (userName !== username) {
-      return res.boom.unauthorized('User not authorized');
-    }
-
-    req.authorizedMetadata = { userName };
-    return next();
-  } catch (error) {
-    if (error instanceof TokenExpiredError) {
-      return res.boom.unauthorized('Access token has expired');
-    }
-
-    if (error instanceof JsonWebTokenError) {
-      return res.boom.forbidden('Invalid access token');
-    }
-
-    return res.boom.badImplementation(error.message);
-  }
-}
-
 module.exports = {
-  check,
+  issuer,
+  tokenSecret,
+  verifyToken,
   token,
   login,
-  userList,
-  ensureAuthorized
+  userList
 };

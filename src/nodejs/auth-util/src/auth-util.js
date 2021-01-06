@@ -38,9 +38,8 @@ async function redirectWithToken({ code, refresh, state }) {
             token_type: type } = await httpHelper.send(tokenRequest);
     const user = jwt.decode(idToken);
     user.id = user.sub;
-    user.username = user["cognito:username"];
     const redirect = new URL(state || stateUrl);
-    redirect.searchParams.set('token', accessToken);
+    redirect.searchParams.set('token', idToken);
     return { redirect: redirect.href, user };
   }
 

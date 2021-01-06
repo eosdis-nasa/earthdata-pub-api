@@ -5,6 +5,7 @@
 </head>
 <style>
 #main {
+  font-family: Open Sans,Helvetica Neue,Helvetica,Arial,sans-serif;
   width: 600px;
   height: 480px;
   margin-left: auto;
@@ -142,14 +143,12 @@ input {
     const userInfoPanel = document.getElementById('user-info');
     const registerPanel = document.getElementById('register');
     const nameInput = document.getElementById('input-name');
-    const usernameInput = document.getElementById('input-username');
     const emailInput = document.getElementById('input-email');
     const registerButton = document.getElementById('btn-register');
     const loginButton = document.getElementById('btn-login');
     const info = {
       id: document.getElementById('user-info-id'),
       name: document.getElementById('user-info-name'),
-      username: document.getElementById('user-info-username'),
       email: document.getElementById('user-info-email'),
       last_login: document.getElementById('user-info-last-login'),
       registered: document.getElementById('user-info-registered')
@@ -162,7 +161,7 @@ input {
         users[user.id] = user;
         const option = document.createElement("option");
         option.value = user.id;
-        option.text = user.username;
+        option.text = user.name;
         userSelect.options.add(option);
       })
     });
@@ -178,7 +177,6 @@ input {
         const user = users[pick];
         info.id.innerText = user.id;
         info.name.innerText = user.name;
-        info.username.innerText = user.username;
         info.email.innerText = user.email;
         info.last_login.innerText = user.last_login;
         info.registered.innerText = user.registered;
@@ -190,7 +188,6 @@ input {
       const payload = (id === 'register' ? {
           id,
           name: nameInput.value,
-          username: usernameInput.value,
           email: emailInput.value
         } : users[id] );
 

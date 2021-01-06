@@ -91,8 +91,8 @@ INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978e', 'data_product_
 INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_file_upload', 0, 'Upload Sample File', 'file', '{}', '{}', '[]', '[]', False);
 INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_file_url', 1, 'Sample File URL', 'text', '[]', '{}', '[]', '[]', False);
 
--- User(id, name, username, email, registered, last_login)
-INSERT INTO edpuser(id, name, username, email) VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', 'Earthdata Pub System', 'edpub_system', 'no_email');
+-- User(id, name, email, registered, last_login)
+INSERT INTO edpuser(id, name, email) VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', 'Earthdata Pub System', 'no_email');
 
 -- Group(id, short_name, long_name, description)
 INSERT INTO edpgroup VALUES ('4daa6b22-f015-4ce2-8dac-8b3510004fca','root_group',  'Root Group', 'Full system access for administrators.');

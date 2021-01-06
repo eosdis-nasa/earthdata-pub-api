@@ -6,18 +6,11 @@
 const MessageDriver = require('message-driver');
 
 async function handler(event) {
-  const user = await PgAdapter.execute(
-    { resource: 'user', operation: 'findById' },
-    { user: { id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' } }
-  );
-  // After integration of auth, user will be pulled from context
-
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  console.info(`[USER]\n${JSON.stringify(user)}`);
 
   const eventMessage = {
     event_type: 'client_event',
-    user_id: user.id,
+    user_id: event.context.user_id,
     data: event
   };
   MessageDriver.sendEvent(eventMessage);
