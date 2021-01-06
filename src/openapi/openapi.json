@@ -131,14 +131,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findById\",\"params\":{ \"action\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findById\",\"params\":{ \"action\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -154,7 +158,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataAction",
@@ -284,14 +290,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -307,7 +317,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataActions",
@@ -407,14 +419,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findById\",\"params\":{ \"daac\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findById\",\"params\":{ \"daac\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -430,7 +446,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataDaac",
@@ -481,7 +499,9 @@
     },
     "/data/daacs": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get DAACs",
         "description": "Returns list of DAACs",
         "operationId": "daacFindAll",
@@ -558,14 +578,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -581,7 +605,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataDaacs",
@@ -681,14 +707,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{ \"form\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{ \"form\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -704,7 +734,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataForm",
@@ -834,14 +866,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -902,7 +938,11 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
@@ -922,7 +962,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataForms",
@@ -1022,14 +1064,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findById\",\"params\":{ \"group\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findById\",\"params\":{ \"group\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1045,7 +1091,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataGroup",
@@ -1175,14 +1223,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1198,7 +1250,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataGroups",
@@ -1298,14 +1352,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findById\",\"params\":{ \"role\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findById\",\"params\":{ \"role\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1321,7 +1379,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataRole",
@@ -1451,14 +1511,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1474,7 +1538,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataRoles",
@@ -1574,14 +1640,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findById\",\"params\":{ \"note\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findById\",\"params\":{ \"note\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1597,7 +1667,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataNote",
@@ -1727,14 +1799,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1750,7 +1826,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataNotes",
@@ -1850,14 +1928,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findById\",\"params\":{ \"question\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findById\",\"params\":{ \"question\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1873,7 +1955,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataQuestion",
@@ -2003,14 +2087,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2071,7 +2159,11 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
@@ -2091,7 +2183,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataQuestions",
@@ -2191,14 +2285,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findById\",\"params\":{ \"service\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findById\",\"params\":{ \"service\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2214,7 +2312,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataService",
@@ -2344,14 +2444,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2367,7 +2471,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataServices",
@@ -2467,14 +2573,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findById\",\"params\":{ \"submission\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findById\",\"params\":{ \"submission\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2490,7 +2600,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataSubmission",
@@ -2620,14 +2732,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2643,7 +2759,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataSubmissions",
@@ -2743,14 +2861,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findById\",\"params\":{ \"user\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findById\",\"params\":{ \"user\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2766,7 +2888,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataUser",
@@ -2896,14 +3020,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2919,7 +3047,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataUsers",
@@ -3019,14 +3149,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findById\",\"params\":{ \"workflow\": {\"id\": \"$req.path.get('id')\"}}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findById\",\"params\":{ \"workflow\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -3042,7 +3176,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataWorkflow",
@@ -3172,14 +3308,18 @@
             "description": "Bad Request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -3240,7 +3380,11 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${data_lambda_arn}",
           "passthroughBehavior": "when_no_match",
@@ -3260,7 +3404,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataWorkflows",
@@ -3360,14 +3506,18 @@
             "description": "Bad request"
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${model_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"model\": \"$req.path.get('model')\"}"
+            "application/json": "#set( $req = $input.params()) {\"model\": \"$req.path.get('model')\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -3383,7 +3533,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsModel",
@@ -3472,7 +3624,11 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${notify_lambda_arn}",
           "passthroughBehavior": "when_no_match",
@@ -3495,7 +3651,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsNotify",
@@ -3584,7 +3742,11 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${subscribe_lambda_arn}",
           "passthroughBehavior": "when_no_match",
@@ -3607,7 +3769,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsSubscribe",
@@ -3696,7 +3860,11 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${invoke_lambda_arn}",
           "passthroughBehavior": "when_no_match",
@@ -3719,7 +3887,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsInvoke",
@@ -3808,7 +3978,11 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${register_lambda_arn}",
           "passthroughBehavior": "when_no_match",
@@ -3831,7 +4005,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsRegister",
@@ -3931,14 +4107,18 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${submission_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) #set($id = $body.get('id')) #set($form_id = $body.get('form_id')) #set($workflow_id = $body.get('workflow_id')) #set($data = $body.get('data')) #set($metadata = $body.get('metadata')) {\"operation\":\"$req.path.get('operation')\" #if($id =='%2F'),\"id\": \"$id\"#end #if($form_id =='%2F'),\"form_id\":\"$form_id\"#end #if($workflow_id=='%2F'),\"workflow_id\":\"$workflow_id\"#end #if($data=='%2F'),\"data\":\"$data\"#end #if($metadata=='%2F'),\"metadata\":\"$metadata\"#end}"
+            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) #set($id = $body.get('id')) #set($form_id = $body.get('form_id')) #set($workflow_id = $body.get('workflow_id')) #set($data = $body.get('data')) #set($metadata = $body.get('metadata')) {\"operation\":\"$req.path.get('operation')\" #if($id =='%2F'),\"id\": \"$id\"#end #if($form_id =='%2F'),\"form_id\":\"$form_id\"#end #if($workflow_id=='%2F'),\"workflow_id\":\"$workflow_id\"#end #if($data=='%2F'),\"data\":\"$data\"#end #if($metadata=='%2F'),\"metadata\":\"$metadata\"#end,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -3954,7 +4134,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsSubmission",
@@ -4074,14 +4256,18 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${metrics_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req=$input.params()) {#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end }"
+            "application/json": "#set($req=$input.params()) {#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -4142,7 +4328,11 @@
             }
           }
         },
-        "security": [{ "Authorizer": [] }],
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
         "x-amazon-apigateway-integration": {
           "uri": "${metrics_lambda_arn}",
           "passthroughBehavior": "when_no_match",
@@ -4162,7 +4352,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsMetrics",
@@ -4232,14 +4424,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Authorization Bearer Token",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "summary": "Authentication and token management",
@@ -4295,7 +4479,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsToken",
@@ -4406,7 +4592,9 @@
         "x-router-controller": "proxy"
       },
       "options": {
-        "tags": ["cors"],
+        "tags": [
+          "cors"
+        ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsVersion",

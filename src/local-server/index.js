@@ -12,7 +12,7 @@ const jsyaml = require('js-yaml');
 
 const bodyParser = require('body-parser');
 
-const localAuth = require('./local-auth.js');
+const local = require('./controllers/local.js');
 
 const workflowHandler = require('workflow-handler').handler;
 
@@ -38,9 +38,8 @@ consumer.start();
 
 const app = express();
 
-app.use(bodyParser.json({
-  strict: false
-}));
+app.use(bodyParser.json({ strict: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,15 +49,13 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get('/auth/login', localAuth.login);
-app.post('/auth/login', localAuth.token)
-app.get('/auth/user_list', localAuth.userList);
+app.get('/auth/login', local.login);
+app.post('/auth/login', local.authenticate);
+app.post('/auth/token', local.token);
+app.get('/auth/user_list', local.userList);
+app.get('/reseed', local.reseed);
 
-
-app.get('/favicon.ico', function(req, res) {
-  res.status(200);
-  res.sendFile(`${__dirname}/static/favicon.ico`);
-});
+app.get('/favicon.ico', local.favico);
 
 const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
 const oasDoc = jsyaml.safeLoad(spec);
@@ -71,7 +68,7 @@ const oasOptions = {
   validator: true,
   oasSecurity: true,
   securityFile: {
-    Authorizer: localAuth.verifyToken
+    Authorizer: local.check
   }
 };
 

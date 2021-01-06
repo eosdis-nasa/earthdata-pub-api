@@ -68,10 +68,5 @@ async function seed() {
   return response.data || response.error;
 }
 
-async function clear() {
-
-}
-
 module.exports.execute = execute;
 module.exports.seed = seed;
-module.exports.clear = clear;

@@ -15,7 +15,7 @@ const findByGroupName = `${findAll}
 
 const loginUser = `
 INSERT INTO edpuser VALUES
-({{user.id}}, {{user.name}}, {{user.username}}, {{user.email}}, NOW(), NOW())
+({{user.id}}, {{user.name}}, {{user.email}}, NOW(), NOW())
 ON CONFLICT (id) DO UPDATE SET
 last_login = EXCLUDED.last_login
 RETURNING *`;

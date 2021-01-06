@@ -1,34 +1,29 @@
 'use strict';
 const fs = require('fs');
 const uuid = require('uuid');
-const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const {
-  JsonWebTokenError,
-  TokenExpiredError,
-  sign,
-  verify
-} = require('jsonwebtoken');
+const { sign, verify } = require('jsonwebtoken');
 const PgAdapter = require('database-driver');
-const exp = 30 * 60 * 1000;
+const { SQS } = require('aws-sdk');
+const { Consumer } = require('sqs-consumer');
+const workflowHandler = require('workflow-handler').handle;
+//const actionHandler = require('action-handler').handle;
+const actionHandler = async (message) => { console.log(message) }
 
 const issuer = 'Earthdata Pub Dev';
 const tokenSecret = 'earthdata_pub_dev';
+const exp = 300 * 60 * 1000;
 const redirectEndpoint = `http://localhost:8080/token`;
+const codes = {};
 
-function check(req, res, next) {
-  const { authorization } = req.headers;
-  if (authorization) {
-    const [type, token] = authorization.split(' ');
-    if (type === 'Bearer') {
-      const { sub } = jwt.decode(token);
-      if (sub) {
-        Object.assign(req, { user_id: { value: sub } });
-      }
-    }
-  }
-  next();
-}
+const consumer = Consumer.create({
+  sqs: new SQS({ endpoint: process.env.SNS_ENDPOINT }),
+  queueUrl: 'http://goaws:4100/000000000000/edpub_action_sqs.fifo',
+  pollingWaitTimeMs: 15000,
+  handleMessage: actionHandler
+});
+
+consumer.start();
 
 function login(req, res) {
   return res
@@ -36,7 +31,8 @@ function login(req, res) {
     .sendFile(`${__dirname}/static/login.html`);
 }
 
-function token(req, res) {
+function authenticate(req, res) {
+  const code = uuid.v4().replace(/-/g, "");
   const user = req.body;
   if (user.id === 'register') {
     user.id = uuid.v4();
@@ -54,11 +50,26 @@ function token(req, res) {
       iat: authTime
     });
     const newToken = jwt.sign(user, tokenSecret, { algorithm: 'HS256'});
+    codes[code] = {
+      id_token: newToken,
+      access_token: newToken,
+      refresh_token: newToken,
+      expires_in: exp,
+      token_type: "Bearer"
+    };
     const redirect = new URL('http://localhost:3000/auth')
-    redirect.searchParams.set('token', newToken);
+    redirect.searchParams.set('code', code);
     res.status(200)
     res.send({ redirect: redirect.href });
   });
+}
+
+function token(req, res) {
+  const { code } = req.body;
+  const tokens = codes[code];
+  console.log(tokens);
+  res.status(200);
+  res.send(tokens);
 }
 
 function userList(req, res) {
@@ -69,9 +80,8 @@ function userList(req, res) {
   });
 }
 
-function verifyToken(req, secDef, token, next) {
+function check(req, secDef, token, next) {
   const bearerRegex = /^Bearer\s/;
-
   if (token && bearerRegex.test(token)) {
     var newToken = token.replace(bearerRegex, '');
     jwt.verify(newToken, tokenSecret, { issuer },
@@ -80,7 +90,7 @@ function verifyToken(req, secDef, token, next) {
           Object.assign(req, { user_id: decoded.sub });
           return next();
         }
-        return next(req.res.sendStatus(401));
+        return next(req.res.sendStatus(403));
       }
     );
   } else {
@@ -88,20 +98,35 @@ function verifyToken(req, secDef, token, next) {
   }
 }
 
-function randomString(numBytes = 20) {
-  return crypto.randomBytes(numBytes).toString('hex');
+function reseed(req, res) {
+  PgAdapter.seed().then(() => {
+    res.status(200);
+    res.send();
+  })
 }
 
-function randomId(id, numBytes = 5) {
-  return `${id}${randomString(numBytes)}`;
+function favico(req, res) {
+  res.status(200);
+  res.sendFile(`${__dirname}/static/favicon.ico`);
 }
 
+function handleWorkflow(req, res) {
+  if (req.body.MessageAttributes.event_type.Value === 'workflow_promote_step') {
+    const records = { Records: [ { Sns: { ...req.body } }] };
+    workflowHandler(records);
+  }
+  res.status(200);
+  res.send();
+}
 
 module.exports = {
   issuer,
   tokenSecret,
-  verifyToken,
   token,
   login,
-  userList
+  authenticate,
+  check,
+  userList,
+  reseed,
+  favico
 };
