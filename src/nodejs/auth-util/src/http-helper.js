@@ -71,7 +71,6 @@ function send({ method, endpoint, headers, auth, payload }) {
         chunks.push(chunk);
       });
       res.on('end', () => {
-        console.log(chunks.join(''))
         resolve(JSON.parse(chunks.join('')));
       });
     });

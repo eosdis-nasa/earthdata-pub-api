@@ -16,21 +16,15 @@ const PgAdapter = require('database-driver');
 
 const fs = require('fs');
 
-const ClientConfig = require('./client-config.js');
-
-const s3 = new AWS.S3(ClientConfig.s3);
-
-const BUCKET = process.env.ACTION_S3;
-
-function fetchAction(key, local) {
-  return new Promise((resolve) => {
-    const params = { Bucket: BUCKET, Key: key };
-    const file = fs.createWriteStream(local);
-    const stream = s3.getObject(params).createReadStream();
-    stream.on('end', resolve);
-    stream.pipe(file);
-  });
-}
+// function fetchAction(key, local) {
+//   return new Promise((resolve) => {
+//     const params = { Bucket: BUCKET, Key: key };
+//     const file = fs.createWriteStream(local);
+//     const stream = s3.getObject(params).createReadStream();
+//     stream.on('end', resolve);
+//     stream.pipe(file);
+//   });
+// }
 
 async function processRecord(record) {
   const triggerMessage = MessageDriver.parseRecord(record);
@@ -40,12 +34,11 @@ async function processRecord(record) {
   const submission = await PgAdapter.execute({ resource: 'submission', operation: 'findById' },
     { submission: { id: submissionId } });
   const local = `/tmp/${Schema.generateId()}`;
-  await fetchAction(action.file_key, local);
+  fs.writeFileSync(local, action.source);
+  //await fetchAction(action.file_key, local);
   // eslint-disable-next-line
   const { execute } = require(local);
-  const output = await execute({
-    submission, data, AWS, PgAdapter, MessageDriver, Schema
-  });
+  const output = await execute({ submission, data, AWS, PgAdapter, MessageDriver, Schema });
   Object.assign(action, { output });
   await PgAdapter.execute({ resource: 'submission', operation: 'updateActionData' },
     { submission, action });

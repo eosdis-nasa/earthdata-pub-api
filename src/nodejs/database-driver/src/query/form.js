@@ -32,7 +32,7 @@ const findById = `
         SELECT
           input.question_id,
           JSONB_AGG(JSONB_BUILD_OBJECT(
-            'id', input.id,
+            'control_id', input.control_id,
             'type', input.type,
             'label', input.label,
             'attributes', input.attributes,

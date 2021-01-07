@@ -1,0 +1,1182 @@
+{
+  "id": "6c544723-241c-4896-a38c-adbc0a364293",
+  "version": 1,
+  "short_name": "data_submission",
+  "text": "To express interest in submitting a data product, please fill out the following form.",
+  "sections": [
+    {
+      "heading": "Contact Information",
+      "questions": [
+        {
+          "short_name": "data_producer_info",
+          "long_name": "Primary Data Producer",
+          "text": "Who is the primary person responsible for the collection or creation of this data product?",
+          "help": "Often this is the Principle Investigator, Project Scientist, or Project Manager",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "data_producer_info_name",
+              "label": "Name",
+              "validation_error_msg": "Please enter a name for the point of contact.",
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "data_producer_info_organization",
+              "label": "Organization",
+              "validation_error_msg": "Please enter an organization.",
+              "required": true
+            },
+            {
+              "type": "email",
+              "control_id": "data_producer_info_email",
+              "label": "Email",
+              "validation_error_msg": "Please enter an email.",
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "data_producer_info_orcid",
+              "label": "Orcid",
+              "validation_error_msg": "An Open Researcher and Contributor Identifier (ORCID) provides a persistent digital identifier to distinguish researchers and properly attribute their research outputs. For more information, see the ORCID web site (https://support.orcid.org)."
+            }
+          ],
+          "id": "80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2",
+          "version": 1
+        },
+        {
+          "short_name": "publication_point_of_contact",
+          "long_name": "Publication Point of Contact",
+          "text": "During the publication process, who should the DAAC contact with questions regarding this data product?",
+          "help": "The publication process includes ingesting, archiving, quality checking, documenting, and making the data product publicly accessible.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "publication_poc_name",
+              "label": "Name",
+              "validation_error_msg": "Please enter a name for the point of contact.",
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "publication_poc_organization",
+              "label": "Organization",
+              "validation_error_msg": "Please enter an organization.",
+              "required":true
+            },
+            {
+              "type": "email",
+              "control_id": "publication_poc_email",
+              "label": "Email",
+              "validation_error_msg": "Please enter an email.",
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "publication_poc_orcid",
+              "label": "Orcid",
+              "validation_error_msg": "An Open Researcher and Contributor Identifier (ORCID) provides a persistent digital identifier to distinguish researchers and properly attribute their research outputs. For more information, see the ORCID web site (https://support.orcid.org)."
+            }
+          ],
+          "id": "f3e2eab9-6375-4e53-9cc2-3d16f318d333",
+          "version": 1
+        },
+        {
+          "short_name": "long_term_support_point_of_contact",
+          "long_name": "Long-term Support Point of Contact",
+          "text": "Once publication is completed, who should the DAAC contact with questions regarding this data product?",
+          "help": "DAACs may need assistance in answering questions from data product users. For example, questions related to data algorithm and processing approaches, calibration/validation assessments, or instrumentation.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "long_term_support_poc_name",
+              "label": "Name",
+              "validation_error_msg": "Please enter a name for the long-term point of contact.",
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "long_term_support_poc_organization",
+              "label": "Organization",
+              "validation_error_msg": "Please enter an organization.",
+              "required":true
+            },
+            {
+              "type": "email",
+              "control_id": "long_term_support_poc_email",
+              "label": "Email",
+              "validation_error_msg": "Please enter an email.",
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "long_term_support_poc_orcid",
+              "label": "Orcid",
+              "validation_error_msg": "An Open Researcher and Contributor Identifier (ORCID) provides a persistent digital identifier to distinguish researchers and properly attribute their research outputs. For more information, see the ORCID web site (https://support.orcid.org)."
+            }
+          ],
+          "id": "f3e2eab9-6375-4e53-9cc2-3d16f318d332",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "heading": "Funding Information",
+      "questions": [
+        {
+          "short_name": "funding_organization",
+          "long_name": "Funding Source: Organization",
+          "text": "What organization(s) funded the creation of this data product?",
+          "help": "This the organization that funded the creation of the data product.",
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "funding_organization_name",
+              "label": "Organization",
+              "enums": [
+                "NASA",
+                "NOAA",
+                "NSF",
+                "USGS",
+                "University",
+                "Other"
+              ],
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "funding_organization_other",
+              "label": "If University or Other",
+              "required_if": [
+                {
+                  "field": "funding_organization_name",
+                  "value": "University",
+                  "message":"Please provide a University or other text value for the funding organization."
+                },
+                {
+                  "field": "funding_organization_name",
+                  "value": "Other",
+                  "message":"Please provide a University or other text value for the funding organization."
+                }
+              ]
+            }
+          ],
+          "id": "8a364184-42ac-48fe-b831-acb2eb08c728",
+          "version": 1
+        },
+        {
+          "short_name": "funding_program",
+          "long_name": "Funding source: Program/Program Element",
+          "text": "Under what program or program element within the funding organization was this data product created?",
+          "help": "For example, NASA programs such as MEaSUREs, Terrestrial Hydrology, Earth Venture, ACCESS, or AIST.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "funding_program_name",
+              "label": "Program",
+              "validation_error_msg": "Please enter a name for the program.",
+              "required": true
+            }
+          ],
+          "id": "4ecc885f-daf8-4bc6-a8cd-d30c2a54d086",
+          "version": 1
+        },
+        {
+          "short_name": "funding_grant",
+          "long_name": "Funding source: Grant Number",
+          "text": "If available, please provide the grant number for the funding that supported the creation of this data product.",
+          "help": "For example, NNX08AZ90A.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "funding_grant_number",
+              "label": "Grant Number",
+              "validation_error_msg": "Please enter a grant number. For example, NNX08AZ90A."
+            }
+          ],
+          "id": "4ecc885f-daf8-4bc6-a8cd-d30c2a54d085",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "heading": "Data Product Citation",
+      "questions": [
+        {
+          "short_name": "list_of_data_producers_and_groups",
+          "long_name": "List of Data Producers for Data Citation",
+          "text": "Please list the people or organizations that were involved in the creation of this data product in the order that they should be credited in the data product citation.",
+          "help": "The DAAC will use this information to construct a data product citation, which is a reference to data for the purpose of credit attribution and facilitation of data access. <br><br>Example data product citations:<br><br>McGill, Matthew , Dennis L Hlavka, John E. Yorks and Patrick A. Selmer. 2019. GOES-R PLT Cloud Physics LiDAR (CPL). Dataset available online from the NASA Global Hydrology Resource Center DAAC, Huntsville, Alabama, U.S.A. DOI: http://dx.doi.org/10.5067/GOESRPLT/CPL/DATA101<br><br>CARVE Science Team. 2017. CARVE: In-flight Photos from the CARVE Aircraft, Alaska, 2013-2015. ORNL DAAC, Oak Ridge, Tennessee, USA. https://doi.org/10.3334/ORNLDAAC/1435",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "producer_group_org_row1",
+              "label": "Organization",
+              "required":true,
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "producer_group_fname_row1",
+              "label": "First Name",
+              "required": true,
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "producer_group_lname_row1",
+              "label": "Last Name",
+              "required": true,
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "producer_group_org_row2",
+              "label": "Organization",
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "producer_group_fname_row2",
+              "label": "First Name",
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "producer_group_lname_row2",
+              "label": "Last Name",
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "producer_group_org_row3",
+              "label": "Organization",
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "producer_group_fname_row3",
+              "label": "First Name",
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "producer_group_lname_row3",
+              "label": "Last Name",
+              "enums":[
+                "First First Name, Last Name",
+                "First Organization",
+                "Second First Name, Last Name",
+                "Second Organization",
+                "Third First Name, Last Name",
+                "Third Organization"
+              ]
+            }
+          ],
+          "id": "8a364184-42ac-48fe-b831-acb2eb08c729",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "heading": "Data Product Information",
+      "questions": [
+        {
+          "short_name": "data_product_name",
+          "long_name": "Data Product Name",
+          "text": "How do you refer to this data product?",
+          "help": "This is how the DAAC will refer to this data product during the Submission process.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "data_product_name_value",
+              "label": "Name",
+              "validation_error_msg": "Please enter a name for the data product.",
+              "required": true
+            }
+          ],
+          "id": "f74c6c20-7483-40f9-a63e-58cc20ae8c8f",
+          "version": 1
+        },
+        {
+          "short_name": "data_product_description",
+          "long_name": "Data Product Description",
+          "text": "Please provide a brief description of this data product following the guidance in the help text.",
+          "help": "The description should mimic a journal abstract and should provide a reader with the information needed to quickly understand the relevance and usefulness of the data.",
+          "inputs": [
+            {
+              "type": "textarea",
+              "control_id": "data_product_description_textarea",
+              "label": "Description",
+              "validation_error_msg": "Please enter a description.",
+              "attributes": {
+                "rows": 10,
+                "cols": 80
+              },
+              "required": true
+            }
+          ],
+          "id": "9767336b-a9a9-41d2-8d2d-4fc2858c9b6ef",
+          "version": 1
+        },
+        {
+          "short_name": "data_product_doi",
+          "long_name": "Data Product DOI",
+          "text": "If a Digital Object Identifier (DOI) already exists for this data product, please provide it.",
+          "help": "This would be the DOI for the actual data product and not for a publication related to this data product.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "data_product_doi_value",
+              "label": "DOI",
+              "validation_error_msg": "Please enter Digital Object Identifiers."
+            }
+          ],
+          "id": "c9c73e88-837a-42d2-aa1a-50874a333607",
+          "version": 1
+        },
+		    {
+          "short_name": "data_product_type_info",
+          "long_name": "Data Product Type",
+          "text": "Are data within this data product observational and/or model output?",
+          "required": true,
+          "inputs": [
+            {
+              "type": "checkbox",
+              "control_id": "data_product_type_observational",
+              "label": "Observational"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "data_product_type_model",
+              "label": "Model"
+            }
+          ],
+          "id": "9767336b-a9a9-41d2-8d2d-4fc2858c9b63f",
+          "version": 1
+        },
+        {
+          "short_name": "platform_and_instrument",
+          "long_name": "Platform and Instrument",
+          "text": "What platform(s) and instrument(s) were used to collect the data within this data product?",
+          "help": "Please be as specific as possible when including the platforms and instruments. For example, include tail numbers for aircraft or uniquely identify instruments when multiple instances exist on the same platform.",
+          "show_if": [
+            {
+              "field": "data_product_type_observational",
+              "value": "true"
+            }
+          ],
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "platform_instrument",
+              "label": "Platform - instrument",
+              "validation_error_msg": "Please enter platform - instrument."
+            }
+          ],
+          "id": "9767336b-a9a9-41d2-8d2d-4fc2858c9b6f",
+          "version": 1
+        },
+        {
+          "short_name": "model",
+          "long_name": "Model Data Product",
+          "text": "What is the name and version of the model used to produce this data product?",
+          "show_if": [
+            {
+              "field": "data_product_type_model",
+              "value": "true"
+            }
+          ],
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "model_data_product",
+              "label": "Model Name and Version",
+              "validation_error_msg": "Please enter name and version of model."
+            }
+          ],
+          "id": "ab57f5e8-9ec5-46c9-978e-d06125346d36",
+          "version": 1
+        },
+        {
+          "short_name": "data_processing_level",
+          "long_name": "Data Processing Level",
+          "text": "What is the processing level of this data product?",
+          "help": "For descriptions of the processing levels, please refer to NASA Processing Level page (https://science.nasa.gov/earth-science/earth-science-data/data-processing-levels-for-eosdis-data-products).",
+          "required": true,
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "data_processing_level",
+              "label": "Processing Level",
+              "enums": [
+                "Level 0",
+                "Level 1A",
+                "Level 1B",
+                "Level 2",
+                "Level 3",
+                "Level 4",
+                "Other"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "data_processing_other_info",
+              "label": "If Other",
+              "required_if": [
+                {
+                  "field": "data_processing_level",
+                  "value": "Other"
+                }
+              ]
+            }
+          ],
+          "id": "7fd7bccf-5065-4033-9956-9e80bc99c205",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "heading": "Temporal Coverage",
+      "questions": [
+        {
+          "short_name": "data_product_temporal_coverage",
+          "long_name": "Data Product",
+          "text": "What period of time is covered by the entire data product?",
+          "help":"The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file, even if there are time gaps. If there is additional information you want to provide, please include that in Temporal Coverage Notes.",
+          "inputs": [
+            {
+              "type": "date",
+              "control_id": "temporal_coverage_start",
+              "label": "Start",
+              "required": true
+            },
+            {
+              "type": "date",
+              "control_id": "temporal_coverage_end",
+              "label": "End",
+              "required": true
+            },
+            {
+              "type": "radio",
+              "control_id": "data_product_temporal_coverage_ongoing",
+              "label": "Ongoing",
+              "enums":[
+                "Yes",
+                "No"
+              ],
+              "required": true
+            }
+          ],
+          "id": "4f2dd369-d865-47ba-8504-8694493f129f",
+          "version": 1
+        },
+        {
+          "short_name": "data_file_temporal_coverage",
+          "long_name": "Data File",
+          "text": "On average, how much time is covered by an individual data file?",
+          "help":"Some help on data file temporal coverage",
+          "inputs": [
+            {
+              "type": "number",
+              "control_id": "data_file_temporal_coverage_answer",
+              "label": "Time",
+              "required": true,
+              "validation_error_msg": "You must enter a positive value."
+            },
+            {
+              "type": "radio",
+              "control_id": "data_file_temporal_coverage_units",
+              "label": "Unit",
+              "enums": [
+                "Minute(s)",
+                "Hour(s)",
+                "Day(s)",
+                "Week(s)",
+                "Month(s)",
+                "Year(s)",
+                "Varies"
+              ],
+              "required": true
+            }
+          ],
+          "id": "4f2dd369-d865-47ba-8504-8694493f123",
+          "version": 1
+        },
+        {
+          "short_name": "data_value_temporal_coverage",
+          "long_name": "Data Value",
+          "text": "On average, how much time is covered by an individual data value within the data files?",
+          "help": "The data value temporal coverage is specific to the data  stored in this data product and does not necessarily represent the input data or instrument sampling rate. For example, if measurements are taken for 1 second every 8 minutes and those 1 second measurements are represented in the data file, the data value temporal coverage is 1 second. If the 1 second measurements are averaged every hour and those 1-hour averages are represented in the data file, the data value temporal coverage is 1 hour.",
+          "inputs": [
+            {
+              "type": "number",
+              "control_id": "data_value_temporal_coverage_answer",
+              "label": "Value",
+              "required": true,
+              "validation_error_msg": "You must enter a positive value."
+            },
+            {
+              "type": "radio",
+              "control_id": "data_value_temporal_coverage_units",
+              "label": "Unit",
+              "enums": [
+                "Minute(s)",
+                "Hour(s)",
+                "Day(s)",
+                "Week(s)",
+                "Month(s)",
+                "Year(s)",
+                "Varies"
+              ],
+              "required": true
+            }
+          ],
+          "id": "4f2dd369-d865-47ba-8504-8694493f139f",
+          "version": 1
+        },
+        {
+          "short_name": "temporal_coverage_notes",
+          "long_name": "Notes",
+          "text": "Please describe any additional information about the temporal coverage that will help the DAAC understand this data product.",
+          "help": "Examples of temporal coverage information include: seasonal data; data covering multiple, individual deployments; significant gaps in instrument operation; data from transit/ferry flights included.",
+          "inputs": [
+            {
+              "type": "textarea",
+              "control_id": "temporal_coverage_notes_textarea",
+              "label": "Additional Information",
+              "attributes": {
+                "rows": 10,
+                "cols": 80
+              }
+            }
+          ],
+          "id": "4f2dd369-d865-47ba-8504-8694493f128f",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "heading": "Spatial Coverage",
+      "questions": [
+        {
+          "short_name": "spatial_general",
+          "long_name": "General",
+          "text": "What is the general geographic region covered by this data product?",
+          "help": "For example: Global, Northern Hemisphere, Alaska, Korean Peninsula, East Tropical Pacific, or Gulf Stream.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "spatial_general_region",
+              "label": "Coverage",
+              "validation_error_msg": "Please enter a spatial coverage.",
+              "required": true
+            }
+          ],
+          "id": "ebeab400-b3d7-4943-8d09-d1236afc5de01",
+          "version": 1
+        },
+        {
+          "short_name": "spatial_horizontal",
+          "long_name": "Horizontal",
+          "text": "What are the coordinates for the geographic area(s) covered by the entire data product?",
+          "help": "If more than three distinct spatial coverage bounding boxes exist for this data product, please add a comment to the Spatial Coverage Notes.",
+          "required": true,
+          "inputs": [
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_north1",
+              "label": "N"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_east1",
+              "label": "E"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_south1",
+              "label": "S"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_west1",
+              "label": "W"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_north2",
+              "label": "N"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_east2",
+              "label": "E"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_south2",
+              "label": "S"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_west2",
+              "label": "W"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_north3",
+              "label": "N"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_east3",
+              "label": "E"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_south3",
+              "label": "S"
+            },
+            {
+              "type": "bbox",
+              "control_id": "spatial_horizontal_west3",
+              "label": "W"
+            }
+          ],
+          "id": "ebeab400-b3d7-4943-8d09-d1236afc5deww",
+          "version": 1
+        },
+        {
+          "short_name": "spatial_vertical",
+          "long_name": "Vertical",
+          "text": "Does this data product have a vertical dimension?",
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "spatial_vertical_answer",
+              "label": "Has Vertical Dimension",
+              "enums": [
+                "Yes",
+                "No"
+              ],
+              "required":true
+            }
+          ],
+          "id": "ebeab400-b3d7-4943-8d09-d1236afc5dewx",
+          "version": 1
+        },
+        {
+          "short_name": "spatial_vertical_details",
+          "long_name": "Vertical Details",
+          "text": "What are the upper and lower limits of the vertical space covered by the data product?",
+          "help":"Please provide any additional details needed to understand what these numbers mean in the Spatial Coverage Notes. For example, the point of reference for the values given in the vertical spatial coverage.",
+          "show_if": [
+            {
+              "field": "spatial_vertical_answer",
+              "value": "Yes"
+            }
+          ],
+          "inputs": [
+            {
+              "type": "number",
+              "control_id": "spatial_vertical_details_upper",
+              "label": "Upper Amount",
+              "validation_error_msg": "You must enter a positive value."
+            },
+            {
+              "type": "radio",
+              "control_id": "spatial_vertical_details_upper_units",
+              "label": "Units",
+              "enums": [
+                "km",
+                "m",
+                "feet",
+                "miles",
+                "mb",
+                "Pa",
+                "hPa",
+                "Varies"
+              ]
+            },
+            {
+              "type": "number",
+              "control_id": "spatial_vertical_details_lower",
+              "label": "Lower Amount",
+              "validation_error_msg": "You must enter a positive value."
+            },
+            {
+              "type": "radio",
+              "control_id": "spatial_vertical_details_lower_units",
+              "label": "Units",
+              "enums": [
+                "km",
+                "m",
+                "feet",
+                "miles",
+                "mb",
+                "Pa",
+                "hPa",
+                "Varies"
+              ]
+            }
+          ],
+          "id": "ebeab400-b3d7-4943-8d09-d1236afc5dexx",
+          "version": 1
+        },
+        {
+          "short_name": "spatial_data_file",
+          "long_name": "Data File",
+          "text": "In general, how much geographical area is covered by an individual data file?",
+          "help": "Please describe the general nature of the geographic area. For example: one file covers a swath of 25 km across track for a single orbit. one covers data for a single glacier. One file covers a 5 x 5m tile; one file represents one flight over the campaign study region; one file covers the entire globe.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "spatial_data_file",
+              "label": "Geographical Area by data file",
+              "required": true
+            }
+          ],
+          "id": "ebeab400-b3d7-4943-8d09-d1236afc5ddxx",
+          "version": 1
+        },
+        {
+          "short_name": "spatial_resolution",
+          "long_name": "Spatial Resolution of Data Value",
+          "text": "What is the spatial resolution of an individual data value within the data files?",
+          "help": "Please provide the nominal size of the geographic area covered by a single data value. For example: 25 km at nadir; a 0.25 degree x 0.25 degree grid cell at the equator; points along a path; a 10 km x 10 km x 5 km radar slice.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "spatial_resolution",
+              "label": "Spatial Resolution",
+              "required": true
+            }
+          ],
+          "id": "ebeab400-b3d7-4943-8d09-d1236afc5edxx",
+          "version": 1
+        },
+        {
+          "short_name": "spatial_notes",
+          "long_name": "Notes",
+          "text": "Please describe any additional information about the spatial coverage that will help the DAAC understand this data product.",
+          "inputs": [
+            {
+              "type": "textarea",
+              "control_id": "spatial_notes_textarea",
+              "label": "Additional Information",
+              "attributes": {
+                "rows": 10,
+                "cols": 80
+              }
+            }
+          ],
+          "id": "ebeab400-b3d7-4943-8d09-d1236afc5sss",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "heading": "Data Product Technical Details",
+      "questions": [
+        {
+          "short_name": "variables",
+          "long_name": "What are the primary variables represented in this data product?",
+          "text": "The primary variables should represent the research objective of the data. Identifying primary variables helps users find your data product and determine if it is appropriate for their use. Examples of variables in data products that are not considered primary are quality flags, input data variables, and latitude/longitude values. ",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "variables_text",
+              "label": "Variables",
+              "required": true
+            }
+          ],
+          "id": "ebeab400-b3d7-4943-8d09-d1236af3dsss",
+          "version": 1
+        },
+        {
+          "short_name": "data_format",
+          "long_name": "Data Format",
+          "text": "What is the format(s) of the files within this data product? If selecting Other, please upload code to read the data or provide a URL to code to read the data.",
+          "help": "For a list of NASA approved data formats, please refer to the NASA Earthdata Standards and Practicies web page (https://earthdata.nasa.gov/esdis/eso/standards-and-references#data-formats). Providing code to read non-standard data formats will assist the DAAC in understanding the structure and content of this data product.",
+          "required": true,
+          "inputs": [
+            {
+              "type": "checkbox",
+              "control_id": "data_format_ascii",
+              "label": "ASCII"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "data_format_geotiff",
+              "label": "GeoTIFF"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "data_format_hdf5",
+              "label": "HDF-5"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "data_format_hdf_eos",
+              "label": "HDF-EOS-5"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "data_format_ogc_kml",
+              "label": "OGC KML"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "data_format_netcdf_4",
+              "label": "NetCDF-4"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "data_format_netcdf_classic",
+              "label": "NetCDF Classic"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "data_format_other",
+              "label": "Other"
+            },
+            {
+              "type": "text",
+              "control_id": "data_format_other_info",
+              "label": "If Other",
+              "required_if": [
+                {
+                  "field": "data_format_other",
+                  "value": "true"
+                }
+              ]
+            }
+          ],
+          "id": "50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27",
+          "version": 1
+        },
+        {
+          "short_name": "data_product_volume",
+          "long_name": "Data Product Volume",
+          "text": "What is the estimated or actual total volume of this data product?",
+          "help": "The DAAC uses the total volume of the final data product to plan data storage requirements. If the final data product is not complete, please provide your best estimate for the total data volume.",
+          "inputs": [
+            {
+              "type": "number",
+              "control_id": "data_product_volume_amount",
+              "label": "Amount",
+              "validation_error_msg": "You must enter a positive value.",
+              "required": true
+            },
+            {
+              "type": "radio",
+              "control_id": "data_product_volume_units2",
+              "label": "Unit",
+              "enums": [
+                "KB",
+                "MB",
+                "GB",
+                "TB",
+                "PB"
+              ],
+              "required": true
+            }
+          ],
+          "id": "40672516-2220-4edc-8c1b-fd9f7e0b978f",
+          "version": 1
+        },
+        {
+          "short_name": "data_product_files",
+          "long_name": "Number of files",
+          "text": "What is the estimated or actual total number of files in this data product?",
+          "help": "If the final data product is not complete, please provide your best estimate.",
+          "inputs": [
+            {
+              "type": "number",
+              "control_id": "data_product_number_of_files",
+              "label": "Files",
+              "required": true,
+              "validation_error_msg": "You must enter a positive value."
+            }
+          ],
+          "id": "40672516-2220-4edc-8c1b-fd9f7e0b979e",
+          "version": 1
+        },
+        {
+          "short_name": "data_file_compression",
+          "long_name": "Data File Compression",
+          "text": "Is internal compression applied to the data files in this data product?",
+          "help": "Internal compression is a feature of netCDF and HDF file formats that enables optimized storage and organization of data files. Internal compression is recommended when using these file formats.",
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "data_file_compression_answer",
+              "label": "Internal Compression",
+              "enums": [
+                "Yes",
+                "No"
+              ],
+              "required": true
+            }
+          ],
+          "id": "f1d8ab9d-0959-41b8-8449-430986ddfe84",
+          "version": 1
+        },
+        {
+          "short_name": "browse_images",
+          "long_name": "Browse Images",
+          "text": "Will browse images representing the data be provided as part of this data product?",
+          "help": "A browse image provides a visual preview of the data which can assist users in assessing and selecting a data product.",
+          "required": true,
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "browse_images_answer",
+              "label": "Images",
+              "enums": [
+                "Yes",
+                "No"
+              ]
+            },
+            {
+              "type": "text",
+              "control_id": "browse_images_other",
+              "label": "Any Other Information"
+            }
+          ],
+          "id": "f2d8ab9d-0959-41b8-8449-430986ddfe84",
+          "version": 1
+        },
+        {
+          "short_name": "data_product_status",
+          "long_name": "Data Product Status",
+          "text": "Once this data product is publicly accessible, will you continue to create data to extend this data product?",
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "data_product_status",
+              "label": "Status",
+              "enums": [
+                "Yes",
+                "No"
+              ],
+              "required": true
+            }
+          ],
+          "id": "f6d8ab9d-0959-41b8-8449-430986ddfe84",
+          "version": 1
+        },
+        {
+          "short_name": "data_delivery_frequency",
+          "long_name": "Data Delivery Frequency",
+          "text": "What is the anticipated frequency of additional data deliveries to the DAAC?",
+          "show_if": [
+            {
+              "field": "data_product_status",
+              "value": "Yes"
+            }
+          ],
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "data_product_volume_units1",
+              "label": "Unit",
+              "enums": [
+                "No Updates",
+                "Daily",
+                "Weekly",
+                "Monthly",
+                "Quarterly",
+                "Yearly",
+                "Varies"
+              ]
+            }
+          ],
+          "id": "f4d8ab9d-0959-41b8-8449-430986ddfe85",
+          "version": 1
+        },
+        {
+          "short_name": "data_production_latency (if data product status is yes)",
+          "long_name": "Data Production Latency",
+          "text": "What is the average time between the observation of the data and the creation of the data product?",
+          "show_if": [
+            {
+              "field": "data_product_status",
+              "value": "Yes"
+            }
+          ],
+          "inputs": [
+            {
+              "type": "number",
+              "control_id": "data_product_latency_amount",
+              "label": "Amount",
+              "validation_error_msg": "You must enter a positive value."
+            },
+            {
+              "type": "radio",
+              "control_id": "data_product_volume_units2",
+              "label": "Unit",
+              "enums": [
+                "Minute(s)",
+                "Hour(s)",
+                "Day(s)",
+                "Week(s)",
+                "Month(s)",
+                "Year(s)",
+                "Varies"
+              ]
+            }
+          ],
+          "id": "f4d8ab9d-0959-41b8-8449-430986ddfe84",
+          "version": 1
+        },
+        {
+          "short_name": "data_product_restrictions",
+          "long_name": "Data Product Restrictions",
+          "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No, please provide a brief explanation.",
+          "help": "For a description policy, please refer to the NASA Earthdata Data and Information Policy web page (https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy).",
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "data_product_restrictions_public",
+              "label": "Releasable to public",
+              "enums": [
+                "Yes",
+                "No"
+              ],
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "data_product_restrictions_explanation",
+              "label": "If No, provide explanation",
+              "required_if": [
+                {
+                  "field": "data_product_restrictions_public",
+                  "value": "No"
+                }
+              ]
+            }
+          ],
+          "id": "2dd6c8b1-22a8-4866-91c3-da9b4ce849dc",
+          "version": 1
+        },
+        {
+          "short_name": "publication",
+          "long_name": "Publications Describing Data Product",
+          "text": "Please provide the citation or Digital Object Identifier (DOI) for any publications describing this data product.",
+          "help": "For example, a overview paper describing the research, methods, or initial results related to this data product.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "publication_dois",
+              "label": "DOIs",
+              "validation_error_msg": "Please enter Digital Object Identifiers.",
+              "required": true
+            }
+          ],
+          "id": "ab57f5e8-9ec5-46c9-978e-d06125346d37",
+          "version": 1
+        },
+        {
+          "short_name": "additional_documentation",
+          "long_name": "Additional Documentation",
+          "text": "Please upload additional documents that describe this data product or provide URLs to additional documents.",
+          "help": "For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality.",
+          "inputs": [
+            {
+              "type": "file",
+              "control_id": "additional_file_upload",
+              "label": "Additional Sample File"
+            },
+            {
+              "type": "text",
+              "control_id": "additional_file_url",
+              "label": "Additional File URL"
+            }
+          ],
+          "id": "40672516-2220-4edc-8c1b-fd9f7e0b978e",
+          "version": 1
+        },
+        {
+          "short_name": "sample_data_file",
+          "long_name": "Sample Data File",
+          "text": "Please upload a sample data file(s) or provide a URL to a location where a sample data file(s) can be accessed.",
+          "help": "Providing data files that are representative of the range of data within this data product will help the DAAC to better understand the data format, structure, and content.",
+          "required": true,
+          "inputs": [
+            {
+              "type": "file",
+              "control_id": "example_file_upload",
+              "label": "Upload Sample File"
+            },
+            {
+              "type": "text",
+              "control_id": "example_file_url",
+              "label": "Sample File URL"
+            }
+          ],
+          "id": "53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3",
+          "version": 1
+        }
+      ]
+    }
+  ]
+}

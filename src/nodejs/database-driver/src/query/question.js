@@ -6,10 +6,11 @@ const findAllEx = `
     SELECT
       input.question_id,
       JSONB_AGG(JSONB_BUILD_OBJECT(
-        'id', input.id,
+        'control_id', input.control_id,
         'type', input.type,
         'label', input.label,
         'attributes', input.attributes,
+        'required', input.required,
         'required_if', input.required_if,
         'show_if', input.show_if,
         'enums', input.enums) ORDER BY input.list_order) inputs

@@ -32,7 +32,7 @@ async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
 
   // Temporary to prevent lint errors
-  console.info(MessageDriver);
+  console.info(MessageDriver, PgAdapter);
   return { message: "Not implemented."};
 }
 

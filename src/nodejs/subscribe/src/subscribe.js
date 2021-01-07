@@ -6,64 +6,29 @@
  * @see module:NotificationHandler
  */
 
-const { DynamoDB } = require('aws-sdk');
+const PgAdapter = require('database-driver');
 
-const { DynamodbDriver } = require('database-driver');
+const MessageDriver = require('message-driver');
 
-const ClientConfig = require('./client-config.js');
-
-const dbDriver = new DynamodbDriver(
-  new DynamoDB(ClientConfig.dynamodb),
-  DynamoDB.Converter.marshall,
-  DynamoDB.Converter.unmarshall,
-  process.env.TABLE_SUFFIX
-);
-
-async function getMethod(event, user) {
-  const response = await dbDriver.getItems('subscription', user.id);
-  return response;
+async function subsribe(body, userId) {
+  console.info('Not Implemented', body, userId);
 }
 
-async function postMethod(event, user) {
-  const body = JSON.parse(event.body);
-  if (body.action === 'subscribe') {
-    const item = {
-      id: user.id,
-      source_id: body.source_id,
-      table_name: body.table_name
-    };
-    return dbDriver.putItem('subscription', item);
-  } if (body.action === 'unsubscribe') {
-    return dbDriver.deleteItem('subscription', user.id, body.source_id);
-  }
-  return [false, 'Bad request.'];
+async function unsubsribe(body, userId) {
+  console.info('Not Implemented', body, userId);
 }
 
-const methodMap = {
-  GET: getMethod,
-  POST: postMethod
+const operations = {
+  subscribe,
+  unsubscribe
 };
 
-async function handler(event, context) {
+async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  console.info(`[USER]\n${JSON.stringify(context.identity)}`);
 
-  // After integration of auth user will be pulled from context
-  const user = {
-    id: '54ce2972-39a7-49d4-af07-6b014a3bddfe',
-    user_name: 'Brian Ellingson',
-    email: 'brian.ellingson@uah.edu'
-  };
-  const method = event.httpMethod;
-  const operation = methodMap[method];
-  const [data, err] = await operation(event, user);
-  if (err) {
-    console.error(`[ERROR] ${err}`);
-  }
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ data, err })
-  };
+  const operation = operations[event.operation];
+  const data = await operation(event, event.context.user_id);
+  return data;
 }
 
 exports.handler = handler;

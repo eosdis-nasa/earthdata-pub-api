@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS section_question (
 
 CREATE TABLE IF NOT EXISTS input (
   question_id UUID NOT NULL,
-  id VARCHAR NOT NULL,
+  control_id VARCHAR NOT NULL,
   list_order SMALLINT NOT NULL,
   label VARCHAR NOT NULL,
   type VARCHAR NOT NULL,
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS action (
   version SMALLINT,
   long_name VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
-  file_key VARCHAR NOT NULL,
+  source VARCHAR NOT NULL,
   input_schema JSONB DEFAULT '{}'::jsonb,
   PRIMARY KEY (id),
   UNIQUE (short_name)
