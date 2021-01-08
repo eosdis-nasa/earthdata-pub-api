@@ -14,27 +14,7 @@ const bodyParser = require('body-parser');
 
 const local = require('./controllers/local.js');
 
-const workflowHandler = require('workflow-handler').handler;
-
-//const actionHandler = require('action-handler').handler;
-
 const serverPort = 8080;
-
-const AWS = require('aws-sdk');
-
-const { Consumer } = require('sqs-consumer');
-
-const consumer = Consumer.create({
-  sqs: new AWS.SQS({ endpoint: process.env.SNS_ENDPOINT }),
-  queueUrl: 'http://goaws:4100/000000000000/edpub_action_sqs.fifo',
-  pollingWaitTimeMs: 15000,
-  //handleMessage: actionHandler
-  handleMessage:  async (message) => {
-    console.log(message);
-  }
-});
-
-consumer.start();
 
 const app = express();
 
@@ -54,8 +34,8 @@ app.post('/auth/login', local.authenticate);
 app.post('/auth/token', local.token);
 app.get('/auth/user_list', local.userList);
 app.get('/reseed', local.reseed);
-
 app.get('/favicon.ico', local.favico);
+app.post('/goaws/workflow_handler', local.handleWorkflow);
 
 const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
 const oasDoc = jsyaml.safeLoad(spec);
@@ -72,7 +52,6 @@ const oasOptions = {
   }
 };
 
-
 oasTools.configure(oasOptions);
 
 oasTools.initialize(oasDoc, app, function() {
@@ -85,22 +64,6 @@ oasTools.initialize(oasDoc, app, function() {
     }
   });
 });
-
-// app.get('/token', auth.tokenEndpoint);
-// app.post('/refresh', auth.refreshEndpoint);
-// app.delete('/token/:token', auth.deleteTokenEndpoint);
-// app.delete('/tokenDelete/:token', auth.deleteTokenEndpoint);
-
-app.post('/goaws/workflow_handler', function(req, res) {
-  if (req.body.MessageAttributes.event_type.Value === 'workflow_promote_step') {
-    const records = { Records: [ { Sns: { ...req.body } }] };
-    workflowHandler(records);
-  }
-  res.statusCode = 200;
-  res.send();
-});
-
-
 
 app.get('/instanceMeta', function(req, res) { res.status(200); res.send({}); });
 app.get('/granules', function(req, res) { res.status(200); res.send([]); });

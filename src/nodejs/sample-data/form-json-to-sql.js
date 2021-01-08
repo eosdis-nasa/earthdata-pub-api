@@ -1,5 +1,6 @@
 const fs = require('fs');
 const crypto = require('crypto');
+const assert = require('assert');
 
 const inserts = {
   forms: [],
@@ -8,6 +9,9 @@ const inserts = {
   section_questions: [],
   inputs: []
 }
+
+questionMap = {};
+
 
 function uuid() {
   const base = '10000000-1000-4000-8000-100000000000';
@@ -51,11 +55,27 @@ function formToSql(form) {
 
 function parseQuestion(question, i, section) {
   question.id = question.id || uuid();
-  inserts.questions.push(questionToSql(question));
+  question.version = question.version || 1;
+  let doInsert = false;
+  if (!questionMap[question.short_name]) {
+    questionMap[question.short_name] = {};
+    doInsert = true;
+  } else if (questionMap[question.short_name][question.version]) {
+    if (!deepEqual(questionMap[question.short_name][question.version], question)) {
+      question.version += 1;
+      doInsert = true;
+    }
+  } else {
+    doInsert = true;
+  }
+  if (doInsert) {
+    questionMap[question.short_name][question.version] = question;
+    inserts.questions.push(questionToSql(question));
+    question.inputs.forEach((input, i) => {
+      inserts.inputs.push(inputToSql(input, i, question));
+    });
+  }
   inserts.section_questions.push(sectionQuestionToSql(question, i, section));
-  question.inputs.forEach((input, i) => {
-    inserts.inputs.push(inputToSql(input, i, question));
-  });
 }
 
 function parseSection(section, i, form) {
@@ -68,8 +88,8 @@ function parseSection(section, i, form) {
 
 function parseForm(form) {
   form.id = form.id || uuid();
+  form.version = form.version || 1;
   inserts.forms.push(formToSql(form));
-  console.log(form)
   form.sections.forEach((section, i) => {
     parseSection(section, i, form);
   });
@@ -90,11 +110,34 @@ function clean(obj) {
   return obj;
 }
 
-const formJson = require('./data_publication_request.json');
+function deepEqual(itemA, itemB) {
+  try {
+    assert.deepStrictEqual(itemA, itemB);
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
 
-parseForm(clean(formJson));
+const jsonForms = [
+  require('./json/form-submission-request.json'),
+  require('./json/form-data-submission.json')
+];
 
-const file = fs.createWriteStream('form.sql');
-Object.entries(inserts).forEach(([key, val]) => {
-  val.forEach(ins => { file.write(`${ins}\n`)});
+jsonForms.forEach((jsonForm) => {
+  parseForm(clean(jsonForm));
 });
+
+const file = fs.createWriteStream('./sql/forms.sql');
+file.write(`\n-- Form(id, short_name, version, long_name, description, text)\n`);
+inserts.forms.forEach((form) => { file.write(`${form}\n`); });
+file.write(`\n-- Section(id, form_id, heading, list_order)\n`);
+inserts.sections.forEach((section) => { file.write(`${section}\n`); });
+file.write(`\n-- Question(id, short_name, version, long_name, text, help)\n`);
+inserts.questions.forEach((question) => { file.write(`${question}\n`); });
+file.write(`\n-- SectionQuestion(section_id, question_id, list_order, required_if, show_if))\n`);
+inserts.section_questions.forEach((sectionQuestion) => { file.write(`${sectionQuestion}\n`); });
+file.write(`\n-- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required, FALSE))\n\n`);
+inserts.inputs.forEach((input) => { file.write(`${input}\n`); });
+file.close();
