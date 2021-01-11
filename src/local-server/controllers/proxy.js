@@ -454,7 +454,6 @@ module.exports.getModel = function getModel(req, res, next) {
 module.exports.getToken = function getToken(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
-    authorization: params.Authorization.value,
     code: params.code.value,
     state: params.state.value
   }
