@@ -128,5 +128,6 @@ module.exports = {
   check,
   userList,
   reseed,
+  handleWorkflow,
   favico
 };
