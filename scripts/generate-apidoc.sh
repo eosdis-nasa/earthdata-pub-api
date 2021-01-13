@@ -1,8 +1,22 @@
 #!/bin/bash
+DIR=$(pwd)
+
+# Set up functions
+source ./scripts/utils.sh
+
+# Remove temp if exists and recreate
+setup_temp
+
+# Remove previous
 rm -rf ./docs/apidoc
 mkdir ./docs/apidoc
-cp ./node_modules/swagger-ui-dist/* ./docs/apidoc/
-rm ./docs/apidoc/index.html
-cp ./docs/swagger-index.html ./docs/apidoc/index.html
-cp ./terraform/apigateway/openapi.json ./docs/apidoc/openapi.json
-zip -r ./artifacts/apidoc.zip ./docs/apidoc
+
+# Copy and modify schema and openapi definition
+compile_oas_schema './temp/openapi.json'
+
+# Bundle doc with redoc-cli and move to docs
+redoc-cli bundle ./temp/openapi.json
+mv ./redoc-static.html ${DIR}/docs/apidoc/index.html
+
+# Clear and remove temp
+remove_temp

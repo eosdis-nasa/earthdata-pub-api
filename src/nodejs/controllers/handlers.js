@@ -1,0 +1,14 @@
+module.exports.auth = require('../lambda-handlers/auth.js').handler;
+module.exports.data = require('../lambda-handlers/data.js').handler;
+module.exports.invoke = require('../lambda-handlers/invoke.js').handler;
+module.exports.metrics = require('../lambda-handlers/metrics.js').handler;
+module.exports.model = require('../lambda-handlers/model.js').handler;
+module.exports.notify = require('../lambda-handlers/notify.js').handler;
+module.exports.register = require('../lambda-handlers/register.js').handler;
+module.exports.submission = require('../lambda-handlers/submission.js').handler;
+module.exports.subscribe = require('../lambda-handlers/subscribe.js').handler;
+module.exports.version = require('../lambda-handlers/version.js').handler;
+module.exports.actionConsumer = require('../lambda-handlers/action-consumer.js').handler;
+module.exports.metricsConsumer = require('../lambda-handlers/metrics-consumer.js').handler;
+module.exports.notificationConsumer = require('../lambda-handlers/notification-consumer.js').handler;
+module.exports.workflowConsumer = require('../lambda-handlers/workflow-consumer.js').handler;

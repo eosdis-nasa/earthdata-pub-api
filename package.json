@@ -19,26 +19,9 @@
   "author": "Brian Ellingson",
   "license": "ISC",
   "dependencies": {
-    "action-handler": "file:./src/nodejs/action-handler",
-    "auth": "file:./src/nodejs/auth",
-    "database-driver": "file:./src/nodejs/database-driver",
-    "data": "file:./src/nodejs/data",
-    "invoke": "file:./src/nodejs/invoke",
-    "message-driver": "file:./src/nodejs/message-driver",
-    "metrics": "file:./src/nodejs/metrics",
-    "metrics-handler": "file:./src/nodejs/metrics-handler",
-    "model": "file:./src/nodejs/model",
-    "notification-handler": "file:./src/nodejs/notification-handler",
-    "notify": "file:./src/nodejs/notify",
-    "register": "file:./src/nodejs/register",
-    "schema-util": "file:./src/nodejs/schema-util",
-    "submission": "file:./src/nodejs/submission",
-    "subscribe": "file:./src/nodejs/subscribe",
-    "version": "file:./src/nodejs/version",
-    "workflow-handler": "file:./src/nodejs/workflow-handler"
+    "redoc-cli": "^0.10.2"
   },
   "devDependencies": {
-    "aws-sdk": "^2.654.0",
     "eslint": "^6.8.0",
     "eslint-bamboo-formatter": "^0.1.1",
     "eslint-config-airbnb-base": "^14.1.0",
@@ -46,8 +29,7 @@
     "eslint-plugin-jest": "^23.8.2",
     "jest": "^25.2.4",
     "jest-bamboo-formatter": "^1.0.1",
-    "jsdoc": "^3.6.4",
-    "swagger-ui-dist": "^3.32.4"
+    "jsdoc": "^3.6.4"
   },
   "repository": {
     "type": "git",

@@ -3,12 +3,11 @@ version: '3.1'
 services:
   local_api:
     image: node:12.16.1
-    restart: always
     volumes:
-      - ./src/local-server:/var/local-server
       - ./src/nodejs:/var/nodejs
-    working_dir: /var/local-server
+    working_dir: /var/nodejs
     environment:
+      - NODE_PATH=/var/nodejs/node_modules:/var/nodejs/lambda-layers
       - API_VERSION=1.0.0
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=fake
@@ -27,7 +26,7 @@ services:
       - AUTH_USER_PATH=auth/user_info
       - AUTH_CLIENT_ID=1or0vuut22m9a5r9hd4s00er9k
       - AUTH_CLIENT_SECRET=1drni35hoa4tcp63jv9dr5pa8dfj8talscgv4m7e5fabc1qemsuv
-      - AUTH_CALLBACK_URL=http://localhost:8080/token
+      - AUTH_CALLBACK_URL=http://localhost:3000/auth
       - AUTH_STATE_URL=http://localhost:3000/auth
     command: ["npm", "start"]
     ports:
@@ -35,7 +34,7 @@ services:
   goaws:
     image: pafortin/goaws
     volumes:
-      - ./src/local-server/goaws-conf:/conf
+      - ./src/nodejs/goaws-conf:/conf
     ports:
       - 4100:4100
   postgres:

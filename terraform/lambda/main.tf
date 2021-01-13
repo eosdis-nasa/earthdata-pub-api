@@ -7,22 +7,22 @@ resource "aws_lambda_layer_version" "auth_util" {
   source_code_hash    = filesha256("../artifacts/auth-util-layer.zip")
 }
 
-# Database Driver Layer
+# Database Util Layer
 
-resource "aws_lambda_layer_version" "database_driver" {
-  filename            = "../artifacts/database-driver-layer.zip"
-  layer_name          = "databaseDriverLayer"
+resource "aws_lambda_layer_version" "database_util" {
+  filename            = "../artifacts/database-util-layer.zip"
+  layer_name          = "databaseUtilLayer"
   compatible_runtimes = ["nodejs12.x"]
-  source_code_hash    = filesha256("../artifacts/database-driver-layer.zip")
+  source_code_hash    = filesha256("../artifacts/database-util-layer.zip")
 }
 
-# Message Driver Layer
+# Message Util Layer
 
-resource "aws_lambda_layer_version" "message_driver" {
-  filename            = "../artifacts/message-driver-layer.zip"
-  layer_name          = "messageDriverLayer"
+resource "aws_lambda_layer_version" "message_util" {
+  filename            = "../artifacts/message-util-layer.zip"
+  layer_name          = "messageUtilLayer"
   compatible_runtimes = ["nodejs12.x"]
-  source_code_hash    = filesha256("../artifacts/message-driver-layer.zip")
+  source_code_hash    = filesha256("../artifacts/message-util-layer.zip")
 }
 
 # Schema Layer
@@ -34,20 +34,20 @@ resource "aws_lambda_layer_version" "schema_util" {
   source_code_hash    = filesha256("../artifacts/schema-util-layer.zip")
 }
 
-# Action Handler Lambda
+# Action Consumer Lambda
 
-resource "aws_lambda_function" "action_handler" {
-  filename      = "../artifacts/action-handler-lambda.zip"
-  function_name = "action_handler"
+resource "aws_lambda_function" "action_consumer" {
+  filename      = "../artifacts/action-consumer-lambda.zip"
+  function_name = "action_consumer"
   role          = var.edpub_lambda_role_arn
-  handler       = "action-handler.handler"
+  handler       = "action-consumer.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
-  source_code_hash    = filesha256("../artifacts/action-handler-lambda.zip")
+  source_code_hash    = filesha256("../artifacts/action-consumer-lambda.zip")
   timeout       = 10
   environment {
     variables = {
@@ -67,17 +67,17 @@ resource "aws_lambda_function" "action_handler" {
   }
 }
 
-resource "aws_lambda_permission" "action_handler" {
+resource "aws_lambda_permission" "action_consumer" {
   statement_id  = "AllowExecutionFromSQS"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.action_handler.function_name
+  function_name = aws_lambda_function.action_consumer.function_name
   principal     = "sqs.amazonaws.com"
   source_arn    = var.edpub_action_sqs_arn
 }
 
-resource "aws_lambda_event_source_mapping" "action_handler_sqs_event" {
+resource "aws_lambda_event_source_mapping" "action_consumer_sqs_event" {
   event_source_arn = var.edpub_action_sqs_arn
-  function_name    = aws_lambda_function.action_handler.function_name
+  function_name    = aws_lambda_function.action_consumer.function_name
 }
 
 # Data Lambda
@@ -88,8 +88,8 @@ resource "aws_lambda_function" "data" {
   role          = var.edpub_lambda_role_arn
   handler       = "data.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
@@ -128,8 +128,8 @@ resource "aws_lambda_function" "invoke" {
   role          = var.edpub_lambda_role_arn
   handler       = "invoke.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
@@ -168,8 +168,8 @@ resource "aws_lambda_function" "metrics" {
   role          = var.edpub_lambda_role_arn
   handler       = "metrics.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
@@ -200,20 +200,20 @@ resource "aws_lambda_permission" "metrics" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
 }
 
-# Metrics Handler Lambda
+# Metrics Consumer Lambda
 
-resource "aws_lambda_function" "metrics_handler" {
-  filename      = "../artifacts/metrics-handler-lambda.zip"
-  function_name = "metrics_handler"
+resource "aws_lambda_function" "metrics_consumer" {
+  filename      = "../artifacts/metrics-consumer-lambda.zip"
+  function_name = "metrics_consumer"
   role          = var.edpub_lambda_role_arn
-  handler       = "metrics-handler.handler"
+  handler       = "metrics-consumer.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
-  source_code_hash    = filesha256("../artifacts/metrics-handler-lambda.zip")
+  source_code_hash    = filesha256("../artifacts/metrics-consumer-lambda.zip")
   timeout       = 10
   environment {
     variables = {
@@ -232,23 +232,23 @@ resource "aws_lambda_function" "metrics_handler" {
   }
 }
 
-resource "aws_lambda_permission" "metrics_handler" {
+resource "aws_lambda_permission" "metrics_consumer" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.metrics_handler.function_name
+  function_name = aws_lambda_function.metrics_consumer.function_name
   principal     = "sns.amazonaws.com"
   source_arn    = var.edpub_event_sns_arn
 }
 
-data "local_file" "metrics_handler_filter" {
-  filename = "./sns/metrics_handler_filter.json"
+data "local_file" "metrics_consumer_filter" {
+  filename = "./sns/metrics_consumer_filter.json"
 }
 
-resource "aws_sns_topic_subscription" "metrics_handler_lambda" {
+resource "aws_sns_topic_subscription" "metrics_consumer_lambda" {
   topic_arn     = var.edpub_event_sns_arn
   protocol      = "lambda"
-  endpoint      = aws_lambda_function.metrics_handler.arn
-  filter_policy = data.local_file.metrics_handler_filter.content
+  endpoint      = aws_lambda_function.metrics_consumer.arn
+  filter_policy = data.local_file.metrics_consumer_filter.content
 }
 
 # Model Lambda
@@ -259,8 +259,8 @@ resource "aws_lambda_function" "model" {
   role          = var.edpub_lambda_role_arn
   handler       = "model.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
@@ -299,8 +299,8 @@ resource "aws_lambda_function" "notify" {
   role          = var.edpub_lambda_role_arn
   handler       = "notify.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
@@ -331,20 +331,20 @@ resource "aws_lambda_permission" "notify" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/notification/notify"
 }
 
-# Notification Handler Lambda
+# Notification Consumer Lambda
 
-resource "aws_lambda_function" "notification_handler" {
-  filename      = "../artifacts/notification-handler-lambda.zip"
-  function_name = "notification_handler"
+resource "aws_lambda_function" "notification_consumer" {
+  filename      = "../artifacts/notification-consumer-lambda.zip"
+  function_name = "notification_consumer"
   role          = var.edpub_lambda_role_arn
-  handler       = "notification-handler.handler"
+  handler       = "notification-consumer.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
-  source_code_hash    = filesha256("../artifacts/notification-handler-lambda.zip")
+  source_code_hash    = filesha256("../artifacts/notification-consumer-lambda.zip")
   timeout       = 10
   environment {
     variables = {
@@ -363,23 +363,23 @@ resource "aws_lambda_function" "notification_handler" {
   }
 }
 
-resource "aws_lambda_permission" "notification_handler" {
+resource "aws_lambda_permission" "notification_consumer" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.notification_handler.function_name
+  function_name = aws_lambda_function.notification_consumer.function_name
   principal     = "sns.amazonaws.com"
   source_arn    = var.edpub_event_sns_arn
 }
 
-data "local_file" "notification_handler_filter" {
-  filename = "./sns/notification_handler_filter.json"
+data "local_file" "notification_consumer_filter" {
+  filename = "./sns/notification_consumer_filter.json"
 }
 
-resource "aws_sns_topic_subscription" "notification_handler_lambda" {
+resource "aws_sns_topic_subscription" "notification_consumer_lambda" {
   topic_arn     = var.edpub_event_sns_arn
   protocol      = "lambda"
-  endpoint      = aws_lambda_function.notification_handler.arn
-  filter_policy = data.local_file.notification_handler_filter.content
+  endpoint      = aws_lambda_function.notification_consumer.arn
+  filter_policy = data.local_file.notification_consumer_filter.content
 }
 
 # Register Lambda
@@ -390,8 +390,8 @@ resource "aws_lambda_function" "register" {
   role          = var.edpub_lambda_role_arn
   handler       = "register.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
@@ -430,8 +430,8 @@ resource "aws_lambda_function" "submission" {
   role          = var.edpub_lambda_role_arn
   handler       = "submission.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
@@ -470,8 +470,8 @@ resource "aws_lambda_function" "subscribe" {
   role          = var.edpub_lambda_role_arn
   handler       = "subscribe.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
@@ -502,20 +502,20 @@ resource "aws_lambda_permission" "subscribe" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification/subscribe"
 }
 
-# Workflow Handler Lambda
+# Workflow Consumer Lambda
 
-resource "aws_lambda_function" "workflow_handler" {
-  filename      = "../artifacts/workflow-handler-lambda.zip"
-  function_name = "workflow_handler"
+resource "aws_lambda_function" "workflow_consumer" {
+  filename      = "../artifacts/workflow-consumer-lambda.zip"
+  function_name = "workflow_consumer"
   role          = var.edpub_lambda_role_arn
-  handler       = "workflow-handler.handler"
+  handler       = "workflow-consumer.handler"
   layers = [
-    aws_lambda_layer_version.database_driver.arn,
-    aws_lambda_layer_version.message_driver.arn,
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
-  source_code_hash    = filesha256("../artifacts/workflow-handler-lambda.zip")
+  source_code_hash    = filesha256("../artifacts/workflow-consumer-lambda.zip")
   timeout       = 10
   environment {
     variables = {
@@ -534,23 +534,23 @@ resource "aws_lambda_function" "workflow_handler" {
   }
 }
 
-resource "aws_lambda_permission" "workflow_handler" {
+resource "aws_lambda_permission" "workflow_consumer" {
   statement_id  = "AllowExecutionFromSNS"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.workflow_handler.function_name
+  function_name = aws_lambda_function.workflow_consumer.function_name
   principal     = "sns.amazonaws.com"
   source_arn    = var.edpub_event_sns_arn
 }
 
-data "local_file" "workflow_handler_filter" {
-  filename = "./sns/workflow_handler_filter.json"
+data "local_file" "workflow_consumer_filter" {
+  filename = "./sns/workflow_consumer_filter.json"
 }
 
-resource "aws_sns_topic_subscription" "workflow_handler" {
+resource "aws_sns_topic_subscription" "workflow_consumer" {
   topic_arn     = var.edpub_event_sns_arn
   protocol      = "lambda"
-  endpoint      = aws_lambda_function.workflow_handler.arn
-  filter_policy = data.local_file.workflow_handler_filter.content
+  endpoint      = aws_lambda_function.workflow_consumer.arn
+  filter_policy = data.local_file.workflow_consumer_filter.content
 }
 
 # Auth Lambda
@@ -562,7 +562,7 @@ resource "aws_lambda_function" "auth" {
   handler       = "auth.handler"
   layers        = [
     aws_lambda_layer_version.auth_util.arn,
-    aws_lambda_layer_version.database_driver.arn
+    aws_lambda_layer_version.database_util.arn
   ]
   runtime       = "nodejs12.x"
   source_code_hash    = filesha256("../artifacts/auth-lambda.zip")

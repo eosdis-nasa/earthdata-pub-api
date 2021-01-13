@@ -1,49 +1,39 @@
+setup_temp() {
+  rm -rf ${DIR}/temp
+  mkdir ${DIR}/temp
+}
+
+remove_temp() {
+  cd ${DIR}
+  rm -rf ${DIR}/temp
+}
+
 clear_artifacts() {
+  rm -rf ${DIR}/src/nodejs/lamba-layers/*/node_modules
   rm ${DIR}/artifacts/*.zip
   rm ${DIR}/terraform/apigateway/openapi.json
-  rm -rf ${DIR}/src/nodejs/*/node_modules
-  rm ${DIR}/src/nodejs/*/package-lock.json
-  rm ${DIR}/src/nodejs/*/*.tgz
-  rm -rf ${DIR}/docs/jsdoc
-  rm -rf ${DIR}/docs/apidoc
-  rm -rf temp
-  mkdir temp
+  rm ${DIR}/src/nodejs/lamba-layers/*/package-lock.json
+  rm ${DIR}/src/nodejs/lamba-layers/*/*.tgz
 }
 
 install_layer() {
-  cd ${DIR}/src/nodejs/${1}
+  cd ${DIR}/src/nodejs/lambda-layers/${1}
   npm install --production --force
   npm pack
-  cd ${DIR}
-}
-
-install_lambda() {
-  cd ${DIR}/src/nodejs/${1}
-  npm install --production --force
-  cd ${DIR}
-}
-
-local_install() {
-  cd ${DIR}/src/nodejs/${1}
-  npm install
-  cd ${DIR}
-}
-
-package_layer() {
   cd ${DIR}/temp
   mkdir nodejs
   cd nodejs
   mkdir node_modules
-  npm install --no-save ${DIR}/src/nodejs/${1}/${1}-1.0.0.tgz
+  npm install --no-save ${DIR}/src/nodejs/lambda-layers/${1}/${1}-1.0.0.tgz
   cd ..
   zip -r ${DIR}/artifacts/${1}-layer.zip nodejs
   rm -rf nodejs
   cd ${DIR}
 }
 
-package_lambda() {
+install_lambda() {
   cd ${DIR}/temp
-  cp -R ${DIR}/src/nodejs/${1}/src/* ./.
+  cp ${DIR}/src/nodejs/lambda-handlers/${1}.js ./.
   zip -r ${DIR}/artifacts/${1}-lambda.zip .
   cd ${DIR}
   rm -rf ${DIR}/temp/*
@@ -89,7 +79,7 @@ replace() {
 
 compile_oas_schema() {
   node -e "
-    const schemaUtil = require('./src/nodejs/schema-util/src/models/index.js');
+    const schemaUtil = require('./src/nodejs/lambda-layers/schema-util/src/models/index.js');
     const models = schemaUtil.allModels('/components/schemas/');
     const oas = JSON.parse(fs.readFileSync('./src/openapi/openapi.json'));
     oas.components.schemas = models;

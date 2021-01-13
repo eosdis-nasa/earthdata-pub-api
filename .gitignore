@@ -20,7 +20,6 @@ eslint.json
 jest.json
 
 #Ignore installation artifacts
-/lambda/artifacts
 *.zip
 *.tgz
 *.gz

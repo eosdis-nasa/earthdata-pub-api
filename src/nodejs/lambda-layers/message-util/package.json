@@ -1,0 +1,20 @@
+{
+  "name": "message-util",
+  "version": "1.0.0",
+  "description": "A driver module to abstract interactions with SQS and SNS.",
+  "main": "./src/message-util.js",
+  "files": [
+    "/src"
+  ],
+  "scripts": {
+    "pretest": "eslint ./",
+    "test": "jest"
+  },
+  "author": "Brian Ellingson",
+  "license": "ISC",
+  "dependencies": {},
+  "bundledDependencies": {},
+  "devDependencies": {
+    "aws-sdk": "^2.825.0"
+  }
+}

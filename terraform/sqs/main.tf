@@ -1,5 +1,5 @@
 resource "aws_sqs_queue" "edpub_action_sqs" {
-  name                        = "edpub_action_sqs"
+  name = "edpub_action_sqs"
 }
 
 resource "aws_sqs_queue_policy" "edpub_action_sqs_policy" {

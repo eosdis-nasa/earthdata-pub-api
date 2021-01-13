@@ -5,34 +5,12 @@ DIR=$(pwd)
 source ./scripts/utils.sh
 
 #Copy and modify schema and openapi definition
-compile_oas_schema './src/local-server/api/openapi.json'
+compile_oas_schema './src/nodejs/api/openapi.json'
 
 #Copy database setup and seed scripts
-cp ./src/postgres/*.sql ./src/nodejs/database-driver/src/
+cp ./src/postgres/*.sql ./src/nodejs/lambda-layers/database-util/src/
 
-#Install individual modules
-local_install auth-util
-local_install database-driver
-local_install message-driver
-local_install schema-util
-#Add more layer modules here <--
-
-local_install action-handler
-local_install auth
-local_install data
-local_install invoke
-local_install metrics
-local_install metrics-handler
-local_install model
-local_install notification-handler
-local_install notify
-local_install register
-local_install submission
-local_install subscribe
-local_install workflow-handler
-#Add more lambda functions here <--
-
-cd ${DIR}/src/local-server
+cd ${DIR}/src/nodejs
 npm install
 
 cd ${DIR}

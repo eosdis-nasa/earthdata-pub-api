@@ -1,0 +1,5320 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This is the API that serves as the central interaction point between the client and back-end services of Earthdata Pub.",
+    "version": "1.0.0",
+    "title": "EarthdataPub",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "brian.ellingson@uah.edu"
+    }
+  },
+  "tags": [
+    {
+      "name": "data",
+      "description": "Fetch questions, forms, workflows",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "notification",
+      "description": "Interact with the notification system. Send a note, subscribe or unsubscribe to events.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "model",
+      "description": "Retrieve JSON schema models",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "action",
+      "description": "Interact with the action system. Invoke an action, or register a custom action.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "submission",
+      "description": "Manage submissions, fill forms, review.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "metrics",
+      "description": "Retrieve system metrics or submit client side events to be logged.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "auth",
+      "description": "Authentication endpoint.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "version",
+      "description": "Retrieve version of the API.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.docs/#TODO"
+      }
+    },
+    {
+      "name": "cors",
+      "description": "CORS"
+    }
+  ],
+  "paths": {
+    "/data/action/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get action",
+        "description": "Returns a single action by ID",
+        "operationId": "actionFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Action"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findById\",\"params\":{ \"action\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataAction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/actions": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get actions",
+        "description": "Returns list of actions",
+        "operationId": "actionFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Action"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataActions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/daac/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get DAAC",
+        "description": "Returns a single DAAC by ID",
+        "operationId": "daacFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DAAC"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findById\",\"params\":{ \"daac\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataDaac",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/daacs": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get DAACs",
+        "description": "Returns list of DAACs",
+        "operationId": "daacFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Action"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataDaacs",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/form/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get form",
+        "description": "Returns a single form by ID",
+        "operationId": "formFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Form"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{ \"form\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataForm",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/forms": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get forms",
+        "description": "Returns list of forms",
+        "operationId": "formFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Form"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Create or update an form",
+        "description": "Create a new form or update an existing form",
+        "operationId": "formPut",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Form"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataForms",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/group/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get group",
+        "description": "Returns a single group by ID",
+        "operationId": "groupFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Group"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findById\",\"params\":{ \"group\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataGroup",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/groups": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get groups",
+        "description": "Returns list of groups",
+        "operationId": "groupFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Group"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataGroups",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/role/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get role",
+        "description": "Returns a single role by ID",
+        "operationId": "roleFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findById\",\"params\":{ \"role\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataRole",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/roles": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get roles",
+        "description": "Returns list of roles",
+        "operationId": "roleFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataRoles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/note/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get note",
+        "description": "Returns a single note by ID",
+        "operationId": "noteFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findById\",\"params\":{ \"note\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataNote",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/notes": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get notes",
+        "description": "Returns list of notes",
+        "operationId": "noteFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Note"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataNotes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/question/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get question",
+        "description": "Returns a single question by ID",
+        "operationId": "questionFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findById\",\"params\":{ \"question\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataQuestion",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/questions": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get questions",
+        "description": "Returns list of questions",
+        "operationId": "questionFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Question"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Create or update an question",
+        "description": "Create a new question or update an existing question",
+        "operationId": "questionPut",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Question"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataQuestions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/service/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get service",
+        "description": "Returns a single service by ID",
+        "operationId": "serviceFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findById\",\"params\":{ \"service\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataService",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/services": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get services",
+        "description": "Returns list of services",
+        "operationId": "serviceFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Service"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataServices",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/submission/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get submission",
+        "description": "Returns a single submission by ID",
+        "operationId": "submissionFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findById\",\"params\":{ \"submission\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/submissions": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get submissions",
+        "description": "Returns list of submissions",
+        "operationId": "submissionFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Submission"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataSubmissions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/user/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get user",
+        "description": "Returns a single user by ID",
+        "operationId": "userFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findById\",\"params\":{ \"user\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/users": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get users",
+        "description": "Returns list of users",
+        "operationId": "userFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataUsers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/workflow/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get workflow",
+        "description": "Returns a single workflow by ID",
+        "operationId": "workflowFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workflow"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findById\",\"params\":{ \"workflow\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataWorkflow",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/data/workflows": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get workflows",
+        "description": "Returns list of workflows",
+        "operationId": "workflowFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Sort field",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Workflow"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Create or update an workflow",
+        "description": "Creates a new workflow or new version of existing workflow",
+        "operationId": "workflowPut",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Workflow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataWorkflows",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/model/{model}": {
+      "parameters": [
+        {
+          "name": "model",
+          "in": "path",
+          "description": "Name of JSON schema model to retrieve",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "model"
+        ],
+        "summary": "Get model",
+        "description": "Returns a single note by ID",
+        "operationId": "getModel",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${model_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"model\": \"$req.path.get('model')\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsModel",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/notification/notify": {
+      "post": {
+        "tags": [
+          "notification"
+        ],
+        "summary": "Send a notify request",
+        "description": "Send a request to notify an individual or group.",
+        "operationId": "notify",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotifyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${notify_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "$input.json('$')"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsNotify",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/notification/subscribe": {
+      "post": {
+        "tags": [
+          "notification"
+        ],
+        "summary": "Subscribe or unscubscribe to an event",
+        "description": "Subscribe or unsubscribe to events raised by given entities.",
+        "operationId": "subscribe",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscribeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${subscribe_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "$input.json('$')"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubscribe",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/action/invoke": {
+      "post": {
+        "tags": [
+          "action"
+        ],
+        "summary": "Invoke an action.",
+        "description": "Invoke an action to be processed on a given submission.",
+        "operationId": "actionInvoke",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionInvokeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${invoke_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "$input.json('$')"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsInvoke",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/action/register": {
+      "post": {
+        "tags": [
+          "action"
+        ],
+        "summary": "Register an action",
+        "description": "Register a new custom action.",
+        "operationId": "actionRegister",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionRegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${register_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "$input.json('$')"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsRegister",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/submission/{operation}": {
+      "parameters": [
+        {
+          "name": "operation",
+          "in": "path",
+          "description": "Which submission operation to perform.",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "tags": [
+          "submission"
+        ],
+        "summary": "Perform an operation for a Submission",
+        "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
+        "operationId": "submissionOperation",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) #set($id = $body.get('id')) #set($form_id = $body.get('form_id')) #set($workflow_id = $body.get('workflow_id')) #set($data = $body.get('data')) #set($metadata = $body.get('metadata')) {\"operation\":\"$req.path.get('operation')\" #if($id =='%2F'),\"id\": \"$id\"#end #if($form_id =='%2F'),\"form_id\":\"$form_id\"#end #if($workflow_id=='%2F'),\"workflow_id\":\"$workflow_id\"#end #if($data=='%2F'),\"data\":\"$data\"#end #if($metadata=='%2F'),\"metadata\":\"$metadata\"#end,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/metrics": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Fetches metrics",
+        "description": "Operation to retrieve metrics for display on dashboard.",
+        "operationId": "getLogEvents",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Start of the time range to view",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "End of the time range to view",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "event_type",
+            "in": "query",
+            "description": "Type of events to view, e.g. workflow_transitions, errors, logins",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "True will return a count of events of the given type within the time range, false will return the individual events and their associated data.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${metrics_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req=$input.params()) {#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Post a client-side event.",
+        "description": "Sends a client-side event to the system to be logged. Typically this would be an error.",
+        "operationId": "putLogEvent",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${metrics_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsMetrics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/token": {
+      "get": {
+        "tags": [
+          "token"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "description": "Authorization code from identity provider.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "description": "A redirect url to redirect to after successful authentication.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Authentication and token management",
+        "description": "Handles authentication and token management with an identity provider.",
+        "operationId": "getToken",
+        "responses": {
+          "307": {
+            "description": "Redirect",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${auth_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req=$input.params()) {#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "307",
+              "responseParameters": {
+                "method.response.header.Location": "integration.response.body.redirect",
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsToken",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/version": {
+      "get": {
+        "tags": [
+          "version"
+        ],
+        "summary": "Get version",
+        "description": "Returns the current API version for compatibility checks.",
+        "operationId": "getVersion",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Version"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "${version_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsVersion",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Authorizer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "x-amazon-apigateway-authtype": "cognito_user_pools",
+        "x-amazon-apigateway-authorizer": {
+          "type": "cognito_user_pools",
+          "providerARNs": [
+            "${cognito_user_pool_arn}"
+          ]
+        }
+      }
+    },
+    "schemas": {
+      "Action": {
+        "description": "An action that can be invoked by a workflow or externally.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "action_name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "file_key": {
+            "type": "string"
+          },
+          "input_schema": {
+            "type": "object"
+          }
+        }
+      },
+      "ActionInvokeRequest": {
+        "description": "Request body sent to external action request handler.",
+        "type": "object",
+        "properties": {
+          "submission_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "input": {
+            "type": "object"
+          }
+        }
+      },
+      "ActionRegisterRequest": {
+        "description": "Request body sent to external action invoke handler.",
+        "type": "object"
+      },
+      "DAAC": {
+        "description": "Basic information for a DAAC.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "short_name": {
+            "type": "string"
+          },
+          "long_name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "DataRequest": {
+        "description": "Request body sent to data endpoint.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Form"
+          },
+          {
+            "$ref": "#/components/schemas/Question"
+          },
+          {
+            "$ref": "#/components/schemas/Workflow"
+          }
+        ]
+      },
+      "Form": {
+        "description": "A template for a form with a collection of sections containing questions.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "version": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "form_name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "A group of related questions.",
+              "properties": {
+                "heading": {
+                  "type": "string"
+                },
+                "questions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Question"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Group": {
+        "description": "A group of users with common privileges.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "short_name": {
+            "type": "string"
+          },
+          "long_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "LogEvent": {
+        "description": "An individual event.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "event_type": {
+            "type": "object"
+          },
+          "event_data": {
+            "type": "object"
+          }
+        }
+      },
+      "LogEventList": {
+        "description": "A list of events as retrieved from the database.",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/LogEvent"
+        }
+      },
+      "LogEventRequest": {
+        "$ref": "#/components/schemas/LogEvent"
+      },
+      "Note": {
+        "description": "A note for internal communication.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "recipient_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "source_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "source_type": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      },
+      "NotifyRequest": {
+        "description": "Request body sent to external notification request handler.",
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "to": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "subject": {
+                "type": "string"
+              },
+              "submission_id": {
+                "$ref": "#/components/schemas/UUID"
+              },
+              "user_id": {
+                "$ref": "#/components/schemas/UUID"
+              },
+              "group_id": {
+                "$ref": "#/components/schemas/UUID"
+              }
+            }
+          }
+        }
+      },
+      "Permission": {
+        "description": "An individual permission to an entity.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "daac_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "form_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "question_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "submission_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "workflow_id": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "Question": {
+        "description": "A grouping of related inputs to be displayed on a form",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "version": {
+            "type": "number"
+          },
+          "question_name": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "help": {
+            "type": "string"
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "required_if": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "show_if": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "attributes": {
+                  "type": "object"
+                },
+                "enums": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        }
+      },
+      "QuestionList": {
+        "description": "A list of questions",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Question"
+        }
+      },
+      "Role": {
+        "description": "A user role describing actions and views available to a user.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "short_name": {
+            "type": "string"
+          },
+          "long_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "Service": {
+        "description": "An external service connected with the EDPUB API.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "service_name": {
+            "type": "string"
+          },
+          "endpoint": {
+            "type": "string"
+          },
+          "options": {
+            "type": "object"
+          },
+          "headers": {
+            "type": "object"
+          },
+          "method": {
+            "type": "string"
+          },
+          "code": {
+            "type": "number"
+          },
+          "payload": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Submission": {
+        "description": "An archival request submission.",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "workflow_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "workflow_name": {
+            "type": "string"
+          },
+          "step_name": {
+            "type": "string"
+          },
+          "step": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "last_change": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "action_data": {
+            "type": "object"
+          },
+          "form_data": {
+            "type": "object"
+          },
+          "lock": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SubmissionOperationRequest": {
+        "description": "Request body sent to external Submission endpoint.",
+        "type": "object"
+      },
+      "SubscribeRequest": {
+        "description": "Request body sent to subscribe or unsubscribe to an event.",
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "subscribe",
+              "unsubscribe"
+            ]
+          },
+          "event_type": {
+            "type": "string"
+          }
+        }
+      },
+      "Subscription": {
+        "description": "The subscription table schema",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "daac_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "submission_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "workflow_id": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      },
+      "User": {
+        "description": "A user",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Role"
+            }
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            }
+          }
+        }
+      },
+      "UUID": {
+        "description": "Univerally Unique Identifier",
+        "type": "string",
+        "pattern": "^[a-f|0-9]{8}-[a-f|0-9]{4}-4[a-f|0-9]{3}-[89ab][a-f|0-9]{3}-[a-f|0-9]{12}$"
+      },
+      "Version": {
+        "description": "An object containing versioning information of the API.",
+        "type": "object",
+        "properties": {
+          "response_version": {
+            "type": "string"
+          },
+          "api_version": {
+            "type": "string"
+          }
+        }
+      },
+      "Workflow": {
+        "description": "A series of steps for processing a Submission",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "version": {
+            "type": "number"
+          },
+          "workflow_name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "steps": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/WorkflowActionStep"
+                },
+                {
+                  "$ref": "#/components/schemas/WorkflowFormStep"
+                },
+                {
+                  "$ref": "#/components/schemas/WorkflowReviewStep"
+                },
+                {
+                  "$ref": "#/components/schemas/WorkflowServiceStep"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "WorkflowActionStep": {
+        "description": "An action step for constructing a Workflow. Value for type will always be 'action'.",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "action_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "data": {
+            "type": "object"
+          },
+          "next_step": {
+            "type": "string"
+          },
+          "prev_step": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkflowCloseStep": {
+        "description": "A close step that signifies the end of a Workflow and a Submission being in a ready state for launching another Workflow. Value for type will always be 'close'.",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "service_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "prev_step": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkflowFormStep": {
+        "description": "A form step for constructing a Workflow. Value for type will always be 'form'.",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "form_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "next_step": {
+            "type": "string"
+          },
+          "prev_step": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkflowInitStep": {
+        "description": "An init step that serves as an entry point to a Workflow. Value for type will always be 'init'.",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "next_step": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkflowReviewStep": {
+        "description": "A review step for constructing a Workflow. Value for type will always be 'review'.",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          },
+          "next_step": {
+            "type": "string"
+          },
+          "prev_step": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkflowServiceStep": {
+        "description": "A service step for constructing a Workflow. Value for type will always be 'service'.",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "service_id": {
+            "$ref": "#/components/schemas/UUID"
+          },
+          "next_step": {
+            "type": "string"
+          },
+          "prev_step": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

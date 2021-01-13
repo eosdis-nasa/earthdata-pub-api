@@ -3,21 +3,8 @@
   "recurseDepth": 10,
   "source": {
     "include": [
-      "./src/nodejs/action-handler/src",
-      "./src/nodejs/metrics-handler/src",
-      "./src/nodejs/notification-handler/src",
-      "./src/nodejs/workflow-handler/src",
-      "./src/nodejs/dashboard/src",
-      "./src/nodejs/data/src",
-      "./src/nodejs/invoke/src",
-      "./src/nodejs/notify/src",
-      "./src/nodejs/register/src",
-      "./src/nodejs/submission/src",
-      "./src/nodejs/subscription/src",
-      "./src/nodejs/actions",
-      "./src/nodejs/database-driver/src",
-      "./src/nodejs/message-driver/src",
-      "./src/nodejs/schema-util/src"
+      "./src/nodejs/lambda-handlers",
+      "./src/nodejs/lambda-layers"
     ],
     "includePattern": ".+\\.js(doc|x)?$",
     "excludePattern": "(^|\\/|\\\\)_"

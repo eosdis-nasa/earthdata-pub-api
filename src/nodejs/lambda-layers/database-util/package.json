@@ -1,0 +1,19 @@
+{
+  "name": "database-util",
+  "version": "1.0.0",
+  "description": "A driver module for interacting with the database.",
+  "main": "./src/database-util.js",
+  "files": [
+    "/src"
+  ],
+  "scripts": {
+    "pretest": "eslint ./",
+    "test": "jest"
+  },
+  "author": "Brian Ellingson",
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^8.5.1"
+  },
+  "devDependencies": {}
+}
