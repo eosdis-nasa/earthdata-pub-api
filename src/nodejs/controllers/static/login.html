@@ -2,6 +2,10 @@
 <html>
 <head>
   <title>EarthdataPub Dev Login</title>
+  <link rel="stylesheet" href="https://unpkg.com/docute@4/dist/docute.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+  <link href="https://cdn.earthdata.nasa.gov/eui/1.1.7/stylesheets/application.css" rel="stylesheet" />
 </head>
 <style>
 #main {
@@ -18,16 +22,12 @@
   justify-content: center;
   align-items: center;
   color: white;
-  background-color: #20ce6f;
+  background-color: #2275AA;
   height: 100px;
   width: 100%;
 }
-#top {
-  text-align: center;
-  margin: 20px;
-}
 #user-select {
-  width: 180px;
+  width: 345px;
 }
 .panel {
   height: 50%;
@@ -38,45 +38,52 @@
 }
 .button {
   color: white;
-  background-color: #2276ac;
+  background-color: #158749;
   width: 120px;
   height: 40px;
-  margin: 20px auto 20px auto;
+  margin: 65px auto 20px auto;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .button:hover {
-  background-color: #2c3e50;
+  background-color: #12713d;
   box-shadow: none;
   cursor: pointer;
 }
 table {
-  width: 75%;
+  width: 85%;
   margin: 20px auto 20px auto;
+  border:0px;
+}
+table th, table td {
+  border:0px;
+  background: white;
 }
 .r-col {
-  width: 75%;
+  width: 70%;
 }
 .l-col {
-  width: 25%;
+  width: 30%;
+}
+select {
+  margin: 0.3em 0;
+  padding: 0.6em;
+}
+h2 {
+  border-bottom:0px;
 }
 input {
   width: 100%;
   box-sizing: border-box;
+  border: 1px solid #b2b2b2;
 }
 </style>
 <body>
 <div id="main">
-  <div id="banner">
+  <div id="banner" role="banner">
     <h2>Earthdata Pub Dev Login</h2>
-  </div>
-  <div id="top">
-    <p> Pick a test user: </p>
-    <select id="user-select">
-       <option value="register">Register New</option>
-    </select>
   </div>
   <div id="register" class="panel">
     <div class="table-div">
@@ -84,6 +91,15 @@ input {
         <tr>
           <th class="l-col"></th>
           <th class="r-col"></th>
+          <th class="r-col"></th>
+        </tr>
+        <tr>
+          <td><label for="name">Pick a test user:</label></td>
+          <td>
+            <select id="user-select">
+              <option value="register">Register New</option>
+            </select>
+          </td>
         </tr>
         <tr>
           <td><label for="name">Full Name</label></td>
