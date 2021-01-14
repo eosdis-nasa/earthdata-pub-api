@@ -1,8 +1,8 @@
 {
   "id": "19025579-99ca-4344-8610-704dae626343",
   "version": 1,
-  "long_name": "Data Submission Form",
-  "short_name": "data_submission",
+  "long_name": "Data Product Information",
+  "short_name": "data_product_information",
   "description": "This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.",
   "text": "To express interest in submitting a data product, please fill out the following form.",
   "sections": [
