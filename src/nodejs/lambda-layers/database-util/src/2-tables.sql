@@ -235,6 +235,7 @@ CREATE TABLE IF NOT EXISTS daac (
 
 CREATE TABLE IF NOT EXISTS conversation (
   id UUID DEFAULT UUID_GENERATE_V4(),
+  subject VARCHAR DEFAULT 'No Subject',
   PRIMARY KEY (id)
 );
 
@@ -242,9 +243,6 @@ CREATE TABLE IF NOT EXISTS note (
   id UUID DEFAULT UUID_GENERATE_V4(),
   conversation_id UUID NOT NULL,
   sender_edpuser_id UUID NOT NULL,
-  category VARCHAR NOT NULL CHECK (category IN ('submission', 'workflow', 'action', 'external')),
-  subcategory VARCHAR,
-  subject VARCHAR DEFAULT 'No Subject',
   text VARCHAR NOT NULL,
   sent TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
