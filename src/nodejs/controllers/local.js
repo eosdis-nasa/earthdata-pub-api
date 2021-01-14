@@ -30,7 +30,7 @@ function login(req, res) {
 
 function authenticate(req, res) {
   const code = uuid.v4().replace(/-/g, "");
-  const user = req.body;
+  const { state, ...user } = req.body;
   if (user.id === 'register') {
     user.id = uuid.v4();
   }
@@ -56,6 +56,7 @@ function authenticate(req, res) {
     };
     const redirect = new URL('http://localhost:3000/auth')
     redirect.searchParams.set('code', code);
+    if (state) redirect.searchParams.set('state', state);
     res.status(200)
     res.send({ redirect: redirect.href });
   });

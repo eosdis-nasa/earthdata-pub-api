@@ -10,8 +10,19 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
+async function direct(eventMessage) {
+  const { user_id: senderId, data } = eventMessage;
+  const params = {
+    note: {},
+    user: {}
+  }
+}
+
 async function processRecord(record) {
-  // #TODO Collect a list of recipients for the message and publish message
+  const { eventMessage } = MessageUtil.parseRecord(record);
+  if (eventMessage.event_type === 'direct_message') {
+    await direct(eventMessage);
+  }
 }
 
 async function handler(event) {

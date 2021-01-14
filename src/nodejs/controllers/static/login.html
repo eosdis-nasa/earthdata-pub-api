@@ -146,6 +146,7 @@ input {
   </div>
 </div>
   <script>
+    const state = new URLSearchParams(window.location.search).get('state');
     const users = {};
     const userSelect = document.getElementById('user-select');
     const userInfoPanel = document.getElementById('user-info');
@@ -193,12 +194,14 @@ input {
 
     function handleLogin(e) {
       const id = userSelect.value;
-      const payload = (id === 'register' ? {
+      const payload = {
+        ...(id === 'register' ? {
           id,
           name: nameInput.value,
           email: emailInput.value
-        } : users[id] );
-
+        } : users[id] ),
+        ...(state && { state })
+      };
       fetch('http://localhost:8080/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
