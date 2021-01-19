@@ -27,7 +27,7 @@ async function resumeMethod(body, userId) {
 
 async function initializeMethod(body, userId) {
   const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'initialize' },
-    { user: userId });
+    { user: { id: userId } });
   const eventMessage = {
     event_type: 'submission_initialized',
     submission_id: submission.id,

@@ -16,6 +16,15 @@ const clientSecret = process.env.AUTH_CLIENT_SECRET;
 const callbackUrl = process.env.AUTH_CALLBACK_URL;
 const stateUrl = process.env.AUTH_STATE_URL;
 
+function getStateUrl(state) {
+  try {
+    const url = new URL(state);
+    return url;
+  }
+  catch(e) {
+    return new URL(stateUrl);
+  }
+}
 
 async function redirectWithToken({ code, refresh, state }) {
     const tokenRequest = {
@@ -38,12 +47,12 @@ async function redirectWithToken({ code, refresh, state }) {
             token_type: type } = await httpHelper.send(tokenRequest);
     const user = jwt.decode(idToken);
     user.id = user.sub;
-    const redirect = new URL(state || stateUrl);
+    const redirect = getStateUrl(state);
     redirect.searchParams.set('token', idToken);
     return { redirect: redirect.href, user };
   }
 
-async function redirectGetCode({ code, refresh, state }) {
+async function redirectGetCode({ state }) {
   const redirect = new URL(loginPath, providerUrl);
   redirect.search = new URLSearchParams({
     client_id: clientId,

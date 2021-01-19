@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
 const statements = require('./query/statements.js');
 
@@ -16,6 +16,8 @@ const config = {
   port: process.env.PG_PORT
 };
 
+const pool = new Pool(config);
+
 function addLimit(query) {
   return `${query} LIMIT {{limit}} OFFSET {{offset}}`;
 }
@@ -27,10 +29,8 @@ function addSort(query, sort, order = 'ASC') {
 }
 
 async function execute({ resource, operation }, params) {
-  const client = new Client(config);
   const response = {};
   try {
-    client.connect();
     let query = statements[resource][operation];
     if (params.sort) {
       query = addSort(query, params.sort, params.order);
@@ -39,31 +39,30 @@ async function execute({ resource, operation }, params) {
       query = addLimit(query);
     }
     const { text, values } = getValueList(query, params);
-    const { rows } = await client.query({ text, values, rowMode: 'object' });
+    const { rows } = await pool.query({ text, values, rowMode: 'object' });
     Object.assign(response, { data: parse[operation](rows) });
   } catch (e) {
     Object.assign(response, { error: e });
-  } finally {
-    client.end();
   }
   return response.data || response.error;
 }
 
 async function seed() {
-  const client = new Client(config);
   const response = {};
-  try {
-    client.connect();
-    console.info(await client.query(fs.readFileSync(`${__dirname}/1-init.sql`).toString()));
-    console.info(await client.query(fs.readFileSync(`${__dirname}/2-tables.sql`).toString()));
-    console.info(await client.query(fs.readFileSync(`${__dirname}/3-functions.sql`).toString()));
-    console.info(await client.query(fs.readFileSync(`${__dirname}/4-triggers.sql`).toString()));
-    console.info(await client.query(fs.readFileSync(`${__dirname}/5-seed.sql`).toString()));
-    Object.assign(response, { data: 'Successfully seeded!' });
-  } catch (e) {
-    Object.assign(response, { error: e });
-  } finally {
-    client.end();
+  const client = await pool.connect().catch( e => { Object.assign(response, { error: e })});
+  if (!response.error) {
+    try {
+      console.info(await client.query(fs.readFileSync(`${__dirname}/1-init.sql`).toString()));
+      console.info(await client.query(fs.readFileSync(`${__dirname}/2-tables.sql`).toString()));
+      console.info(await client.query(fs.readFileSync(`${__dirname}/3-functions.sql`).toString()));
+      console.info(await client.query(fs.readFileSync(`${__dirname}/4-triggers.sql`).toString()));
+      console.info(await client.query(fs.readFileSync(`${__dirname}/5-seed.sql`).toString()));
+      Object.assign(response, { data: 'Successfully seeded!' });
+    } catch (e) {
+      Object.assign(response, { error: e });
+    } finally {
+      client.release();
+    }
   }
   return response.data || response.error;
 }

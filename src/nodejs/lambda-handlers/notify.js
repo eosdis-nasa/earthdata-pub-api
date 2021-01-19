@@ -6,9 +6,7 @@
  * @see module:NotificationHandler
  */
 
- const DatabaseUtil = require('database-util');
-
- const MessageUtil = require('message-util');
+const MessageUtil = require('message-util');
 
 async function handler(event) {
   const { context, note } = event;

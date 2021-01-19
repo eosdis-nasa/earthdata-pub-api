@@ -17,3 +17,5 @@ module.exports.getState = one;
 module.exports.promoteStep = one;
 module.exports.applyWorkflow = one;
 module.exports.loginUser = one;
+module.exports.reply = one;
+module.exports.sendNote = one;

@@ -13,10 +13,15 @@ const MessageUtil = require('message-util');
 async function direct(eventMessage) {
   const { user_id: senderId, data } = eventMessage;
   const params = {
-    note: {},
-    user: {}
+    note: data,
+    user: {
+      id : senderId
+    }
   }
+  const operation = data.conversation_id ? 'reply' : 'sendNote';
+  await DatabaseUtil.execute({ resource: 'note', operation }, params);
 }
+
 
 async function processRecord(record) {
   const { eventMessage } = MessageUtil.parseRecord(record);

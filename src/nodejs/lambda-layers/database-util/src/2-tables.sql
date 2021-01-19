@@ -139,10 +139,10 @@ CREATE TABLE IF NOT EXISTS action (
   version SMALLINT,
   long_name VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
-  source VARCHAR NOT NULL,
-  input_schema JSONB DEFAULT '{}'::jsonb,
+  source BYTEA NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
-  UNIQUE (short_name)
+  UNIQUE (short_name, version)
 );
 
 CREATE TABLE IF NOT EXISTS service (
@@ -235,6 +235,8 @@ CREATE TABLE IF NOT EXISTS daac (
 
 CREATE TABLE IF NOT EXISTS conversation (
   id UUID DEFAULT UUID_GENERATE_V4(),
+  subject VARCHAR DEFAULT 'No Subject',
+  created_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id)
 );
 
@@ -242,11 +244,8 @@ CREATE TABLE IF NOT EXISTS note (
   id UUID DEFAULT UUID_GENERATE_V4(),
   conversation_id UUID NOT NULL,
   sender_edpuser_id UUID NOT NULL,
-  category VARCHAR NOT NULL CHECK (category IN ('submission', 'workflow', 'action', 'external')),
-  subcategory VARCHAR,
-  subject VARCHAR DEFAULT 'No Subject',
   text VARCHAR NOT NULL,
-  sent TIMESTAMP NOT NULL DEFAULT NOW(),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
@@ -302,12 +301,14 @@ CREATE TABLE IF NOT EXISTS step_edge (
   step_name VARCHAR NOT NULL,
   next_step_name VARCHAR,
   PRIMARY KEY (workflow_id, step_name),
+  UNIQUE (workflow_id, next_step_name),
   FOREIGN KEY (workflow_id, step_name) REFERENCES step (workflow_id, step_name),
   FOREIGN KEY (workflow_id, next_step_name) REFERENCES step (workflow_id, step_name)
 );
 
 CREATE TABLE IF NOT EXISTS submission (
   id UUID DEFAULT UUID_GENERATE_V4(),
+  name VARCHAR,
   initiator_edpuser_id UUID NOT NULL,
   daac_id UUID,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -356,6 +357,7 @@ CREATE TABLE IF NOT EXISTS submission_form_data (
   id UUID NOT NULL,
   form_id UUID NOT NULL,
   data JSONB DEFAULT '{}'::JSONB,
+  submitted_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id, form_id),
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (form_id) REFERENCES form (id)
@@ -365,6 +367,7 @@ CREATE TABLE IF NOT EXISTS submission_lock (
   id UUID NOT NULL,
   edpuser_id UUID,
   context VARCHAR DEFAULT 'none',
+  created_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
@@ -387,6 +390,30 @@ CREATE TABLE IF NOT EXISTS edpgroup_permission_submission (
   FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
 
+CREATE TABLE IF NOT EXISTS edpuser_subscription_action (
+  edpuser_id UUID NOT NULL,
+  action_id UUID NOT NULL,
+  PRIMARY KEY (edpuser_id, action_id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
+  FOREIGN KEY (action_id) REFERENCES action (id)
+);
+
+CREATE TABLE IF NOT EXISTS edpuser_subscription_form (
+  edpuser_id UUID NOT NULL,
+  form_id UUID NOT NULL,
+  PRIMARY KEY (edpuser_id, form_id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
+  FOREIGN KEY (form_id) REFERENCES form (id)
+);
+
+CREATE TABLE IF NOT EXISTS edpuser_subscription_service (
+  edpuser_id UUID NOT NULL,
+  service_id UUID NOT NULL,
+  PRIMARY KEY (edpuser_id, service_id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
+  FOREIGN KEY (service_id) REFERENCES service (id)
+);
+
 CREATE TABLE IF NOT EXISTS edpuser_subscription_submission (
   edpuser_id UUID NOT NULL,
   submission_id UUID NOT NULL,
@@ -401,6 +428,30 @@ CREATE TABLE IF NOT EXISTS edpuser_subscription_workflow (
   PRIMARY KEY (edpuser_id, workflow_id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser(id),
   FOREIGN KEY (workflow_id) REFERENCES workflow (id)
+);
+
+CREATE TABLE IF NOT EXISTS edpgroup_subscription_action (
+  edpgroup_id UUID NOT NULL,
+  action_id UUID NOT NULL,
+  PRIMARY KEY (edpgroup_id, action_id),
+  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
+  FOREIGN KEY (action_id) REFERENCES action (id)
+);
+
+CREATE TABLE IF NOT EXISTS edpgroup_subscription_form (
+  edpgroup_id UUID NOT NULL,
+  form_id UUID NOT NULL,
+  PRIMARY KEY (edpgroup_id, form_id),
+  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
+  FOREIGN KEY (form_id) REFERENCES form (id)
+);
+
+CREATE TABLE IF NOT EXISTS edpgroup_subscription_service (
+  edpgroup_id UUID NOT NULL,
+  service_id UUID NOT NULL,
+  PRIMARY KEY (edpgroup_id, service_id),
+  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
+  FOREIGN KEY (service_id) REFERENCES service (id)
 );
 
 CREATE TABLE IF NOT EXISTS edpgroup_subscription_submission (

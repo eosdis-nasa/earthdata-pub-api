@@ -1,8 +1,9 @@
 const findAll = `
 SELECT
   submission.id,
+  submission.name,
   submission_status.workflow_id,
-  workflow.short_name,
+  workflow.long_name workflow_name,
   step.step_name,
   step.step_type,
   step.status_message,
@@ -34,8 +35,9 @@ WHERE submission.id = {{submission.id}}`;
 const findById = `
 SELECT
   submission.id,
+  submission.name,
   submission_status.workflow_id,
-  workflow.short_name,
+  workflow.long_name workflow_name,
   step.step_name,
   step.status,
   COALESCE(submission_action_data.action_data, '{}'::JSONB) action_data,
@@ -55,7 +57,7 @@ NATURAL LEFT JOIN (
 NATURAL LEFT JOIN (
   SELECT
   submission_form_data.id,
-  COALESCE(JSONB_OBJECT_AGG(submission_form_data.form_id, data), '{}'::JSONB) form_data
+  COALESCE(JSONB_OBJECT_AGG(data ORDER BY submitted_at ASC), '{}'::JSONB) form_data
   FROM submission_form_data
   GROUP BY submission_form_data.id) submission_form_data
 NATURAL JOIN (
@@ -92,7 +94,7 @@ WHERE id = {{submission.id}}`;
 const getFormData = `
 SELECT
 submission_form_data.id,
-COALESCE(JSONB_OBJECT_AGG(submission_form_data.form_id, data), '{}'::JSONB) form_data
+COALESCE(JSONB_OBJECT_AGG(data ORDER BY submitted_at ASC), '{}'::JSONB) form_data
 FROM submission_form_data
 GROUP BY submission_form_data.id
 WHERE submission_form_data.id = {{submission.id}}`;
