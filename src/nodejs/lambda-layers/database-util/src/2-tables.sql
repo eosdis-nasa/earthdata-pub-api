@@ -60,9 +60,21 @@ DROP TABLE IF EXISTS edpuser_permission_submission CASCADE;
 
 DROP TABLE IF EXISTS edpgroup_permission_submission CASCADE;
 
+DROP TABLE IF EXISTS edpuser_subscription_action CASCADE;
+
+DROP TABLE IF EXISTS edpuser_subscription_form CASCADE;
+
+DROP TABLE IF EXISTS edpuser_subscription_service CASCADE;
+
 DROP TABLE IF EXISTS edpuser_subscription_submission CASCADE;
 
 DROP TABLE IF EXISTS edpuser_subscription_workflow CASCADE;
+
+DROP TABLE IF EXISTS edpgroup_subscription_action CASCADE;
+
+DROP TABLE IF EXISTS edpgroup_subscription_form CASCADE;
+
+DROP TABLE IF EXISTS edpgroup_subscription_service CASCADE;
 
 DROP TABLE IF EXISTS edpgroup_subscription_submission CASCADE;
 
