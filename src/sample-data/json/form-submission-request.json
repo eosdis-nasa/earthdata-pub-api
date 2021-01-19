@@ -1,8 +1,8 @@
 {
   "id": "6c544723-241c-4896-a38c-adbc0a364293",
   "version": 1,
-  "long_name": "Submission Request Form",
-  "short_name": "submission_request",
+  "long_name": "Data Publication Request",
+  "short_name": "data_publication_request",
   "description": "This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.",
   "text": "To express interest in archiving a data product, please fill out the following form.",
   "sections": [
