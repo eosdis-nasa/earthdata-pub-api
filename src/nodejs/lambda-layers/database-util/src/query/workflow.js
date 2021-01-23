@@ -1,5 +1,4 @@
-const findAll = 'SELECT workflow.* FROM workflow';
-const findAllEx = `
+const findAll = `
   SELECT
     workflow.*, steps
   FROM workflow
@@ -22,8 +21,7 @@ const findAllEx = `
       FROM step_edge) back_edge
     GROUP BY step.workflow_id) step_json
     ON step_json.workflow_id = workflow.id`;
-const findById = `${findAllEx} WHERE workflow.id = {{workflow.id}}`;
+const findById = `${findAll} WHERE workflow.id = {{workflow.id}}`;
 
 module.exports.findAll = findAll;
-module.exports.findAllEx = findAllEx;
 module.exports.findById = findById;

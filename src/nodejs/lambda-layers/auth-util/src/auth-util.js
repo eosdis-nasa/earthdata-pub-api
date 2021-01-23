@@ -7,14 +7,13 @@ const jwt = require('jsonwebtoken');
 
 const providerUrl = process.env.AUTH_PROVIDER_URL;
 const loginPath = process.env.AUTH_LOGIN_PATH;
-const authorizePath = process.env.AUTH_AUTHORIZE_PATH;
+const logoutPath = process.env.AUTH_LOGOUT_PATH;
 const tokenPath = process.env.AUTH_TOKEN_PATH;
 const userPath = process.env.AUTH_USER_PATH;
 
 const clientId = process.env.AUTH_CLIENT_ID;
 const clientSecret = process.env.AUTH_CLIENT_SECRET;
-const callbackUrl = process.env.AUTH_CALLBACK_URL;
-const stateUrl = process.env.AUTH_STATE_URL;
+const clientUrl = process.env.AUTH_CLIENT_URL;
 
 function getStateUrl(state) {
   try {
@@ -22,47 +21,56 @@ function getStateUrl(state) {
     return url;
   }
   catch(e) {
-    return new URL(stateUrl);
+    return new URL(clientUrl);
   }
 }
 
-async function redirectWithToken({ code, refresh, state }) {
-    const tokenRequest = {
-      method: 'post',
-      endpoint: new URL(tokenPath, providerUrl),
-      auth: { type: 'basic', username: clientId, password: clientSecret },
-      payload: {
-        type: 'form',
-        data: {
-          redirect_uri: callbackUrl,
-          ...(code ? { code, grant_type: 'authorization_code' } : {}),
-          ...(refresh ? { refresh_token: refresh, grant_type: 'refresh_token' } : {})
-        }
-      }
+async function tokenService(data) {
+  const tokenRequest = {
+    method: 'post',
+    endpoint: new URL(tokenPath, providerUrl),
+    auth: { type: 'basic', username: clientId, password: clientSecret },
+    payload: {
+      data,
+      type: 'form'
     }
-    const { id_token: idToken,
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            expires_in: expires,
-            token_type: type } = await httpHelper.send(tokenRequest);
-    const user = jwt.decode(idToken);
-    user.id = user.sub;
-    const redirect = getStateUrl(state);
-    redirect.searchParams.set('token', idToken);
-    return { redirect: redirect.href, user };
   }
+  const tokens = await httpHelper.send(tokenRequest);
+  return tokens
+}
 
-async function redirectGetCode({ state }) {
+async function getToken({ code }) {
+  const tokens = await tokenService({
+    code,
+    grant_type: 'authorization_code',
+    redirect_uri: clientUrl
+  });
+  const user = jwt.decode(tokens.id_token);
+  user.id = user.sub;
+  return { token: tokens.access_token, user };
+}
+
+async function getLoginUrl({ state }) {
   const redirect = new URL(loginPath, providerUrl);
   redirect.search = new URLSearchParams({
     client_id: clientId,
-    redirect_uri: callbackUrl,
+    redirect_uri: clientUrl,
     scope: 'openid',
     response_type: 'code',
-    ...(state ? { state } : {})
+    state
   });
   return { redirect: redirect.href };
 }
 
-module.exports.redirectWithToken = redirectWithToken;
-module.exports.redirectGetCode = redirectGetCode;
+async function getLogoutUrl() {
+  const redirect = new URL(logoutPath, proverUrl);
+  redirect.search = new URLSearchParams({
+    client_id: clientId,
+    logout_uri: clientUrl
+  })
+  return { redirect: redirect.href }
+}
+
+module.exports.getToken = getToken;
+module.exports.getLoginUrl = getLoginUrl;
+module.exports.getLogoutUrl = getLogoutUrl;

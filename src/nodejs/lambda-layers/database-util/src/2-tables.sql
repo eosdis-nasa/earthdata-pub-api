@@ -481,7 +481,7 @@ CREATE TABLE IF NOT EXISTS edpgroup_subscription_workflow (
 );
 
 CREATE TABLE IF NOT EXISTS metrics (
-  id UUID NOT NULL,
+  id UUID DEFAULT UUID_GENERATE_V4(),
   event JSONB NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );

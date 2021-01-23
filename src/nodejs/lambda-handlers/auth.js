@@ -3,18 +3,22 @@
  * @module Version
  */
 const DatabaseUtil = require('database-util');
+
 const AuthUtil = require('auth-util');
 
 async function handler(event) {
-  const { code, state, authorization } = event;
-  if(code) {
-    const { redirect, user } = await AuthUtil.redirectWithToken(event);
-    DatabaseUtil.execute({ resource: 'user', operation: 'loginUser'}, { user });
-
+  const { code, logout, state } = event;
+  if (code) {
+    const { token, user } = await AuthUtil.getToken(event);
+    await DatabaseUtil.execute({ resource: 'user', operation: 'loginUser'}, { user });
+    return { token, state };
+  }
+  else if (logout) {
+    const { redirect } = await AuthUtil.getLogoutUrl(event);
     return { redirect };
   }
   else {
-    const { redirect } = await AuthUtil.redirectGetCode(event);
+    const { redirect } = await AuthUtil.getLoginUrl(event);
     return { redirect };
   }
 }

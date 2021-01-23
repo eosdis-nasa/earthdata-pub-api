@@ -10,20 +10,20 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
-function handler(event) {
-  // const record = event.Records[0];
-  //
-  // const subject = record.Sns.Subject ? record.Sns.Subject : '';
-  // const body = record.Sns.Message ? record.Sns.Message : '';
-  // const messageAttributes = JSON.stringify(record.Sns.MessageAttributes, null, 4);
-  // const log = JSON.stringify({
-  //   executions: record.EventSubscriptionArn,
-  //   level: 'info',
-  //   message: `Subject: ${subject}\nBody: ${body}\nMessage Attributes: ${messageAttributes}`,
-  //   sender: record.Sns.TopicArn,
-  //   timestamp: new Date().toISOString()
-  // }, null, 4);
-  // return msgDriver.sendSns({ subject: 'Metrics Logging', body: `${log}`, attributes: {} });
+async function processRecord(record) {
+  const { eventMessage } = MessageUtil.parseRecord(record);
+  console.log(eventMessage);
+  const response = await DatabaseUtil.execute({ resource: 'metrics', operation: 'putMetric'},
+  { metrics: { event: JSON.stringify(eventMessage) } });
+}
+
+async function handler(event) {
+  const records = event.Records;
+  const promises = records.map((record) => processRecord(record));
+  await Promise.all(promises);
+  return {
+    statusCode: 200
+  };
 }
 
 exports.handler = handler;

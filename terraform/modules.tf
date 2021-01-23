@@ -18,8 +18,7 @@ module "cognito" {
 
   region = var.region
   stage = var.stage
-  auth_callback_url = var.api_auth_callback_url
-  auth_logout_url = var.api_auth_logout_url
+  client_auth_url = var.client_auth_url
 }
 
 module "lambda_functions" {
@@ -45,14 +44,13 @@ module "lambda_functions" {
   db_user = module.rds.db_user
   db_password = var.db_password
   cognito_url = module.cognito.cognito_url
+  cognito_logout_path = module.cognito.cognito_logout_path
   cognito_login_path = module.cognito.cognito_login_path
-  cognito_authorize_path = module.cognito.cognito_authorize_path
   cognito_token_path = module.cognito.cognito_token_path
   cognito_user_path = module.cognito.cognito_user_path
   cognito_client_id = module.cognito.cognito_client_id
   cognito_client_secret = module.cognito.cognito_client_secret
-  cognito_callback_url = var.api_auth_callback_url
-  cognito_state_url = var.client_login_url
+  cognito_client_auth_url = var.client_auth_url
 }
 
 module "apigateway_endpoints" {

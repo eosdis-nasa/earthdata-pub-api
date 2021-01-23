@@ -15,12 +15,20 @@ const codes = {};
 
 const consumer = Consumer.create({
   sqs: new SQS({ endpoint: process.env.SNS_ENDPOINT }),
-  queueUrl: 'http://goaws:4100/000000000000/edpub_action_sqs.fifo',
+  queueUrl: 'http://goaws:4100/000000000000/edpub_action_sqs',
   pollingWaitTimeMs: 15000,
   handleMessage: handlers.actionConsumer
 });
 
 consumer.start();
+
+function aclAllowAll(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,authorization');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  next();
+}
 
 function login(req, res) {
   return res
@@ -117,7 +125,26 @@ function handleWorkflow(req, res) {
   res.send();
 }
 
+function handleNotification(req, res) {
+  handlers.notificationConsumer(wrapSns(req)).then((body) => {
+    res.status(body.statusCode);
+    res.send();
+  });
+}
+
+function handleMetrics(req, res) {
+  handlers.metricsConsumer(wrapSns(req)).then((body) => {
+    res.status(body.statusCode);
+    res.send();
+  });
+}
+
+function wrapSns(req) {
+  return { Records: [ { Sns: { ...req.body } }] };
+}
+
 module.exports = {
+  aclAllowAll,
   issuer,
   tokenSecret,
   token,
@@ -127,5 +154,7 @@ module.exports = {
   userList,
   reseed,
   handleWorkflow,
+  handleMetrics,
+  handleNotification,
   favico
 };

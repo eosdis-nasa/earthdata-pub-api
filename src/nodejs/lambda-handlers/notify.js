@@ -18,7 +18,7 @@ async function handler(event) {
     data: note
   };
   await MessageUtil.sendEvent(message);
-
+  return { message: 'Success!' }
 }
 
 exports.handler = handler;

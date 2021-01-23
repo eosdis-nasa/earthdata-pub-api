@@ -577,13 +577,13 @@ resource "aws_lambda_function" "auth" {
       PG_PASS             = var.db_password
       PG_PORT             = var.db_port
       AUTH_PROVIDER_URL   = var.cognito_url
+      AUTH_LOGOUT_PATH    = var.cognito_logout_path
       AUTH_LOGIN_PATH     = var.cognito_login_path
-      AUTH_AUTHORIZE_PATH = var.cognito_authorize_path
       AUTH_TOKEN_PATH     = var.cognito_token_path
       AUTH_USER_PATH      = var.cognito_user_path
       AUTH_CLIENT_ID      = var.cognito_client_id
       AUTH_CLIENT_SECRET  = var.cognito_client_secret
-      AUTH_CALLBACK_URL   = var.cognito_callback_url
+      AUTH_CLIENT_URL     = var.cognito_client_auth_url
       AUTH_STATE_URL      = var.cognito_state_url
     }
   }

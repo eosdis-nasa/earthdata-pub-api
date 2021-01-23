@@ -33,7 +33,8 @@ function sendEvent(eventMessage) {
     MessageAttributes: marshalAttributes(eventMessage),
     TopicArn: eventSns
   };
-  return sns.publish(params).promise().catch((e) => { console.error(e); });
+  const response = sns.publish(params).promise().catch((e) => { console.error(e); });
+  return response;
 }
 
 function parseAttributesFromParams(params) {

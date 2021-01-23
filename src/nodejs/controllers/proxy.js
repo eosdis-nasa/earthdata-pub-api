@@ -376,8 +376,12 @@ module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
 
 module.exports.notify = function notify(req, res, next) {
   const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for notify'
+  const lambdaEvent = {
+    note: params.payload.value,
+    context: { user_id: req.user_id }
+  }
+  handlers.notify(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -422,18 +426,33 @@ module.exports.submissionOperation = function submissionOperation(req, res, next
   });
 };
 
-module.exports.getLogEvents = function getLogEvents(req, res, next) {
+module.exports.searchMetrics = function searchMetrics(req, res, next) {
   const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for getMetrics'
+  const lambdaEvent = {
+    operation: 'search',
+    filter: {
+      ...(params.start && { start: params.start.value }),
+      ...(params.end && { end: params.end.value }),
+      ...(params.event_type && { event_type: params.event_type.value }),
+      ...(params.count && { count: params.count.value }),
+    },
+    context: { user_id: req.user_id }
+  }
+  handlers.metrics(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
-module.exports.putLogEvent = function putLogEvent(req, res, next) {
+module.exports.putMetric = function putMetric(req, res, next) {
   const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for putMetric'
-  });
+  const lambdaEvent = {
+    operation: 'put',
+    data: params.payload.value,
+    context: { user_id: req.user_id }
+  }
+  handlers.metrics(lambdaEvent).then((body) => {
+    res.send(body);
+  })
 };
 
 module.exports.getModel = function getModel(req, res, next) {
@@ -454,9 +473,7 @@ module.exports.getToken = function getToken(req, res, next) {
     state: params.state.value
   }
   handlers.auth(lambdaEvent).then((body) => {
-    res.status(307)
-    .set({ Location: body.redirect })
-    .send('Redirecting');
+    res.send(body);
   });
 };
 

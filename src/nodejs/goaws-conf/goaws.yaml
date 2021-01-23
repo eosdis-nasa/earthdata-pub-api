@@ -9,16 +9,22 @@ Local:
     VisibilityTimeout: 30
     ReceiveMessageWaitTimeSeconds: 0
   Queues:
-    - Name: edpub_action_sqs.fifo
+    - Name: edpub_action_sqs
       ReceiveMessageWaitTimeSeconds: 20
   Topics:
     - Name: edpub_event_sns
       Subscriptions:
         - Protocol: http
-          Endpoint: http://local_api:8080/goaws/workflow_handler
+          Endpoint: http://local_api:8080/goaws/workflow_consumer
           TopicArn: arn:aws:sns:us-east-1:000000000000:edpub_event_sns
           FilterPolicy: '{"event_type": ["workflow_promote_step"]}'
-        - QueueName: edpub_action_sqs.fifo
+        - Protocol: http
+          Endpoint: http://local_api:8080/goaws/notification_consumer
+          TopicArn: arn:aws:sns:us-east-1:000000000000:edpub_event_sns
+        - Protocol: http
+          Endpoint: http://local_api:8080/goaws/metrics_consumer
+          TopicArn: arn:aws:sns:us-east-1:000000000000:edpub_event_sns
+        - QueueName: edpub_action_sqs
           FilterPolicy: '{"event_type": ["action_invoke_request"]}'
     - Name: edpub_email_sns
     - Name: edpub_metrics_sns

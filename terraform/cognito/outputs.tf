@@ -14,16 +14,16 @@ output "cognito_url" {
   value = "https://${aws_cognito_user_pool_domain.edpub_cognito.domain}.auth.${var.region}.amazoncognito.com"
 }
 
+output "cognito_logout_path" {
+  value = "logout"
+}
+
 output "cognito_login_path" {
   value = "login"
 }
 
 output "cognito_token_path" {
   value = "oauth2/token"
-}
-
-output "cognito_authorize_path" {
-  value = "oauth2/authorize"
 }
 
 output "cognito_user_path" {
