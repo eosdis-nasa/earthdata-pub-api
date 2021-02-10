@@ -14,6 +14,8 @@ npm-debug.log
 /terraform/tfplan
 jsdoc/
 apidoc/
+/src/nodejs/api/openapi.json
+/src/nodejs/lambda-layers/database-util/src/db-setup/*.sql
 
 #Ignore eslint and jest outputs
 eslint.json
