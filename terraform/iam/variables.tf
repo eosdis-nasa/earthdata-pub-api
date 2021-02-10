@@ -26,10 +26,6 @@ variable "edpub_metrics_sns_arn" {
   type = string
 }
 
-variable "edpub_action_s3_arn" {
-  type = string
-}
-
 variable "lambda_execution_policy_arn" {
   type = string
 }

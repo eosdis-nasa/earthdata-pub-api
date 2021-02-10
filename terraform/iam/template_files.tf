@@ -1,5 +1,5 @@
-data "template_file" "assume_role" {
-  template = file("./iam/assume_role.json")
+data "template_file" "edpub_lambda_assume_role" {
+  template = file("./iam/edpub_lambda_assume_role.json")
   vars = {
     region = var.region
     account_id = var.account_id
@@ -15,6 +15,21 @@ data "template_file" "edpub_lambda_policy" {
     edpub_email_sns_arn = var.edpub_email_sns_arn
     edpub_metrics_sns_arn = var.edpub_metrics_sns_arn
     edpub_action_sqs_arn = var.edpub_action_sqs_arn
-    edpub_action_s3_arn = var.edpub_action_s3_arn
+  }
+}
+
+data "template_file" "edpub_apigateway_s3_assume_role" {
+  template = file("./iam/edpub_apigateway_s3_assume_role.json")
+  vars = {
+    region = var.region
+    account_id = var.account_id
+  }
+}
+
+data "template_file" "edpub_apigateway_s3_policy" {
+  template = file("./iam/edpub_apigateway_s3_policy.json")
+  vars = {
+    region = var.region
+    account_id = var.account_id
   }
 }

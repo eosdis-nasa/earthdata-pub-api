@@ -75,12 +75,20 @@
       }
     },
     {
+      "name": "applications",
+      "description": "Serves static files for frontend applications.",
+      "externalDocs": {
+        "description": "Read the docs",
+        "url": "http://database.doc/#TODO"
+      }
+    },
+    {
       "name": "cors",
       "description": "CORS"
     }
   ],
   "paths": {
-    "/data/action/{id}": {
+    "/api/data/action/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -209,7 +217,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/actions": {
+    "/api/data/actions": {
       "get": {
         "tags": [
           "data"
@@ -368,7 +376,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/daac/{id}": {
+    "/api/data/daac/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -497,7 +505,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/daacs": {
+    "/api/data/daacs": {
       "get": {
         "tags": [
           "data"
@@ -656,7 +664,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/form/{id}": {
+    "/api/data/form/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -785,7 +793,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/forms": {
+    "/api/data/forms": {
       "get": {
         "tags": [
           "data"
@@ -1013,7 +1021,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/group/{id}": {
+    "/api/data/group/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -1142,7 +1150,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/groups": {
+    "/api/data/groups": {
       "get": {
         "tags": [
           "data"
@@ -1301,7 +1309,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/role/{id}": {
+    "/api/data/role/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -1430,7 +1438,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/roles": {
+    "/api/data/roles": {
       "get": {
         "tags": [
           "data"
@@ -1589,7 +1597,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/note/{id}": {
+    "/api/data/note/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -1718,7 +1726,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/notes": {
+    "/api/data/notes": {
       "get": {
         "tags": [
           "data"
@@ -1877,7 +1885,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/question/{id}": {
+    "/api/data/question/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -2006,7 +2014,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/questions": {
+    "/api/data/questions": {
       "get": {
         "tags": [
           "data"
@@ -2234,7 +2242,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/service/{id}": {
+    "/api/data/service/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -2363,7 +2371,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/services": {
+    "/api/data/services": {
       "get": {
         "tags": [
           "data"
@@ -2522,7 +2530,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/submission/{id}": {
+    "/api/data/submission/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -2651,7 +2659,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/submissions": {
+    "/api/data/submissions": {
       "get": {
         "tags": [
           "data"
@@ -2810,7 +2818,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/user/{id}": {
+    "/api/data/user/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -2939,7 +2947,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/users": {
+    "/api/data/users": {
       "get": {
         "tags": [
           "data"
@@ -3098,7 +3106,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/workflow/{id}": {
+    "/api/data/workflow/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -3227,7 +3235,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/data/workflows": {
+    "/api/data/workflows": {
       "get": {
         "tags": [
           "data"
@@ -3455,7 +3463,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/model/{model}": {
+    "/api/model/{model}": {
       "parameters": [
         {
           "name": "model",
@@ -3584,7 +3592,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/notification/notify": {
+    "/api/notification/notify": {
       "post": {
         "tags": [
           "notification"
@@ -3702,7 +3710,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/notification/subscribe": {
+    "/api/notification/subscribe": {
       "post": {
         "tags": [
           "notification"
@@ -3753,7 +3761,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "$input.json('$')"
+            "application/json": "#set($req=$input.params()) { #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -3820,7 +3828,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/action/invoke": {
+    "/api/action/invoke": {
       "post": {
         "tags": [
           "action"
@@ -3938,7 +3946,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/action/register": {
+    "/api/action/register": {
       "post": {
         "tags": [
           "action"
@@ -4056,7 +4064,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/submission/{operation}": {
+    "/api/submission/{operation}": {
       "parameters": [
         {
           "name": "operation",
@@ -4064,7 +4072,8 @@
           "description": "Which submission operation to perform.",
           "required": true,
           "schema": {
-            "type": "string"
+            "type": "string",
+            "enum": ["initialize", "apply", "metadata", "submit", "save", "review", "resume", "lock", "unlock"]
           }
         }
       ],
@@ -4185,7 +4194,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/metrics": {
+    "/api/metrics": {
       "get": {
         "tags": [
           "metrics"
@@ -4406,7 +4415,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/token": {
+    "/api/token": {
       "get": {
         "tags": [
           "token"
@@ -4535,7 +4544,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/version": {
+    "/api/version": {
       "get": {
         "tags": [
           "version"
@@ -4646,6 +4655,178 @@
           }
         },
         "x-router-controller": "cors"
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "tags": [
+          "applications"
+        ],
+        "summary": "Serve the dashboard app.",
+        "description": "Serves the static files for the dashboard single page app.",
+        "operationId": "getDashboardApp",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_dashboard_s3_bucket}/index.html",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      }
+    },
+    "/dashboard/{key+}": {
+      "get": {
+        "tags": [
+          "applications"
+        ],
+        "summary": "Serve the dashboard app.",
+        "description": "Serves the static files for the dashboard single page app.",
+        "operationId": "getDashboardAppSubpath",
+        "parameters": [{
+          "name": "key",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_dashboard_s3_bucket}/{key}",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "requestParameters": {},
+          "requestTemplates": {
+            "application/json": "#set($mappings = {\"default\": \"index.html\", \"index.html\": \"index.html\"}) #set($key = $method.request.path.key) #if ($mappings.containsKey($key)) #set($context.requestOverride.path.key = $mappings.get($key)) #else #set($context.requestOverride.path.key = $mappings.get('default')) #end"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      }
+    },
+    "/forms": {
+      "get": {
+        "tags": [
+          "applications"
+        ],
+        "summary": "Serve the forms app.",
+        "description": "Serves the static files for the forms single page app.",
+        "operationId": "getFormsApp",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_forms_s3_bucket}/index.html",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      }
+    },
+    "/forms/{key+}": {
+      "get": {
+        "tags": [
+          "applications"
+        ],
+        "summary": "Serve the forms app.",
+        "description": "Serves the static files for the forms single page app.",
+        "operationId": "getFormsAppSubpath",
+        "parameters": [{
+          "name": "key",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_forms_s3_bucket}/{key}",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "requestParameters": {},
+          "requestTemplates": {
+            "application/json": "#set($mappings = {\"default\": \"index.html\", \"index.html\": \"index.html\"}) #set($key = $method.request.path.key) #if ($mappings.containsKey($key)) #set($context.requestOverride.path.key = $mappings.get($key)) #else #set($context.requestOverride.path.key = $mappings.get('default')) #end"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
       }
     }
   },

@@ -8,7 +8,8 @@ source ./scripts/utils.sh
 compile_oas_schema './src/nodejs/api/openapi.json'
 
 #Copy database setup and seed scripts
-cp ./src/postgres/*.sql ./src/nodejs/lambda-layers/database-util/src/
+mkdir -p ./src/nodejs/lambda-layers/database-util/src/db-setup
+cp ./src/postgres/*.sql ./src/nodejs/lambda-layers/database-util/src/db-setup
 
 cd ${DIR}/src/nodejs
 npm install

@@ -8,8 +8,6 @@ const express = require('express');
 
 const oasTools = require('oas-tools');
 
-const yaml = require('js-yaml');
-
 const bodyParser = require('body-parser');
 
 const local = require('./controllers/local.js');
@@ -34,7 +32,7 @@ app.post('/goaws/metrics_consumer', local.handleMetrics);
 app.post('/goaws/notification_consumer', local.handleNotification);
 
 const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
-const oasDoc = yaml.load(spec);
+const oasDoc = JSON.parse(spec);
 
 const oasOptions = {
   controllers: path.join(__dirname, './controllers'),

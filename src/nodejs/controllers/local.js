@@ -9,8 +9,9 @@ const handlers = require('./handlers.js');
 
 const issuer = 'Earthdata Pub Dev';
 const tokenSecret = 'earthdata_pub_dev';
-const exp = 300 * 60 * 1000;
+const exp = 30 * 60 * 1000;
 const redirectEndpoint = process.env.AUTH_CALLBACK_URL;
+const respectExp = process.env.AUTH_RESPECT_EXP === 'true';
 const codes = {};
 
 const consumer = Consumer.create({
@@ -38,9 +39,11 @@ function login(req, res) {
 
 function authenticate(req, res) {
   const code = uuid.v4().replace(/-/g, "");
+  const refresh = uuid.v4().replace(/-/g, "");
   const { state, ...user } = req.body;
   if (user.id === 'register') {
     user.id = uuid.v4();
+    user.refresh_token = refresh;
   }
   DatabaseUtil.execute({ resource: 'user', operation: 'loginUser'}, { user })
   .then((data) => {
@@ -58,7 +61,7 @@ function authenticate(req, res) {
     codes[code] = {
       id_token: newToken,
       access_token: newToken,
-      refresh_token: newToken,
+      refresh_token: refresh,
       expires_in: exp,
       token_type: "Bearer"
     };
@@ -89,14 +92,20 @@ function userList(req, res) {
 function check(req, secDef, token, next) {
   const bearerRegex = /^Bearer\s/;
   if (token && bearerRegex.test(token)) {
-    var newToken = token.replace(bearerRegex, '');
+    const newToken = token.replace(bearerRegex, '');
     verify(newToken, tokenSecret, { issuer },
       (error, decoded) => {
         if (error === null && decoded) {
-          Object.assign(req, { user_id: decoded.sub });
-          return next();
+          if (respectExp && decoded.exp < Date.now()) { next(req.res.sendStatus(403)); }
+          DatabaseUtil.execute({ resource: 'user', operation: 'findById' },
+          { user: { id: decoded.sub } }).then((user) => {
+            if (user.error) { return next(req.res.sendStatus(403)) }
+            Object.assign(req, { user_id: decoded.sub });
+            return next();
+          });
+        } else {
+          return next(req.res.sendStatus(403));
         }
-        return next(req.res.sendStatus(403));
       }
     );
   } else {
@@ -105,7 +114,7 @@ function check(req, secDef, token, next) {
 }
 
 function reseed(req, res) {
-  DatabaseUtil.seed().then(() => {
+  DatabaseUtil.seed().then((response) => {
     res.status(200);
     res.send();
   })

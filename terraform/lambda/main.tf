@@ -51,7 +51,6 @@ resource "aws_lambda_function" "action_consumer" {
   timeout       = 10
   environment {
     variables = {
-      ACTION_S3 = var.edpub_action_s3_id
       REGION    = var.region
       EVENT_SNS = var.edpub_event_sns_arn
       PG_USER   = var.db_user
@@ -584,7 +583,6 @@ resource "aws_lambda_function" "auth" {
       AUTH_CLIENT_ID      = var.cognito_client_id
       AUTH_CLIENT_SECRET  = var.cognito_client_secret
       AUTH_CLIENT_URL     = var.cognito_client_auth_url
-      AUTH_STATE_URL      = var.cognito_state_url
     }
   }
   vpc_config {
@@ -628,4 +626,30 @@ resource "aws_lambda_permission" "version" {
   function_name = aws_lambda_function.version.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
+}
+
+# RemapStatics Lambda
+
+resource "aws_lambda_function" "remap_statics" {
+  filename      = "../artifacts/remap-statics-lambda.zip"
+  function_name = "remap_statics"
+  role          = var.edpub_lambda_role_arn
+  handler       = "remap-statics.handler"
+  layers        = []
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/remap-statics-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION              = var.region
+      DASHBOARD_BUCKET    = var.edpub_dashboard_s3_bucket
+      FORMS_BUCKET        = var.edpub_forms_s3_bucket
+      OVERVIEW_BUCKET     = var.edpub_overview_s3_bucket
+      API_ID              = var.api_id
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
 }

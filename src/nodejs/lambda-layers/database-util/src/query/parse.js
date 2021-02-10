@@ -21,4 +21,6 @@ module.exports.reply = one;
 module.exports.sendNote = one;
 module.exports.metricsFilter = many;
 module.exports.metricsStats = many;
+module.exports.subscribe = one;
+module.exports.unsubscribe = one;
 module.exports.putMetric = one;

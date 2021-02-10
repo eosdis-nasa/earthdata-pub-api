@@ -43,9 +43,3 @@ BEGIN
   RETURN NEW;
 END;
 $$;
-
-CREATE OR REPLACE AGGREGATE jsonb_object_agg(jsonb) (
-  SFUNC = 'jsonb_concat',
-  STYPE = jsonb,
-  INITCOND = '{}'
-);

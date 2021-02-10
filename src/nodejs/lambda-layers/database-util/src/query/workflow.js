@@ -1,4 +1,5 @@
-const findAll = `
+const sql = require('./sql-builder.js');
+const findAll = () => `
   SELECT
     workflow.*, steps
   FROM workflow
@@ -21,7 +22,7 @@ const findAll = `
       FROM step_edge) back_edge
     GROUP BY step.workflow_id) step_json
     ON step_json.workflow_id = workflow.id`;
-const findById = `${findAll} WHERE workflow.id = {{workflow.id}}`;
+const findById = () => `${findAll} WHERE workflow.id = {{workflow.id}}`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;

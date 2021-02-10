@@ -65,8 +65,7 @@ async function metadataMethod(body, userId) {
   const eventMessage = {
     event_type: 'submission_metadata_updated',
     submission_id: id,
-    user_id: userId,
-    daac_id: submission.daac_id
+    user_id: userId
   };
   await MessageUtil.sendEvent(eventMessage);
   return response;

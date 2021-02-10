@@ -38,7 +38,15 @@ variable "edpub_metrics_sns_arn" {
   type = string
 }
 
-variable "edpub_action_s3_id" {
+variable "edpub_dashboard_s3_bucket" {
+  type = string
+}
+
+variable "edpub_forms_s3_bucket" {
+  type = string
+}
+
+variable "edpub_overview_s3_bucket" {
   type = string
 }
 

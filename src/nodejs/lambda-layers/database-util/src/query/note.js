@@ -1,15 +1,16 @@
-const findAll = 'SELECT note.* FROM note';
+const sql = require('./sql-builder.js');
+const findAll = () => 'SELECT note.* FROM note';
 
-const findById = `${findAll} WHERE note.id = {{note.id}}`;
+const findById = () => `${findAll} WHERE note.id = {{note.id}}`;
 
-const findByConversationId = `${findAll} WHERE conversation.id = {{conversation.id}}`;
+const findByConversationId = () => `${findAll} WHERE conversation.id = {{conversation.id}}`;
 
-const findByUserId = `
+const findByUserId = () => `
 SELECT note.*, note_edpuser.note_viewed FROM note WHERE note.id IN (
  SELECT note_edpuser.note_id FROM note_edpuser WHERE note_edpuser.user_id = {{user.id}})
  ORDER BY note.sent DESC`;
 
-const reply = `
+const reply = () => `
 WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text) VALUES
  ({{note.conversation_id}}, {{user.id}}, {{note.text}})
 RETURNING *),
@@ -20,7 +21,7 @@ note_user AS (INSERT INTO note_edpuser(note_id, edpuser_id)
 RETURNING *)
 SELECT * FROM new_note`;
 
-const sendNote = `
+const sendNote = () => `
 WITH new_conv AS (INSERT INTO conversation(subject) VALUES({{note.subject}}) RETURNING *),
 conv_user AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
  SELECT new_conv.id conversation_id, UNNEST({{note.user_list}}::uuid[]) edpuser_id

@@ -9,9 +9,15 @@ module.exports.model = (path) => ({
       properties: {
         text: { type: 'string' },
         subject: { type: 'string' },
-        submission_id: { $ref: `#${path}UUID` },
-        user_id: { $ref: `#${path}UUID` },
-        group_id: { $ref: `#${path}UUID` }
+        user_list: {
+          description: 'List of UUIDs of Users to notify',
+          type: 'array',
+          items: { $ref: `#${path}UUID` }
+        },
+        conversation_id: {
+          description: 'UUID of Conversation if replying',
+          $ref: `#${path}UUID`
+        }
       }
     }
   }

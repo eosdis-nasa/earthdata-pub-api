@@ -31,6 +31,15 @@ variable "lambda_execution_policy_arn" {
 variable "permissions_boundary_arn" {
   type = string
 }
+variable "edpub_dashboard_s3_bucket" {
+  type = string
+}
+variable "edpub_forms_s3_bucket" {
+  type = string
+}
+variable "edpub_overview_s3_bucket" {
+  type = string
+}
 variable "rds_cluster_identifier" {
   type = string
 }
@@ -43,15 +52,9 @@ variable "api_version" {
 variable "api_root_url" {
   type = string
 }
-variable "api_auth_logout_url" {
-  type = string
-}
-variable "api_auth_callback_url" {
-  type = string
-}
 variable "client_root_url" {
   type = string
 }
-variable "client_login_url" {
+variable "client_auth_url" {
   type = string
 }

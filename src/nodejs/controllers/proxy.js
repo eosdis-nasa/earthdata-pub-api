@@ -394,8 +394,10 @@ module.exports.getSubscriptions = function getSubscriptions(req, res, next) {
 
 module.exports.subscribe = function subscribe(req, res, next) {
   const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for subscribe'
+  const lambdaEvent = params.payload.value;
+  Object.assign(lambdaEvent, { context: { user_id: req.user_id } });
+  handlers.subscribe(lambdaEvent).then((body) => {
+    res.send(body);
   });
 };
 
@@ -415,7 +417,6 @@ module.exports.actionRegister = function actionRegister(req, res, next) {
 
 module.exports.submissionOperation = function submissionOperation(req, res, next) {
   const { params } = req.swagger;
-  console.log(req);
   const lambdaEvent = {
     operation: params.operation.value,
     payload: params.payload.value,
@@ -484,3 +485,27 @@ module.exports.getVersion = function getVersion(req, res, next) {
     res.send(body);
   });
 };
+
+module.exports.getDashboardApp = function getDashboardApp(req, res, next) {
+  res.send({
+    message: 'Placeholder for dashboard app root endpoint.'
+  });
+}
+
+module.exports.getDashboardAppSubpath = function getDashboardAppSubpath(req, res, next) {
+  res.send({
+    message: 'Placeholder for dashboard app subpath endpoint.'
+  });
+}
+
+module.exports.getFormsApp = function getFormsApp(req, res, next) {
+  res.send({
+    message: 'Placeholder for dashboard app root endpoint.'
+  });
+}
+
+module.exports.getFormsAppSubpath = function getFormsAppSubpath(req, res, next) {
+  res.send({
+    message: 'Placeholder for dashboard app subpath endpoint.'
+  });
+}

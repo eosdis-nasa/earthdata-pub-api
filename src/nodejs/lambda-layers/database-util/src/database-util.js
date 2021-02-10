@@ -18,33 +18,22 @@ const config = {
 
 const pool = new Pool(config);
 
-function addLimit(query) {
-  return `${query} LIMIT {{limit}} OFFSET {{offset}}`;
-}
-
-function addSort(query, sort, order = 'ASC') {
-  const [sanSort] = sort.split(' ');
-  const [sanOrder] = order.split(' ');
-  return `${query} ORDER BY ${sanSort} ${sanOrder}`;
-}
-
 async function execute({ resource, operation }, params) {
-  const response = {};
+  const response = { data: {} };
   try {
-    let query = statements[resource][operation];
-    if (params.sort) {
-      query = addSort(query, params.sort, params.order);
-    }
-    if (params.limit) {
-      query = addLimit(query);
-    }
+    const query = statements[resource][operation](params);
     const { text, values } = getValueList(query, params);
     const { rows } = await pool.query({ text, values, rowMode: 'object' });
-    Object.assign(response, { data: parse[operation](rows) });
+    const data = parse[operation](rows);
+    if (data) {
+      Object.assign(response, { data });
+    } else {
+      Object.assign(response, { data: { error: 'No results' } });
+    }
   } catch (e) {
-    Object.assign(response, { error: e });
+    Object.assign(response, { data: { error: e } });
   }
-  return response.data || response.error;
+  return response.data;
 }
 
 async function seed() {
@@ -52,11 +41,23 @@ async function seed() {
   const client = await pool.connect().catch( e => { Object.assign(response, { error: e })});
   if (!response.error) {
     try {
-      console.info(await client.query(fs.readFileSync(`${__dirname}/1-init.sql`).toString()));
-      console.info(await client.query(fs.readFileSync(`${__dirname}/2-tables.sql`).toString()));
-      console.info(await client.query(fs.readFileSync(`${__dirname}/3-functions.sql`).toString()));
-      console.info(await client.query(fs.readFileSync(`${__dirname}/4-triggers.sql`).toString()));
-      console.info(await client.query(fs.readFileSync(`${__dirname}/5-seed.sql`).toString()));
+      const files = fs.readdirSync(`${__dirname}/db-setup`).map(filename => `${__dirname}/db-setup/${filename}`);
+      await files.reduce(async ( previous , file) => {
+        await previous;
+        console.info(`Executing ${file}:`);
+        const results = await client.query(fs.readFileSync(file).toString());
+        if (Array.isArray(results)) {
+          Object.entries(results.reduce((acc, result) => {
+            acc[result.command] = 1 + acc[result.command] || 1;
+            return acc;
+          }, {})).forEach(([key, value]) => {
+            console.log(`${key} ${value}`);
+          })
+        } else {
+          console.log(`${results.command} 1`);
+        }
+        return results;
+      }, 0);
       Object.assign(response, { data: 'Successfully seeded!' });
     } catch (e) {
       Object.assign(response, { error: e });

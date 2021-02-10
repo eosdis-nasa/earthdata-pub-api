@@ -32,11 +32,17 @@
     },
     {
       "Action" : [
-        "s3:GetObject",
-        "s3:PutObject"
+        "s3:*"
       ],
       "Effect" : "Allow",
-      "Resource" : [ "${edpub_action_s3_arn}"]
+      "Resource" : "*"
+    },
+    {
+      "Action" : [
+        "apigateway:*"
+      ],
+      "Effect" : "Allow",
+      "Resource" : "*"
     }
   ]
 }

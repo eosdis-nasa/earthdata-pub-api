@@ -222,7 +222,7 @@ INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978e', 'additional_fi
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978e', 'additional_file_url', 1, 'Additional File URL', 'text', '{}', '{}', '[]','[]',  False);
 
 -- User(id, name, email, registered, last_login)
-INSERT INTO edpuser(id, name, email) VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', 'Earthdata Pub System', 'no_email');
+INSERT INTO edpuser(id, name, email, refresh_token) VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', 'Earthdata Pub System', 'no_email', 'none');
 
 -- Group(id, short_name, long_name, description)
 INSERT INTO edpgroup VALUES ('4daa6b22-f015-4ce2-8dac-8b3510004fca','root_group',  'Root Group', 'Full system access for administrators.');
@@ -249,6 +249,12 @@ INSERT INTO edprole VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'manager', '
 INSERT INTO edprole VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'coordinator', 'DAAC Data Coordinator', 'The DAAC staff member who coordinates all DAAC Submissions. Coordinators assign a Submission to Managers. There may be multiple DAAC Data Coordinators per DAAC. Some DAACs may choose to combine the Coordinator and Manager roles by assigning staff to both.');
 INSERT INTO edprole VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'observer', 'DAAC Observer', 'A DAAC or ESDIS staff member who is interested in monitoring progress in Earthdata Pub but does not need edit or write permission. This can be a DAAC Manager or similar.');
 INSERT INTO edprole VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'admin', 'Earthdata Pub Administrator', 'An Earthdata Pub admin can see and edit most aspects of Earthdata Pub.');
+
+-- RolePrivilege(edprole_id, privilege)
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'ALL_ALL');
+
+-- UserRole(edpuser_id, edrole_id)
+INSERT INTO edpuser_edprole VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', '75605ac9-bf65-4dec-8458-93e018dcca97');
 
 -- DAAC(id, short_name, long_name, url, description, default_edpgroup_id)
 INSERT INTO daac VALUES ('40397fe8-4841-4e4c-b84a-6ece359ff5ff', 'ASDC', 'Atmospheric Science Data Center (ASDC)', 'https://eosweb.larc.nasa.gov/', 'NASA''s Atmospheric Science Data Center (ASDC) is in the Science Directorate located at NASA''S Langley Research Center in Hampton, Virginia. The Science Directorate''s Climate Science Branch, Atmospheric Composition Branch, and Chemistry and Dynamics Branch work with ASDC to study changes in the Earth and its atmosphere. Data products translate those findings into meaningful knowledge that inspires action by scientists, educators, decision makers, and the public. ASDC supports over 50 projects and provides access to more than 1,000 archived data sets. These data sets were created from satellite measurements, field experiments, and modeled data products. ASDC projects focus on the Earth science disciplines Radiation Budget, Clouds, Aerosols, and Tropospheric Composition.', 'bf07c445-8217-4f97-827a-82838cce36fb');

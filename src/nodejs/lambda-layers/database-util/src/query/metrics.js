@@ -1,19 +1,20 @@
-const findAll = `
+const sql = require('./sql-builder.js');
+const findAll = () => `
 SELECT * FROM metrics`;
 
-const findById = `
+const findById = () => `
 ${findAll} WHERE metrics.id = {{metrics.id}}`;
 
-const metricsFilter = `
+const metricsFilter = () => `
 ${findAll}`;
 
-const metricsStats = `
+const metricsStats = () => `
 SELECT
   metrics.event->>'event_type' event_type,
   COUNT(metrics.event->>'event_type') count
 FROM metrics GROUP BY metrics.event->>'event_type'`;
 
-const putMetric = `
+const putMetric = () => `
 INSERT INTO metrics(event)
 VALUES ({{metrics.event}}::JSONB)`;
 

@@ -72,6 +72,8 @@ DROP TABLE IF EXISTS edpuser_subscription_workflow CASCADE;
 
 DROP TABLE IF EXISTS edpgroup_subscription_action CASCADE;
 
+DROP TABLE IF EXISTS edpgroup_subscription_daac CASCADE;
+
 DROP TABLE IF EXISTS edpgroup_subscription_form CASCADE;
 
 DROP TABLE IF EXISTS edpgroup_subscription_service CASCADE;
@@ -80,7 +82,13 @@ DROP TABLE IF EXISTS edpgroup_subscription_submission CASCADE;
 
 DROP TABLE IF EXISTS edpgroup_subscription_workflow CASCADE;
 
+DROP TABLE IF EXISTS edprole_privilege CASCADE;
+
 DROP TABLE IF EXISTS metrics CASCADE;
+
+DROP TABLE IF EXISTS conversation_kayako_ticket CASCADE;
+
+DROP TABLE IF EXISTS note_kayako_post CASCADE;
 
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
@@ -185,6 +193,7 @@ CREATE TABLE IF NOT EXISTS edpuser (
   email VARCHAR NOT NULL,
   registered TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP DEFAULT NOW(),
+  refresh_token VARCHAR NOT NULL,
   PRIMARY KEY (id)
 );
 
@@ -200,10 +209,10 @@ CREATE TABLE IF NOT EXISTS edpgroup (
 
 CREATE TABLE IF NOT EXISTS edpgroup_parent (
   id UUID NOT NULL,
-  parent_edpgroup_id UUID NOT NULL,
-  PRIMARY KEY (id, parent_edpgroup_id),
+  parent_id UUID NOT NULL,
+  PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES edpgroup (id),
-  FOREIGN KEY (parent_edpgroup_id) REFERENCES edpgroup (id)
+  FOREIGN KEY (parent_id) REFERENCES edpgroup (id)
 );
 
 CREATE TABLE IF NOT EXISTS edprole (
@@ -217,18 +226,18 @@ CREATE TABLE IF NOT EXISTS edprole (
 );
 
 CREATE TABLE IF NOT EXISTS edpuser_edpgroup (
-  id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
   edpgroup_id UUID NOT NULL,
-  PRIMARY KEY (id, edpgroup_id),
-  FOREIGN KEY (id) REFERENCES edpuser (id),
+  PRIMARY KEY (edpuser_id, edpgroup_id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
   FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id)
 );
 
 CREATE TABLE IF NOT EXISTS edpuser_edprole (
-  id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
   edprole_id UUID NOT NULL,
-  PRIMARY KEY (id, edprole_id),
-  FOREIGN KEY (id) REFERENCES edpuser (id),
+  PRIMARY KEY (edpuser_id, edprole_id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
   FOREIGN KEY (edprole_id) REFERENCES edprole (id)
 );
 
@@ -252,6 +261,13 @@ CREATE TABLE IF NOT EXISTS conversation (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS conversation_kayako_ticket (
+  id UUID NOT NULL,
+  ticket_id VARCHAR NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES conversation (id)
+);
+
 CREATE TABLE IF NOT EXISTS note (
   id UUID DEFAULT UUID_GENERATE_V4(),
   conversation_id UUID NOT NULL,
@@ -262,6 +278,13 @@ CREATE TABLE IF NOT EXISTS note (
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
   UNIQUE (id)
+);
+
+CREATE TABLE IF NOT EXISTS note_kayako_post (
+  id UUID NOT NULL,
+  post_id VARCHAR NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES note (id)
 );
 
 CREATE TABLE IF NOT EXISTS note_edpuser (
@@ -387,7 +410,6 @@ CREATE TABLE IF NOT EXISTS submission_lock (
 
 CREATE TABLE IF NOT EXISTS edpuser_permission_submission (
   edpuser_id UUID NOT NULL,
-  allow VARCHAR NOT NULL CHECK (allow IN ('r', 'w', 'rw')),
   submission_id UUID NOT NULL,
   PRIMARY KEY (edpuser_id, submission_id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
@@ -396,10 +418,16 @@ CREATE TABLE IF NOT EXISTS edpuser_permission_submission (
 
 CREATE TABLE IF NOT EXISTS edpgroup_permission_submission (
   edpgroup_id UUID NOT NULL,
-  allow VARCHAR NOT NULL CHECK (allow IN ('r', 'w', 'rw')),
   submission_id UUID NOT NULL,
   PRIMARY KEY (edpgroup_id, submission_id),
   FOREIGN KEY (submission_id) REFERENCES submission (id)
+);
+
+CREATE TABLE IF NOT EXISTS edprole_privilege (
+  edprole_id UUID NOT NULL,
+  privilege VARCHAR NOT NULL,
+  PRIMARY KEY (edprole_id, privilege),
+  FOREIGN KEY (edprole_id) REFERENCES edprole (id)
 );
 
 CREATE TABLE IF NOT EXISTS edpuser_subscription_action (
@@ -448,6 +476,14 @@ CREATE TABLE IF NOT EXISTS edpgroup_subscription_action (
   PRIMARY KEY (edpgroup_id, action_id),
   FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
   FOREIGN KEY (action_id) REFERENCES action (id)
+);
+
+CREATE TABLE IF NOT EXISTS edpgroup_subscription_daac (
+  edpgroup_id UUID NOT NULL,
+  daac_id UUID NOT NULL,
+  PRIMARY KEY (edpgroup_id, daac_id),
+  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
+  FOREIGN KEY (daac_id) REFERENCES daac (id)
 );
 
 CREATE TABLE IF NOT EXISTS edpgroup_subscription_form (
