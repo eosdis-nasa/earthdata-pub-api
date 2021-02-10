@@ -5,6 +5,7 @@ DIR=$(pwd)
 source ./scripts/utils.sh
 
 #Copy and modify schema and openapi definition
+mkdir -p ./src/nodejs/api
 compile_oas_schema './src/nodejs/api/openapi.json'
 
 #Copy database setup and seed scripts
