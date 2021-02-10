@@ -21,9 +21,9 @@ The [`CONTRIBUTING.md`](./CONTRIBUTING.md) has instruction for contributing to t
 ### Prerequisites
 The following are required for following the packaging and deploying steps:
 * [Amazon AWS](https://aws.amazon.com/) An AWS account is required for live deployment.
-* [LocalStack](https://github.com/localstack/localstack) Optionally, LocalStack can be used for running a local instance.
 * [Terraform](https://github.com/hashicorp/terraform) AWS components are provisioned using Terraform.
 * [Node.js](https://nodejs.org/en/download/) AWS Lambda functions and layers are implemented in Node.js 12.16.2. The Node Package Manager is also required but included with a standard Node.js installation.
+* [Docker](https://www.docker.com/) Docker is used to create the local test environment including the following services Postgresql, PgAdmin, GoAws for mocking SNS and SQS, Node OASTools for serving the API.
 
 ### Installing
 The first step is to clone the repo!
@@ -35,43 +35,50 @@ Then install using npm
 $ npm install
 ```
 
-### Build and Package
-Next, run the build script to install dependencies and package the submodules for deployment. This step also sets up some of the Terraform modules according to the environment you specify. New deployment profiles can be added in `/terraform/profiles`
+### Build and Run Local
+To build and run a local instance execute:
+```
+$ npm run build:local
+```
+This will install required dependencies in the submodules, aggregate the schema models and insert them in the OpenAPI spec, and copy the database bootstrapping scripts to the DatabaseUtil module.
+To launch your local instance execute:
+```
+$ npm run start
+```
+or to run the containers in detached mode:
+```
+$ npm run start:detached
+```
+The start script is just a proxy for:
+```
+$ docker-compose up
+```
+which will lauch the containers defined in `docker-compose.yml`.
+Upon the first startup, the Postgres container will run all of the setup scripts and seed the tables with basic data.
+Listed here are some QOL tag-ons to the local instance of the API.
+`/auth` This is an authentication endpoint that mimics the behavior of Cognito, but allows you to choose a test user from a dropdown list, and register new test users.
+`/reseed` This is an endpoint that triggers a reseed of the database to prevent the need to prune docker volumes to force the Postgres container to rerun the setup.
+`/goaws/` The endpoints under here expose the backend SNS consumers and wraps incoming requests to imitate SNS triggered lambda events.
+`pgAdmin` This helps with trouble-shooting queries and browsing data in your database. In a browser navigate to http://localhost:80
+  Log in with:
+    Email: edpub@edpub.com
+    Password: edpub,
+  Right click Servers->Create->Server... Use the following values to initiate the connection:
+    Name: edpub
+    Host: postgres
+    Username: edpub
+    Password: edpub
 
-#### Build for LocalStack
+#### Build and Deploy to AWS
+Execute the following to install dependencies and package all of the deployment modules:
 ```
-$ npm run build:localstack
+$ npm run build
 ```
-#### Build for an AWS environment
-```
-$ npm run build:sandbox
-```
-
-
-### Deploying
-#### State Management
-##### Remote State
-Remote State is used by the existing AWS profiles, but developers can use local state with a custom profile.
-You can create the bucket with the following:
-```
-aws s3 mb earthdatapub-terraform-state --region <aws_region>
-```
-Where `<aws_region>` will be replaced with the AWS region you are deploying to. e.g. us-east-1 us-west-2
-
-Next, copy the template state file into the bucket.
-```
-aws s3 cp ./terraform/initial.tfstate s3://earthdatapub-terraform-state/<stage>/terraform.tfstate
-```
-Where `<stage>` is the environment you are deploying to. e.g. dev test ops
-
-#### Local State
-The LocalStack profile uses local state management. LocalStack doesn't persist resources across restarts by default, so if you restart your LocalStack instance after deploying you will need to remove your ```terraform.tfstate``` and ```terraform.tfstate.backup``` files to start fresh.
-
-#### Terraform Deploy
-From here you are ready to deploy using Terraform. First change to the ```terraform``` directory.
+Move to the terraform sub directory
 ```
 $ cd terraform
 ```
+Create a `.tfvars` file to set the required variables or set appropriate environment variables in your OS, you can see the list of required values in `variables.tf`. The Terraform configuration doesn't create your backend database, you will need to create a Postgres 10+ compatible RDS instance, this allows for flexibility between test and production environments.
 
 ##### Initialize
 Run the following to install Terraform modules.
@@ -86,7 +93,7 @@ $ terraform validate
 #### Plan
 Then generate a plan.
 ```
-$ terraform plan -out=tfplan
+$ terraform plan -out=tfplan -var-file=env.tfvars
 ```
 #### Apply
 Finally, apply the plan!
