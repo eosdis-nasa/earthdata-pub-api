@@ -204,6 +204,11 @@ INSERT INTO submission(initiator_edpuser_id)
 VALUES ({{user.id}})
 RETURNING *`;
 
+const updateName = () => `
+UPDATE submission
+SET name = {{submission.name}}
+WHERE id = {{submission.id}}`;
+
 const getMetadata = () => `
 SELECT submission_metadata.*
 FROM submission_metadata

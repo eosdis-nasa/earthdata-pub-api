@@ -7,10 +7,10 @@ const inserts = {
   sections: [],
   questions: [],
   section_questions: [],
-  inputs: []
+  inputs: [],
 }
-
-questionMap = {};
+const control_ids = {};
+const questionMap = {};
 
 
 function uuid() {
@@ -25,6 +25,7 @@ function uuid() {
 
 function inputToSql(input, i, question) {
   // Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required, FALSE)
+  control_ids[input.control_id] = input.type;
   const insert = `INSERT INTO input VALUES ('${question.id}', '${input.control_id}', ${i}, '${input.label}', '${input.type}', '${JSON.stringify(input.enums||{})}', '${JSON.stringify(input.attributes||{})}', '${JSON.stringify(input.required_if||[])}','${JSON.stringify(input.show_if||[])}',  ${input.required?'True':'False'});`;
   return insert;
 }
@@ -141,3 +142,7 @@ inserts.section_questions.forEach((sectionQuestion) => { file.write(`${sectionQu
 file.write(`\n-- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required, FALSE))\n\n`);
 inserts.inputs.forEach((input) => { file.write(`${input}\n`); });
 file.close();
+
+const jsonfile = fs.createWriteStream('./control_id_list.json');
+jsonfile.write(JSON.stringify(control_ids, null, 2));
+jsonfile.close;
