@@ -25,11 +25,15 @@ app.get('/auth/login', local.login);
 app.post('/auth/login', local.authenticate);
 app.post('/auth/token', local.token);
 app.get('/auth/user_list', local.userList);
+app.get('/auth/group_list', local.groupList);
+app.get('/auth/role_list', local.roleList);
 app.get('/reseed', local.reseed);
 app.get('/favicon.ico', local.favico);
 app.post('/goaws/workflow_consumer', local.handleWorkflow);
 app.post('/goaws/metrics_consumer', local.handleMetrics);
 app.post('/goaws/notification_consumer', local.handleNotification);
+app.post('/database_test', local.dbTest);
+app.all('/kayako', local.kayakoMock);
 
 const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
 const oasDoc = JSON.parse(spec);
@@ -58,5 +62,3 @@ oasTools.initialize(oasDoc, app, function() {
     }
   });
 });
-
-app.get('/instanceMeta', function(req, res) { res.status(200); res.send({}); });

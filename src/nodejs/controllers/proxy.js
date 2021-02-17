@@ -486,6 +486,18 @@ module.exports.getVersion = function getVersion(req, res, next) {
   });
 };
 
+module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
+  res.send({
+    message: 'Placeholder for overview app root endpoint.'
+  });
+}
+
+module.exports.getOverviewAppSubpath = function getOverviewAppSubpath(req, res, next) {
+  res.send({
+    message: 'Placeholder for overview app subpath endpoint.'
+  });
+}
+
 module.exports.getDashboardApp = function getDashboardApp(req, res, next) {
   res.send({
     message: 'Placeholder for dashboard app root endpoint.'
@@ -500,12 +512,12 @@ module.exports.getDashboardAppSubpath = function getDashboardAppSubpath(req, res
 
 module.exports.getFormsApp = function getFormsApp(req, res, next) {
   res.send({
-    message: 'Placeholder for dashboard app root endpoint.'
+    message: 'Placeholder for forms app root endpoint.'
   });
 }
 
 module.exports.getFormsAppSubpath = function getFormsAppSubpath(req, res, next) {
   res.send({
-    message: 'Placeholder for dashboard app subpath endpoint.'
+    message: 'Placeholder for forms app subpath endpoint.'
   });
 }

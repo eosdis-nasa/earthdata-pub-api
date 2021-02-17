@@ -209,6 +209,11 @@ UPDATE submission
 SET name = {{submission.name}}
 WHERE id = {{submission.id}}`;
 
+const updateDaac = () => `
+UPDATE submission
+SET daac_id = {{submission.daac_id}}
+WHERE id = {{submission.id}}`;
+
 const getMetadata = () => `
 SELECT submission_metadata.*
 FROM submission_metadata

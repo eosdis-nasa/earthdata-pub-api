@@ -20,6 +20,7 @@ cp ./src/postgres/*.sql ./src/nodejs/lambda-layers/database-util/src/db-setup
 #Install individual modules
 install_layer auth-util
 install_layer database-util
+install_layer kayako-util
 install_layer message-util
 install_layer schema-util
 #Add more layer modules here <--

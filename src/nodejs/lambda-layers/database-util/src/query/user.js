@@ -193,15 +193,34 @@ const findAll = (params) => sql.select({
 
 const findById = () => `${findAll()} WHERE edpuser.id = {{user.id}}`;
 
+const addRole = (params) => sql.insert({
+  table: 'edpuser_edprole',
+  values: {
+    type: 'insert_values',
+    values: [{ type: 'param', param: 'user_id'}, { type: 'param', param: 'role_id' }]
+  },
+  returning: ['*']
+});
+
+const addGroup = (params) => sql.insert({
+  table: 'edpuser_edpgroup',
+  values: {
+    type: 'insert_values',
+    values: [{ param: 'user_id'}, { param: 'group_id' }]
+  },
+  conflict: {},
+  returning: ['*']
+});
+
 const findByGroupId = () => `
-${findAll}
+${findAll()}
 WHERE edpuser.id IN (
   SELECT edpuser_edpgroup.edpuser_id
   FROM edpuser_edpgroup
   WHERE edpuser_edpgroup.edpgroup_id = {{group.id}})`;
 
 const findByGroupName = () => `
-${findAll}
+${findAll()}
 WHERE edpuser.id IN (
   SELECT edpuser_edpgroup.edpuser_id
   FROM edpuser_edpgroup
@@ -210,14 +229,26 @@ WHERE edpuser.id IN (
     WHERE edpgroup.short_name = {{group.short_name}})`;
 
 const loginUser = () => `
-INSERT INTO edpuser VALUES
-({{user.id}}, {{user.name}}, {{user.email}}, NOW(), NOW())
+INSERT INTO edpuser(id, name, email, refresh_token) VALUES
+({{user.id}}, {{user.name}}, {{user.email}}, {{user.refresh_token}})
 ON CONFLICT (id) DO UPDATE SET
-last_login = EXCLUDED.last_login
+last_login = EXCLUDED.last_login,
+refresh_token = EXCLUDED.refresh_token
 RETURNING *`;
+
+const getEmails = (params) => sql.select({
+  fields: ['edpuser.email'],
+  from: 'edpuser',
+  where: {
+    filters: [{ field: 'edpuser.id', any: { values: { param: 'user_list' } } }]
+  }
+});
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByGroupId = findByGroupId;
 module.exports.findByGroupName = findByGroupName;
 module.exports.loginUser = loginUser;
+module.exports.addRole = addRole;
+module.exports.addGroup = addGroup;
+module.exports.getEmails = getEmails;

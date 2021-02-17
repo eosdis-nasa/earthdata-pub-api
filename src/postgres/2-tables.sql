@@ -191,9 +191,9 @@ CREATE TABLE IF NOT EXISTS edpuser (
   id UUID DEFAULT UUID_GENERATE_V4(),
   name VARCHAR NOT NULL,
   email VARCHAR NOT NULL,
+  refresh_token VARCHAR DEFAULT 'none',
   registered TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP DEFAULT NOW(),
-  refresh_token VARCHAR NOT NULL,
   PRIMARY KEY (id)
 );
 
@@ -258,6 +258,7 @@ CREATE TABLE IF NOT EXISTS conversation (
   id UUID DEFAULT UUID_GENERATE_V4(),
   subject VARCHAR DEFAULT 'No Subject',
   created_at TIMESTAMP DEFAULT NOW(),
+  last_change TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id)
 );
 
@@ -287,18 +288,10 @@ CREATE TABLE IF NOT EXISTS note_kayako_post (
   FOREIGN KEY (id) REFERENCES note (id)
 );
 
-CREATE TABLE IF NOT EXISTS note_edpuser (
-  note_id UUID NOT NULL,
-  edpuser_id UUID NOT NULL,
-  note_viewed BOOLEAN DEFAULT False,
-  PRIMARY KEY (note_id, edpuser_id),
-  FOREIGN KEY (note_id) REFERENCES note (id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
-);
-
 CREATE TABLE IF NOT EXISTS conversation_edpuser (
   conversation_id UUID NOT NULL,
   edpuser_id UUID NOT NULL,
+  unread BOOLEAN DEFAULT TRUE,
   PRIMARY KEY (conversation_id, edpuser_id),
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)

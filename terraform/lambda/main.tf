@@ -16,6 +16,15 @@ resource "aws_lambda_layer_version" "database_util" {
   source_code_hash    = filesha256("../artifacts/database-util-layer.zip")
 }
 
+# Kayako Util Layer
+
+resource "aws_lambda_layer_version" "kayako_util" {
+  filename            = "../artifacts/kayako-util-layer.zip"
+  layer_name          = "kayakoUtilLayer"
+  compatible_runtimes = ["nodejs12.x"]
+  source_code_hash    = filesha256("../artifacts/kayako-util-layer.zip")
+}
+
 # Message Util Layer
 
 resource "aws_lambda_layer_version" "message_util" {
@@ -299,6 +308,7 @@ resource "aws_lambda_function" "notify" {
   handler       = "notify.handler"
   layers = [
     aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.kayako_util.arn,
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
@@ -339,6 +349,7 @@ resource "aws_lambda_function" "notification_consumer" {
   handler       = "notification-consumer.handler"
   layers = [
     aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.kayako_util.arn,
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]

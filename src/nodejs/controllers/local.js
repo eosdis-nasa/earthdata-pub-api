@@ -43,7 +43,7 @@ function authenticate(req, res) {
   const { state, ...user } = req.body;
   if (user.id === 'register') {
     user.id = uuid.v4();
-    user.refresh_token = refresh;
+    user.refresh_token = 'none';
   }
   DatabaseUtil.execute({ resource: 'user', operation: 'loginUser'}, { user })
   .then((data) => {
@@ -76,7 +76,7 @@ function authenticate(req, res) {
 function token(req, res) {
   const { code } = req.body;
   const tokens = codes[code];
-  console.log(tokens);
+  console.info(tokens);
   res.status(200);
   res.send(tokens);
 }
@@ -86,6 +86,22 @@ function userList(req, res) {
   .then((users) => {
     res.status(200);
     res.send(users);
+  });
+}
+
+function groupList(req, res) {
+  DatabaseUtil.execute({ resource: 'group', operation: 'findAll' }, {})
+  .then((groups) => {
+    res.status(200);
+    res.send(groups);
+  });
+}
+
+function roleList(req, res) {
+  DatabaseUtil.execute({ resource: 'role', operation: 'findAll' }, {})
+  .then((roles) => {
+    res.status(200);
+    res.send(roles);
   });
 }
 
@@ -152,6 +168,24 @@ function wrapSns(req) {
   return { Records: [ { Sns: { ...req.body } }] };
 }
 
+function kayakoMock(req, res) {
+  // Placeholder that logs requests, will update to return useful mock values
+  console.info('Headers: ', JSON.stringify(req.headers || {}));
+  console.info('Query: ', JSON.stringify(req.query || {}));
+  console.info('Request Body: ', JSON.stringify(req.body || {}));
+  res.status(200);
+  res.send();
+}
+
+function dbTest(req, res) {
+  const { resource, operation, params } = req.body;
+  DatabaseUtil.execute({ resource, operation }, params)
+  .then((data) => {
+    res.status(200);
+    res.send(data);
+  });
+}
+
 module.exports = {
   aclAllowAll,
   issuer,
@@ -161,9 +195,13 @@ module.exports = {
   authenticate,
   check,
   userList,
+  groupList,
+  roleList,
   reseed,
   handleWorkflow,
   handleMetrics,
   handleNotification,
+  kayakoMock,
+  dbTest,
   favico
 };

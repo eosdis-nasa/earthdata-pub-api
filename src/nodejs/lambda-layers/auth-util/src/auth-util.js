@@ -47,6 +47,7 @@ async function getToken({ code }) {
   });
   const user = jwt.decode(tokens.id_token);
   user.id = user.sub;
+  user.refresh_token = tokens.refresh_token;
   return { token: tokens.access_token, user };
 }
 
