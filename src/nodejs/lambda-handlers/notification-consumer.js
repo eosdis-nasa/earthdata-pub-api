@@ -13,10 +13,8 @@ const MessageUtil = require('message-util');
 async function direct(eventMessage) {
   const { user_id: senderId, data } = eventMessage;
   const params = {
-    note: data,
-    user: {
-      id : senderId
-    }
+    user_id: senderId,
+    ...data
   }
   const operation = data.conversation_id ? 'reply' : 'sendNote';
   await DatabaseUtil.execute({ resource: 'note', operation }, params);
