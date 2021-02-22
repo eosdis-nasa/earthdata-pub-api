@@ -11,7 +11,7 @@ const apiId = process.env.API_ID;
 const staticSites = {
   overview: { bucket: process.env.OVERVIEW_BUCKET, path: '/{key+}' },
   dashboard: { bucket: process.env.DASHBOARD_BUCKET, path: '/dashboard/{key+}' },
-  forms: { bucket: process.env.DASHBOARD_BUCKET, path: '/forms/{key+}' }
+  forms: { bucket: process.env.FORMS_BUCKET, path: '/forms/{key+}' }
 }
 
 const s3 = new S3({ region });
