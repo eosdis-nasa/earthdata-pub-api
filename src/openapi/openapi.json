@@ -3643,7 +3643,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) #set($subject = $body.get('subject')) #set($text = $body.get('text')) #set($user_list = $body.get('user_list')) #set($conversation_id = $body.get('conversation_id')) {\"note\":{\"text\": \"$text\", #if($subject=='%2F'),\"subject\":\"$subject\"#end #if($user_list =='%2F'),\"user_list\":\"$user_list\"#end #if($conversation_id=='%2F'),\"conversation_id\":\"$conversation_id\"#end}, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"note\":{\"text\": \"$body.get('text')\", #if($body.containsKey('subject')),\"subject\":\"$body.get('subject')\"#end #if($body.containsKey('user_list')),\"user_list\":\"$body.get('user_list')\"#end #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end}, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -4127,7 +4127,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) #set($id = $body.get('id')) #set($form_id = $body.get('form_id')) #set($workflow_id = $body.get('workflow_id')) #set($data = $body.get('data')) #set($metadata = $body.get('metadata')) {\"operation\":\"$req.path.get('operation')\" #if($id =='%2F'),\"id\": \"$id\"#end #if($form_id =='%2F'),\"form_id\":\"$form_id\"#end #if($workflow_id=='%2F'),\"workflow_id\":\"$workflow_id\"#end #if($data=='%2F'),\"data\":\"$data\"#end #if($metadata=='%2F'),\"metadata\":\"$metadata\"#end,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\" #if($body.containsKey('id')),\"id\":\"$body.get('id')\"#end #if($body.containsKey('form_id')),\"form_id\":\"$body.get('form_id')\"#end #if($body.containsKey('daac_id')),\"daac_id\":\"$body.get('daac_id')\"#end #if($body.containsKey('workflow_id')),\"workflow_id\":\"$body.get('workflow_id')\"#end #if($body.containsKey('data')),\"data\":$input.json('$.data')#end #if($body.containsKey('metadata')),\"metadata\":$input.json('$.metadata')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {

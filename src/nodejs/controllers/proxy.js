@@ -417,10 +417,11 @@ module.exports.actionRegister = function actionRegister(req, res, next) {
 
 module.exports.submissionOperation = function submissionOperation(req, res, next) {
   const { params } = req.swagger;
+  const { payload } = params;
   const lambdaEvent = {
     operation: params.operation.value,
-    payload: params.payload.value,
-    context: { user_id: req.user_id }
+    context: { user_id: req.user_id },
+    ...payload.value
   }
   handlers.submission(lambdaEvent).then((body) => {
     res.send(body);

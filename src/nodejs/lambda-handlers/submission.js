@@ -10,8 +10,8 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
-async function resumeMethod(body, userId) {
-  const { id } = body.payload;
+async function resumeMethod(event, userId) {
+  const { id } = event;
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
     { submission: { id } });
   const eventMessage = {
@@ -25,21 +25,21 @@ async function resumeMethod(body, userId) {
   return status;
 }
 
-async function initializeMethod(body, userId) {
+async function initializeMethod(event, userId) {
   const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'initialize' },
-    { user: { id: userId } });
+    { user_id: userId, ...event });
   const eventMessage = {
     event_type: 'submission_initialized',
     submission_id: submission.id,
     user_id: userId
   };
   await MessageUtil.sendEvent(eventMessage);
-  await resumeMethod({ payload: { id: submission.id } }, userId);
+  await resumeMethod({ id: submission.id }, userId);
   return submission;
 }
 
-async function applyMethod(body, userId) {
-  const { id, workflow_id: workflowId } = body.payload;
+async function applyMethod(event, userId) {
+  const { id, workflow_id: workflowId } = event;
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
     { submission: { id } });
   // Check if in ready state and if the proposed workflow has been run previously
@@ -51,13 +51,13 @@ async function applyMethod(body, userId) {
     workflow_id: workflowId
   };
   await MessageUtil.sendEvent(eventMessage);
-  await resumeMethod(body, userId);
+  await resumeMethod(event, userId);
   return status;
 }
 
-async function metadataMethod(body, userId) {
+async function metadataMethod(event, userId) {
   // Update Metadata for a Submission
-  const { id, metadata } = body.payload;
+  const { id, metadata } = event;
   const response = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateMetadata' },
     { submission: { id, metadata: JSON.stringify(metadata) } });
   const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'findShortById' },
@@ -71,19 +71,19 @@ async function metadataMethod(body, userId) {
   return response;
 }
 
-async function saveMethod(body, userId) {
-  let { id, form_id: formId, data: data } = body.payload;
+async function saveMethod(event, userId) {
+  let { id, form_id: formId, data: data } = event;
   if (!id) {
-    const submission = await initializeMethod(body, userId);
+    const submission = await initializeMethod(event, userId);
     id = submission.id;
   }
   const response = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateFormData' }, { submission: { id }, form: { id: formId, data: JSON.stringify(data) } });
   return response;
 }
 
-async function submitMethod(body, userId) {
-  let { id, form_id: formId } = body.payload;
-  const response = await saveMethod(body, userId);
+async function submitMethod(event, userId) {
+  let { id, form_id: formId } = event;
+  const response = await saveMethod(event, userId);
   id = response.id;
   const eventMessage = {
     event_type: 'submission_form_submitted',
@@ -95,12 +95,12 @@ async function submitMethod(body, userId) {
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
     { submission: { id } });
   if (status.type === 'form' && status.form_id === formId) {
-    await resumeMethod(body, userId);
+    await resumeMethod(event, userId);
   }
   return response;
 }
 
-async function reviewMethod(body, userId) {
+async function reviewMethod(event, userId) {
   // Similar to submit, but for reviews. In case of rejecting a Submission
   // during review users can send a comment with reason for rejection.
   // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
@@ -110,25 +110,25 @@ async function reviewMethod(body, userId) {
   //   return [true];
   // }
   // return [false, 'Bad request.'];
-  console.info('Not Implemented', body, userId);
+  console.info('Not Implemented', event, userId);
 }
 
-async function lockMethod(body, userId) {
+async function lockMethod(event, userId) {
   // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
   // submission.lock = user.id;
   // const response = await dbDriver.putItem('submission', submission);
   // constructMessage(submission, 'lock');
   // return response;
-  console.info('Not Implemented', body, userId);
+  console.info('Not Implemented', event, userId);
 }
 
-async function unlockMethod(body, userId) {
+async function unlockMethod(event, userId) {
   // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
   // submission.lock = false;
   // const response = await dbDriver.putItem('submission', submission);
   // constructMessage(submission, 'unlock');
   // return response;
-  console.info('Not Implemented', body, userId);
+  console.info('Not Implemented', event, userId);
 }
 
 const operations = {
