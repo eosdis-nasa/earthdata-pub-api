@@ -3,10 +3,10 @@ const findAll = () => `
 SELECT * FROM metrics`;
 
 const findById = () => `
-${findAll} WHERE metrics.id = {{metrics.id}}`;
+${findAll()} WHERE metrics.id = {{metrics.id}}`;
 
 const metricsFilter = () => `
-${findAll}`;
+${findAll()}`;
 
 const metricsStats = () => `
 SELECT
