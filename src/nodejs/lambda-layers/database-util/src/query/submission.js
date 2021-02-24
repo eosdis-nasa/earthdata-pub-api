@@ -128,7 +128,7 @@ const findById = (params) => sql.select({
 const findAll = () => `
 SELECT
   submission.id,
-  submission.name,
+  coalesce(submission.name::text,'') "name",
   submission_status.workflow_id,
   workflow.long_name workflow_name,
   step.step_name,
@@ -136,9 +136,10 @@ SELECT
   step.status_message,
   submission.created_at,
   submission_status.last_change,
-  submission_form_data.form_id,
-  form.long_name form_name,
- (EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock" FROM submission
+  coalesce((select form_id from submission_form_data where form_id = '6c544723-241c-4896-a38c-adbc0a364293' and submission_form_data.id = submission.id)::text,'') "data_publication_request",
+  coalesce((select form_id from submission_form_data where form_id = '19025579-99ca-4344-8610-704dae626343' and submission_form_data.id = submission.id)::text,'') "data_product_information",
+  (EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock" 
+FROM submission
 NATURAL JOIN submission_status
 NATURAL JOIN (
   SELECT
@@ -155,8 +156,7 @@ NATURAL JOIN (
   END) status_message
   FROM step) step
 LEFT JOIN workflow ON workflow.id = submission_status.workflow_id
-LEFT JOIN submission_form_data ON submission_form_data.id = submission.id
-LEFT JOIN form ON submission_form_data.form_id = form.id`;
+LEFT JOIN submission_form_data ON submission_form_data.id = submission.id`;
 
 const getUsersSubmissions = (params) => sql.select({
   fields: fields(allFields),
