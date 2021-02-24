@@ -150,7 +150,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findById\",\"params\":{ \"action\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -438,7 +438,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findById\",\"params\":{ \"daac\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -726,7 +726,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{ \"form\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1083,7 +1083,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findById\",\"params\":{ \"group\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1371,7 +1371,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findById\",\"params\":{ \"role\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1659,7 +1659,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findById\",\"params\":{ \"note\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -1947,7 +1947,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findById\",\"params\":{ \"question\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2304,7 +2304,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findById\",\"params\":{ \"service\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2592,7 +2592,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findById\",\"params\":{ \"submission\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2880,7 +2880,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findById\",\"params\":{ \"user\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -3168,7 +3168,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findById\",\"params\":{ \"workflow\": {\"id\": \"$req.path.get('id')\"}},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -3643,7 +3643,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) #set($subject = $body.get('subject')) #set($text = $body.get('text')) #set($user_list = $body.get('user_list')) #set($conversation_id = $body.get('conversation_id')) {\"note\":{\"text\": \"$text\", #if($subject=='%2F'),\"subject\":\"$subject\"#end #if($user_list =='%2F'),\"user_list\":\"$user_list\"#end #if($conversation_id=='%2F'),\"conversation_id\":\"$conversation_id\"#end}, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"note\":{\"text\": \"$body.get('text')\", #if($body.containsKey('subject')),\"subject\":\"$body.get('subject')\"#end #if($body.containsKey('user_list')),\"user_list\":\"$body.get('user_list')\"#end #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end}, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -4127,7 +4127,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) #set($id = $body.get('id')) #set($form_id = $body.get('form_id')) #set($workflow_id = $body.get('workflow_id')) #set($data = $body.get('data')) #set($metadata = $body.get('metadata')) {\"operation\":\"$req.path.get('operation')\" #if($id =='%2F'),\"id\": \"$id\"#end #if($form_id =='%2F'),\"form_id\":\"$form_id\"#end #if($workflow_id=='%2F'),\"workflow_id\":\"$workflow_id\"#end #if($data=='%2F'),\"data\":\"$data\"#end #if($metadata=='%2F'),\"metadata\":\"$metadata\"#end,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\" #if($body.containsKey('id')),\"id\":\"$body.get('id')\"#end #if($body.containsKey('form_id')),\"form_id\":\"$body.get('form_id')\"#end #if($body.containsKey('daac_id')),\"daac_id\":\"$body.get('daac_id')\"#end #if($body.containsKey('workflow_id')),\"workflow_id\":\"$body.get('workflow_id')\"#end #if($body.containsKey('data')),\"data\":$input.json('$.data')#end #if($body.containsKey('metadata')),\"metadata\":$input.json('$.metadata')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -4896,6 +4896,92 @@
         "x-amazon-apigateway-integration": {
           "type": "aws",
           "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_forms_s3_bucket}/{key}",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "requestParameters": {},
+          "requestTemplates": {
+            "application/json": "#set($mappings = {\"default\": \"index.html\", \"index.html\": \"index.html\"}) #set($key = $method.request.path.key) #if ($mappings.containsKey($key)) #set($context.requestOverride.path.key = $mappings.get($key)) #else #set($context.requestOverride.path.key = $mappings.get('default')) #end"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "applications"
+        ],
+        "summary": "Serve the overview app.",
+        "description": "Serves the static files for the overview single page app.",
+        "operationId": "getOverviewApp",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_overview_s3_bucket}/index.html",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      }
+    },
+    "/{key+}": {
+      "get": {
+        "tags": [
+          "applications"
+        ],
+        "summary": "Serve the overview app.",
+        "description": "Serves the static files for the overview single page app.",
+        "operationId": "getOverviewAppSubpath",
+        "parameters": [{
+          "name": "key",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_overview_s3_bucket}/{key}",
           "credentials": "${edpub_apigateway_s3_role_arn}",
           "httpMethod": "GET",
           "passthroughBehavior": "when_no_match",

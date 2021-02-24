@@ -155,64 +155,22 @@ SELECT submission.*
 FROM submission
 WHERE submission.id = {{submission.id}}`;
 
-const findByIdA = () => `
-SELECT
-  submission.id,
-  submission.name,
-  submission_status.workflow_id,
-  workflow.long_name workflow_name,
-  step.step_name,
-  step.status,
-  COALESCE(submission_action_data.action_data, '{}'::JSONB) action_data,
-  COALESCE(submission_form_data.form_data, '{}'::JSONB) form_data,
-  submission_metadata.metadata,
-  submission.created_at,
-  submission_status.last_change,
-    (EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock" FROM submission
-NATURAL JOIN submission_status
-NATURAL JOIN submission_metadata
-NATURAL LEFT JOIN (
-  SELECT
-  submission_action_data.id,
-  COALESCE(JSONB_OBJECT_AGG(submission_action_data.action_id, data), '{}'::JSONB) action_data
-  FROM submission_action_data
-  GROUP BY submission_action_data.id) submission_action_data
-NATURAL LEFT JOIN (
-  SELECT
-  submission_form_data.id,
-  COALESCE(JSONB_MERGE_AGG(data ORDER BY submitted_at ASC), '{}'::JSONB) form_data
-  FROM submission_form_data
-  GROUP BY submission_form_data.id) submission_form_data
-NATURAL JOIN (
-  SELECT
-    workflow_id,
-    step_name,
-    (CASE
-    WHEN type = 'init' THEN 'Initialized'
-    WHEN type = 'form' THEN 'Pending Form Submittal'
-    WHEN type = 'review' THEN 'Pending Review'
-    WHEN type = 'service' THEN 'Pending Service Completion'
-    WHEN type = 'action' THEN 'Processing Action'
-    WHEN type = 'close' THEN 'Ready'
-  END) status
-  FROM step) step
-LEFT JOIN workflow ON workflow.id = submission_status.workflow_id
-WHERE submission.id = {{submission.id}}`;
-
-const initialize = () => `
-INSERT INTO submission(initiator_edpuser_id)
-VALUES ({{user.id}})
+const initialize = (params) => `
+INSERT INTO submission(initiator_edpuser_id${params.daac_id ? `, daac_id` : ``})
+VALUES ({{user_id}}${params.daac_id ? `, {{daac_id}}` : ``})
 RETURNING *`;
 
 const updateName = () => `
 UPDATE submission
 SET name = {{submission.name}}
-WHERE id = {{submission.id}}`;
+WHERE id = {{submission.id}}
+RETURNING *`;
 
 const updateDaac = () => `
 UPDATE submission
 SET daac_id = {{submission.daac_id}}
-WHERE id = {{submission.id}}`;
+WHERE id = {{submission.id}}
+RETURNING *`;
 
 const getMetadata = () => `
 SELECT submission_metadata.*
@@ -222,7 +180,8 @@ WHERE submission_metadata.id = {{submission.id}}`;
 const updateMetadata = () => `
 UPDATE submission_metadata
 SET metadata = {{submission.metadata}}::JSONB
-WHERE id = {{submission.id}}`;
+WHERE id = {{submission.id}}
+RETURNING *`;
 
 const getFormData = () => `
 SELECT

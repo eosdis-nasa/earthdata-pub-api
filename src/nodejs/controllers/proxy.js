@@ -6,7 +6,7 @@ module.exports.actionFindById = function actionFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'action',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -38,7 +38,7 @@ module.exports.daacFindById = function daacFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'daac',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -70,7 +70,7 @@ module.exports.formFindById = function formFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'form',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -108,7 +108,7 @@ module.exports.groupFindById = function groupFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'group',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -141,7 +141,7 @@ module.exports.roleFindById = function roleFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'role',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -173,7 +173,7 @@ module.exports.noteFindById = function noteFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'note',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -205,7 +205,7 @@ module.exports.questionFindById = function questionFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'question',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -244,7 +244,7 @@ module.exports.serviceFindById = function serviceFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'service',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -276,7 +276,7 @@ module.exports.submissionFindById = function submissionFindById(req, res, next) 
   const lambdaEvent = {
     resource: 'submission',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -308,7 +308,7 @@ module.exports.userFindById = function userFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'user',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -340,7 +340,7 @@ module.exports.workflowFindById = function workflowFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'workflow',
     operation: 'findById',
-    params: { path: { id: params.id.value }},
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   }
   handlers.data(lambdaEvent).then((body) => {
@@ -417,10 +417,11 @@ module.exports.actionRegister = function actionRegister(req, res, next) {
 
 module.exports.submissionOperation = function submissionOperation(req, res, next) {
   const { params } = req.swagger;
+  const { payload } = params;
   const lambdaEvent = {
     operation: params.operation.value,
-    payload: params.payload.value,
-    context: { user_id: req.user_id }
+    context: { user_id: req.user_id },
+    ...payload.value
   }
   handlers.submission(lambdaEvent).then((body) => {
     res.send(body);

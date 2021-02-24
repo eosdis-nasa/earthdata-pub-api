@@ -13,7 +13,7 @@ async function findById(event) {
     resource: event.resource,
     operation: event.operation
   };
-  const { id } = event.params.path;
+  const { id } = event.params;
   const params = {
     [event.resource]: { id }
   };
