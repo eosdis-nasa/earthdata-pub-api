@@ -31,6 +31,6 @@ module.exports.linkPostId = one;
 module.exports.getConversationByTicketId = one;
 module.exports.linkTicketId = one;
 module.exports.getConversationList = many;
-module.exports.readConversation = many;
+module.exports.readConversation = one;
 module.exports.reply = one;
 module.exports.sendNote = one;
