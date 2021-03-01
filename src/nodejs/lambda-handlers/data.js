@@ -20,25 +20,8 @@ async function findById(event) {
   return DatabaseUtil.execute(query, params);
 }
 
-async function findAll(event) {
-  const query = {
-    resource: event.resource,
-    operation: event.operation
-  };
-  const params = {};
-  if (event.params) {
-    if (event.params.query) {
-      if (event.params.query.sort) {
-        params.sort = event.params.query.sort;
-        params.order = event.params.query.order || 'ASC';
-      }
-      if (event.params.query.per_page) {
-        params.limit = event.params.query.per_page;
-        params.offset = (event.params.query.page || 0) * params.limit;
-      }
-    }
-  }
-  return DatabaseUtil.execute(query, params);
+async function findAll({ resource, operation, context, params }) {
+  return DatabaseUtil.execute({ resource, operation }, params);
 }
 
 async function putItem(event) {

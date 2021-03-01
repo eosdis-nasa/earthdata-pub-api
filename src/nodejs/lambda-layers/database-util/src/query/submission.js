@@ -2,10 +2,12 @@ const sql = require('./sql-builder.js');
 const workflow = require('./workflow.js');
 
 const table = "submission";
-const allFields = ['id', 'name', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'user_id', 'daac_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
+  user_id: 'submission.initiator_edpuser_id user_id',
+  daac_id: 'submission.daac_id',
   workflow_id: 'submission_status.workflow_id',
   workflow_name: 'workflow.long_name workflow_name',
   step_name: 'step.step_name',
@@ -82,6 +84,7 @@ const refs = {
       fields: [
         'step.workflow_id',
         'step.step_name',
+        'step.type',
         {
           type: 'case',
           when: [
@@ -121,34 +124,77 @@ const findById = (params) => sql.select({
   }
 });
 
-const findAll = () => `
-SELECT
-  submission.id,
-  submission.name,
-  submission_status.workflow_id,
-  workflow.long_name workflow_name,
-  step.step_name,
-  step.step_type,
-  step.status_message,
-  submission.created_at,
-  submission_status.last_change,
-    (EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock" FROM submission
-NATURAL JOIN submission_status
-NATURAL JOIN (
-  SELECT
-    workflow_id,
-    step_name,
-    type step_type,
-    (CASE
-    WHEN type = 'init' THEN 'Initialized'
-    WHEN type = 'form' THEN 'Pending Form Submittal'
-    WHEN type = 'review' THEN 'Pending Review'
-    WHEN type = 'service' THEN 'Pending Service Completion'
-    WHEN type = 'action' THEN 'Processing Action'
-    WHEN type = 'close' THEN 'Ready'
-  END) status_message
-  FROM step) step
-LEFT JOIN workflow ON workflow.id = submission_status.workflow_id`;
+const getUsersSubmissions = (params) => sql.select({
+  fields: fields(allFields),
+  from: {
+    base: table,
+    joins: [refs.submission_status, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+  },
+  where: {
+    filters: [{ field: 'submission.initiator_edpuser_id', param: 'user_id' }]
+  },
+  order: fieldMap.last_change,
+  sort: 'DESC'
+});
+
+const findAll = ({ name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
+  status, created_before, created_after, last_change_before, last_change_after, sort, order,
+  per_page, page}) => sql.select({
+  fields: [fieldMap.id, fieldMap.name, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change],
+  from: {
+    base: table,
+    joins: [refs.submission_status, refs.step, refs.workflow]
+  },
+  where: {
+    filters: [
+      ...(name ? [{ field: 'submission.name', param: 'name'}] : []),
+      ...(user_id ? [{ field: 'submission.initiator_edpuser_id', param: 'user_id'}] : []),
+      ...(daac_id ? [{ field: 'submission.daac_id', param: 'daac_id'}] : []),
+      ...(workflow_id ? [{ field: 'submission_status.workflow_id', param: 'workflow_id'}] : []),
+      ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name'}] : []),
+      ...(step_name ? [{ field: 'step.step_name', param: 'step_name'}] : []),
+      ...(status ? [{ field: 'step.status', param: 'status'}] : []),
+      ...(step_type ? [{ field: 'step.step_type', param: 'step_type'}] : []),
+      ...(created_after ? [{ field: 'submission.created_at', op: 'gte', param: 'created_after'}] : []),
+      ...(created_before ? [{ field: 'submission.created_at', op: 'lte', param: 'created_before'}] : []),
+      ...(last_change_after ? [{ field: 'submission_status.last_change', op: 'gte', param: 'last_change_after'}] : []),
+      ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before'}] : [])
+    ]
+  },
+  ...(order ? { order } : {}),
+  ...(sort ? { sort } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
+});
+
+// const findAll = () => `
+// SELECT
+//   submission.id,
+//   submission.name,
+//   submission_status.workflow_id,
+//   workflow.long_name workflow_name,
+//   step.step_name,
+//   step.step_type,
+//   step.status_message,
+//   submission.created_at,
+//   submission_status.last_change,
+//     (EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock" FROM submission
+// NATURAL JOIN submission_status
+// NATURAL JOIN (
+//   SELECT
+//     workflow_id,
+//     step_name,
+//     type step_type,
+//     (CASE
+//     WHEN type = 'init' THEN 'Initialized'
+//     WHEN type = 'form' THEN 'Pending Form Submittal'
+//     WHEN type = 'review' THEN 'Pending Review'
+//     WHEN type = 'service' THEN 'Pending Service Completion'
+//     WHEN type = 'action' THEN 'Processing Action'
+//     WHEN type = 'close' THEN 'Ready'
+//   END) status_message
+//   FROM step) step
+// LEFT JOIN workflow ON workflow.id = submission_status.workflow_id`;
 
 const findShortById = () => `
 SELECT submission.*
@@ -261,6 +307,7 @@ RETURNING *`;
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
+module.exports.getUsersSubmissions = getUsersSubmissions;
 module.exports.initialize = initialize;
 module.exports.getNextstep = getNextstep;
 module.exports.promoteStep = promoteStep;

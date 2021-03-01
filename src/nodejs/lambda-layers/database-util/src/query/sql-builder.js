@@ -59,7 +59,7 @@ const fromClause = ({ base, joins }) =>
   ` FROM ${base}${joins ? joins.map(complexParse).join(` `) : ``}`;
 
 const whereClause = ({ filters }) =>
-  ` WHERE ${filters.map(filter).join(` AND `)}`;
+  filters.length > 0 ? ` WHERE ${filters.map(filter).join(` AND `)}` : ``;
 
 const caseClause = ({ when, alias }) =>
   `${alias ? `(` : ``}CASE ${when.map(whenClause).join(``)} END${alias ?

@@ -14,8 +14,8 @@ output "invoke_lambda_arn" {
   value = aws_lambda_function.invoke.invoke_arn
 }
 
-output "notify_lambda_arn" {
-  value = aws_lambda_function.notify.invoke_arn
+output "notification_lambda_arn" {
+  value = aws_lambda_function.notification.invoke_arn
 }
 
 output "metrics_lambda_arn" {

@@ -12,6 +12,7 @@ module.exports.findAllEx = many;
 module.exports.putItem = one;
 module.exports.updateMetadata = one;
 module.exports.updateFormData = one;
+module.exports.getUsersSubmissions = many;
 module.exports.initialize = one;
 module.exports.getState = one;
 module.exports.promoteStep = one;

@@ -289,12 +289,23 @@ module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'submission',
     operation: 'findAll',
-    params: { query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+    params: {
+      name: params.name.value,
+      user_id: params.user_id.value,
+      daac_id: params.daac_id.value,
+      workflow_id: params.workflow_id.value,
+      workflow_name: params.workflow_name.value,
+      step_name: params.step_name.value,
+      step_type: params.step_type.value,
+      status: params.status.value,
+      created_after: params.created_after.value,
+      created_before: params.created_before.value,
+      last_change_after: params.last_change_after.value,
+      last_change_before: params.last_change_before.value,
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   }
@@ -374,13 +385,49 @@ module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
   });
 };
 
-module.exports.notify = function notify(req, res, next) {
+module.exports.notificationSend = function notificationSend(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
-    note: params.payload.value,
+    operation: 'send',
+    ...params.payload.value,
     context: { user_id: req.user_id }
   }
-  handlers.notify(lambdaEvent).then((body) => {
+  handlers.notification(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.notificationReply = function notificationReply(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'reply',
+    ...params.payload.value,
+    context: { user_id: req.user_id }
+  }
+  handlers.notification(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.notificationConversations = function notificationConversations(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'conversations',
+    context: { user_id: req.user_id }
+  }
+  handlers.notification(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.notificationConversation = function notificationConversation(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'conversation',
+    conversation_id: params.id.value,
+    context: { user_id: req.user_id }
+  }
+  handlers.notification(lambdaEvent).then((body) => {
     res.send(body);
   });
 };
