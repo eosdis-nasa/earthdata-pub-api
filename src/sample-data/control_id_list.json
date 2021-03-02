@@ -206,40 +206,13 @@
   "temporal_coverage_notes_textarea": [
     "textarea"
   ],
-  "spatial_horizontal_north1": [
+  "spatial_horizontal_1": [
     "bbox"
   ],
-  "spatial_horizontal_east1": [
+  "spatial_horizontal_2": [
     "bbox"
   ],
-  "spatial_horizontal_south1": [
-    "bbox"
-  ],
-  "spatial_horizontal_west1": [
-    "bbox"
-  ],
-  "spatial_horizontal_north2": [
-    "bbox"
-  ],
-  "spatial_horizontal_east2": [
-    "bbox"
-  ],
-  "spatial_horizontal_south2": [
-    "bbox"
-  ],
-  "spatial_horizontal_west2": [
-    "bbox"
-  ],
-  "spatial_horizontal_north3": [
-    "bbox"
-  ],
-  "spatial_horizontal_east3": [
-    "bbox"
-  ],
-  "spatial_horizontal_south3": [
-    "bbox"
-  ],
-  "spatial_horizontal_west3": [
+  "spatial_horizontal_3": [
     "bbox"
   ],
   "spatial_vertical_answer": [
