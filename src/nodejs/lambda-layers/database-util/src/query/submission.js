@@ -2,12 +2,13 @@ const sql = require('./sql-builder.js');
 const workflow = require('./workflow.js');
 
 const table = "submission";
-const allFields = ['id', 'name', 'user_id', 'daac_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
   user_id: 'submission.initiator_edpuser_id user_id',
   daac_id: 'submission.daac_id',
+  conversation_id: 'submission.conversation_id',
   workflow_id: 'submission_status.workflow_id',
   workflow_name: 'workflow.long_name workflow_name',
   step_name: 'step.step_name',
@@ -140,7 +141,7 @@ const getUsersSubmissions = (params) => sql.select({
 const findAll = ({ name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
   status, created_before, created_after, last_change_before, last_change_after, sort, order,
   per_page, page}) => sql.select({
-  fields: [fieldMap.id, fieldMap.name, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change],
+  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change],
   from: {
     base: table,
     joins: [refs.submission_status, refs.step, refs.workflow]
@@ -167,35 +168,6 @@ const findAll = ({ name, user_id, daac_id, workflow_id, workflow_name, step_name
   ...(page ? { offset: page } : {})
 });
 
-// const findAll = () => `
-// SELECT
-//   submission.id,
-//   submission.name,
-//   submission_status.workflow_id,
-//   workflow.long_name workflow_name,
-//   step.step_name,
-//   step.step_type,
-//   step.status_message,
-//   submission.created_at,
-//   submission_status.last_change,
-//     (EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock" FROM submission
-// NATURAL JOIN submission_status
-// NATURAL JOIN (
-//   SELECT
-//     workflow_id,
-//     step_name,
-//     type step_type,
-//     (CASE
-//     WHEN type = 'init' THEN 'Initialized'
-//     WHEN type = 'form' THEN 'Pending Form Submittal'
-//     WHEN type = 'review' THEN 'Pending Review'
-//     WHEN type = 'service' THEN 'Pending Service Completion'
-//     WHEN type = 'action' THEN 'Processing Action'
-//     WHEN type = 'close' THEN 'Ready'
-//   END) status_message
-//   FROM step) step
-// LEFT JOIN workflow ON workflow.id = submission_status.workflow_id`;
-
 const findShortById = () => `
 SELECT submission.*
 FROM submission
@@ -216,6 +188,12 @@ const updateDaac = () => `
 UPDATE submission
 SET daac_id = {{submission.daac_id}}
 WHERE id = {{submission.id}}
+RETURNING *`;
+
+const updateConversation = () => `
+UPDATE submission
+SET conversation_id = {{conversation_id}}
+WHERE id = {{id}}
 RETURNING *`;
 
 const getMetadata = () => `
@@ -311,6 +289,9 @@ module.exports.getUsersSubmissions = getUsersSubmissions;
 module.exports.initialize = initialize;
 module.exports.getNextstep = getNextstep;
 module.exports.promoteStep = promoteStep;
+module.exports.updateName = updateName;
+module.exports.updateDaac = updateDaac;
+module.exports.updateConversation = updateConversation;
 module.exports.getState = getState;
 module.exports.getMetadata = getMetadata;
 module.exports.updateMetadata = updateMetadata;

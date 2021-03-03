@@ -139,6 +139,10 @@ conv_user AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
  SELECT new_conv.id conversation_id, UNNEST({{user_list}}::uuid[]) edpuser_id
  FROM new_conv
 RETURNING *),
+conv_sender AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+ SELECT new_conv.id conversation_id, {{user_id}} edpuser_id
+ FROM new_conv
+RETURNING *),
 new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text)
  SELECT new_conv.id, {{user_id}}, {{text}}
  FROM new_conv

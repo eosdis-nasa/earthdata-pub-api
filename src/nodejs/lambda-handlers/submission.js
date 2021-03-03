@@ -10,6 +10,15 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
+async function activeMethod(event, userId) {
+  const activeSubmissions = await DatabaseUtil.execute({ resource: 'submission', operation: 'getUsersSubmissions'},
+    {
+      user_id: userId
+    }
+  );
+  return activeSubmissions;
+}
+
 async function resumeMethod(event, userId) {
   const { id } = event;
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
@@ -133,6 +142,7 @@ async function unlockMethod(event, userId) {
 
 const operations = {
   initialize: initializeMethod,
+  active: activeMethod,
   apply: applyMethod,
   metadata: metadataMethod,
   submit: submitMethod,
