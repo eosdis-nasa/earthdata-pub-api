@@ -10,7 +10,15 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
-async function direct(eventMessage) {
+const textTemplates = {
+  submission_initialized: ({ submission_id }) => `A new request has been initialized with ID ${submission_id}.`
+};
+
+const subjectTemplates = {
+  submission_initialized: ({ submission_id }) => `Submission ID ${submission_id}`
+}
+
+async function directMessage(eventMessage) {
   const { user_id: senderId, data } = eventMessage;
   const params = {
     user_id: senderId,
@@ -20,11 +28,33 @@ async function direct(eventMessage) {
   await DatabaseUtil.execute({ resource: 'note', operation }, params);
 }
 
+async function submissionInitialized(eventMessage) {
+  const newNote = await DatabaseUtil.execute({ resource: 'note', operation: 'sendNote' },
+    {
+      user_id: eventMessage.user_id,
+      subject: subjectTemplates.submission_initialized(eventMessage),
+      text: textTemplates.submission_initialized(eventMessage),
+      user_list: []
+    }
+  );
+  const test = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateConversation' },
+    {
+      id: eventMessage.submission_id,
+      conversation_id: newNote.conversation_id
+    }
+  );
+  console.log(test);
+}
+
+const operations = {
+  direct_message: directMessage,
+  submission_initialized: submissionInitialized,
+}
 
 async function processRecord(record) {
   const { eventMessage } = MessageUtil.parseRecord(record);
-  if (eventMessage.event_type === 'direct_message') {
-    await direct(eventMessage);
+  if (operations[eventMessage.event_type]) {
+    await operations[eventMessage.event_type](eventMessage);
   }
 }
 

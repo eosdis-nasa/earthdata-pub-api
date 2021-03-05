@@ -60,7 +60,7 @@ module "apigateway_endpoints" {
   stage = var.stage
   auth_lambda_arn = module.lambda_functions.auth_lambda_arn
   data_lambda_arn = module.lambda_functions.data_lambda_arn
-  notify_lambda_arn = module.lambda_functions.notify_lambda_arn
+  notification_lambda_arn = module.lambda_functions.notification_lambda_arn
   metrics_lambda_arn = module.lambda_functions.metrics_lambda_arn
   model_lambda_arn = module.lambda_functions.model_lambda_arn
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn

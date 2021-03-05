@@ -1,10 +1,43 @@
 const sql = require('./sql-builder.js');
 
 const refs = {
+  conversation_note: {
+    type: 'left_join',
+    src: 'note',
+    on: { left: 'conversation.id', right: 'note.conversation_id'}
+  },
   conversation_user: {
     type: 'left_join',
     src: 'conversation_edpuser',
     on: { left: 'conversation.id', right: 'conversation_edpuser.conversation_id' }
+  },
+  note_agg: {
+    type: 'left_join',
+    src: sql.select({
+      fields: [
+        'note.conversation_id',
+        {
+          type: 'json_agg',
+          src: {
+            type: 'json_obj',
+            keys: [
+              ['text', 'note.text'],
+              ['sent', 'note.created_at'],
+              ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']]}]
+            ]
+          },
+          order: 'note.created_at',
+          sort: 'DESC',
+          alias: 'notes'
+        }
+      ],
+      from: { base: 'note', joins: [{
+        type: 'left_join', src: 'edpuser', on: { left: 'note.sender_edpuser_id', right: 'edpuser.id' }
+      }]},
+      group: 'note.conversation_id',
+      alias: 'note_agg'
+    }),
+    on: { left: 'note_agg.conversation_id', right: 'conversation.id' }
   },
   note_kayako: {
     type: 'natural_join',
@@ -62,7 +95,7 @@ const linkTicketId = (params) => sql.insert({
 });
 
 const getConversationList = (params) => sql.select({
-  fields: ['conversation.*'],
+  fields: ['conversation.*', 'conversation_edpuser.unread'],
   from: { base: 'conversation', joins: [refs.conversation_user]},
   where: {
     filters: [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id'}]
@@ -72,10 +105,13 @@ const getConversationList = (params) => sql.select({
 });
 
 const readConversation = (params) => sql.select({
-  fields: ['note.*'],
-  from: { base: 'note' },
+  fields: ['conversation.id', 'conversation.subject', 'notes'],
+  from: { base: 'conversation', joins: [refs.conversation_user, refs.note_agg] },
   where: {
-    filters: [{ field: 'conversation_id' }]
+    filters: [
+      { field: 'note_agg.conversation_id', param: 'conversation_id' },
+      { field: 'conversation_edpuser.edpuser_id', param: 'user_id' }
+    ]
   },
   order: 'created_at',
   sort: 'DESC'
@@ -101,6 +137,10 @@ const sendNote = () => `
 WITH new_conv AS (INSERT INTO conversation(subject) VALUES({{subject}}) RETURNING *),
 conv_user AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
  SELECT new_conv.id conversation_id, UNNEST({{user_list}}::uuid[]) edpuser_id
+ FROM new_conv
+RETURNING *),
+conv_sender AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+ SELECT new_conv.id conversation_id, {{user_id}} edpuser_id
  FROM new_conv
 RETURNING *),
 new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text)

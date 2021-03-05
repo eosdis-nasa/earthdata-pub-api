@@ -241,19 +241,6 @@ CREATE TABLE IF NOT EXISTS edpuser_edprole (
   FOREIGN KEY (edprole_id) REFERENCES edprole (id)
 );
 
-CREATE TABLE IF NOT EXISTS daac (
-  id UUID DEFAULT UUID_GENERATE_V4(),
-  short_name VARCHAR NOT NULL,
-  long_name VARCHAR NOT NULL,
-  url VARCHAR NOT NULL,
-  description VARCHAR NOT NULL,
-  edpgroup_id UUID NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE (short_name),
-  UNIQUE (long_name),
-  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id)
-);
-
 CREATE TABLE IF NOT EXISTS conversation (
   id UUID DEFAULT UUID_GENERATE_V4(),
   subject VARCHAR DEFAULT 'No Subject',
@@ -334,11 +321,27 @@ CREATE TABLE IF NOT EXISTS step_edge (
   FOREIGN KEY (workflow_id, next_step_name) REFERENCES step (workflow_id, step_name)
 );
 
+CREATE TABLE IF NOT EXISTS daac (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  short_name VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
+  url VARCHAR NOT NULL,
+  description VARCHAR NOT NULL,
+  workflow_id UUID NOT NULL,
+  edpgroup_id UUID NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (short_name),
+  UNIQUE (long_name),
+  FOREIGN KEY (workflow_id) REFERENCES workflow (id),
+  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id)
+);
+
 CREATE TABLE IF NOT EXISTS submission (
   id UUID DEFAULT UUID_GENERATE_V4(),
   name VARCHAR,
   initiator_edpuser_id UUID NOT NULL,
   daac_id UUID,
+  conversation_id UUID,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (initiator_edpuser_id) REFERENCES edpuser (id),

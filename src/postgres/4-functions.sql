@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION init_workflow_id ()
+CREATE OR REPLACE FUNCTION init_workflow_id()
 RETURNS UUID
 LANGUAGE plpgsql
 AS $$
@@ -14,6 +14,20 @@ RETURN workflow_id;
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION daac_workflow_id(daac_id UUID)
+RETURNS UUID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+workflow_id UUID;
+BEGIN
+  SELECT daac.workflow_id INTO workflow_id
+  FROM daac
+  WHERE daac.id = daac_id;
+RETURN workflow_id;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION init_submission()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -22,9 +36,9 @@ BEGIN
 INSERT INTO submission_metadata(id)
   VALUES(NEW.id);
 INSERT INTO submission_status(id, workflow_id, step_name)
-  VALUES(NEW.id, init_workflow_id(), 'init');
+  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), init_workflow_id()), 'init');
 INSERT INTO submission_workflow(id, workflow_id)
-  VALUES(NEW.id, init_workflow_id());
+  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), init_workflow_id()));
 RETURN NEW;
 END;
 $$;

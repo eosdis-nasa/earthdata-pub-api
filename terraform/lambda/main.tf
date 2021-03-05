@@ -301,11 +301,11 @@ resource "aws_lambda_permission" "model" {
 
 # Notify Lambda
 
-resource "aws_lambda_function" "notify" {
-  filename      = "../artifacts/notify-lambda.zip"
-  function_name = "notify"
+resource "aws_lambda_function" "notification" {
+  filename      = "../artifacts/notification-lambda.zip"
+  function_name = "notification"
   role          = var.edpub_lambda_role_arn
-  handler       = "notify.handler"
+  handler       = "notification.handler"
   layers = [
     aws_lambda_layer_version.database_util.arn,
     aws_lambda_layer_version.kayako_util.arn,
@@ -313,7 +313,7 @@ resource "aws_lambda_function" "notify" {
     aws_lambda_layer_version.schema_util.arn
   ]
   runtime       = "nodejs12.x"
-  source_code_hash    = filesha256("../artifacts/notify-lambda.zip")
+  source_code_hash    = filesha256("../artifacts/notification-lambda.zip")
   timeout       = 10
   environment {
     variables = {
@@ -332,12 +332,12 @@ resource "aws_lambda_function" "notify" {
   }
 }
 
-resource "aws_lambda_permission" "notify" {
+resource "aws_lambda_permission" "notification" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.notify.function_name
+  function_name = aws_lambda_function.notification.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/notification/notify"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/notification/*"
 }
 
 # Notification Consumer Lambda

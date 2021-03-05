@@ -2669,9 +2669,105 @@
         "operationId": "submissionFindAll",
         "parameters": [
           {
+            "name": "name",
+            "in": "query",
+            "description": "The name of the submission, this typically the same as the data product name.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "The unique id of the user who initiated the submission.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "daac_id",
+            "in": "query",
+            "description": "The unique id of the DAAC the submission has been assigned to.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workflow_id",
+            "in": "query",
+            "description": "The unique id of the current workflow of the submission.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workflow_name",
+            "in": "query",
+            "description": "The long_name field of the current workflow of the submission.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "step_name",
+            "in": "query",
+            "description": "The name/key of the current step of the current workflow of the submission.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "step_type",
+            "in": "query",
+            "description": "The type of the current step of the current workflow of the submission.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Status message of the submission.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "description": "Minimum datetime for narrowing results by creation time.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "description": "Maximum datetime for narrowing results by creation time.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "last_change_after",
+            "in": "query",
+            "description": "Minimum datetime for narrowing results by most recent activity.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "last_change_before",
+            "in": "query",
+            "description": "Maximum datetime for narrowing results by most recent activity.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "sort",
             "in": "query",
-            "description": "Sort field",
+            "description": "Sort direction, 'asc' for ascending, 'desc' for descending.",
             "schema": {
               "type": "string"
             }
@@ -2679,7 +2775,7 @@
           {
             "name": "order",
             "in": "query",
-            "description": "Sort field",
+            "description": "Field to order results on.",
             "schema": {
               "type": "string",
               "enum": [
@@ -2691,7 +2787,7 @@
           {
             "name": "per_page",
             "in": "query",
-            "description": "Sort field",
+            "description": "Number of results per page for pagination.",
             "schema": {
               "type": "number"
             }
@@ -2699,7 +2795,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "Sort field",
+            "description": "Page number to start at for pagination.",
             "schema": {
               "type": "number"
             }
@@ -3592,20 +3688,20 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/notification/notify": {
+    "/api/notification/send": {
       "post": {
         "tags": [
           "notification"
         ],
         "summary": "Send a note to user(s)",
-        "description": "Send a note to a user or group of users, or add a note to a conversation.",
-        "operationId": "notify",
+        "description": "Send a note to a user or group of users.",
+        "operationId": "notificationSend",
         "requestBody": {
           "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NotifyRequest"
+                "$ref": "#/components/schemas/NotificationSendRequest"
               }
             }
           }
@@ -3638,12 +3734,357 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${notify_lambda_arn}",
+          "uri": "${notification_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"note\":{\"text\": \"$body.get('text')\", #if($body.containsKey('subject')),\"subject\":\"$body.get('subject')\"#end #if($body.containsKey('user_list')),\"user_list\":\"$body.get('user_list')\"#end #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end}, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\": \"send\", \"text\":\"$body.get('text')\", #if($body.containsKey('subject')),\"subject\":\"$body.get('subject')\"#end #if($body.containsKey('user_list')),\"user_list\":$input.json('$.user_list')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsNotify",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/notification/reply": {
+      "post": {
+        "tags": [
+          "notification"
+        ],
+        "summary": "Reply to a conversation.",
+        "description": "Reply to a conversation by adding a note.",
+        "operationId": "notificationReply",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationReplyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${notification_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsNotify",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/notification/conversations": {
+      "get": {
+        "tags": [
+          "notification"
+        ],
+        "summary": "Get a list of conversations.",
+        "description": "Get a list of conversations for the current user. By default sorted by most recent first.",
+        "operationId": "notificationConversations",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${notification_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "{\"operation\":\"conversations\", \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsNotify",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/notification/conversation/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of conversation to read.",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "notification"
+        ],
+        "summary": "Read a conversation.",
+        "description": "Read a conversation, returned as a list of notes ordered by most recent first, and marks the conversation as read for the current user.",
+        "operationId": "notificationConversation",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${notification_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "{\"operation\":\"conversation\", \"conversation_id\":\"$req.path.get('id')\", \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -4073,7 +4514,7 @@
           "required": true,
           "schema": {
             "type": "string",
-            "enum": ["initialize", "apply", "metadata", "submit", "save", "review", "resume", "lock", "unlock"]
+            "enum": ["initialize", "active", "apply", "metadata", "submit", "save", "review", "resume", "lock", "unlock"]
           }
         }
       ],
@@ -4081,7 +4522,7 @@
         "tags": [
           "submission"
         ],
-        "summary": "Perform an operation for a Submission",
+        "summary": "Perform an operation on a Submission",
         "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
         "operationId": "submissionOperation",
         "requestBody": {
