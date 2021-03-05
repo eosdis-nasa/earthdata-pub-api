@@ -2,7 +2,8 @@ const sql = require('./sql-builder.js');
 const workflow = require('./workflow.js');
 
 const table = "submission";
-const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+// const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'workflow_id', 'workflow_name', 'daac_id', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -11,6 +12,7 @@ const fieldMap = {
   conversation_id: 'submission.conversation_id',
   workflow_id: 'submission_status.workflow_id',
   workflow_name: 'workflow.long_name workflow_name',
+  daac_id: 'submission.daac_id',
   step_name: 'step.step_name',
   status: 'step.status',
   forms: 'forms',
@@ -131,6 +133,7 @@ SELECT
   coalesce(submission.name::text,'') "name",
   submission_status.workflow_id,
   workflow.long_name workflow_name,
+  submission.daac_id,
   step.step_name,
   step.step_type,
   step.status_message,
