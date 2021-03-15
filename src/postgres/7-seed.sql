@@ -1,7 +1,7 @@
 
--- Form(id, short_name, version, long_name, description, text)
-INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_publication_request', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.', 'To express interest in archiving a data product, please fill out the following form.');
-INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_product_information', 1, 'Data Product Information', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.', 'To express interest in submitting a data product, please fill out the following form.');
+-- Form(id, short_name, version, long_name, description)
+INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_publication_request', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
+INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_product_information', 1, 'Data Product Information', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 
 -- Section(id, form_id, heading, list_order)
 INSERT INTO section VALUES ('9152c518-d2da-4ba9-8584-bc14f5adf9c2', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 0, '[]', '[]');

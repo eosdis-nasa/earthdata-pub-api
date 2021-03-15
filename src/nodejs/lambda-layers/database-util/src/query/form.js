@@ -2,14 +2,13 @@ const sql = require('./sql-builder.js');
 const section = require('./section.js');
 
 const table = "form";
-const allFields = ['id', 'short_name', 'version', 'long_name', 'description', 'text', 'created_at', 'sections'];
+const allFields = ['id', 'short_name', 'version', 'long_name', 'description', 'created_at', 'sections'];
 const fieldMap = {
   id: "form.id",
   short_name: "form.short_name",
   version: "form.version",
   long_name: "form.long_name",
   description: "form.description",
-  text: "form.text",
   created_at: "form.created_at",
   sections: "sections"
 };
@@ -26,7 +25,7 @@ const fields = (list) => {
 }
 
 const findAll = (params) => sql.select({
-  fields: fields(['id', 'short_name', 'version', 'long_name', 'description', 'text', 'created_at']),
+  fields: fields(['id', 'short_name', 'version', 'long_name', 'description', 'created_at']),
   from: {
     base: table
   }

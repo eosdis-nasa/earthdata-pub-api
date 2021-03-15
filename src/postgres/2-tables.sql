@@ -96,7 +96,6 @@ CREATE TABLE IF NOT EXISTS form (
   version SMALLINT,
   long_name VARCHAR NOT NULL,
   description VARCHAR,
-  text VARCHAR NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   UNIQUE (short_name, version)
