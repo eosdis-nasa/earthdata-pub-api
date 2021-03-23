@@ -5,6 +5,7 @@ module.exports.model = (path) => ({
     id: { $ref: `#${path}UUID` },
     workflow_id: { $ref: `#${path}UUID` },
     workflow_name: { type: 'string' },
+    daac_id: { type: 'string' },
     step_name: { type: 'string' },
     step: { type: 'string' },
     created_at: { type: 'string' },
