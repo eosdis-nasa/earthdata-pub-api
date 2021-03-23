@@ -89,12 +89,16 @@ module.exports.formFindAll = function formFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'form',
     operation: 'findAll',
-    params: { query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+    params: {
+      short_name: params.short_name.value,
+      version: params.version.value,
+      long_name: params.long_name.value,
+      created_after: params.created_after.value,
+      created_before: params.created_before.value,
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   }

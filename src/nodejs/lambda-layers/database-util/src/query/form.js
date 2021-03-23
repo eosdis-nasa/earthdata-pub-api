@@ -24,11 +24,24 @@ const fields = (list) => {
   return list.map(field => fieldMap[field]);
 }
 
-const findAll = (params) => sql.select({
+const findAll = ({ short_name, version, long_name, created_after, created_before, order, sort, per_page, page }) => sql.select({
   fields: fields(['id', 'short_name', 'version', 'long_name', 'description', 'created_at']),
   from: {
     base: table
-  }
+  },
+  where: {
+    filters: [
+      ...(short_name ? [{ field: 'form.short_name', param: 'short_name'}] : []),
+      ...(version ? [{ field: 'form.version', param: 'version'}] : []),
+      ...(long_name ? [{ field: 'form.long_name', param: 'long_name'}] : []),
+      ...(created_after ? [{ field: 'form.created_at', op: 'gte', param: 'created_after'}] : []),
+      ...(created_before ? [{ field: 'form.created_at', op: 'lte', param: 'created_before'}] : [])
+    ]
+  },
+  ...(order ? { order } : {}),
+  ...(sort ? { sort } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
 });
 
 
