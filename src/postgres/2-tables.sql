@@ -26,6 +26,8 @@ DROP TABLE IF EXISTS edpuser_edpgroup CASCADE;
 
 DROP TABLE IF EXISTS edpuser_edprole CASCADE;
 
+DROP TABLE IF EXISTS edpuser_kayako_user CASCADE;
+
 DROP TABLE IF EXISTS daac CASCADE;
 
 DROP TABLE IF EXISTS conversation CASCADE;
@@ -238,6 +240,13 @@ CREATE TABLE IF NOT EXISTS edpuser_edprole (
   PRIMARY KEY (edpuser_id, edprole_id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
   FOREIGN KEY (edprole_id) REFERENCES edprole (id)
+);
+
+CREATE TABLE IF NOT EXISTS edpuser_kayako_user (
+  id UUID NOT NULL,
+  kayako_id VARCHAR NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES edpuser (id)
 );
 
 CREATE TABLE IF NOT EXISTS conversation (

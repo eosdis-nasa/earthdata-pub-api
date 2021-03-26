@@ -32,8 +32,8 @@ const refs = {
         }
       ],
       from: { base: 'note', joins: [{
-        type: 'left_join', src: 'edpuser', on: { left: 'note.sender_edpuser_id', right: 'edpuser.id' }
-      }]},
+          type: 'left_join', src: 'edpuser', on: { left: 'note.sender_edpuser_id', right: 'edpuser.id' }
+        }]},
       group: 'note.conversation_id',
       alias: 'note_agg'
     }),
@@ -149,6 +149,16 @@ new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text)
 RETURNING *)
 SELECT * FROM new_note`;
 
+const getTicketIdByConversationId = (params) => sql.select({
+  fields: ['conversation_kayako_ticket.ticket_id'],
+  from: { base: 'conversation_kayako_ticket'},
+  where: {
+    filters: [{ field: 'id' }]
+  }
+});
+
+
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getNoteByPostId = getNoteByPostId;
@@ -159,3 +169,4 @@ module.exports.getConversationList = getConversationList;
 module.exports.readConversation = readConversation;
 module.exports.reply = reply;
 module.exports.sendNote = sendNote;
+module.exports.getTicketIdByConversationId = getTicketIdByConversationId;

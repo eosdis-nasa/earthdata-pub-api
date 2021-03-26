@@ -171,7 +171,7 @@ const refs = {
       alias: 'subscription_workflow_agg'
     },
     on: { left: 'subscription_workflow_agg.edpuser_id', right: fieldMap['id']}
-  }
+  },
 };
 
 const findAll = (params) => sql.select({
@@ -244,6 +244,14 @@ const getEmails = (params) => sql.select({
   }
 });
 
+const getKayakoIdByEDPUserId = (params) => sql.select({
+  fields: ['edpuser_kayako_user.kayako_id'],
+  from: { base: 'edpuser_kayako_user' },
+  where: {
+    filters: [{ field: 'id' }]
+  }
+});
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByGroupId = findByGroupId;
@@ -252,3 +260,4 @@ module.exports.loginUser = loginUser;
 module.exports.addRole = addRole;
 module.exports.addGroup = addGroup;
 module.exports.getEmails = getEmails;
+module.exports.getKayakoIdByEDPUserId = getKayakoIdByEDPUserId;
