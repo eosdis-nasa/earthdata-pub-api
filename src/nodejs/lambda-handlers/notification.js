@@ -50,13 +50,12 @@ async function syncTicketsFromKayakoToEDPub(params) {
       const sync_params = {
         subject: ticketList['tickets']['ticket'][ticket].subject,
         user_list: [],
-        //TODO- The below parameter needs to run a call to DatabaseUtil.execute to get the db edpuser id provided the kayako user id (ticketList['tickets']['ticket'][ticket].userid)
-        user_id: params.context.user_id,
+        user_id: await DatabaseUtil.execute({resource: 'user', operations: 'getEDPUserIdByKayakoId'},
+            { kayako_id: ticketList['tickets']['ticket'][ticket].userid})
       }
-      const newConversation = await DatabaseUtil.execute({ resource: 'note', operation : 'sendNote'}, sync_params);
-      //TODO- Need to add link from newly created conversation to kayako ticket with something like the below. Or is this automatic? Check w/ Brian
-      // await DatabaseUtil.execute({resource: 'note', operation: 'linkTicketId'}, { note_id: newConversation.id,
-      //   post_id: ticketList['tickets']['ticket'][ticket].displayid});
+      const newConversation = await DatabaseUtil.execute({ resource: 'note', operation : 'syncConversation'}, sync_params);
+      await DatabaseUtil.execute({resource: 'note', operation: 'linkTicketId'}, { note_id: newConversation.id,
+        post_id: ticketList['tickets']['ticket'][ticket].displayid});
     }
   }
 }
@@ -78,14 +77,13 @@ async function syncTicketPostsFromKayakoToEDPub(params) {
     if (!postInDB) {
       const sync_params = {
         conversation_id: params.conversation_id,
-        //TODO- The below parameter needs to run a call to DatabaseUtil.execute to get the db edpuser id provided the kayako user id (postList['posts']['post'][post].userid ? userid : staffid)
-        user_id: params.context.user_id,
+        user_id: await DatabaseUtil.execute({resource: 'user', operations: 'getEDPUserIdByKayakoId'},
+            { kayako_id: postList['posts']['post'][post].userid}),
         text: postList['posts']['post'][post].contents
       }
       const newNote = await DatabaseUtil.execute({ resource: 'note', operation : 'reply'}, sync_params);
-      //TODO- Need to add link from newly created note to kayako post with something like the below
-      // await DatabaseUtil.execute({resource: 'note', operation: 'linkPostId'}, { note_id: newNote.id,
-      //   post_id: postList['posts']['post'][post].id});
+      await DatabaseUtil.execute({resource: 'note', operation: 'linkPostId'}, { note_id: newNote.id,
+        post_id: postList['posts']['post'][post].id});
     }
   }
 }

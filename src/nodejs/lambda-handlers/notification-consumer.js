@@ -30,7 +30,7 @@ async function syncToKayako(params) {
     await KayakoUtil.createPost({
       ticketid: ticketInfo.ticket_id,
       contents: params.text,
-      staffid: kayakoUserInfo.kayako_id
+      userid: kayakoUserInfo.kayako_id
     });
   } else {
     await KayakoUtil.createTicket({
@@ -42,7 +42,7 @@ async function syncToKayako(params) {
       ticketstatusid: '1',
       ticketpriorityid: '1',
       tickettypeid: '1',
-      staffid: kayakoUserInfo.kayako_id,
+      userid: kayakoUserInfo.kayako_id,
     });
   }
 }

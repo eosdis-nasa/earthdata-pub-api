@@ -252,6 +252,14 @@ const getKayakoIdByEDPUserId = (params) => sql.select({
   }
 });
 
+const getEDPUserIdByKayakoId = (params) => sql.select({
+  fields: ['edpuser_kayako_user.id'],
+  from: { base: 'edpuser_kayako_user' },
+  where: {
+    filters: [{ field: 'kayako_id' }]
+  }
+});
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByGroupId = findByGroupId;
@@ -261,3 +269,4 @@ module.exports.addRole = addRole;
 module.exports.addGroup = addGroup;
 module.exports.getEmails = getEmails;
 module.exports.getKayakoIdByEDPUserId = getKayakoIdByEDPUserId;
+module.exports.getEDPUserIdByKayakoId = getEDPUserIdByKayakoId;

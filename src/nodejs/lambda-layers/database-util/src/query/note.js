@@ -157,7 +157,17 @@ const getTicketIdByConversationId = (params) => sql.select({
   }
 });
 
-
+const syncConversation = () => `
+WITH new_conv AS (INSERT INTO conversation(subject) VALUES({{subject}}) RETURNING *),
+conv_user AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+ SELECT new_conv.id conversation_id, UNNEST({{user_list}}::uuid[]) edpuser_id
+ FROM new_conv
+RETURNING *),
+conv_sender AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+ SELECT new_conv.id conversation_id, {{user_id}} edpuser_id
+ FROM new_conv
+RETURNING *),
+SELECT * FROM new_conv`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
@@ -170,3 +180,4 @@ module.exports.readConversation = readConversation;
 module.exports.reply = reply;
 module.exports.sendNote = sendNote;
 module.exports.getTicketIdByConversationId = getTicketIdByConversationId;
+module.exports.syncConversation = syncConversation;
