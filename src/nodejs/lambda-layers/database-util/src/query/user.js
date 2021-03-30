@@ -171,7 +171,7 @@ const refs = {
       alias: 'subscription_workflow_agg'
     },
     on: { left: 'subscription_workflow_agg.edpuser_id', right: fieldMap['id']}
-  },
+  }
 };
 
 const findAll = (params) => sql.select({
