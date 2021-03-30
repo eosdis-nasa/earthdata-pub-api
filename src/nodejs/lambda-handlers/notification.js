@@ -46,7 +46,7 @@ async function syncTicketsFromKayakoToEDPub(params) {
   for (const ticket in ticketList['tickets']['ticket']) {
     const ticketInDB = await DatabaseUtil.execute({resource: 'note', operation: 'getConversationByTicketId'},
         {ticket_id: ticketList['tickets']['ticket'][ticket].displayid})
-    if (!ticketInDB) {
+    if ("error" in ticketInDB) {
       const sync_params = {
         subject: ticketList['tickets']['ticket'][ticket].subject,
         user_list: [],
@@ -68,13 +68,13 @@ async function conversationsMethod(params) {
 
 async function syncTicketPostsFromKayakoToEDPub(params) {
   //This function only syncs the current ticket's posts from kayako to edpub not all ticket posts in Kayako
-  const ticket = await DatabaseUtil.execute({resource: 'note', operation: 'getTicketIdByConversationId'},
+  const ticketId = await DatabaseUtil.execute({resource: 'note', operation: 'getTicketIdByConversationId'},
       {id: params.conversation_id});
-  const postList = await KayakoUtil.getAllPostsForTicket(ticket.ticket_id);
+  const postList = await KayakoUtil.getAllPostsForTicket(ticketId);
   for (const post in postList['posts']['post']) {
     const postInDB = await DatabaseUtil.execute({resource: 'note', operation: 'getNoteByPostId'}, {
       post_id: postList['posts']['post'][post].id});
-    if (!postInDB) {
+    if ("error" in postInDB) {
       const sync_params = {
         conversation_id: params.conversation_id,
         user_id: await DatabaseUtil.execute({resource: 'user', operations: 'getEDPUserIdByKayakoId'},
