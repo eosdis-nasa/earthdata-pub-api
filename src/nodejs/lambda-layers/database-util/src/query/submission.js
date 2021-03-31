@@ -136,7 +136,7 @@ SELECT
   submission.daac_id,
   step.step_name,
   step.step_type,
-  step.status_message,
+  step.status,
   submission.created_at,
   submission_status.last_change,
   coalesce((select form_id from submission_form_data where form_id = '6c544723-241c-4896-a38c-adbc0a364293' and submission_form_data.id = submission.id)::text,'') "data_publication_request",
@@ -156,7 +156,7 @@ NATURAL JOIN (
     WHEN type = 'service' THEN 'Pending Service Completion'
     WHEN type = 'action' THEN 'Processing Action'
     WHEN type = 'close' THEN 'Ready'
-  END) status_message
+  END) status
   FROM step) step
 LEFT JOIN workflow ON workflow.id = submission_status.workflow_id
 LEFT JOIN submission_form_data ON submission_form_data.id = submission.id`;
