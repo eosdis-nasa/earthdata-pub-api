@@ -115,7 +115,7 @@ const readConversation = (params) => sql.select({
   },
   order: 'created_at',
   sort: 'DESC'
-})
+});
 
 const reply = () => `
 WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text) VALUES
@@ -151,7 +151,7 @@ SELECT * FROM new_note`;
 
 const getTicketIdByConversationId = (params) => sql.select({
   fields: ['conversation_kayako_ticket.ticket_id'],
-  from: { base: 'conversation_kayako_ticket'},
+  from: { base: 'conversation_kayako_ticket' },
   where: {
     filters: [{ field: 'id' }]
   }

@@ -39,57 +39,61 @@ async function replyMethod(params) {
   return { message: 'Successfully sent.' }
 }
 
-async function syncTicketsFromKayakoToEDPub(params) {
-  //This function only syncs the edpub tickets from kayako to edpub not all tickets in Kayako
+async function syncTicketsFromKayakoToEDPub() {
+  // This function only syncs the edpub tickets from kayako to edpub not all tickets in Kayako
+  // Consideration should be made as to whether this should be limited to only sync current user's
+  // tickets instead of all
   const ticketList = await KayakoUtil.getAllEDPubTickets();
-
-  for (const ticket in ticketList['tickets']['ticket']) {
+  for (const ticketValue in Object.values(ticketList.tickets.ticket)) {
     const ticketInDB = await DatabaseUtil.execute({resource: 'note', operation: 'getConversationByTicketId'},
-        {ticket_id: ticketList['tickets']['ticket'][ticket].displayid})
-    if ("error" in ticketInDB) {
-      const sync_params = {
-        subject: ticketList['tickets']['ticket'][ticket].subject,
+        {ticket_id: ticketValue.displayId});
+    if ('error' in ticketInDB) {
+      const userId = await DatabaseUtil.execute({resource: 'user', operations: 'getEDPUserIdByKayakoId'},
+          { kayako_id: ticketValue.userid});
+      const syncParams = {
+        subject: ticketValue.subject,
         user_list: [],
-        user_id: await DatabaseUtil.execute({resource: 'user', operations: 'getEDPUserIdByKayakoId'},
-            { kayako_id: ticketList['tickets']['ticket'][ticket].userid})
-      }
-      const newConversation = await DatabaseUtil.execute({ resource: 'note', operation : 'syncConversation'}, sync_params);
+        user_id: userId
+      };
+      const newConversation = await DatabaseUtil.execute({ resource: 'note', operation : 'syncConversation'}, syncParams);
       await DatabaseUtil.execute({resource: 'note', operation: 'linkTicketId'}, { note_id: newConversation.id,
-        post_id: ticketList['tickets']['ticket'][ticket].displayid});
+        post_id: ticketValue.displayid});
     }
   }
 }
 
 async function conversationsMethod(params) {
-  await syncTicketsFromKayakoToEDPub(params)
+  await syncTicketsFromKayakoToEDPub();
   return await DatabaseUtil.execute({ resource: 'note', operation: 'getConversationList' },
       { user_id: params.context.user_id });
 }
 
 async function syncTicketPostsFromKayakoToEDPub(params) {
-  //This function only syncs the current ticket's posts from kayako to edpub not all ticket posts in Kayako
+  // This function only syncs the current ticket's posts from kayako to edpub not all ticket posts in Kayako
   const ticketId = await DatabaseUtil.execute({resource: 'note', operation: 'getTicketIdByConversationId'},
       {id: params.conversation_id});
   const postList = await KayakoUtil.getAllPostsForTicket(ticketId);
-  for (const post in postList['posts']['post']) {
+  for (const postValue in Object.values(postList['posts']['post'])) {
+    // have to use bracket notation vs dot notation for postList or .post references external module
     const postInDB = await DatabaseUtil.execute({resource: 'note', operation: 'getNoteByPostId'}, {
-      post_id: postList['posts']['post'][post].id});
+      post_id: postValue.id});
     if ("error" in postInDB) {
-      const sync_params = {
+      const userId = await DatabaseUtil.execute({resource: 'user', operations: 'getEDPUserIdByKayakoId'},
+          { kayako_id: postInDB.userid});
+      const syncParams = {
         conversation_id: params.conversation_id,
-        user_id: await DatabaseUtil.execute({resource: 'user', operations: 'getEDPUserIdByKayakoId'},
-            { kayako_id: postList['posts']['post'][post].userid}),
-        text: postList['posts']['post'][post].contents
-      }
-      const newNote = await DatabaseUtil.execute({ resource: 'note', operation : 'reply'}, sync_params);
+        user_id: userId,
+        text: postInDB.contents
+      };
+      const newNote = await DatabaseUtil.execute({ resource: 'note', operation : 'reply'}, syncParams);
       await DatabaseUtil.execute({resource: 'note', operation: 'linkPostId'}, { note_id: newNote.id,
-        post_id: postList['posts']['post'][post].id});
+        post_id: postInDB.id});
     }
   }
 }
 
 async function conversationMethod(params) {
-  await syncTicketPostsFromKayakoToEDPub(params)
+  await syncTicketPostsFromKayakoToEDPub(params);
   return await DatabaseUtil.execute({ resource: 'note', operation: 'readConversation' },
       { user_id: params.context.user_id, conversation_id: params.conversation_id });
 }

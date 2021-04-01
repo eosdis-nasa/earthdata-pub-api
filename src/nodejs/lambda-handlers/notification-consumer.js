@@ -21,12 +21,12 @@ const subjectTemplates = {
 };
 
 async function syncToKayako(params) {
-  const userInfo = await DatabaseUtil.execute({ resource: 'user', operation: 'findById' }, { user: { id: params.user_id} });
-  const kayakoUserId = await DatabaseUtil.execute({resource: 'user', operation: 'getKayakoIdByEDPUserId'},
-      {id: params.user_id});
+  const userInfo = await DatabaseUtil.execute({ resource: 'user', operation: 'findById' }, { user: { id: params.user_id } });
+  const kayakoUserId = await DatabaseUtil.execute({ resource: 'user', operation: 'getKayakoIdByEDPUserId' },
+      { id: params.user_id });
   if (params.conversation_id) {
-    const ticketId = await DatabaseUtil.execute({resource: 'note', operation: 'getTicketIdByConversationId'},
-        {id: params.conversation_id});
+    const ticketId = await DatabaseUtil.execute({ resource: 'note', operation: 'getTicketIdByConversationId' },
+        { id: params.conversation_id });
     await KayakoUtil.createPost({
       ticketid: ticketId,
       contents: params.text,
