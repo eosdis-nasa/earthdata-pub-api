@@ -10,6 +10,8 @@ const MessageUtil = require('message-util');
 const DatabaseUtil = require('database-util');
 const KayakoUtil = require('kayako-util');
 
+const syncFlag = process.env.KAYAKO_SYNC_FLAG ? process.env.KAYAKO_SYNC_FLAG : false;
+
 async function sendMethod(params) {
   const message = {
     event_type: 'direct_message',
@@ -63,7 +65,9 @@ async function syncTicketsFromKayakoToEDPub() {
 }
 
 async function conversationsMethod(params) {
-  await syncTicketsFromKayakoToEDPub();
+  if (syncFlag) {
+    await syncTicketsFromKayakoToEDPub();
+  }
   return await DatabaseUtil.execute({ resource: 'note', operation: 'getConversationList' },
       { user_id: params.context.user_id });
 }
@@ -93,7 +97,9 @@ async function syncTicketPostsFromKayakoToEDPub(params) {
 }
 
 async function conversationMethod(params) {
-  await syncTicketPostsFromKayakoToEDPub(params);
+  if (syncFlag) {
+    await syncTicketPostsFromKayakoToEDPub(params);
+  }
   return await DatabaseUtil.execute({ resource: 'note', operation: 'readConversation' },
       { user_id: params.context.user_id, conversation_id: params.conversation_id });
 }

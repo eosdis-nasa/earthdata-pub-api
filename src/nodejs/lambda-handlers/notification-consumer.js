@@ -12,6 +12,8 @@ const MessageUtil = require('message-util');
 
 const KayakoUtil = require('kayako-util');
 
+const syncFlag = process.env.KAYAKO_SYNC_FLAG ? process.env.KAYAKO_SYNC_FLAG : false;
+
 const textTemplates = {
   submission_initialized: ({ submission_id }) => `A new request has been initialized with ID ${submission_id}.`
 };
@@ -55,7 +57,9 @@ async function directMessage(eventMessage) {
   }
   const operation = data.conversation_id ? 'reply' : 'sendNote';
   await DatabaseUtil.execute({ resource: 'note', operation }, params);
-  await syncToKayako(params);
+  if (syncFlag) {
+    await syncToKayako(params);
+  }
 }
 
 async function submissionInitialized(eventMessage) {
@@ -66,7 +70,9 @@ async function submissionInitialized(eventMessage) {
     user_list: []
   };
   const newNote = await DatabaseUtil.execute({ resource: 'note', operation: 'sendNote' }, params);
-  await syncToKayako(params);
+  if (syncFlag) {
+    await syncToKayako(params);
+  }
 
   const test = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateConversation' },
       {
