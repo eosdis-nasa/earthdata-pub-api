@@ -10,12 +10,43 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
+const KayakoUtil = require('kayako-util');
+
+const syncFlag = process.env.KAYAKO_SYNC_FLAG ? process.env.KAYAKO_SYNC_FLAG : false;
+
 const textTemplates = {
   submission_initialized: ({ submission_id }) => `A new request has been initialized with ID ${submission_id}.`
 };
 
 const subjectTemplates = {
   submission_initialized: ({ submission_id }) => `Submission ID ${submission_id}`
+};
+
+async function syncToKayako(params) {
+  const userInfo = await DatabaseUtil.execute({ resource: 'user', operation: 'findById' }, { user: { id: params.user_id } });
+  const kayakoUserId = await DatabaseUtil.execute({ resource: 'user', operation: 'getKayakoIdByEDPUserId' },
+      { id: params.user_id });
+  if (params.conversation_id) {
+    const ticketId = await DatabaseUtil.execute({ resource: 'note', operation: 'getTicketIdByConversationId' },
+        { id: params.conversation_id });
+    await KayakoUtil.createPost({
+      ticketid: ticketId,
+      contents: params.text,
+      userid: kayakoUserId
+    });
+  } else {
+    await KayakoUtil.createTicket({
+      subject: params.subject,
+      fullname: userInfo.name,
+      email: userInfo.email,
+      contents: params.text,
+      departmentid: '52',
+      ticketstatusid: '1',
+      ticketpriorityid: '1',
+      tickettypeid: '1',
+      userid: kayakoUserId
+    });
+  }
 }
 
 async function directMessage(eventMessage) {
@@ -26,22 +57,28 @@ async function directMessage(eventMessage) {
   }
   const operation = data.conversation_id ? 'reply' : 'sendNote';
   await DatabaseUtil.execute({ resource: 'note', operation }, params);
+  if (syncFlag) {
+    await syncToKayako(params);
+  }
 }
 
 async function submissionInitialized(eventMessage) {
-  const newNote = await DatabaseUtil.execute({ resource: 'note', operation: 'sendNote' },
-    {
-      user_id: eventMessage.user_id,
-      subject: subjectTemplates.submission_initialized(eventMessage),
-      text: textTemplates.submission_initialized(eventMessage),
-      user_list: []
-    }
-  );
+  const params = {
+    user_id: eventMessage.user_id,
+    subject: subjectTemplates.submission_initialized(eventMessage),
+    text: textTemplates.submission_initialized(eventMessage),
+    user_list: []
+  };
+  const newNote = await DatabaseUtil.execute({ resource: 'note', operation: 'sendNote' }, params);
+  if (syncFlag) {
+    await syncToKayako(params);
+  }
+
   const test = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateConversation' },
-    {
-      id: eventMessage.submission_id,
-      conversation_id: newNote.conversation_id
-    }
+      {
+        id: eventMessage.submission_id,
+        conversation_id: newNote.conversation_id
+      }
   );
   console.log(test);
 }

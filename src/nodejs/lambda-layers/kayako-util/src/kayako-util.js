@@ -10,17 +10,10 @@ const xml2js = require('xml2js');
 const apiKey = process.env.APIKEY;
 const secretKey = process.env.SECRETKEY;
 const hostName = process.env.HOSTNAME;
-const saltLength = process.env.SALTLENGTH ? process.env.SALTLENGTH: 10;
-
-function generateEndpoint(method, urlObj) {
-    if (method.toUpperCase() === 'GET' || method.toUpperCase() === 'DELETE') {
-        urlObj = {...generateAuthentication(), ...urlObj};
-    }
-    return hostName + '/api/index.php?' + querystring.stringify(urlObj);
-}
+const saltLength = process.env.SALTLENGTH ? process.env.SALTLENGTH : 10;
 
 function generateSignature(salt) {
-    return crypto.createHmac("sha256", secretKey).update(salt).digest('base64');
+    return crypto.createHmac('sha256', secretKey).update(salt).digest('base64');
 }
 
 function generateAuthentication() {
@@ -29,7 +22,14 @@ function generateAuthentication() {
         apikey: apiKey,
         salt: salt,
         signature: generateSignature(salt)
+    };
+}
+
+function generateEndpoint(method, urlObj) {
+    if (method.toUpperCase() === 'GET' || method.toUpperCase() === 'DELETE') {
+        urlObj = {...generateAuthentication(), ...urlObj};
     }
+    return hostName + '/api/index.php?' + querystring.stringify(urlObj);
 }
 
 function send( method, urlObj, data) {
@@ -49,19 +49,19 @@ function send( method, urlObj, data) {
                 data += chunk;
             });
             res.on('end', () => {
-                let parser = new xml2js.Parser({explicitArray : false});
+                const parser = new xml2js.Parser({explicitArray : false});
                 parser.parseString(data, function (err, result) {
                     try {
-                        resolve(JSON.parse(JSON.stringify(result, null, 2)))
+                        resolve(JSON.parse(JSON.stringify(result, null, 2)));
                     }
                     catch(e) {
-                        console.log(`Error: ${data}`)
+                        console.log(`Error: ${data}`);
                     }
                 });
             });
             res.on('error', (e) => {
                 console.log(`Error: ${e}`);
-            })
+            });
         });
         req.on('error', (error) => {
             resolve(error);
@@ -72,7 +72,6 @@ function send( method, urlObj, data) {
         req.end();
     });
 }
-
 
 async function getTestAPI() {
     return send('get', {e: '/Core/TestApi'});
@@ -103,7 +102,7 @@ async function getPostById(ticketId, postId) {
 }
 
 async function createPost(urlObj) {
-    return send('post', {e: `/Tickets/TicketPost`}, {...generateAuthentication(), ...urlObj});
+    return send('post', {e: '/Tickets/TicketPost'}, {...generateAuthentication(), ...urlObj});
 }
 
 async function deletePost(ticketId, postId) {

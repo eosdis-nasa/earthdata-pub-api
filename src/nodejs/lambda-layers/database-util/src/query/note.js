@@ -32,8 +32,8 @@ const refs = {
         }
       ],
       from: { base: 'note', joins: [{
-        type: 'left_join', src: 'edpuser', on: { left: 'note.sender_edpuser_id', right: 'edpuser.id' }
-      }]},
+          type: 'left_join', src: 'edpuser', on: { left: 'note.sender_edpuser_id', right: 'edpuser.id' }
+        }]},
       group: 'note.conversation_id',
       alias: 'note_agg'
     }),
@@ -115,7 +115,7 @@ const readConversation = (params) => sql.select({
   },
   order: 'created_at',
   sort: 'DESC'
-})
+});
 
 const reply = () => `
 WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text) VALUES
@@ -149,6 +149,26 @@ new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text)
 RETURNING *)
 SELECT * FROM new_note`;
 
+const getTicketIdByConversationId = (params) => sql.select({
+  fields: ['conversation_kayako_ticket.ticket_id'],
+  from: { base: 'conversation_kayako_ticket' },
+  where: {
+    filters: [{ field: 'id' }]
+  }
+});
+
+const syncConversation = () => `
+WITH new_conv AS (INSERT INTO conversation(subject) VALUES({{subject}}) RETURNING *),
+conv_user AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+ SELECT new_conv.id conversation_id, UNNEST({{user_list}}::uuid[]) edpuser_id
+ FROM new_conv
+RETURNING *),
+conv_sender AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+ SELECT new_conv.id conversation_id, {{user_id}} edpuser_id
+ FROM new_conv
+RETURNING *),
+SELECT * FROM new_conv`;
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getNoteByPostId = getNoteByPostId;
@@ -159,3 +179,5 @@ module.exports.getConversationList = getConversationList;
 module.exports.readConversation = readConversation;
 module.exports.reply = reply;
 module.exports.sendNote = sendNote;
+module.exports.getTicketIdByConversationId = getTicketIdByConversationId;
+module.exports.syncConversation = syncConversation;
