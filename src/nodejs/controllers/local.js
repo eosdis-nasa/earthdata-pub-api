@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs');
 const uuid = require('uuid');
-const { sign, verify } = require('jsonwebtoken');
+const { sign, verify, decode } = require('jsonwebtoken');
 const DatabaseUtil = require('database-util');
 const { SQS } = require('aws-sdk');
 const { Consumer } = require('sqs-consumer');
@@ -9,7 +9,7 @@ const handlers = require('./handlers.js');
 
 const issuer = 'Earthdata Pub Dev';
 const tokenSecret = 'earthdata_pub_dev';
-const exp = 30 * 60 * 1000;
+const exp = parseInt(process.env.AUTH_TOKEN_EXP);
 const redirectEndpoint = process.env.AUTH_CALLBACK_URL;
 const respectExp = process.env.AUTH_RESPECT_EXP === 'true';
 const codes = {};
@@ -39,11 +39,10 @@ function login(req, res) {
 
 function authenticate(req, res) {
   const code = uuid.v4().replace(/-/g, "");
-  const refresh = uuid.v4().replace(/-/g, "");
   const { state, ...user } = req.body;
   if (user.id === 'register') {
     user.id = uuid.v4();
-    user.refresh_token = 'none';
+    user.refresh_token = code;
   }
   DatabaseUtil.execute({ resource: 'user', operation: 'loginUser'}, { user })
   .then((data) => {
@@ -57,14 +56,9 @@ function authenticate(req, res) {
       exp: authTime + exp,
       iat: authTime
     });
-    const newToken = sign(user, tokenSecret, { algorithm: 'HS256'});
-    codes[code] = {
-      id_token: newToken,
-      access_token: newToken,
-      refresh_token: refresh,
-      expires_in: exp,
-      token_type: "Bearer"
-    };
+    //const newToken = sign(user, tokenSecret, { algorithm: 'HS256'});
+    codes[code] = user;
+
     const redirect = new URL('http://localhost:3000/auth')
     redirect.searchParams.set('code', code);
     if (state) redirect.searchParams.set('state', state);
@@ -74,11 +68,46 @@ function authenticate(req, res) {
 }
 
 function token(req, res) {
-  const { code } = req.body;
-  const tokens = codes[code];
-  console.info(tokens);
-  res.status(200);
-  res.send(tokens);
+  const { code, refresh_token } = req.body;
+  if (code) {
+    const authTime = Date.now();
+    const user = codes[code];
+    Object.assign(user, {
+      auth_time: authTime,
+      exp: authTime + exp,
+      iat: authTime
+    });
+    const token = sign(user, tokenSecret, { algorithm: 'HS256'});
+    const tokens = {
+      id_token: token,
+      access_token: token,
+      refresh_token: code,
+      expires_in: exp,
+      token_type: "Bearer"
+    };
+    console.info(tokens);
+    res.status(200);
+    res.send(tokens);
+  }
+  else if (refresh_token) {
+    const authTime = Date.now();
+    const user = codes[refresh_token];
+    Object.assign(user, {
+      auth_time: authTime,
+      exp: authTime + exp,
+      iat: authTime
+    });
+    const token = sign(user, tokenSecret, { algorithm: 'HS256'});
+    const tokens = {
+      id_token: token,
+      access_token: token,
+      refresh_token: refresh_token,
+      expires_in: exp,
+      token_type: "Bearer"
+    };
+    res.status(200);
+    res.send(tokens);
+  }
 }
 
 function userList(req, res) {

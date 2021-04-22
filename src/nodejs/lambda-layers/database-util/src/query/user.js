@@ -193,6 +193,10 @@ const findAll = (params) => sql.select({
 
 const findById = () => `${findAll()} WHERE edpuser.id = {{user.id}}`;
 
+const getRefreshToken = () => `
+SELECT edpuser.refresh_token FROM edpuser
+WHERE edpuser.id = {{user.id}}`;
+
 const addRole = (params) => sql.insert({
   table: 'edpuser_edprole',
   values: {
@@ -236,6 +240,12 @@ last_login = EXCLUDED.last_login,
 refresh_token = EXCLUDED.refresh_token
 RETURNING *`;
 
+const refreshUser = () => `
+UPDATE edpuser SET
+refresh_token = {{user.refresh_token}}
+WHERE edpuser.id = {{user.id}}
+RETURNING *`;
+
 const getEmails = (params) => sql.select({
   fields: ['edpuser.email'],
   from: 'edpuser',
@@ -262,9 +272,11 @@ const getEDPUserIdByKayakoId = (params) => sql.select({
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
+module.exports.getRefreshToken = getRefreshToken;
 module.exports.findByGroupId = findByGroupId;
 module.exports.findByGroupName = findByGroupName;
 module.exports.loginUser = loginUser;
+module.exports.refreshUser = refreshUser;
 module.exports.addRole = addRole;
 module.exports.addGroup = addGroup;
 module.exports.getEmails = getEmails;
