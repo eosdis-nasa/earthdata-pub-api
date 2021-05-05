@@ -14,7 +14,7 @@ variable "invoke_lambda_arn" {
   type = string
 }
 
-variable "notify_lambda_arn" {
+variable "notification_lambda_arn" {
   type = string
 }
 

@@ -32,8 +32,8 @@ install_lambda invoke
 install_lambda metrics
 install_lambda metrics-consumer
 install_lambda model
+install_lambda notification
 install_lambda notification-consumer
-install_lambda notify
 install_lambda register
 install_lambda remap-statics
 install_lambda submission

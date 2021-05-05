@@ -530,6 +530,17 @@ module.exports.getToken = function getToken(req, res, next) {
   });
 };
 
+module.exports.refreshToken = function refreshToken(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    refresh: true,
+    context: { user_id: req.user_id }
+  }
+  handlers.auth(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
 module.exports.getVersion = function getVersion(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {}
@@ -542,7 +553,7 @@ module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({
     message: 'Placeholder for overview app root endpoint.'
   });
-}
+};
 
 module.exports.getOverviewAppSubpath = function getOverviewAppSubpath(req, res, next) {
   res.send({

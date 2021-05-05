@@ -51,6 +51,17 @@ async function getToken({ code }) {
   return { token: tokens.access_token, user };
 }
 
+async function refreshToken({ refreshToken }) {
+  const tokens = await tokenService({
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken
+  });
+  const user = jwt.decode(tokens.id_token);
+  user.id = user.sub;
+  user.refresh_token = tokens.refresh_token;
+  return { token: tokens.access_token, user };
+}
+
 async function getLoginUrl({ state }) {
   const redirect = new URL(loginPath, providerUrl);
   redirect.search = new URLSearchParams({
@@ -73,5 +84,6 @@ async function getLogoutUrl() {
 }
 
 module.exports.getToken = getToken;
+module.exports.refreshToken = refreshToken;
 module.exports.getLoginUrl = getLoginUrl;
 module.exports.getLogoutUrl = getLogoutUrl;
