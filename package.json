@@ -12,7 +12,7 @@
     "start": "docker-compose up",
     "start:detached": "docker-compose up -d",
     "stop": "docker-compose down",
-    "lint": "eslint ./src/nodejs -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
+    "lint": "eslint ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
     "test": "jest -c jest.config.js --all",
     "generate-docs": "bash ./scripts/generate-jsdoc.sh; bash ./scripts/generate-apidoc.sh"
   },
