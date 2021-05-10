@@ -2,28 +2,18 @@
  * Lambda Layer to abstract interacting with Cognito IDP
  * @module Version
  */
-const httpHelper = require('./http-helper.js');
 const jwt = require('jsonwebtoken');
+const httpHelper = require('./http-helper.js');
 
 const providerUrl = process.env.AUTH_PROVIDER_URL;
 const loginPath = process.env.AUTH_LOGIN_PATH;
 const logoutPath = process.env.AUTH_LOGOUT_PATH;
 const tokenPath = process.env.AUTH_TOKEN_PATH;
-const userPath = process.env.AUTH_USER_PATH;
+// const userPath = process.env.AUTH_USER_PATH;
 
 const clientId = process.env.AUTH_CLIENT_ID;
 const clientSecret = process.env.AUTH_CLIENT_SECRET;
 const clientUrl = process.env.AUTH_CLIENT_URL;
-
-function getStateUrl(state) {
-  try {
-    const url = new URL(state);
-    return url;
-  }
-  catch(e) {
-    return new URL(clientUrl);
-  }
-}
 
 async function tokenService(data) {
   const tokenRequest = {
@@ -34,9 +24,9 @@ async function tokenService(data) {
       data,
       type: 'form'
     }
-  }
+  };
   const tokens = await httpHelper.send(tokenRequest);
-  return tokens
+  return tokens;
 }
 
 async function getToken({ code }) {
@@ -51,10 +41,10 @@ async function getToken({ code }) {
   return { token: tokens.access_token, user };
 }
 
-async function refreshToken({ refreshToken }) {
+async function refreshToken({ token }) {
   const tokens = await tokenService({
     grant_type: 'refresh_token',
-    refresh_token: refreshToken
+    refresh_token: token
   });
   const user = jwt.decode(tokens.id_token);
   user.id = user.sub;
@@ -75,12 +65,12 @@ async function getLoginUrl({ state }) {
 }
 
 async function getLogoutUrl() {
-  const redirect = new URL(logoutPath, proverUrl);
+  const redirect = new URL(logoutPath, providerUrl);
   redirect.search = new URLSearchParams({
     client_id: clientId,
     logout_uri: clientUrl
-  })
-  return { redirect: redirect.href }
+  });
+  return { redirect: redirect.href };
 }
 
 module.exports.getToken = getToken;

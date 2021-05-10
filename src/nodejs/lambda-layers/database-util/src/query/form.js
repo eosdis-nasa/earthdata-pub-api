@@ -1,16 +1,16 @@
 const sql = require('./sql-builder.js');
 const section = require('./section.js');
 
-const table = "form";
+const table = 'form';
 const allFields = ['id', 'short_name', 'version', 'long_name', 'description', 'created_at', 'sections'];
 const fieldMap = {
-  id: "form.id",
-  short_name: "form.short_name",
-  version: "form.version",
-  long_name: "form.long_name",
-  description: "form.description",
-  created_at: "form.created_at",
-  sections: "sections"
+  id: 'form.id',
+  short_name: 'form.short_name',
+  version: 'form.version',
+  long_name: 'form.long_name',
+  description: 'form.description',
+  created_at: 'form.created_at',
+  sections: 'sections'
 };
 const refs = {
   section: {
@@ -20,22 +20,22 @@ const refs = {
   }
 };
 
-const fields = (list) => {
-  return list.map(field => fieldMap[field]);
-}
+const fields = (list) => list.map((field) => fieldMap[field]);
 
-const findAll = ({ short_name, version, long_name, created_after, created_before, order, sort, per_page, page }) => sql.select({
+const findAll = ({
+  short_name, version, long_name, created_after, created_before, order, sort, per_page, page
+}) => sql.select({
   fields: fields(['id', 'short_name', 'version', 'long_name', 'description', 'created_at']),
   from: {
     base: table
   },
   where: {
     filters: [
-      ...(short_name ? [{ field: 'form.short_name', param: 'short_name'}] : []),
-      ...(version ? [{ field: 'form.version', param: 'version'}] : []),
-      ...(long_name ? [{ field: 'form.long_name', param: 'long_name'}] : []),
-      ...(created_after ? [{ field: 'form.created_at', op: 'gte', param: 'created_after'}] : []),
-      ...(created_before ? [{ field: 'form.created_at', op: 'lte', param: 'created_before'}] : [])
+      ...(short_name ? [{ field: 'form.short_name', param: 'short_name' }] : []),
+      ...(version ? [{ field: 'form.version', param: 'version' }] : []),
+      ...(long_name ? [{ field: 'form.long_name', param: 'long_name' }] : []),
+      ...(created_after ? [{ field: 'form.created_at', op: 'gte', param: 'created_after' }] : []),
+      ...(created_before ? [{ field: 'form.created_at', op: 'lte', param: 'created_before' }] : [])
     ]
   },
   ...(order ? { order } : {}),
@@ -43,7 +43,6 @@ const findAll = ({ short_name, version, long_name, created_after, created_before
   ...(per_page ? { limit: per_page } : {}),
   ...(page ? { offset: page } : {})
 });
-
 
 const findById = (params) => sql.select({
   field: fields(allFields),

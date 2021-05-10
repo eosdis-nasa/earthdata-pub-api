@@ -1,6 +1,6 @@
 const sql = require('./sql-builder.js');
 
-const table = "edprole";
+const table = 'edprole';
 const allFields = ['id', 'short_name', 'long_name', 'description', 'role_privileges'];
 const fieldMap = {
   id: 'edprole.id',
@@ -15,7 +15,7 @@ const fieldMap = {
   role_privileges: {
     type: 'coalesce',
     src: 'role_privileges',
-    fallback: `'[]'::JSONB`,
+    fallback: '\'[]\'::JSONB',
     alias: 'role_privileges'
   },
   role_agg: {
@@ -26,13 +26,12 @@ const fieldMap = {
         ['id', 'edprole.id'],
         ['short_name', 'edprole.short_name'],
         ['long_name', 'edprole.long_name'],
-        ['description', 'edprole.description']],
+        ['description', 'edprole.description']]
     },
-    alias: 'user_roles' }
+    alias: 'user_roles'
+  }
 };
-const fields = (list) => {
-  return list.map(field => fieldMap[field]);
-}
+const fields = (list) => list.map((field) => fieldMap[field]);
 const refs = {
   user_role: {
     type: 'left_join',
@@ -51,11 +50,11 @@ const refs = {
           alias: 'role_privileges'
         }
       ],
-      from: { base: 'edprole_privilege'},
+      from: { base: 'edprole_privilege' },
       group: 'edprole_privilege.edprole_id',
       alias: 'privilege_agg'
     },
-    on: { left: 'privilege_agg.edprole_id', right: fieldMap['id']}
+    on: { left: 'privilege_agg.edprole_id', right: fieldMap.id }
   }
 };
 const userJoin = {
@@ -67,7 +66,7 @@ const userJoin = {
 };
 const findAll = () => sql.select({
   fields: fields(allFields),
-  from: { base: table, joins: [ refs.role_privilege] }
+  from: { base: table, joins: [refs.role_privilege] }
 });
 const findAllEx = () => `${findAll()} `;
 const findById = () => `${findAll()} WHERE edprole.id = {{role.id}}`;

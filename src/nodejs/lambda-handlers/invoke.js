@@ -8,7 +8,7 @@
 
 const MessageUtil = require('message-util');
 
-const DatabaseUtil = require('database-util');
+// const DatabaseUtil = require('database-util');
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);

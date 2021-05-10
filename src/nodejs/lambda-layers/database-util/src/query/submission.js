@@ -1,7 +1,7 @@
 const sql = require('./sql-builder.js');
 const workflow = require('./workflow.js');
 
-const table = "submission";
+const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const allFields = ['id', 'name', 'workflow_id', 'workflow_name', 'daac_id', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
@@ -16,8 +16,8 @@ const fieldMap = {
   step_name: 'step.step_name',
   status: 'step.status',
   forms: 'forms',
-  action_data: `COALESCE(submission_action_data.action_data, '{}'::JSONB) action_data`,
-  form_data: `COALESCE(submission_form_data.form_data, '{}'::JSONB) form_data`,
+  action_data: 'COALESCE(submission_action_data.action_data, \'{}\'::JSONB) action_data',
+  form_data: 'COALESCE(submission_form_data.form_data, \'{}\'::JSONB) form_data',
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
@@ -36,8 +36,8 @@ const refs = {
     type: 'natural_left_join',
     src: {
       type: 'select',
-      fields: ['submission_action_data.id', `COALESCE(JSONB_OBJECT_AGG(submission_action_data.action_id, data), '{}'::JSONB) action_data`],
-      from: { base: 'submission_action_data'},
+      fields: ['submission_action_data.id', 'COALESCE(JSONB_OBJECT_AGG(submission_action_data.action_id, data), \'{}\'::JSONB) action_data'],
+      from: { base: 'submission_action_data' },
       group: 'submission_action_data.id',
       alias: 'submission_action_data'
     }
@@ -55,7 +55,7 @@ const refs = {
             src: 'submission_form_data.data',
             order: 'submitted_at'
           },
-          fallback: `'{}'::JSONB`,
+          fallback: '\'{}\'::JSONB',
           alias: 'form_data'
         },
         {
@@ -71,11 +71,14 @@ const refs = {
           },
           alias: 'forms'
         }],
-      from: { base: 'submission_form_data', joins: [{
-        type: 'left_join',
-        src: 'form',
-        on: { left: 'submission_form_data.form_id', right: 'form.id' }
-      }] },
+      from: {
+        base: 'submission_form_data',
+        joins: [{
+          type: 'left_join',
+          src: 'form',
+          on: { left: 'submission_form_data.form_id', right: 'form.id' }
+        }]
+      },
       group: 'submission_form_data.id',
       alias: 'submission_form_data'
     }
@@ -112,9 +115,7 @@ const refs = {
   }
 };
 
-const fields = (list) => {
-  return list.map(field => fieldMap[field]);
-}
+const fields = (list) => list.map((field) => fieldMap[field]);
 
 const findById = (params) => sql.select({
   fields: fields(allFields),
@@ -140,9 +141,11 @@ const getUsersSubmissions = (params) => sql.select({
   sort: 'DESC'
 });
 
-const findAll = ({ name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
+const findAll = ({
+  name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
   status, created_before, created_after, last_change_before, last_change_after, sort, order,
-  per_page, page}) => sql.select({
+  per_page, page
+}) => sql.select({
   fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change],
   from: {
     base: table,
@@ -150,18 +153,18 @@ const findAll = ({ name, user_id, daac_id, workflow_id, workflow_name, step_name
   },
   where: {
     filters: [
-      ...(name ? [{ field: 'submission.name', param: 'name'}] : []),
-      ...(user_id ? [{ field: 'submission.initiator_edpuser_id', param: 'user_id'}] : []),
-      ...(daac_id ? [{ field: 'submission.daac_id', param: 'daac_id'}] : []),
-      ...(workflow_id ? [{ field: 'submission_status.workflow_id', param: 'workflow_id'}] : []),
-      ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name'}] : []),
-      ...(step_name ? [{ field: 'step.step_name', param: 'step_name'}] : []),
-      ...(status ? [{ field: 'step.status', param: 'status'}] : []),
-      ...(step_type ? [{ field: 'step.step_type', param: 'step_type'}] : []),
-      ...(created_after ? [{ field: 'submission.created_at', op: 'gte', param: 'created_after'}] : []),
-      ...(created_before ? [{ field: 'submission.created_at', op: 'lte', param: 'created_before'}] : []),
-      ...(last_change_after ? [{ field: 'submission_status.last_change', op: 'gte', param: 'last_change_after'}] : []),
-      ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before'}] : [])
+      ...(name ? [{ field: 'submission.name', param: 'name' }] : []),
+      ...(user_id ? [{ field: 'submission.initiator_edpuser_id', param: 'user_id' }] : []),
+      ...(daac_id ? [{ field: 'submission.daac_id', param: 'daac_id' }] : []),
+      ...(workflow_id ? [{ field: 'submission_status.workflow_id', param: 'workflow_id' }] : []),
+      ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name' }] : []),
+      ...(step_name ? [{ field: 'step.step_name', param: 'step_name' }] : []),
+      ...(status ? [{ field: 'step.status', param: 'status' }] : []),
+      ...(step_type ? [{ field: 'step.step_type', param: 'step_type' }] : []),
+      ...(created_after ? [{ field: 'submission.created_at', op: 'gte', param: 'created_after' }] : []),
+      ...(created_before ? [{ field: 'submission.created_at', op: 'lte', param: 'created_before' }] : []),
+      ...(last_change_after ? [{ field: 'submission_status.last_change', op: 'gte', param: 'last_change_after' }] : []),
+      ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before' }] : [])
     ]
   },
   ...(order ? { order } : {}),
@@ -176,8 +179,8 @@ FROM submission
 WHERE submission.id = {{submission.id}}`;
 
 const initialize = (params) => `
-INSERT INTO submission(initiator_edpuser_id${params.daac_id ? `, daac_id` : ``})
-VALUES ({{user_id}}${params.daac_id ? `, {{daac_id}}` : ``})
+INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''})
+VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''})
 RETURNING *`;
 
 const updateName = () => `
