@@ -19,7 +19,7 @@ async function handler(event) {
   if (refresh && context) {
     const { refresh_token: refreshToken } = await DatabaseUtil.execute({ resource: 'user', operation: 'getRefreshToken' },
       { user: { id: context.user_id } });
-    const { token, user } = await AuthUtil.refreshToken({ refreshToken });
+    const { token, user } = await AuthUtil.refreshToken({ token: refreshToken });
     await DatabaseUtil.execute({ resource: 'user', operation: 'refreshUser' },
       { user });
     return { token };
