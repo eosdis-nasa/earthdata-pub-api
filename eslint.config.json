@@ -25,6 +25,7 @@
     "no-param-reassign": ["error", { "props": false }],
     "no-console": ["error", { "allow": ["info", "error"]}],
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": true}],
+    "import/extensions": ["off"],
     "import/no-unresolved": ["off"],
     "no-await-in-loop": ["off"]
   }
