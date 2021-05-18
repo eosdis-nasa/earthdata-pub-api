@@ -1,22 +1,23 @@
 const sql = require('./sql-builder.js');
 
-const table = "question";
+const table = 'question';
 const allFields = ['id', 'short_name', 'version', 'long_name', 'text', 'help', 'required', 'created_at', 'inputs'];
 const fieldMap = {
-  id: "question.id",
-  short_name: "question.short_name",
-  version: "question.version",
-  long_name: "question.long_name",
-  text: "question.text",
-  help: "question.help",
-  required: "question.required",
-  created_at: "question.created_at",
-  inputs: "inputs"
+  id: 'question.id',
+  short_name: 'question.short_name',
+  version: 'question.version',
+  long_name: 'question.long_name',
+  text: 'question.text',
+  help: 'question.help',
+  required: 'question.required',
+  created_at: 'question.created_at',
+  inputs: 'inputs'
 };
 const refs = {
   section_question: {
-    type: 'left_join', src: 'section_question',
-    on: { left: fieldMap['id'], right: 'section_question.question_id' }
+    type: 'left_join',
+    src: 'section_question',
+    on: { left: fieldMap.id, right: 'section_question.question_id' }
   },
   input: {
     type: 'left_join',
@@ -42,16 +43,16 @@ const refs = {
           alias: 'inputs'
         }
       ],
-      from: { base: 'input'},
+      from: { base: 'input' },
       group: 'input.question_id',
       alias: 'input_agg'
     }),
-    on: { left: 'input_agg.question_id', right: fieldMap['id']}
+    on: { left: 'input_agg.question_id', right: fieldMap.id }
   }
 };
 
 function fields(list) {
-  return list.map(field => fieldMap[field]);
+  return list.map((field) => fieldMap[field]);
 }
 
 const sectionJoin = () => sql.select({

@@ -8,7 +8,7 @@ const fieldMap = {
 const refs = {};
 
 function fields(list) {
-  return list.map(field => fieldMap[field]);
+  return list.map((field) => fieldMap[field]);
 }
 
 function find(params) {
@@ -17,7 +17,6 @@ function find(params) {
     from: table
   });
 }
-
 
 module.exports = {
   find,

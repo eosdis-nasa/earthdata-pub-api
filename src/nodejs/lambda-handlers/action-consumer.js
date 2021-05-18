@@ -6,6 +6,8 @@
  * @see module:Actions
  */
 
+const AWS = require('aws-sdk');
+
 const Schema = require('schema-util');
 
 const MessageUtil = require('message-util');
@@ -33,10 +35,12 @@ async function processRecord(record) {
     { submission: { id: submissionId } });
   const local = `/tmp/${Schema.generateId()}`;
   fs.writeFileSync(local, action.source);
-  //await fetchAction(action.file_key, local);
+  // await fetchAction(action.file_key, local);
   // eslint-disable-next-line
   const { execute } = require(local);
-  const output = await execute({ submission, data, AWS, DatabaseUtil, MessageUtil, Schema });
+  const output = await execute({
+    submission, data, AWS, DatabaseUtil, MessageUtil, Schema
+  });
   Object.assign(action, { output });
   await DatabaseUtil.execute({ resource: 'submission', operation: 'updateActionData' },
     { submission, action });

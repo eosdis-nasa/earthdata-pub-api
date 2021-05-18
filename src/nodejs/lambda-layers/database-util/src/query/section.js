@@ -1,15 +1,15 @@
 const sql = require('./sql-builder.js');
 const question = require('./question.js');
 
-const table = "section";
+const table = 'section';
 const allFields = ['id', 'form_id', 'heading', 'required_if', 'show_if', 'sections', 'questions', 'list_order'];
 const fieldMap = {
-  id: "section.id",
-  form_id: "section.form_id",
-  heading: "section.heading",
-  required_if: "section.required_if",
-  show_if: "section.show_if",
-  list_order: "section.list_order",
+  id: 'section.id',
+  form_id: 'section.form_id',
+  heading: 'section.heading',
+  required_if: 'section.required_if',
+  show_if: 'section.show_if',
+  list_order: 'section.list_order',
   sections: {
     type: 'json_agg',
     src: {
@@ -18,21 +18,22 @@ const fieldMap = {
         ['heading', 'section.heading'],
         ['required_if', 'section.required_if'],
         ['show_if', 'section.show_if'],
-        ['questions', 'questions']],
-      },
+        ['questions', 'questions']]
+    },
     order: 'section.list_order',
-    alias: 'sections' },
-  questions: 'questions',
+    alias: 'sections'
+  },
+  questions: 'questions'
 };
 const refs = {
   question: {
     type: 'left_join',
     src: question.sectionJoin(),
-    on: { left: fieldMap['id'], right: 'question_agg.section_id'}
+    on: { left: fieldMap.id, right: 'question_agg.section_id' }
   }
-}
+};
 function fields(list) {
-  return list.map(field => fieldMap[field]);
+  return list.map((field) => fieldMap[field]);
 }
 
 const formJoin = () => sql.select({

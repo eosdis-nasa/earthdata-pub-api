@@ -20,7 +20,7 @@ async function findById(event) {
   return DatabaseUtil.execute(query, params);
 }
 
-async function findAll({ resource, operation, context, params }) {
+async function findAll({ resource, operation, params }) {
   return DatabaseUtil.execute({ resource, operation }, params);
 }
 
@@ -29,8 +29,8 @@ async function putItem(event) {
   return {};
 }
 
-async function seed(event) {
-  let response = await DatabaseUtil.seed();
+async function seed() {
+  const response = await DatabaseUtil.seed();
   return response;
 }
 

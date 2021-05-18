@@ -4,7 +4,7 @@ const refs = {
   conversation_note: {
     type: 'left_join',
     src: 'note',
-    on: { left: 'conversation.id', right: 'note.conversation_id'}
+    on: { left: 'conversation.id', right: 'note.conversation_id' }
   },
   conversation_user: {
     type: 'left_join',
@@ -23,7 +23,7 @@ const refs = {
             keys: [
               ['text', 'note.text'],
               ['sent', 'note.created_at'],
-              ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']]}]
+              ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }]
             ]
           },
           order: 'note.created_at',
@@ -31,9 +31,12 @@ const refs = {
           alias: 'notes'
         }
       ],
-      from: { base: 'note', joins: [{
+      from: {
+        base: 'note',
+        joins: [{
           type: 'left_join', src: 'edpuser', on: { left: 'note.sender_edpuser_id', right: 'edpuser.id' }
-        }]},
+        }]
+      },
       group: 'note.conversation_id',
       alias: 'note_agg'
     }),
@@ -74,7 +77,7 @@ const linkPostId = (params) => sql.insert({
   table: 'note_kayako_post',
   values: {
     type: 'insert_values',
-    values: [{ param: 'note_id'}, { param: 'post_id' }]
+    values: [{ param: 'note_id' }, { param: 'post_id' }]
   }
 });
 
@@ -90,15 +93,15 @@ const linkTicketId = (params) => sql.insert({
   table: 'conversation_kayako_ticket',
   values: {
     type: 'insert_values',
-    values: [{ param: 'conversation_id'}, { param: 'ticket_id' }]
+    values: [{ param: 'conversation_id' }, { param: 'ticket_id' }]
   }
 });
 
 const getConversationList = (params) => sql.select({
   fields: ['conversation.*', 'conversation_edpuser.unread'],
-  from: { base: 'conversation', joins: [refs.conversation_user]},
+  from: { base: 'conversation', joins: [refs.conversation_user] },
   where: {
-    filters: [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id'}]
+    filters: [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id' }]
   },
   order: 'conversation.last_change',
   sort: 'DESC'

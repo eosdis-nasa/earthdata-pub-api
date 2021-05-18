@@ -33,7 +33,8 @@ async function handler(event) {
 
   // Temporary to prevent lint errors
   console.info(MessageUtil, DatabaseUtil);
-  return { message: "Not implemented."};
+  console.info(operations);
+  return { message: 'Not implemented.' };
 }
 
 exports.handler = handler;

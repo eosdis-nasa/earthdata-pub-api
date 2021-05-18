@@ -1,4 +1,5 @@
 const sql = require('./sql-builder.js');
+
 const findAll = () => `
 SELECT * FROM metrics`;
 

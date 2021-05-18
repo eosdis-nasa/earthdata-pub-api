@@ -9,8 +9,8 @@ const mimeTypes = {
 };
 
 const contentEncoder = {
-  json: (data) => { return JSON.stringify(data); },
-  form: (data) => { return new URLSearchParams(data).toString(); }
+  json: (data) => JSON.stringify(data),
+  form: (data) => new URLSearchParams(data).toString()
 };
 
 function encodeBase64(data) {
@@ -23,10 +23,9 @@ function authHeader({ type, ...credentials }) {
     const { username, password } = credentials;
     const creds = encodeBase64(`${username}:${password}`);
     header.Authorization = `Basic ${creds}`;
-  }
-  else if (type === 'bearer') {
+  } else if (type === 'bearer') {
     const { token } = credentials;
-    header.Authorization = `Bearer ${token}`
+    header.Authorization = `Bearer ${token}`;
   }
   return header;
 }
@@ -35,7 +34,7 @@ function contentHeader(type, length) {
   return {
     'Content-Type': mimeTypes[type],
     'Content-Length': length
-  }
+  };
 }
 
 function stringifyPayload(payload) {
@@ -43,13 +42,14 @@ function stringifyPayload(payload) {
     const { type, data } = payload;
     const content = contentEncoder[type](data);
     const contentHeaders = contentHeader(type, content.length);
-    return { content, contentHeaders }
-  } else {
-    return { content: false, contentHeaders: false }
+    return { content, contentHeaders };
   }
+  return { content: false, contentHeaders: false };
 }
 
-function send({ method, endpoint, headers, auth, payload }) {
+function send({
+  method, endpoint, headers, auth, payload
+}) {
   const { content, contentHeaders } = stringifyPayload(payload);
   const url = new URL(endpoint);
   const reqOptions = {
@@ -58,9 +58,9 @@ function send({ method, endpoint, headers, auth, payload }) {
     path: url.pathname.concat(url.search),
     method: method.toUpperCase(),
     headers: {
-      ...(headers ? headers : {}),
-      ...(contentHeaders ? contentHeaders : {}),
-      ...(auth ? authHeader(auth) : {}),
+      ...(headers || {}),
+      ...(contentHeaders || {}),
+      ...(auth ? authHeader(auth) : {})
     }
   };
   const promise = new Promise((resolve) => {

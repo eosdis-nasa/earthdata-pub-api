@@ -1,7 +1,7 @@
 const sql = require('./sql-builder.js');
 
-const table = "edpgroup";
-const allFields = ['id', 'short_name', 'long_name', 'description', 'permissions', 'subscriptions', ];
+const table = 'edpgroup';
+const allFields = ['id', 'short_name', 'long_name', 'description', 'permissions', 'subscriptions'];
 const fieldMap = {
   id: 'edpgroup.id',
   short_name: 'edpgroup.short_name',
@@ -14,7 +14,7 @@ const fieldMap = {
   permissions: {
     type: 'coalesce',
     src: 'permissions',
-    fallback: `'[]'::JSONB`,
+    fallback: '\'[]\'::JSONB',
     alias: 'permissions'
   },
   subscriptions: {
@@ -23,36 +23,36 @@ const fieldMap = {
       ['action', {
         type: 'coalesce',
         src: 'subscriptions_action',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['daac', {
         type: 'coalesce',
         src: 'subscriptions_daac',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['form', {
         type: 'coalesce',
         src: 'subscriptions_form',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['service', {
         type: 'coalesce',
         src: 'subscriptions_service',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['submission', {
         type: 'coalesce',
         src: 'subscriptions_submission',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['workflow', {
         type: 'coalesce',
         src: 'subscriptions_workflow',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }]
     ],
     alias: 'subscriptions'
-  }, //action, daac, form, service, submission workflow
+  }, // action, daac, form, service, submission workflow
   group_agg: {
     type: 'json_agg',
     src: {
@@ -61,13 +61,12 @@ const fieldMap = {
         ['id', 'edpgroup.id'],
         ['short_name', 'edpgroup.short_name'],
         ['long_name', 'edpgroup.long_name'],
-        ['description', 'edpgroup.description']],
+        ['description', 'edpgroup.description']]
     },
-    alias: 'user_groups' }
+    alias: 'user_groups'
+  }
 };
-const fields = (list) => {
-  return list.map(field => fieldMap[field]);
-}
+const fields = (list) => list.map((field) => fieldMap[field]);
 const refs = {
   group_permission_submission: {
     type: 'left_join',
@@ -81,11 +80,11 @@ const refs = {
           alias: 'permissions'
         }
       ],
-      from: { base: 'edpgroup_permission_submission'},
+      from: { base: 'edpgroup_permission_submission' },
       group: 'edpgroup_permission_submission.edpgroup_id',
       alias: 'permission_agg'
     },
-    on: { left: 'permission_agg.edpgroup_id', right: fieldMap['id']}
+    on: { left: 'permission_agg.edpgroup_id', right: fieldMap.id }
   },
   group_subscription_action: {
     type: 'left_join',
@@ -103,7 +102,7 @@ const refs = {
       group: 'edpgroup_id',
       alias: 'subscription_action_agg'
     },
-    on: { left: 'subscription_action_agg.edpgroup_id', right: fieldMap['id']}
+    on: { left: 'subscription_action_agg.edpgroup_id', right: fieldMap.id }
   },
   group_subscription_daac: {
     type: 'left_join',
@@ -121,7 +120,7 @@ const refs = {
       group: 'edpgroup_id',
       alias: 'subscription_daac_agg'
     },
-    on: { left: 'subscription_daac_agg.edpgroup_id', right: fieldMap['id']}
+    on: { left: 'subscription_daac_agg.edpgroup_id', right: fieldMap.id }
   },
   group_subscription_form: {
     type: 'left_join',
@@ -139,7 +138,7 @@ const refs = {
       group: 'edpgroup_id',
       alias: 'subscription_form_agg'
     },
-    on: { left: 'subscription_form_agg.edpgroup_id', right: fieldMap['id']}
+    on: { left: 'subscription_form_agg.edpgroup_id', right: fieldMap.id }
   },
   group_subscription_service: {
     type: 'left_join',
@@ -157,7 +156,7 @@ const refs = {
       group: 'edpgroup_id',
       alias: 'subscription_service_agg'
     },
-    on: { left: 'subscription_service_agg.edpgroup_id', right: fieldMap['id']}
+    on: { left: 'subscription_service_agg.edpgroup_id', right: fieldMap.id }
   },
   group_subscription_submission: {
     type: 'left_join',
@@ -175,7 +174,7 @@ const refs = {
       group: 'edpgroup_id',
       alias: 'subscription_submission_agg'
     },
-    on: { left: 'subscription_submission_agg.edpgroup_id', right: fieldMap['id']}
+    on: { left: 'subscription_submission_agg.edpgroup_id', right: fieldMap.id }
   },
   group_subscription_workflow: {
     type: 'left_join',
@@ -193,12 +192,13 @@ const refs = {
       group: 'edpgroup_id',
       alias: 'subscription_workflow_agg'
     },
-    on: { left: 'subscription_workflow_agg.edpgroup_id', right: fieldMap['id']}
+    on: { left: 'subscription_workflow_agg.edpgroup_id', right: fieldMap.id }
   },
   user_group: {
     type: 'left_join',
     src: 'edpuser_edpgroup',
-    on: { left: fieldMap.id, right: fieldMap.group_id }}
+    on: { left: fieldMap.id, right: fieldMap.group_id }
+  }
 };
 const userJoin = {
   type: 'select',

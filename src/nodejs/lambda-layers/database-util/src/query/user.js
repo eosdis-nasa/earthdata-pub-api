@@ -2,7 +2,7 @@ const sql = require('./sql-builder.js');
 const role = require('./role.js');
 const group = require('./group.js');
 
-const table = "edpuser";
+const table = 'edpuser';
 const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'subscriptions'];
 const fieldMap = {
   id: 'edpuser.id',
@@ -15,7 +15,7 @@ const fieldMap = {
   permissions: {
     type: 'coalesce',
     src: 'permissions',
-    fallback: `'[]'::JSONB`,
+    fallback: '\'[]\'::JSONB',
     alias: 'permissions'
   },
   subscriptions: {
@@ -24,35 +24,33 @@ const fieldMap = {
       ['action', {
         type: 'coalesce',
         src: 'subscriptions_action',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['form', {
         type: 'coalesce',
         src: 'subscriptions_form',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['service', {
         type: 'coalesce',
         src: 'subscriptions_service',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['submission', {
         type: 'coalesce',
         src: 'subscriptions_submission',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['workflow', {
         type: 'coalesce',
         src: 'subscriptions_workflow',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }]
     ],
     alias: 'subscriptions'
   }
 };
-const fields = (list) => {
-  return list.map(field => fieldMap[field]);
-}
+const fields = (list) => list.map((field) => fieldMap[field]);
 const refs = {
   group: {
     type: 'left_join',
@@ -76,11 +74,11 @@ const refs = {
           alias: 'permissions'
         }
       ],
-      from: { base: 'edpuser_permission_submission'},
+      from: { base: 'edpuser_permission_submission' },
       group: 'edpuser_permission_submission.edpuser_id',
       alias: 'permission_agg'
     },
-    on: { left: 'permission_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'permission_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_action: {
     type: 'left_join',
@@ -98,7 +96,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_action_agg'
     },
-    on: { left: 'subscription_action_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_action_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_form: {
     type: 'left_join',
@@ -116,7 +114,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_form_agg'
     },
-    on: { left: 'subscription_form_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_form_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_service: {
     type: 'left_join',
@@ -134,7 +132,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_service_agg'
     },
-    on: { left: 'subscription_service_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_service_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_submission: {
     type: 'left_join',
@@ -152,7 +150,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_submission_agg'
     },
-    on: { left: 'subscription_submission_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_submission_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_workflow: {
     type: 'left_join',
@@ -170,7 +168,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_workflow_agg'
     },
-    on: { left: 'subscription_workflow_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_workflow_agg.edpuser_id', right: fieldMap.id }
   }
 };
 
@@ -201,7 +199,7 @@ const addRole = (params) => sql.insert({
   table: 'edpuser_edprole',
   values: {
     type: 'insert_values',
-    values: [{ type: 'param', param: 'user_id'}, { type: 'param', param: 'role_id' }]
+    values: [{ type: 'param', param: 'user_id' }, { type: 'param', param: 'role_id' }]
   },
   returning: ['*']
 });
@@ -210,7 +208,7 @@ const addGroup = (params) => sql.insert({
   table: 'edpuser_edpgroup',
   values: {
     type: 'insert_values',
-    values: [{ param: 'user_id'}, { param: 'group_id' }]
+    values: [{ param: 'user_id' }, { param: 'group_id' }]
   },
   conflict: {},
   returning: ['*']

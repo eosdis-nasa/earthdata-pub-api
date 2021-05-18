@@ -11,11 +11,10 @@ const DatabaseUtil = require('database-util');
 const MessageUtil = require('message-util');
 
 async function activeMethod(event, userId) {
-  const activeSubmissions = await DatabaseUtil.execute({ resource: 'submission', operation: 'getUsersSubmissions'},
+  const activeSubmissions = await DatabaseUtil.execute({ resource: 'submission', operation: 'getUsersSubmissions' },
     {
       user_id: userId
-    }
-  );
+    });
   return activeSubmissions;
 }
 
@@ -69,8 +68,11 @@ async function metadataMethod(event, userId) {
   const { id, metadata } = event;
   const response = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateMetadata' },
     { submission: { id, metadata: JSON.stringify(metadata) } });
-  const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'findShortById' },
-    { submission: { id } });
+  // const submission = await DatabaseUtil.execute({
+  //   resource: 'submission',
+  //   operation: 'findShortById'
+  // },
+  // { submission: { id } });
   const eventMessage = {
     event_type: 'submission_metadata_updated',
     submission_id: id,
@@ -81,7 +83,8 @@ async function metadataMethod(event, userId) {
 }
 
 async function saveMethod(event, userId) {
-  let { id, form_id: formId, data: data } = event;
+  const { form_id: formId, data } = event;
+  let { id } = event;
   if (!id) {
     const submission = await initializeMethod(event, userId);
     id = submission.id;
@@ -91,7 +94,8 @@ async function saveMethod(event, userId) {
 }
 
 async function submitMethod(event, userId) {
-  let { id, form_id: formId } = event;
+  const { form_id: formId } = event;
+  let { id } = event;
   const response = await saveMethod(event, userId);
   id = response.id;
   const eventMessage = {

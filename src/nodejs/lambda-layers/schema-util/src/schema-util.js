@@ -36,7 +36,7 @@
   * @typedef {Array.<string|number>} EnumeratedPath
   */
 
-const Ajv = require('ajv');
+// const Ajv = require('ajv');
 
 const crypto = require('crypto');
 
@@ -48,13 +48,14 @@ const crypto = require('crypto');
 const { allModels, getModel } = require('./models/index.js');
 
 module.exports.getModel = getModel;
+module.exports.allModels = allModels;
 
 /**
  * A validator utility
  * @private
  * @type {external:Ajv}
  */
-const ajv = new Ajv({ schemas: [allModels('/')] });
+// const ajv = new Ajv({ schemas: [allModels('/')] });
 
 /**
 * Generate a new random character. This function is used internally by
@@ -148,33 +149,33 @@ function isIndex(value) {
  * @return {Array<ForeignObject>} An array of all foreign objects for the root
  *   object
  */
-function enumeratePaths({ ref, aft, fore }) {
-  const paths = [];
-  const nextKey = fore.shift();
-  if (nextKey === 'n' || nextKey === '*') {
-    if (fore.length <= 0) {
-      Object.keys(ref).forEach((key) => {
-        paths.push({ path: aft.concat(key), key, ref });
-      });
-    } else {
-      Object.keys(ref).forEach((key) => {
-        paths.push(...enumeratePaths({
-          ref: ref[key], aft: aft.concat(key), fore: fore.slice(0)
-        }));
-      });
-    }
-  } else if (hasKey(ref, nextKey)) {
-    const key = nextKey;
-    if (fore.length <= 0) {
-      paths.push({ path: aft.concat(key), key, ref });
-    } else {
-      paths.push(...enumeratePaths({
-        ref: ref[key], aft: aft.concat(key), fore: fore.slice(0)
-      }));
-    }
-  }
-  return paths;
-}
+// function enumeratePaths({ ref, aft, fore }) {
+//   const paths = [];
+//   const nextKey = fore.shift();
+//   if (nextKey === 'n' || nextKey === '*') {
+//     if (fore.length <= 0) {
+//       Object.keys(ref).forEach((key) => {
+//         paths.push({ path: aft.concat(key), key, ref });
+//       });
+//     } else {
+//       Object.keys(ref).forEach((key) => {
+//         paths.push(...enumeratePaths({
+//           ref: ref[key], aft: aft.concat(key), fore: fore.slice(0)
+//         }));
+//       });
+//     }
+//   } else if (hasKey(ref, nextKey)) {
+//     const key = nextKey;
+//     if (fore.length <= 0) {
+//       paths.push({ path: aft.concat(key), key, ref });
+//     } else {
+//       paths.push(...enumeratePaths({
+//         ref: ref[key], aft: aft.concat(key), fore: fore.slice(0)
+//       }));
+//     }
+//   }
+//   return paths;
+// }
 
 /**
  * Validates an Item against the schema for a given table

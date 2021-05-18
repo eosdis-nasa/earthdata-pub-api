@@ -18,12 +18,15 @@
   "parserOptions": {
     "ecmaVersion": 2018
   },
-  "ignorePatterns": ["node_modules/", "/jsdoc/", "/src/sample-data/"],
+  "ignorePatterns": ["node_modules/", "/jsdoc/", "query/", "models/" ],
   "rules": {
     "comma-dangle": ["error", "never"],
     "class-methods-use-this": 0,
     "no-param-reassign": ["error", { "props": false }],
     "no-console": ["error", { "allow": ["info", "error"]}],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": true}]
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": true}],
+    "import/extensions": ["off"],
+    "import/no-unresolved": ["off"],
+    "no-await-in-loop": ["off"]
   }
 }

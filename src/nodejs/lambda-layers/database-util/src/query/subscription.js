@@ -1,6 +1,5 @@
 const sql = require('./sql-builder.js');
 
-
 const typeMap = {
   group: {
     action: { field: 'action_id', table: 'edpgroup_subscription_action' },
@@ -17,11 +16,10 @@ const typeMap = {
     submission: { field: 'submission_id', table: 'edpuser_subscription_submission' },
     workflow: { field: 'workflow_id', table: 'edpuser_subscription_workflow' }
   }
-}
-const types = (type, group) => typeMap[group ? 'group': 'user'][type];
+};
+const types = (type, group) => typeMap[group ? 'group' : 'user'][type];
 
-const subscribe = ({ type, user_id, group_id }) =>
-  group_id ? groupSubscribe(types(type, true)) : user_id ? userSubscribe(types(type, false)) : null;
+const subscribe = ({ type, user_id, group_id }) => (group_id ? groupSubscribe(types(type, true)) : user_id ? userSubscribe(types(type, false)) : null);
 
 const groupSubscribe = ({ field, table }) => `
 INSERT INTO ${table} VALUES
@@ -35,8 +33,7 @@ INSERT INTO ${table} VALUES
 ON CONFLICT (edpuser_id, ${field}) DO NOTHING
 RETURNING *`;
 
-const unsubscribe = ({ type, user_id, group_id }) =>
-  group_id ? groupUnsubscribe(types(type)) : user_id ? userUnsubscribe(types(type)) : null;
+const unsubscribe = ({ type, user_id, group_id }) => (group_id ? groupUnsubscribe(types(type)) : user_id ? userUnsubscribe(types(type)) : null);
 
 const groupUnsubscribe = ({ field, table }) => `
 DELETE FROM ${table}
@@ -47,8 +44,6 @@ const userUnsubscribe = ({ field, table }) => `
 DELETE FROM ${table}
 WHERE edpuser_id = {{user_id}}
 AND ${field} = {{${field}}}`;
-
-
 
 module.exports.subscribe = subscribe;
 module.exports.unsubscribe = unsubscribe;

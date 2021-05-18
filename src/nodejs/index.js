@@ -54,13 +54,13 @@ const oasOptions = {
 
 oasTools.configure(oasOptions);
 
-oasTools.initialize(oasDoc, app, function() {
-  http.createServer(app).listen(serverPort, function() {
+oasTools.initialize(oasDoc, app, () => {
+  http.createServer(app).listen(serverPort, () => {
     console.log(`App running at http://localhost:${serverPort}`);
-    console.log("_____________________________________________________");
+    console.log('_____________________________________________________');
     if (oasOptions.docs !== false) {
       console.log(`API docs at http://localhost:${serverPort}/docs`);
-      console.log("___________________________________________________");
+      console.log('___________________________________________________');
     }
   });
 });

@@ -7,13 +7,12 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
-async function search({ filter, context }) {
+async function search({ filter }) {
   if (filter.count) {
     const response = await DatabaseUtil.execute({ resource: 'metrics', operation: 'metricsStats' }, {});
     return response;
-  } else {
-
   }
+  return { message: 'Not Implemented' };
 }
 
 async function put({ payload, context }) {
@@ -33,13 +32,13 @@ async function put({ payload, context }) {
     ...(payload.data && { data: payload.data })
   };
   await MessageUtil.sendEvent(eventMessage);
-  return { message: 'Success!'};
+  return { message: 'Success!' };
 }
 
 const operations = {
   search,
   put
-}
+};
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
