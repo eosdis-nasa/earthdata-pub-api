@@ -17,6 +17,7 @@ module "cognito" {
 
   region = var.region
   stage = var.stage
+  cognito_user_pool_id = var.cognito_user_pool_id
   client_auth_url = var.client_auth_url
 }
 
@@ -44,7 +45,7 @@ module "lambda_functions" {
   db_database = module.rds.db_database
   db_user = module.rds.db_user
   db_password = var.db_password
-  cognito_url = module.cognito.cognito_url
+  cognito_url = var.cognito_domain_url
   cognito_logout_path = module.cognito.cognito_logout_path
   cognito_login_path = module.cognito.cognito_login_path
   cognito_token_path = module.cognito.cognito_token_path
@@ -68,7 +69,7 @@ module "apigateway_endpoints" {
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn
   register_lambda_arn = module.lambda_functions.register_lambda_arn
   version_lambda_arn = module.lambda_functions.version_lambda_arn
-  cognito_user_pool_arn = module.cognito.cognito_user_pool_arn
+  cognito_user_pool_arn = "arn:aws:cognito-idp:${var.region}:${var.account_id}:userpool/${var.cognito_user_pool_id}"
   edpub_apigateway_s3_role_arn = module.iam_roles.edpub_apigateway_s3_role_arn
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
   edpub_forms_s3_bucket = var.edpub_forms_s3_bucket

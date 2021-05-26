@@ -1,57 +1,6 @@
-resource "aws_cognito_user_pool" "edpub_cognito" {
-  name = "edpub_user_pool"
-  password_policy {
-    minimum_length = 8
-    require_lowercase = true
-    require_uppercase = true
-    require_numbers = true
-    require_symbols = true
-    temporary_password_validity_days = 7
-  }
-  schema {
-    name = "sub"
-    attribute_data_type = "String"
-    developer_only_attribute = false
-    mutable = false
-    required = true
-    string_attribute_constraints {
-      min_length = 36
-      max_length = 36
-    }
-  }
-  schema {
-    name = "name"
-    attribute_data_type = "String"
-    developer_only_attribute = false
-    mutable = false
-    required = true
-    string_attribute_constraints {
-      min_length = 1
-      max_length = 128
-    }
-  }
-  schema {
-    name = "email"
-    attribute_data_type = "String"
-    developer_only_attribute = false
-    mutable = false
-    required = true
-    string_attribute_constraints {
-      min_length = 1
-      max_length = 128
-    }
-  }
-  auto_verified_attributes = ["email"]
-}
-
-resource "aws_cognito_user_pool_domain" "edpub_cognito" {
-  domain = "edpub-${var.stage}"
-  user_pool_id = aws_cognito_user_pool.edpub_cognito.id
-}
-
 resource "aws_cognito_user_pool_client" "edpub_cognito" {
   name = "edpub-${var.stage}"
-  user_pool_id = aws_cognito_user_pool.edpub_cognito.id
+  user_pool_id = var.cognito_user_pool_id
   generate_secret = true
   read_attributes = ["name", "email"]
   refresh_token_validity = 10

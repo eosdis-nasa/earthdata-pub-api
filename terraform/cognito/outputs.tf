@@ -6,14 +6,6 @@ output "cognito_client_secret" {
   value = aws_cognito_user_pool_client.edpub_cognito.client_secret
 }
 
-output "cognito_user_pool_arn" {
-  value = aws_cognito_user_pool.edpub_cognito.arn
-}
-
-output "cognito_url" {
-  value = "https://${aws_cognito_user_pool_domain.edpub_cognito.domain}.auth.${var.region}.amazoncognito.com"
-}
-
 output "cognito_logout_path" {
   value = "logout"
 }
