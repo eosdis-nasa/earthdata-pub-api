@@ -28,9 +28,6 @@ variable "subnet_ids" {
 variable "lambda_execution_policy_arn" {
   type = string
 }
-variable "cloud_metrics_sqs" {
-  type = string
-}
 variable "permissions_boundary_arn" {
   type = string
 }

@@ -89,7 +89,6 @@ module "sns_topics" {
   region = var.region
   account_id = var.account_id
   stage = var.stage
-  cloud_metrics_sqs = var.cloud_metrics_sqs
 }
 
 module "sqs_queues" {
