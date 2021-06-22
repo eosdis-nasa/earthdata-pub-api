@@ -62,6 +62,10 @@ module.exports.optionsSubmission = optionsHeaders;
 
 module.exports.optionsMetrics = optionsHeaders;
 
+module.exports.optionsMetricsGetReport = optionsHeaders;
+
+module.exports.optionsMetricsListReports = optionsHeaders;
+
 module.exports.optionsModel = optionsHeaders;
 
 module.exports.optionsToken = optionsHeaders;

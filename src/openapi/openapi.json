@@ -4896,6 +4896,256 @@
         "x-router-controller": "cors"
       }
     },
+    "/api/metrics/report/{key}": {
+      "parameters": [
+        {
+          "name": "key",
+          "in": "path",
+          "description": "Unique key of metrics report to fetch",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Get a metrics report",
+        "description": "Returns a single metrics report by its unique key",
+        "operationId": "metricsGetReport",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "image/jpeg": {}
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${metrics_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req=$input.params()) { \"operation\": \"get_report\", \"key\": \"$req.path.get('key')\" ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsMetricsGetReport",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/metrics/reports": {
+      "get": {
+        "tags": [
+          "metrics"
+        ],
+        "summary": "Fetches list of metrics reports",
+        "description": "Operation to retrieve a list of available metrics reports.",
+        "operationId": "metricsListReports",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit of number of results",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${metrics_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req=$input.params()) { \"operation\": \"list_reports\", #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsMetricsListReports",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
     "/api/token": {
       "get": {
         "tags": [
