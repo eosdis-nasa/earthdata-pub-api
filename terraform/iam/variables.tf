@@ -10,7 +10,7 @@ variable "account_id" {
   type = string
 }
 
-variable "edpub_action_sqs_arn" {
+variable "edpub_outbound_sns_arn" {
   type = string
 }
 
@@ -23,6 +23,26 @@ variable "edpub_email_sns_arn" {
 }
 
 variable "edpub_metrics_sns_arn" {
+  type = string
+}
+
+variable "edpub_inbound_sqs_arn" {
+  type = string
+}
+
+variable "edpub_action_sqs_arn" {
+  type = string
+}
+
+variable "edpub_metrics_sqs_arn" {
+  type = string
+}
+
+variable "edpub_notification_sqs_arn" {
+  type = string
+}
+
+variable "edpub_workflow_sqs_arn" {
   type = string
 }
 

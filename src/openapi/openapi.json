@@ -4915,54 +4915,39 @@
         "summary": "Get a metrics report",
         "description": "Returns a single metrics report by its unique key",
         "operationId": "metricsGetReport",
+        "parameters": [{
+          "name": "key",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }],
         "responses": {
           "200": {
             "description": "OK",
             "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
+              "Content-Type": {
                 "schema": {
                   "type": "string"
                 }
               }
-            },
-            "content": {
-              "image/jpeg": {}
             }
-          },
-          "500": {
-            "description": "Bad request"
           }
         },
-        "security": [
-          {
-            "Authorizer": ["openid"]
-          }
-        ],
         "x-amazon-apigateway-integration": {
-          "uri": "${metrics_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
           "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_metrics_s3_bucket}/{key}",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "requestParameters": {},
           "requestTemplates": {
-            "application/json": "#set($req=$input.params()) { \"operation\": \"get_report\", \"key\": \"$req.path.get('key')\" ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": " #set($key = $method.request.path.key) #if ($mappings.containsKey($key)) #set($context.requestOverride.path.key = $mappings.get($key)) #else #set($context.requestOverride.path.key = 'default') #end"
           },
           "responses": {
             "default": {
               "statusCode": "200",
               "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
               }
             }
           }

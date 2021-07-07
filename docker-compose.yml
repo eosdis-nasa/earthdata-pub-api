@@ -13,6 +13,7 @@ services:
       - AWS_ACCESS_KEY_ID=fake
       - AWS_SECRET_ACCESS_KEY=fake
       - EVENT_SNS=arn:aws:sns:us-east-1:000000000000:edpub_event_sns
+      - METRICS_SNS=arn:aws:sns:us-east-1:000000000000:edpub_metrics_sns
       - SNS_ENDPOINT=http://goaws:4100
       - PG_USER=edpub
       - PG_HOST=postgres
@@ -20,7 +21,7 @@ services:
       - PG_PASS=edpub
       - PG_PORT=5432
       - AUTH_RESPECT_EXP=false
-      - AUTH_TOKEN_EXP=1800000
+      - AUTH_TOKEN_EXP=60
       - AUTH_PROVIDER_URL=http://localhost:8080
       - AUTH_LOGIN_PATH=auth/login
       - AUTH_LOGOUT_PATH=auth/logout

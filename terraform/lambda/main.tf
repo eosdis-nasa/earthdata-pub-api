@@ -62,6 +62,7 @@ resource "aws_lambda_function" "action_consumer" {
     variables = {
       REGION    = var.region
       EVENT_SNS = var.edpub_event_sns_arn
+      EMAIL_SNS = var.edpub_email_sns_arn
       METRICS_SNS = var.edpub_metrics_sns_arn
       PG_USER   = var.db_user
       PG_HOST   = var.db_host
@@ -191,6 +192,7 @@ resource "aws_lambda_function" "metrics" {
       REGION    = var.region
       EVENT_SNS = var.edpub_event_sns_arn
       METRICS_SNS = var.edpub_metrics_sns_arn
+      METRICS_S3  = var.edpub_metrics_s3_bucket
       PG_USER   = var.db_user
       PG_HOST   = var.db_host
       PG_DB     = var.db_database
@@ -246,22 +248,16 @@ resource "aws_lambda_function" "metrics_consumer" {
 }
 
 resource "aws_lambda_permission" "metrics_consumer" {
-  statement_id  = "AllowExecutionFromSNS"
+  statement_id  = "AllowExecutionFromSQS"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.metrics_consumer.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_event_sns_arn
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.edpub_metrics_sqs_arn
 }
 
-data "local_file" "metrics_consumer_filter" {
-  filename = "./sns/metrics_consumer_filter.json"
-}
-
-resource "aws_sns_topic_subscription" "metrics_consumer_lambda" {
-  topic_arn     = var.edpub_event_sns_arn
-  protocol      = "lambda"
-  endpoint      = aws_lambda_function.metrics_consumer.arn
-  filter_policy = data.local_file.metrics_consumer_filter.content
+resource "aws_lambda_event_source_mapping" "metrics_consumer_sqs_event" {
+  event_source_arn = var.edpub_metrics_sqs_arn
+  function_name    = aws_lambda_function.metrics_consumer.function_name
 }
 
 # Model Lambda
@@ -379,22 +375,16 @@ resource "aws_lambda_function" "notification_consumer" {
 }
 
 resource "aws_lambda_permission" "notification_consumer" {
-  statement_id  = "AllowExecutionFromSNS"
+  statement_id  = "AllowExecutionFromSQS"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.notification_consumer.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_event_sns_arn
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.edpub_notification_sqs_arn
 }
 
-data "local_file" "notification_consumer_filter" {
-  filename = "./sns/notification_consumer_filter.json"
-}
-
-resource "aws_sns_topic_subscription" "notification_consumer_lambda" {
-  topic_arn     = var.edpub_event_sns_arn
-  protocol      = "lambda"
-  endpoint      = aws_lambda_function.notification_consumer.arn
-  filter_policy = data.local_file.notification_consumer_filter.content
+resource "aws_lambda_event_source_mapping" "notification_consumer_sqs_event" {
+  event_source_arn = var.edpub_notification_sqs_arn
+  function_name    = aws_lambda_function.notification_consumer.function_name
 }
 
 # Register Lambda
@@ -550,22 +540,16 @@ resource "aws_lambda_function" "workflow_consumer" {
 }
 
 resource "aws_lambda_permission" "workflow_consumer" {
-  statement_id  = "AllowExecutionFromSNS"
+  statement_id  = "AllowExecutionFromSQS"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.workflow_consumer.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_event_sns_arn
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.edpub_workflow_sqs_arn
 }
 
-data "local_file" "workflow_consumer_filter" {
-  filename = "./sns/workflow_consumer_filter.json"
-}
-
-resource "aws_sns_topic_subscription" "workflow_consumer" {
-  topic_arn     = var.edpub_event_sns_arn
-  protocol      = "lambda"
-  endpoint      = aws_lambda_function.workflow_consumer.arn
-  filter_policy = data.local_file.workflow_consumer_filter.content
+resource "aws_lambda_event_source_mapping" "workflow_consumer_sqs_event" {
+  event_source_arn = var.edpub_workflow_sqs_arn
+  function_name    = aws_lambda_function.workflow_consumer.function_name
 }
 
 # Auth Lambda

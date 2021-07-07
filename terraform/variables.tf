@@ -40,6 +40,9 @@ variable "edpub_forms_s3_bucket" {
 variable "edpub_overview_s3_bucket" {
   type = string
 }
+variable "edpub_metrics_s3_bucket" {
+  type = string
+}
 variable "rds_cluster_identifier" {
   type = string
 }
