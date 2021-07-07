@@ -26,6 +26,8 @@ DROP TABLE IF EXISTS edpuser_edpgroup CASCADE;
 
 DROP TABLE IF EXISTS edpuser_edprole CASCADE;
 
+DROP TABLE IF EXISTS edpuser_kayako_user CASCADE;
+
 DROP TABLE IF EXISTS daac CASCADE;
 
 DROP TABLE IF EXISTS conversation CASCADE;
@@ -96,7 +98,6 @@ CREATE TABLE IF NOT EXISTS form (
   version SMALLINT,
   long_name VARCHAR NOT NULL,
   description VARCHAR,
-  text VARCHAR NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   UNIQUE (short_name, version)
@@ -191,9 +192,9 @@ CREATE TABLE IF NOT EXISTS edpuser (
   id UUID DEFAULT UUID_GENERATE_V4(),
   name VARCHAR NOT NULL,
   email VARCHAR NOT NULL,
+  refresh_token VARCHAR DEFAULT 'none',
   registered TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP DEFAULT NOW(),
-  refresh_token VARCHAR NOT NULL,
   PRIMARY KEY (id)
 );
 
@@ -241,23 +242,18 @@ CREATE TABLE IF NOT EXISTS edpuser_edprole (
   FOREIGN KEY (edprole_id) REFERENCES edprole (id)
 );
 
-CREATE TABLE IF NOT EXISTS daac (
-  id UUID DEFAULT UUID_GENERATE_V4(),
-  short_name VARCHAR NOT NULL,
-  long_name VARCHAR NOT NULL,
-  url VARCHAR NOT NULL,
-  description VARCHAR NOT NULL,
-  edpgroup_id UUID NOT NULL,
+CREATE TABLE IF NOT EXISTS edpuser_kayako_user (
+  id UUID NOT NULL,
+  kayako_id VARCHAR NOT NULL,
   PRIMARY KEY (id),
-  UNIQUE (short_name),
-  UNIQUE (long_name),
-  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id)
+  FOREIGN KEY (id) REFERENCES edpuser (id)
 );
 
 CREATE TABLE IF NOT EXISTS conversation (
   id UUID DEFAULT UUID_GENERATE_V4(),
   subject VARCHAR DEFAULT 'No Subject',
   created_at TIMESTAMP DEFAULT NOW(),
+  last_change TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id)
 );
 
@@ -287,18 +283,10 @@ CREATE TABLE IF NOT EXISTS note_kayako_post (
   FOREIGN KEY (id) REFERENCES note (id)
 );
 
-CREATE TABLE IF NOT EXISTS note_edpuser (
-  note_id UUID NOT NULL,
-  edpuser_id UUID NOT NULL,
-  note_viewed BOOLEAN DEFAULT False,
-  PRIMARY KEY (note_id, edpuser_id),
-  FOREIGN KEY (note_id) REFERENCES note (id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
-);
-
 CREATE TABLE IF NOT EXISTS conversation_edpuser (
   conversation_id UUID NOT NULL,
   edpuser_id UUID NOT NULL,
+  unread BOOLEAN DEFAULT TRUE,
   PRIMARY KEY (conversation_id, edpuser_id),
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
@@ -341,11 +329,27 @@ CREATE TABLE IF NOT EXISTS step_edge (
   FOREIGN KEY (workflow_id, next_step_name) REFERENCES step (workflow_id, step_name)
 );
 
+CREATE TABLE IF NOT EXISTS daac (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  short_name VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
+  url VARCHAR NOT NULL,
+  description VARCHAR NOT NULL,
+  workflow_id UUID NOT NULL,
+  edpgroup_id UUID NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE (short_name),
+  UNIQUE (long_name),
+  FOREIGN KEY (workflow_id) REFERENCES workflow (id),
+  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id)
+);
+
 CREATE TABLE IF NOT EXISTS submission (
   id UUID DEFAULT UUID_GENERATE_V4(),
   name VARCHAR,
   initiator_edpuser_id UUID NOT NULL,
   daac_id UUID,
+  conversation_id UUID,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (initiator_edpuser_id) REFERENCES edpuser (id),

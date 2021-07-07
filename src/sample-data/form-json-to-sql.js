@@ -49,8 +49,8 @@ function sectionToSql(section, i, form) {
 }
 
 function formToSql(form) {
-  // Form(id, short_name, version, long_name, description, text)
-  const insert = `INSERT INTO form VALUES ('${form.id}', '${form.short_name}', ${form.version}, '${form.long_name}', '${form.description}', '${form.text}');`;
+  // Form(id, short_name, version, long_name, description)
+  const insert = `INSERT INTO form VALUES ('${form.id}', '${form.short_name}', ${form.version}, '${form.long_name}', '${form.description}');`;
   return insert;
 }
 

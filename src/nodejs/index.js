@@ -25,11 +25,17 @@ app.get('/auth/login', local.login);
 app.post('/auth/login', local.authenticate);
 app.post('/auth/token', local.token);
 app.get('/auth/user_list', local.userList);
+app.get('/auth/group_list', local.groupList);
+app.get('/auth/role_list', local.roleList);
 app.get('/reseed', local.reseed);
 app.get('/favicon.ico', local.favico);
 app.post('/goaws/workflow_consumer', local.handleWorkflow);
 app.post('/goaws/metrics_consumer', local.handleMetrics);
 app.post('/goaws/notification_consumer', local.handleNotification);
+app.post('/database_test', local.dbTest);
+app.all('/kayako', local.kayakoMock);
+app.get('/docs', (req, res) => res.redirect('/docs/index.html'));
+app.get('/api-docs', (req, res) => res.redirect('/api-docs/index.html'));
 
 const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
 const oasDoc = JSON.parse(spec);
@@ -48,15 +54,13 @@ const oasOptions = {
 
 oasTools.configure(oasOptions);
 
-oasTools.initialize(oasDoc, app, function() {
-  http.createServer(app).listen(serverPort, function() {
+oasTools.initialize(oasDoc, app, () => {
+  http.createServer(app).listen(serverPort, () => {
     console.log(`App running at http://localhost:${serverPort}`);
-    console.log("_____________________________________________________");
+    console.log('_____________________________________________________');
     if (oasOptions.docs !== false) {
       console.log(`API docs at http://localhost:${serverPort}/docs`);
-      console.log("___________________________________________________");
+      console.log('___________________________________________________');
     }
   });
 });
-
-app.get('/instanceMeta', function(req, res) { res.status(200); res.send({}); });

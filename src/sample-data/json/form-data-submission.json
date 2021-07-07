@@ -655,63 +655,15 @@
           "inputs": [
             {
               "type": "bbox",
-              "control_id": "spatial_horizontal_north1",
-              "label": "N"
+              "control_id": "spatial_horizontal_1"
             },
             {
               "type": "bbox",
-              "control_id": "spatial_horizontal_east1",
-              "label": "E"
+              "control_id": "spatial_horizontal_2"
             },
             {
               "type": "bbox",
-              "control_id": "spatial_horizontal_south1",
-              "label": "S"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_west1",
-              "label": "W"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_north2",
-              "label": "N"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_east2",
-              "label": "E"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_south2",
-              "label": "S"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_west2",
-              "label": "W"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_north3",
-              "label": "N"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_east3",
-              "label": "E"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_south3",
-              "label": "S"
-            },
-            {
-              "type": "bbox",
-              "control_id": "spatial_horizontal_west3",
-              "label": "W"
+              "control_id": "spatial_horizontal_3"
             }
           ],
           "id": "15a012d0-9b4b-4979-9fa9-81fac1600b09",

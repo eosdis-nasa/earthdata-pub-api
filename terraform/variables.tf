@@ -52,6 +52,12 @@ variable "api_version" {
 variable "api_root_url" {
   type = string
 }
+variable "cognito_user_pool_id" {
+  type = string
+}
+variable "cognito_domain_url" {
+  type = string
+}
 variable "client_root_url" {
   type = string
 }

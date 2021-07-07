@@ -13,32 +13,15 @@ async function findById(event) {
     resource: event.resource,
     operation: event.operation
   };
-  const { id } = event.params.path;
+  const { id } = event.params;
   const params = {
     [event.resource]: { id }
   };
   return DatabaseUtil.execute(query, params);
 }
 
-async function findAll(event) {
-  const query = {
-    resource: event.resource,
-    operation: event.operation
-  };
-  const params = {};
-  if (event.params) {
-    if (event.params.query) {
-      if (event.params.query.sort) {
-        params.sort = event.params.query.sort;
-        params.order = event.params.query.order || 'ASC';
-      }
-      if (event.params.query.per_page) {
-        params.limit = event.params.query.per_page;
-        params.offset = (event.params.query.page || 0) * params.limit;
-      }
-    }
-  }
-  return DatabaseUtil.execute(query, params);
+async function findAll({ resource, operation, params }) {
+  return DatabaseUtil.execute({ resource, operation }, params);
 }
 
 async function putItem(event) {
@@ -46,8 +29,8 @@ async function putItem(event) {
   return {};
 }
 
-async function seed(event) {
-  let response = await DatabaseUtil.seed();
+async function seed() {
+  const response = await DatabaseUtil.seed();
   return response;
 }
 

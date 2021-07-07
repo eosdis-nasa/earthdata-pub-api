@@ -2,7 +2,7 @@ const sql = require('./sql-builder.js');
 const role = require('./role.js');
 const group = require('./group.js');
 
-const table = "edpuser";
+const table = 'edpuser';
 const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'subscriptions'];
 const fieldMap = {
   id: 'edpuser.id',
@@ -15,7 +15,7 @@ const fieldMap = {
   permissions: {
     type: 'coalesce',
     src: 'permissions',
-    fallback: `'[]'::JSONB`,
+    fallback: '\'[]\'::JSONB',
     alias: 'permissions'
   },
   subscriptions: {
@@ -24,35 +24,33 @@ const fieldMap = {
       ['action', {
         type: 'coalesce',
         src: 'subscriptions_action',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['form', {
         type: 'coalesce',
         src: 'subscriptions_form',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['service', {
         type: 'coalesce',
         src: 'subscriptions_service',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['submission', {
         type: 'coalesce',
         src: 'subscriptions_submission',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }],
       ['workflow', {
         type: 'coalesce',
         src: 'subscriptions_workflow',
-        fallback: `'[]'::JSONB`
+        fallback: '\'[]\'::JSONB'
       }]
     ],
     alias: 'subscriptions'
   }
 };
-const fields = (list) => {
-  return list.map(field => fieldMap[field]);
-}
+const fields = (list) => list.map((field) => fieldMap[field]);
 const refs = {
   group: {
     type: 'left_join',
@@ -76,11 +74,11 @@ const refs = {
           alias: 'permissions'
         }
       ],
-      from: { base: 'edpuser_permission_submission'},
+      from: { base: 'edpuser_permission_submission' },
       group: 'edpuser_permission_submission.edpuser_id',
       alias: 'permission_agg'
     },
-    on: { left: 'permission_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'permission_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_action: {
     type: 'left_join',
@@ -98,7 +96,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_action_agg'
     },
-    on: { left: 'subscription_action_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_action_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_form: {
     type: 'left_join',
@@ -116,7 +114,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_form_agg'
     },
-    on: { left: 'subscription_form_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_form_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_service: {
     type: 'left_join',
@@ -134,7 +132,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_service_agg'
     },
-    on: { left: 'subscription_service_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_service_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_submission: {
     type: 'left_join',
@@ -152,7 +150,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_submission_agg'
     },
-    on: { left: 'subscription_submission_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_submission_agg.edpuser_id', right: fieldMap.id }
   },
   user_subscription_workflow: {
     type: 'left_join',
@@ -170,7 +168,7 @@ const refs = {
       group: 'edpuser_id',
       alias: 'subscription_workflow_agg'
     },
-    on: { left: 'subscription_workflow_agg.edpuser_id', right: fieldMap['id']}
+    on: { left: 'subscription_workflow_agg.edpuser_id', right: fieldMap.id }
   }
 };
 
@@ -193,15 +191,38 @@ const findAll = (params) => sql.select({
 
 const findById = () => `${findAll()} WHERE edpuser.id = {{user.id}}`;
 
+const getRefreshToken = () => `
+SELECT edpuser.refresh_token FROM edpuser
+WHERE edpuser.id = {{user.id}}`;
+
+const addRole = (params) => sql.insert({
+  table: 'edpuser_edprole',
+  values: {
+    type: 'insert_values',
+    values: [{ type: 'param', param: 'user_id' }, { type: 'param', param: 'role_id' }]
+  },
+  returning: ['*']
+});
+
+const addGroup = (params) => sql.insert({
+  table: 'edpuser_edpgroup',
+  values: {
+    type: 'insert_values',
+    values: [{ param: 'user_id' }, { param: 'group_id' }]
+  },
+  conflict: {},
+  returning: ['*']
+});
+
 const findByGroupId = () => `
-${findAll}
+${findAll()}
 WHERE edpuser.id IN (
   SELECT edpuser_edpgroup.edpuser_id
   FROM edpuser_edpgroup
   WHERE edpuser_edpgroup.edpgroup_id = {{group.id}})`;
 
 const findByGroupName = () => `
-${findAll}
+${findAll()}
 WHERE edpuser.id IN (
   SELECT edpuser_edpgroup.edpuser_id
   FROM edpuser_edpgroup
@@ -210,14 +231,52 @@ WHERE edpuser.id IN (
     WHERE edpgroup.short_name = {{group.short_name}})`;
 
 const loginUser = () => `
-INSERT INTO edpuser VALUES
-({{user.id}}, {{user.name}}, {{user.email}}, NOW(), NOW())
+INSERT INTO edpuser(id, name, email, refresh_token) VALUES
+({{user.id}}, {{user.name}}, {{user.email}}, {{user.refresh_token}})
 ON CONFLICT (id) DO UPDATE SET
-last_login = EXCLUDED.last_login
+last_login = EXCLUDED.last_login,
+refresh_token = EXCLUDED.refresh_token
 RETURNING *`;
+
+const refreshUser = () => `
+UPDATE edpuser SET
+refresh_token = {{user.refresh_token}}
+WHERE edpuser.id = {{user.id}}
+RETURNING *`;
+
+const getEmails = (params) => sql.select({
+  fields: ['edpuser.email'],
+  from: 'edpuser',
+  where: {
+    filters: [{ field: 'edpuser.id', any: { values: { param: 'user_list' } } }]
+  }
+});
+
+const getKayakoIdByEDPUserId = (params) => sql.select({
+  fields: ['edpuser_kayako_user.kayako_id'],
+  from: { base: 'edpuser_kayako_user' },
+  where: {
+    filters: [{ field: 'id' }]
+  }
+});
+
+const getEDPUserIdByKayakoId = (params) => sql.select({
+  fields: ['edpuser_kayako_user.id'],
+  from: { base: 'edpuser_kayako_user' },
+  where: {
+    filters: [{ field: 'kayako_id' }]
+  }
+});
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
+module.exports.getRefreshToken = getRefreshToken;
 module.exports.findByGroupId = findByGroupId;
 module.exports.findByGroupName = findByGroupName;
 module.exports.loginUser = loginUser;
+module.exports.refreshUser = refreshUser;
+module.exports.addRole = addRole;
+module.exports.addGroup = addGroup;
+module.exports.getEmails = getEmails;
+module.exports.getKayakoIdByEDPUserId = getKayakoIdByEDPUserId;
+module.exports.getEDPUserIdByKayakoId = getEDPUserIdByKayakoId;

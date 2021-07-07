@@ -38,11 +38,11 @@ async function execute({ resource, operation }, params) {
 
 async function seed() {
   const response = {};
-  const client = await pool.connect().catch( e => { Object.assign(response, { error: e })});
+  const client = await pool.connect().catch((e) => { Object.assign(response, { error: e }); });
   if (!response.error) {
     try {
-      const files = fs.readdirSync(`${__dirname}/db-setup`).map(filename => `${__dirname}/db-setup/${filename}`);
-      await files.reduce(async ( previous , file) => {
+      const files = fs.readdirSync(`${__dirname}/db-setup`).map((filename) => `${__dirname}/db-setup/${filename}`);
+      await files.reduce(async (previous, file) => {
         await previous;
         console.info(`Executing ${file}:`);
         const results = await client.query(fs.readFileSync(file).toString());
@@ -51,10 +51,10 @@ async function seed() {
             acc[result.command] = 1 + acc[result.command] || 1;
             return acc;
           }, {})).forEach(([key, value]) => {
-            console.log(`${key} ${value}`);
-          })
+            console.info(`${key} ${value}`);
+          });
         } else {
-          console.log(`${results.command} 1`);
+          console.info(`${results.command} 1`);
         }
         return results;
       }, 0);
