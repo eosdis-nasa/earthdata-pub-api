@@ -24,7 +24,7 @@ function uuid() {
 }
 
 function inputToSql(input, i, question) {
-  // Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required, FALSE)
+  // Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required)
   control_ids[input.control_id] = input.type;
   const insert = `INSERT INTO input VALUES ('${question.id}', '${input.control_id}', ${i}, '${input.label}', '${input.type}', '${JSON.stringify(input.enums||{})}', '${JSON.stringify(input.attributes||{})}', '${JSON.stringify(input.required_if||[])}','${JSON.stringify(input.show_if||[])}',  ${input.required?'True':'False'});`;
   return insert;
@@ -139,7 +139,7 @@ file.write(`\n-- Question(id, short_name, version, long_name, text, help)\n`);
 inserts.questions.forEach((question) => { file.write(`${question}\n`); });
 file.write(`\n-- SectionQuestion(section_id, question_id, list_order, required_if, show_if))\n`);
 inserts.section_questions.forEach((sectionQuestion) => { file.write(`${sectionQuestion}\n`); });
-file.write(`\n-- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required, FALSE))\n\n`);
+file.write(`\n-- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))\n\n`);
 inserts.inputs.forEach((input) => { file.write(`${input}\n`); });
 file.close();
 

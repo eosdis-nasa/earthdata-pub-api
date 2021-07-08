@@ -211,124 +211,25 @@
           "help": "The DAAC will use this information to construct a data product citation, which is a reference to data for the purpose of credit attribution and facilitation of data access. <br><br>Example data product citations:<br><br>McGill, Matthew , Dennis L Hlavka, John E. Yorks and Patrick A. Selmer. 2019. GOES-R PLT Cloud Physics LiDAR (CPL). Dataset available online from the NASA Global Hydrology Resource Center DAAC, Huntsville, Alabama, U.S.A. DOI: http://dx.doi.org/10.5067/GOESRPLT/CPL/DATA101<br><br>CARVE Science Team. 2017. CARVE: In-flight Photos from the CARVE Aircraft, Alaska, 2013-2015. ORNL DAAC, Oak Ridge, Tennessee, USA. https://doi.org/10.3334/ORNLDAAC/1435",
           "inputs": [
             {
-              "type": "text",
-              "control_id": "producer_group_org_row1",
-              "label": "Organization",
-              "required":true,
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
-            },
-            {
-              "type": "text",
-              "control_id": "producer_group_fname_row1",
-              "label": "First Name",
-              "required": true,
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
-            },
-            {
-              "type": "text",
-              "control_id": "producer_group_lname_row1",
-              "label": "Last Name",
-              "required": true,
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
-            },
-            {
-              "type": "text",
-              "control_id": "producer_group_org_row2",
-              "label": "Organization",
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
-            },
-            {
-              "type": "text",
-              "control_id": "producer_group_fname_row2",
-              "label": "First Name",
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
-            },
-            {
-              "type": "text",
-              "control_id": "producer_group_lname_row2",
-              "label": "Last Name",
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
-            },
-            {
-              "type": "text",
-              "control_id": "producer_group_org_row3",
-              "label": "Organization",
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
-            },
-            {
-              "type": "text",
-              "control_id": "producer_group_fname_row3",
-              "label": "First Name",
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
-            },
-            {
-              "type": "text",
-              "control_id": "producer_group_lname_row3",
-              "label": "Last Name",
-              "enums":[
-                "First First Name, Last Name",
-                "First Organization",
-                "Second First Name, Last Name",
-                "Second Organization",
-                "Third First Name, Last Name",
-                "Third Organization"
-              ]
+              "type": "table",
+              "enums": [
+                {
+                  "key": "producer_organization",
+                  "label": "Organization",
+                  "sortable": true
+                },
+                {
+                  "key": "producer_first_name",
+                  "label": "First Name",
+                  "sortable": true
+                },
+                {
+                  "key": "foo",
+                  "label": "Last Name",
+                  "sortable": true
+                }
+              ],
+              "required":true
             }
           ],
           "id": "8a364184-42ac-48fe-b831-acb2eb08c729",
