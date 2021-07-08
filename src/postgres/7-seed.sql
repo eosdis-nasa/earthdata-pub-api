@@ -121,7 +121,7 @@ INSERT INTO section_question VALUES ('39db0138-9cb8-4929-80a3-3be7f5c5b7f5', 'ab
 INSERT INTO section_question VALUES ('39db0138-9cb8-4929-80a3-3be7f5c5b7f5', '40672516-2220-4edc-8c1b-fd9f7e0b978e', 11, '[]', '[]');
 INSERT INTO section_question VALUES ('39db0138-9cb8-4929-80a3-3be7f5c5b7f5', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 12, '[]', '[]');
 
--- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required, FALSE))
+-- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))
 
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_name', 0, 'Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
@@ -172,15 +172,7 @@ INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_sup
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_orcid', 3, 'Orcid', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('d2bc7af7-211e-494a-a0bd-11b44f112eaa', 'funding_grant_number', 0, 'Grant Number', 'text', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_org_row1', 0, 'Organization', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_fname_row1', 1, 'First Name', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_lname_row1', 2, 'Last Name', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_org_row2', 3, 'Organization', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_fname_row2', 4, 'First Name', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_lname_row2', 5, 'Last Name', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_org_row3', 6, 'Organization', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_fname_row3', 7, 'First Name', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'producer_group_lname_row3', 8, 'Last Name', 'text', '["First First Name, Last Name","First Organization","Second First Name, Last Name","Second Organization","Third First Name, Last Name","Third Organization"]', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'data_producers_table', 0, '', 'table', '[{"key": "organization","label": "Organization","sortable": true},{"key": "first_name","label": "First Name","sortable": true},{"key": "last_name","label": "Last Name","sortable": true}]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_type_observational', 0, 'Observational', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_type_model', 1, 'Model', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('9767336b-a9a9-41d2-8d2d-4fc2858c9b6f', 'platform_instrument', 0, 'Platform - instrument', 'text', '{}', '{}', '[]','[]',  False);
