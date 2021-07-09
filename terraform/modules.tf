@@ -4,7 +4,12 @@ module "iam_roles" {
   region = var.region
   account_id = var.account_id
   stage = var.stage
+  edpub_inbound_sqs_arn = module.sqs_queues.edpub_inbound_sqs_arn
   edpub_action_sqs_arn = module.sqs_queues.edpub_action_sqs_arn
+  edpub_metrics_sqs_arn = module.sqs_queues.edpub_metrics_sqs_arn
+  edpub_notification_sqs_arn = module.sqs_queues.edpub_notification_sqs_arn
+  edpub_workflow_sqs_arn = module.sqs_queues.edpub_workflow_sqs_arn
+  edpub_outbound_sns_arn = module.sns_topics.edpub_outbound_sns_arn
   edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
   edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
@@ -34,9 +39,16 @@ module "lambda_functions" {
   api_id = module.apigateway_endpoints.api_id
   edpub_action_sqs_arn = module.sqs_queues.edpub_action_sqs_arn
   edpub_action_sqs_url = module.sqs_queues.edpub_action_sqs_url
+  edpub_metrics_sqs_arn = module.sqs_queues.edpub_metrics_sqs_arn
+  edpub_metrics_sqs_url = module.sqs_queues.edpub_metrics_sqs_url
+  edpub_notification_sqs_arn = module.sqs_queues.edpub_notification_sqs_arn
+  edpub_notification_sqs_url = module.sqs_queues.edpub_notification_sqs_url
+  edpub_workflow_sqs_arn = module.sqs_queues.edpub_workflow_sqs_arn
+  edpub_workflow_sqs_url = module.sqs_queues.edpub_workflow_sqs_url
   edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
   edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
+  edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
   edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
@@ -74,6 +86,7 @@ module "apigateway_endpoints" {
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
   edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
+  edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   vpc_endpoint_id = var.vpc_endpoint_id
 }
 

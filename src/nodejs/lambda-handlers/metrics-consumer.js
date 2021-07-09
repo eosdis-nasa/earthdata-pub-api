@@ -11,10 +11,11 @@ const DatabaseUtil = require('database-util');
 const MessageUtil = require('message-util');
 
 async function processRecord(record) {
-  const { eventMessage } = MessageUtil.parseRecord(record);
+  const eventMessage = MessageUtil.parseRecord(record);
   console.info(eventMessage);
   await DatabaseUtil.execute({ resource: 'metrics', operation: 'putMetric' },
     { metrics: { event: JSON.stringify(eventMessage) } });
+  await MessageUtil.sendMetric(eventMessage);
 }
 
 async function handler(event) {

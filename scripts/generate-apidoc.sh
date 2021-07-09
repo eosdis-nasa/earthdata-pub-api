@@ -15,7 +15,7 @@ mkdir ./docs/apidoc
 compile_oas_schema './temp/openapi.json'
 
 # Bundle doc with redoc-cli and move to docs
-redoc-cli bundle ./temp/openapi.json
+npx redoc-cli bundle ./temp/openapi.json
 mv ./redoc-static.html ${DIR}/docs/apidoc/index.html
 
 # Clear and remove temp

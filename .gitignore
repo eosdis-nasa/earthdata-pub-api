@@ -8,11 +8,12 @@ npm-debug.log
 #Ignore all dynamic and generated components
 /terraform/*.tfvars
 /terraform/remote.tf
-/terraform/apigateway/openapi.json
 /terraform/.terraform/
+/terraform/.terraform.lock.hcl
 /terraform/terraform.tfstate
 /terraform/terraform.tfstate.backup
 /terraform/tfplan
+/terraform/apigateway/openapi.json
 jsdoc/
 apidoc/
 /src/nodejs/api/openapi.json

@@ -515,6 +515,15 @@ module.exports.putMetric = function putMetric(req, res, next) {
   });
 };
 
+module.exports.metricsListReports = function metricsListReports(req, res, next) {
+  res.send(["2021-06-20", "2021-06-21", "2021-06-22"]);
+};
+
+module.exports.metricsGetReport = function putMetric(req, res, next) {
+  res.status(200);
+  res.sendFile(`${__dirname}/static/report_2021-06-20.jpeg`);
+};
+
 module.exports.getModel = function getModel(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

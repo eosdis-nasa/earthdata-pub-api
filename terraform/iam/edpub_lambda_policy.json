@@ -8,7 +8,12 @@
         "sqs:GetQueueAttributes"
       ],
       "Effect" : "Allow",
-      "Resource" : [ "${edpub_action_sqs_arn}"]
+      "Resource" : [
+        "${edpub_inbound_sqs_arn}",
+        "${edpub_action_sqs_arn}",
+        "${edpub_metrics_sqs_arn}",
+        "${edpub_notification_sqs_arn}",
+        "${edpub_workflow_sqs_arn}"]
     },
     {
       "Action" : [
@@ -26,6 +31,7 @@
       ],
       "Effect" : "Allow",
       "Resource" : [
+        "${edpub_outbound_sns_arn}",
         "${edpub_event_sns_arn}",
         "${edpub_email_sns_arn}",
         "${edpub_metrics_sns_arn}"]

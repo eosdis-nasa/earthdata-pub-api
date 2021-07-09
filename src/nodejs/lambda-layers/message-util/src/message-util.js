@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 
 const eventSns = process.env.EVENT_SNS;
+const metricsSns = process.env.METRICS_SNS;
 
 const sns = new AWS.SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -32,6 +33,17 @@ function sendEvent(eventMessage) {
     Message: JSON.stringify(eventMessage),
     MessageAttributes: marshalAttributes(eventMessage),
     TopicArn: eventSns
+  };
+  const response = sns.publish(params).promise().catch((e) => { console.error(e); });
+  return response;
+}
+
+function sendMetric(eventMessage) {
+  const { data, ...cleanedMessage } = eventMessage;
+  const params = {
+    Subject: 'metric',
+    Message: JSON.stringify(cleanedMessage),
+    TopicArn: metricsSns
   };
   const response = sns.publish(params).promise().catch((e) => { console.error(e); });
   return response;
@@ -79,5 +91,6 @@ function parseRecord(record) {
 }
 
 module.exports.sendEvent = sendEvent;
+module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
 module.exports.parseAttributesFromParams = parseAttributesFromParams;

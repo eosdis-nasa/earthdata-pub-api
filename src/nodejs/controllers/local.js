@@ -46,7 +46,7 @@ function authenticate(req, res) {
   DatabaseUtil.execute({ resource: 'user', operation: 'loginUser' }, { user })
     .then((data) => {
       Object.assign(user, data);
-      const authTime = Date.parse(user.last_login);
+      const authTime = Math.floor(Date.parse(user.last_login) / 1000);
       Object.assign(user, {
         sub: user.id,
         scope: 'openid',
@@ -69,7 +69,7 @@ function authenticate(req, res) {
 function token(req, res) {
   const { code, refresh_token } = req.body;
   if (code) {
-    const authTime = Date.now();
+    const authTime = Math.floor(Date.now() / 1000);
     const user = codes[code];
     Object.assign(user, {
       auth_time: authTime,
@@ -85,10 +85,12 @@ function token(req, res) {
       token_type: 'Bearer'
     };
     console.info(tokens);
-    res.status(200);
-    res.send(tokens);
+    setTimeout(function() {
+      res.status(200);
+      res.send(tokens);
+    }, 3000);
   } else if (refresh_token) {
-    const authTime = Date.now();
+    const authTime = Math.floor(Date.now() / 1000);
     const user = codes[refresh_token];
     Object.assign(user, {
       auth_time: authTime,
@@ -103,8 +105,10 @@ function token(req, res) {
       expires_in: exp,
       token_type: 'Bearer'
     };
-    res.status(200);
-    res.send(tokens);
+    setTimeout(function() {
+      res.status(200);
+      res.send(tokens);
+    }, 3000);
   }
 }
 
@@ -139,7 +143,10 @@ function check(req, secDef, token, next) {
     verify(newToken, tokenSecret, { issuer },
       (error, decoded) => {
         if (error === null && decoded) {
-          if (respectExp && decoded.exp < Date.now()) { next(req.res.sendStatus(403)); }
+          const currentTime = Math.floor(Date.now() / 1000);
+          if (respectExp && decoded.exp < currentTime) {
+            next(req.res.sendStatus(403));
+          }
           DatabaseUtil.execute({ resource: 'user', operation: 'findById' },
             { user: { id: decoded.sub } }).then((user) => {
             if (user.error) { return next(req.res.sendStatus(403)); }

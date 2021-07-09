@@ -26,6 +26,30 @@ variable "edpub_action_sqs_url" {
   type = string
 }
 
+variable "edpub_metrics_sqs_arn" {
+  type = string
+}
+
+variable "edpub_metrics_sqs_url" {
+  type = string
+}
+
+variable "edpub_notification_sqs_arn" {
+  type = string
+}
+
+variable "edpub_notification_sqs_url" {
+  type = string
+}
+
+variable "edpub_workflow_sqs_arn" {
+  type = string
+}
+
+variable "edpub_workflow_sqs_url" {
+  type = string
+}
+
 variable "edpub_event_sns_arn" {
   type = string
 }
@@ -47,6 +71,10 @@ variable "edpub_forms_s3_bucket" {
 }
 
 variable "edpub_overview_s3_bucket" {
+  type = string
+}
+
+variable "edpub_metrics_s3_bucket" {
   type = string
 }
 
