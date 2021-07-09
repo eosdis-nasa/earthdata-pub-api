@@ -12,6 +12,7 @@ npm-debug.log
 /terraform/.terraform.lock.hcl
 /terraform/terraform.tfstate
 /terraform/terraform.tfstate.backup
+/terraform/.terraform.lock.hcl
 /terraform/tfplan
 /terraform/apigateway/openapi.json
 jsdoc/
