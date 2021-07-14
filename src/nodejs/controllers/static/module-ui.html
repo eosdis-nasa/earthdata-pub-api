@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <title>Earthdata Pub Kayako Module</title>
+  <script>
+    const getToken = () => {
+      const token = window.localStorage.getItem('auth-token');
+      return `Bearer ${token}`;
+    }
+    const callApi = (operation, params) =>
+      new Promise((resolve) => {
+        fetch('http://localhost:8080/api/module/test', {
+          method: 'POST',
+          headers: {
+            'Authorization': getToken(),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ operation, ...params })
+        })
+        .then(r => r.json())
+        .then(data => {
+          resolve(data);
+        });
+      });
+    const testGetToken = () => {
+      const main = document.getElementById('output');
+      main.innerText = getToken();
+    }
+    const testApiCall = () => {
+      callApi('test', {})
+      .then(data => {
+        const main = document.getElementById('output');
+        main.innerText = data.message || data.error;
+      });
+    }
+    const clearOutput = () => {
+      const main = document.getElementById('output');
+      main.innerText = "";
+    }
+  </script>
+</head>
+<style>
+</style>
+<body>
+  <div>
+    <h1>Test Module</h1>
+    <button onclick="testApiCall()">Test API Call</button>
+    <button onclick="testGetToken()">Test Get Token</button>
+    <button onclick="clearOutput()">Clear Output</button>
+    <div id="output"></div>
+  </div>
+</body>
+</html>

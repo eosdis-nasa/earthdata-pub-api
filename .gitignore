@@ -18,7 +18,7 @@ npm-debug.log
 jsdoc/
 apidoc/
 /src/nodejs/api/openapi.json
-/src/nodejs/lambda-layers/database-util/src/db-setup/*.sql
+/src/nodejs/lambda-layers/database-util/src/db-setup
 
 #Ignore eslint and jest outputs
 eslint.json

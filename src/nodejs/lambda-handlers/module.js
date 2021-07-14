@@ -6,24 +6,75 @@
  * @see module:Module
  */
 
-const AWS = require('aws-sdk');
-
 const DatabaseUtil = require('database-util');
 
-const MessageUtil = require('message-util');
+const { Lambda } = require('aws-sdk');
+
+const lambda = new Lambda();
+
+const errors = {
+  in_module: {
+    error: "An error occured in the requested module."
+  },
+  not_found: {
+    error: "The requested module does not have a user interface."
+  },
+  no_ui: {
+    error: "There is no such module."
+  }
+}
+
+function invokeLambda(functionArn, payload) {
+  const params = {
+    FunctionName: functionArn,
+    InvocationType: 'RequestResponse',
+    Payload: JSON.stringify(payload)
+  }
+  return lambda.invoke(params).promise()
+  .then(({ Payload }) => Payload || errors.in_module);
+}
+
+async function listMethod() {
+  return DatabaseUtil.execute({ resource: 'module', operation: 'findAllWithInterface'}, {});
+}
+
+async function interfaceMethod(event) {
+  const moduleMeta = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName'},
+    { short_name: event.module });
+  if (moduleMeta.error) {
+    return errors.not_found;
+  }
+  else if (!moduleMeta.has_interface) {
+    return errors.no_ui
+  }
+  else {
+    return invokeLambda(moduleMeta.arn, { operation: "ui" });
+  }
+}
+
+async function requestMethod(event) {
+  const moduleMeta = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName'},
+    { short_name: event.module });
+  if (moduleMeta.error) {
+    return errors.not_found;
+  }
+  else {
+    return invokeLambda(moduleMeta.arn, { ...event.payload, user_id: event.context.user_id });
+  }
+}
+
+const operations = {
+  list: listMethod,
+  interface: interfaceMethod,
+  request: requestMethod
+}
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  const { moduleName: module } = event;
-  const lambda = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName' },
-    { short_name: moduleName });
-  const params = {
-    FunctionName: lambda.arn,
-    InvocationType: 'RequestResponse',
-    Payload: { ...event.payload, user_id: event.context.user_id }
-  }
-  const response = await lambda.invoke(params).promise();
-  return response.Payload;
+
+  const operation = operations[event.operation];
+  const data = await operation(event);
+  return data;
 }
 
 module.exports.handler = handler;

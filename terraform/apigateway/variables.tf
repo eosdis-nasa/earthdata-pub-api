@@ -22,6 +22,10 @@ variable "metrics_lambda_arn" {
   type = string
 }
 
+variable "module_lambda_arn" {
+  type = string
+}
+
 variable "model_lambda_arn" {
   type = string
 }

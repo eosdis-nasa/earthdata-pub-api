@@ -535,6 +535,44 @@ module.exports.getModel = function getModel(req, res, next) {
   });
 };
 
+module.exports.moduleList = function moduleList(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: "list",
+    context: { user_id: req.user_id }
+  }
+  handlers.module(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+}
+
+module.exports.moduleInterface = function moduleInterface(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: "interface",
+    module: params.module.value,
+    context: { user_id: req.user_id }
+  }
+  res.sendFile(`${__dirname}/static/module-ui.html`);
+}
+
+module.exports.moduleRequest = function moduleRequest(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: "request",
+    module: params.module.value,
+    payload: params.payload.value,
+    context: { user_id: req.user_id }
+  }
+  const { payload } = lambdaEvent;
+  if (payload.operation == "test") {
+    res.send({ message: "Success" });
+  }
+  else {
+    res.send({ error: "Error" });
+  }
+}
+
 module.exports.getToken = function getToken(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

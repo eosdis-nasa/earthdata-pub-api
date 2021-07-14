@@ -10,6 +10,7 @@ module.exports.findById = one;
 module.exports.findByName = one;
 module.exports.findAll = many;
 module.exports.findAllEx = many;
+module.exports.findAllWithInterface = many;
 module.exports.putItem = one;
 module.exports.updateName = one;
 module.exports.updateDaac = one;
