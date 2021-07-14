@@ -14,60 +14,58 @@ const lambda = new Lambda();
 
 const errors = {
   in_module: {
-    error: "An error occured in the requested module."
+    error: 'An error occured in the requested module.'
   },
   not_found: {
-    error: "The requested module does not have a user interface."
+    error: 'The requested module does not have a user interface.'
   },
   no_ui: {
-    error: "There is no such module."
+    error: 'There is no such module.'
   }
-}
+};
 
 function invokeLambda(functionArn, payload) {
   const params = {
     FunctionName: functionArn,
     InvocationType: 'RequestResponse',
     Payload: JSON.stringify(payload)
-  }
+  };
   return lambda.invoke(params).promise()
-  .then(({ Payload }) => Payload || errors.in_module);
+    .then(({ Payload }) => Payload || errors.in_module);
 }
 
 async function listMethod() {
-  return DatabaseUtil.execute({ resource: 'module', operation: 'findAllWithInterface'}, {});
+  return DatabaseUtil.execute({ resource: 'module', operation: 'findAllWithInterface' }, {});
 }
 
 async function interfaceMethod(event) {
-  const moduleMeta = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName'},
+  const moduleMeta = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName' },
     { short_name: event.module });
   if (moduleMeta.error) {
     return errors.not_found;
   }
-  else if (!moduleMeta.has_interface) {
-    return errors.no_ui
+  if (!moduleMeta.has_interface) {
+    return errors.no_ui;
   }
-  else {
-    return invokeLambda(moduleMeta.arn, { operation: "ui" });
-  }
+
+  return invokeLambda(moduleMeta.arn, { operation: 'ui' });
 }
 
 async function requestMethod(event) {
-  const moduleMeta = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName'},
+  const moduleMeta = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName' },
     { short_name: event.module });
   if (moduleMeta.error) {
     return errors.not_found;
   }
-  else {
-    return invokeLambda(moduleMeta.arn, { ...event.payload, user_id: event.context.user_id });
-  }
+
+  return invokeLambda(moduleMeta.arn, { ...event.payload, user_id: event.context.user_id });
 }
 
 const operations = {
   list: listMethod,
   interface: interfaceMethod,
   request: requestMethod
-}
+};
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
