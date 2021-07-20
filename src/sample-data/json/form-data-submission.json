@@ -216,17 +216,17 @@
                 {
                   "key": "producer_organization",
                   "label": "Organization",
-                  "sortable": true
+                  "sortable": false
                 },
                 {
                   "key": "producer_first_name",
                   "label": "First Name",
-                  "sortable": true
+                  "sortable": false
                 },
                 {
                   "key": "foo",
                   "label": "Last Name",
-                  "sortable": true
+                  "sortable": false
                 }
               ],
               "required":true

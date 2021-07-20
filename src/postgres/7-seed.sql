@@ -172,7 +172,7 @@ INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_sup
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_orcid', 3, 'Orcid', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('d2bc7af7-211e-494a-a0bd-11b44f112eaa', 'funding_grant_number', 0, 'Grant Number', 'text', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'data_producers_table', 0, '', 'table', '[{"key": "organization","label": "Organization","sortable": true},{"key": "first_name","label": "First Name","sortable": true},{"key": "last_name","label": "Last Name","sortable": true}]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'data_producers_table', 0, '', 'table', '[{"key": "organization","label": "Organization","sortable": false},{"key": "first_name","label": "First Name","sortable": false},{"key": "last_name","label": "Last Name","sortable": false}]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_type_observational', 0, 'Observational', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_type_model', 1, 'Model', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('9767336b-a9a9-41d2-8d2d-4fc2858c9b6f', 'platform_instrument', 0, 'Platform - instrument', 'text', '{}', '{}', '[]','[]',  False);
