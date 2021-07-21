@@ -19,6 +19,7 @@ jsdoc/
 apidoc/
 /src/nodejs/api/openapi.json
 /src/nodejs/lambda-layers/database-util/src/db-setup
+/ecr-credentials
 
 #Ignore eslint and jest outputs
 eslint.json
