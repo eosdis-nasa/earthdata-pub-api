@@ -18,7 +18,6 @@ function hmac_hex () {
   echo -n "$1" | openssl dgst -sha256 -binary -mac HMAC -macopt "hexkey:$2" | xxd -p -c 64
 }
 
-
 CANONICAL="POST
 /
 
@@ -43,7 +42,6 @@ SERVICEKEY=$(hmac_hex "$SERVICE" "$REGIONKEY")
 SIGNINGKEY=$(hmac_hex "aws4_request" "$SERVICEKEY")
 SIGNATURE=$(hmac_hex "$SIGNABLE" "$SIGNINGKEY")
 
-
 AUTHORIZATION="${ALGORITHM} Credential=${CREDENTIAL} SignedHeaders=${SIGNEDHEADERS} Signature=${SIGNATURE}"
 
 echo "password=$(curl --silent -X POST \
@@ -54,7 +52,7 @@ echo "password=$(curl --silent -X POST \
 -H "X-Amz-Date:${DATE}" \
 -H "X-Amz-Target:AmazonEC2ContainerRegistry_V20150921.GetAuthorizationToken" \
 -d "$PAYLOAD" \
-https://ecr.us-east-1.amazonaws.com echo | \
+https://ecr.us-east-1.amazonaws.com | \
 sed -n -e 's/^.*authorizationToken":"//p' | \
 cut -d'"' -f1 | base64 --decode | \
 sed -n -e 's/AWS://p')" > ecr-credentials
