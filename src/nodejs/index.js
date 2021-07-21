@@ -23,7 +23,7 @@ app.use(local.aclAllowAll);
 
 app.get('/auth/login', local.login);
 app.post('/auth/login', local.authenticate);
-app.post('/auth/token', local.token);
+app.post('/auth/token', local.getToken);
 app.get('/auth/user_list', local.userList);
 app.get('/auth/group_list', local.groupList);
 app.get('/auth/role_list', local.roleList);
@@ -33,7 +33,6 @@ app.post('/goaws/workflow_consumer', local.handleWorkflow);
 app.post('/goaws/metrics_consumer', local.handleMetrics);
 app.post('/goaws/notification_consumer', local.handleNotification);
 app.post('/database_test', local.dbTest);
-app.all('/kayako', local.kayakoMock);
 app.get('/docs', (req, res) => res.redirect('/docs/index.html'));
 app.get('/api-docs', (req, res) => res.redirect('/api-docs/index.html'));
 

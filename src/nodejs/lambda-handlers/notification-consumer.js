@@ -10,10 +10,6 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
-const KayakoUtil = require('kayako-util');
-
-const syncFlag = process.env.KAYAKO_SYNC_FLAG ? process.env.KAYAKO_SYNC_FLAG : false;
-
 const textTemplates = {
   submission_initialized: (p) => `A new request has been initialized with ID ${p.submission_id}.`
 };
@@ -21,33 +17,6 @@ const textTemplates = {
 const subjectTemplates = {
   submission_initialized: (p) => `Submission ID ${p.submission_id}`
 };
-
-async function syncToKayako(params) {
-  const userInfo = await DatabaseUtil.execute({ resource: 'user', operation: 'findById' }, { user: { id: params.user_id } });
-  const kayakoUserId = await DatabaseUtil.execute({ resource: 'user', operation: 'getKayakoIdByEDPUserId' },
-    { id: params.user_id });
-  if (params.conversation_id) {
-    const ticketId = await DatabaseUtil.execute({ resource: 'note', operation: 'getTicketIdByConversationId' },
-      { id: params.conversation_id });
-    await KayakoUtil.createPost({
-      ticketid: ticketId,
-      contents: params.text,
-      userid: kayakoUserId
-    });
-  } else {
-    await KayakoUtil.createTicket({
-      subject: params.subject,
-      fullname: userInfo.name,
-      email: userInfo.email,
-      contents: params.text,
-      departmentid: '52',
-      ticketstatusid: '1',
-      ticketpriorityid: '1',
-      tickettypeid: '1',
-      userid: kayakoUserId
-    });
-  }
-}
 
 async function directMessage(eventMessage) {
   const { user_id: senderId, data } = eventMessage;
@@ -57,9 +26,6 @@ async function directMessage(eventMessage) {
   };
   const operation = data.conversation_id ? 'reply' : 'sendNote';
   await DatabaseUtil.execute({ resource: 'note', operation }, params);
-  if (syncFlag) {
-    await syncToKayako(params);
-  }
 }
 
 async function submissionInitialized(eventMessage) {
@@ -70,9 +36,6 @@ async function submissionInitialized(eventMessage) {
     user_list: []
   };
   const newNote = await DatabaseUtil.execute({ resource: 'note', operation: 'sendNote' }, params);
-  if (syncFlag) {
-    await syncToKayako(params);
-  }
 
   const test = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateConversation' },
     {

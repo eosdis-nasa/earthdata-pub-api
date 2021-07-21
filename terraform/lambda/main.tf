@@ -16,15 +16,6 @@ resource "aws_lambda_layer_version" "database_util" {
   source_code_hash    = filesha256("../artifacts/database-util-layer.zip")
 }
 
-# Kayako Util Layer
-
-resource "aws_lambda_layer_version" "kayako_util" {
-  filename            = "../artifacts/kayako-util-layer.zip"
-  layer_name          = "kayakoUtilLayer"
-  compatible_runtimes = ["nodejs12.x"]
-  source_code_hash    = filesha256("../artifacts/kayako-util-layer.zip")
-}
-
 # Message Util Layer
 
 resource "aws_lambda_layer_version" "message_util" {
@@ -300,6 +291,43 @@ resource "aws_lambda_permission" "model" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
+# Module Lambda
+
+resource "aws_lambda_function" "module" {
+  filename      = "../artifacts/module-lambda.zip"
+  function_name = "module"
+  role          = var.edpub_lambda_role_arn
+  handler       = "module.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn
+  ]
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/module-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION    = var.region
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "module" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.module.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
+}
+
 # Notify Lambda
 
 resource "aws_lambda_function" "notification" {
@@ -309,7 +337,6 @@ resource "aws_lambda_function" "notification" {
   handler       = "notification.handler"
   layers = [
     aws_lambda_layer_version.database_util.arn,
-    aws_lambda_layer_version.kayako_util.arn,
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
@@ -350,7 +377,6 @@ resource "aws_lambda_function" "notification_consumer" {
   handler       = "notification-consumer.handler"
   layers = [
     aws_lambda_layer_version.database_util.arn,
-    aws_lambda_layer_version.kayako_util.arn,
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]

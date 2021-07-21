@@ -76,6 +76,7 @@ module "apigateway_endpoints" {
   notification_lambda_arn = module.lambda_functions.notification_lambda_arn
   metrics_lambda_arn = module.lambda_functions.metrics_lambda_arn
   model_lambda_arn = module.lambda_functions.model_lambda_arn
+  module_lambda_arn = module.lambda_functions.module_lambda_arn
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn
   subscribe_lambda_arn = module.lambda_functions.subscribe_lambda_arn
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn

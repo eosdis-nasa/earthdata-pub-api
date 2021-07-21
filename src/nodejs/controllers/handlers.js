@@ -3,6 +3,7 @@ module.exports.data = require('../lambda-handlers/data.js').handler;
 module.exports.invoke = require('../lambda-handlers/invoke.js').handler;
 module.exports.metrics = require('../lambda-handlers/metrics.js').handler;
 module.exports.model = require('../lambda-handlers/model.js').handler;
+module.exports.module = require('../lambda-handlers/module.js').handler;
 module.exports.notification = require('../lambda-handlers/notification.js').handler;
 module.exports.register = require('../lambda-handlers/register.js').handler;
 module.exports.submission = require('../lambda-handlers/submission.js').handler;

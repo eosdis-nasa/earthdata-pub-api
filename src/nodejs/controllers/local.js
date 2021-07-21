@@ -66,7 +66,7 @@ function authenticate(req, res) {
     });
 }
 
-function token(req, res) {
+function getToken(req, res) {
   const { code, refresh_token } = req.body;
   if (code) {
     const authTime = Math.floor(Date.now() / 1000);
@@ -105,6 +105,7 @@ function token(req, res) {
       expires_in: exp,
       token_type: 'Bearer'
     };
+    console.info(tokens);
     setTimeout(function() {
       res.status(200);
       res.send(tokens);
@@ -201,15 +202,6 @@ function wrapSns(req) {
   return { Records: [{ Sns: { ...req.body } }] };
 }
 
-function kayakoMock(req, res) {
-  // Placeholder that logs requests, will update to return useful mock values
-  console.info('Headers: ', JSON.stringify(req.headers || {}));
-  console.info('Query: ', JSON.stringify(req.query || {}));
-  console.info('Request Body: ', JSON.stringify(req.body || {}));
-  res.status(200);
-  res.send();
-}
-
 function dbTest(req, res) {
   const { resource, operation, params } = req.body;
   DatabaseUtil.execute({ resource, operation }, params)
@@ -223,7 +215,7 @@ module.exports = {
   aclAllowAll,
   issuer,
   tokenSecret,
-  token,
+  getToken,
   login,
   authenticate,
   check,
@@ -234,7 +226,6 @@ module.exports = {
   handleWorkflow,
   handleMetrics,
   handleNotification,
-  kayakoMock,
   dbTest,
   favico
 };

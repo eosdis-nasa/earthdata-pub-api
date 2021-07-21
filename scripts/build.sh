@@ -14,13 +14,14 @@ clear_artifacts
 compile_oas_schema './terraform/apigateway/openapi.json'
 
 #Copy database setup and seed scripts
+rm -rf ./src/nodejs/lambda-layers/database-util/src/db-setup
 mkdir -p ./src/nodejs/lambda-layers/database-util/src/db-setup
 cp ./src/postgres/*.sql ./src/nodejs/lambda-layers/database-util/src/db-setup
+rm ./src/nodejs/lambda-layers/database-util/src/db-setup/*localseed.sql
 
 #Install individual modules
 install_layer auth-util
 install_layer database-util
-install_layer kayako-util
 install_layer message-util
 install_layer schema-util
 #Add more layer modules here <--
@@ -32,6 +33,7 @@ install_lambda invoke
 install_lambda metrics
 install_lambda metrics-consumer
 install_lambda model
+install_lambda module
 install_lambda notification
 install_lambda notification-consumer
 install_lambda register

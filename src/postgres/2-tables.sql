@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS input CASCADE;
 
 DROP TABLE IF EXISTS action CASCADE;
 
+DROP TABLE IF EXISTS module CASCADE;
+
 DROP TABLE IF EXISTS service CASCADE;
 
 DROP TABLE IF EXISTS service_secret CASCADE;
@@ -25,8 +27,6 @@ DROP TABLE IF EXISTS edprole CASCADE;
 DROP TABLE IF EXISTS edpuser_edpgroup CASCADE;
 
 DROP TABLE IF EXISTS edpuser_edprole CASCADE;
-
-DROP TABLE IF EXISTS edpuser_kayako_user CASCADE;
 
 DROP TABLE IF EXISTS daac CASCADE;
 
@@ -87,10 +87,6 @@ DROP TABLE IF EXISTS edpgroup_subscription_workflow CASCADE;
 DROP TABLE IF EXISTS edprole_privilege CASCADE;
 
 DROP TABLE IF EXISTS metrics CASCADE;
-
-DROP TABLE IF EXISTS conversation_kayako_ticket CASCADE;
-
-DROP TABLE IF EXISTS note_kayako_post CASCADE;
 
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
@@ -164,6 +160,18 @@ CREATE TABLE IF NOT EXISTS action (
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   UNIQUE (short_name, version)
+);
+
+CREATE TABLE IF NOT EXISTS module (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  short_name VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
+  description VARCHAR NOT NULL,
+  arn VARCHAR NOT NULL,
+  has_interface BOOLEAN NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (id),
+  UNIQUE (short_name)
 );
 
 CREATE TABLE IF NOT EXISTS service (
@@ -242,26 +250,12 @@ CREATE TABLE IF NOT EXISTS edpuser_edprole (
   FOREIGN KEY (edprole_id) REFERENCES edprole (id)
 );
 
-CREATE TABLE IF NOT EXISTS edpuser_kayako_user (
-  id UUID NOT NULL,
-  kayako_id VARCHAR NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES edpuser (id)
-);
-
 CREATE TABLE IF NOT EXISTS conversation (
   id UUID DEFAULT UUID_GENERATE_V4(),
   subject VARCHAR DEFAULT 'No Subject',
   created_at TIMESTAMP DEFAULT NOW(),
   last_change TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS conversation_kayako_ticket (
-  id UUID NOT NULL,
-  ticket_id VARCHAR NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES conversation (id)
 );
 
 CREATE TABLE IF NOT EXISTS note (
@@ -274,13 +268,6 @@ CREATE TABLE IF NOT EXISTS note (
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
   UNIQUE (id)
-);
-
-CREATE TABLE IF NOT EXISTS note_kayako_post (
-  id UUID NOT NULL,
-  post_id VARCHAR NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES note (id)
 );
 
 CREATE TABLE IF NOT EXISTS conversation_edpuser (

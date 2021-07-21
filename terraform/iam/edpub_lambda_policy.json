@@ -45,6 +45,14 @@
     },
     {
       "Action" : [
+        "lambda:InvokeFunction",
+        "lambda:InvokeAsync"
+      ],
+      "Effect" : "Allow",
+      "Resource" : "*"
+    },
+    {
+      "Action" : [
         "apigateway:*"
       ],
       "Effect" : "Allow",

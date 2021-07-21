@@ -20,7 +20,7 @@ services:
       - PG_DB=edpub
       - PG_PASS=edpub
       - PG_PORT=5432
-      - AUTH_RESPECT_EXP=false
+      - AUTH_RESPECT_EXP=true
       - AUTH_TOKEN_EXP=1800
       - AUTH_PROVIDER_URL=http://localhost:8080
       - AUTH_LOGIN_PATH=auth/login
@@ -30,9 +30,6 @@ services:
       - AUTH_CLIENT_ID=1or0vuut22m9a5r9hd4s00er9k
       - AUTH_CLIENT_SECRET=1drni35hoa4tcp63jv9dr5pa8dfj8talscgv4m7e5fabc1qemsuv
       - AUTH_CLIENT_URL=http://localhost:3000/auth
-      - APIKEY=fake
-      - SECRETKEY=fake
-      - HOSTNAME=http://localhost:3000/kayako
       - SALTLENGTH=10
     command: ["npm", "start"]
     ports:
