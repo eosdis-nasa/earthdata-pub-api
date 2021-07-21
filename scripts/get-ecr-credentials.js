@@ -86,7 +86,7 @@ const req = https.request(options, (res) => {
     const encoded = JSON.parse(d).authorizationData[0].authorizationToken;
     const buffer = Buffer.from(encoded, 'base64');
     const token = buffer.toString().split(':')[1];
-    const dataout = `ecr_password=${token}`;
+    const dataout = `password=${token}`;
     fs.writeFileSync('ecr-credentials', dataout)
   });
 });
