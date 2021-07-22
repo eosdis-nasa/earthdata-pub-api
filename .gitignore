@@ -7,7 +7,6 @@ npm-debug.log
 
 #Ignore all dynamic and generated components
 /terraform/*.tfvars
-/terraform/remote.tf
 /terraform/.terraform/
 /terraform/.terraform.lock.hcl
 /terraform/terraform.tfstate
