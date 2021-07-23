@@ -4464,11 +4464,18 @@
                 "schema": {
                   "type": "string"
                 }
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
               }
             },
             "content": {
               "text/html": {
-                "type": "string"
+                "schema": {
+                  "type": "string"
+                }
               }
             }
           },

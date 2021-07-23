@@ -12,5 +12,8 @@ unzip terraform_1.0.0_linux_amd64.zip && \
 mv terraform /usr/local/bin && \
 rm terraform_1.0.0_linux_amd64.zip
 
+RUN \
+npm install -g snyk
+
 COPY --from=aws /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=aws /usr/local/bin/ /usr/local/bin/
