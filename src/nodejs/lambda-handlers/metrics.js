@@ -3,9 +3,30 @@
  * @module Data
  */
 
+const path = require('path');
+
+const { S3 } = require('aws-sdk');
+
 const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
+
+const bucket = process.env.METRICS_BUCKET;
+
+async function getReport({ key }) {
+  const s3 = new S3({ region });
+  const params = { Bucket: bucket, Key: `${key}.png` };
+  const data = await s3.getObject(params).promise();
+  return { image: `data:image/png;base64,${data.Body.toString('base64')}` };
+}
+
+async function listReports() {
+  const list = await s3.listObjectsV2({ Bucket: bucket }).promise();
+  const keys = list.Contents.map(object => {
+    return path.parse(object.Key).name;
+  });
+  return keys;
+}
 
 async function search({ filter }) {
   if (filter.count) {
@@ -37,7 +58,9 @@ async function put({ payload, context }) {
 
 const operations = {
   search,
-  put
+  put,
+  get_report: getReport,
+  list_reports: listReports
 };
 
 async function handler(event) {

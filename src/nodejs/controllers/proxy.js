@@ -521,7 +521,7 @@ module.exports.metricsListReports = function metricsListReports(req, res, next) 
 
 module.exports.metricsGetReport = function putMetric(req, res, next) {
   res.status(200);
-  res.sendFile(`${__dirname}/static/report_2021-06-20.jpeg`);
+  res.sendFile(`${__dirname}/static/2021-06-20.json`);
 };
 
 module.exports.getModel = function getModel(req, res, next) {

@@ -27,8 +27,8 @@ const fs = require('fs');
 // }
 
 async function processRecord(record) {
-  const triggerMessage = MessageUtil.parseRecord(record);
-  const { action_id: actionId, submission_id: submissionId, data } = triggerMessage;
+  const { eventMessage } = MessageUtil.parseRecord(record);
+  const { action_id: actionId, submission_id: submissionId, data } = eventMessage;
   const action = await DatabaseUtil.execute({ resource: 'action', operation: 'findById' },
     { action: { id: actionId } });
   const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'findById' },
@@ -46,13 +46,13 @@ async function processRecord(record) {
     { submission, action });
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getStatus' },
     { submission });
-  const eventMessage = {
+  const newEventMessage = {
     event_type: 'workflow_promote_step',
     submission_id: status.id,
     workflow_id: status.workflow_id,
     step_name: status.step_name
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await MessageUtil.sendEvent(newEventMessage);
   return output;
 }
 

@@ -365,7 +365,7 @@ resource "aws_lambda_permission" "notification" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.notification.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/notification/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification/*"
 }
 
 # Notification Consumer Lambda
