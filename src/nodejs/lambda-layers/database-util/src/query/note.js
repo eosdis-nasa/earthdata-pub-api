@@ -11,6 +11,38 @@ const refs = {
     src: 'conversation_edpuser',
     on: { left: 'conversation.id', right: 'conversation_edpuser.conversation_id' }
   },
+  participant_agg: {
+    type: 'left_join',
+    src: sql.select({
+      fields: [
+        'conversation_edpuser.conversation_id',
+        {
+          type: 'json_agg',
+          src: {
+            type: 'json_obj',
+            keys: [
+              ['id', 'edpuser.id'],
+              ['name', 'edpuser.name'],
+              ['email', 'edpuser.email']
+            ]
+          },
+          order: 'edpuser.name',
+          sort: 'ASC',
+          alias: 'participants'
+        }
+      ],
+      from: {
+        base: 'conversation_edpuser',
+        joins: [{
+          type: 'left_join', src: 'edpuser',
+          on: { left: 'conversation_edpuser.edpuser_id', right: 'edpuser.id' }
+        }]
+      },
+      group: 'conversation_edpuser.conversation_id',
+      alias: 'participant_agg'
+    }),
+    on: { left: 'participant_agg.conversation_id', right: 'conversation.id' }
+  },
   note_agg: {
     type: 'left_join',
     src: sql.select({
@@ -107,9 +139,16 @@ const getConversationList = (params) => sql.select({
   sort: 'DESC'
 });
 
-const readConversation = (params) => sql.select({
-  fields: ['conversation.id', 'conversation.subject', 'notes'],
-  from: { base: 'conversation', joins: [refs.conversation_user, refs.note_agg] },
+const readConversation = (params) => `
+WITH user_update AS (UPDATE conversation_edpuser SET
+ unread = FALSE
+ WHERE conversation_edpuser.conversation_id = {{conversation_id}}
+ AND conversation_edpuser.edpuser_id = {{user_id}})
+${sql.select({
+  fields: ['conversation.id', 'conversation.subject', 'notes', 'participants'],
+  from: {
+    base: 'conversation',
+    joins: [refs.conversation_user, refs.participant_agg, refs.note_agg] },
   where: {
     filters: [
       { field: 'note_agg.conversation_id', param: 'conversation_id' },
@@ -118,7 +157,7 @@ const readConversation = (params) => sql.select({
   },
   order: 'created_at',
   sort: 'DESC'
-});
+})}`;
 
 const reply = () => `
 WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text) VALUES
@@ -152,6 +191,11 @@ new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text)
 RETURNING *)
 SELECT * FROM new_note`;
 
+const addUsersToConversation = (params) => `
+INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+SELECT {{conversation_id}} conversation_id, UNNEST({{user_list}}::uuid[]) edpuser_id
+RETURNING *`;
+
 const getTicketIdByConversationId = (params) => sql.select({
   fields: ['conversation_kayako_ticket.ticket_id'],
   from: { base: 'conversation_kayako_ticket' },
@@ -182,5 +226,6 @@ module.exports.getConversationList = getConversationList;
 module.exports.readConversation = readConversation;
 module.exports.reply = reply;
 module.exports.sendNote = sendNote;
+module.exports.addUsersToConversation = addUsersToConversation;
 module.exports.getTicketIdByConversationId = getTicketIdByConversationId;
 module.exports.syncConversation = syncConversation;

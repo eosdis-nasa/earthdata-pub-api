@@ -41,6 +41,7 @@ module.exports.getConversationList = many;
 module.exports.readConversation = one;
 module.exports.reply = one;
 module.exports.sendNote = one;
+module.exports.addUsersToConversation = many;
 module.exports.getTicketIdByConversationId = one;
 module.exports.syncConversation = one;
 module.exports.getKayakoIdByEDPUserId = one;

@@ -420,6 +420,18 @@ module.exports.notificationReply = function notificationReply(req, res, next) {
   });
 };
 
+module.exports.notificationAddUsers = function notificationAddUsers(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'add_users',
+    ...params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
 module.exports.notificationConversations = function notificationConversations(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

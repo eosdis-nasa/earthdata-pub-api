@@ -13,7 +13,8 @@ async function sendMethod(params) {
   const message = {
     event_type: 'direct_message',
     data: {
-      subject: params.subject,
+      subject: params.subject && params.subject != '' ?
+        params.subject : 'No Subject',
       text: params.text,
       user_list: params.user_list
     },
@@ -28,7 +29,7 @@ async function replyMethod(params) {
   const message = {
     event_type: 'direct_message',
     data: {
-      conversation_id: params.id,
+      conversation_id: params.conversation_id,
       text: params.text
     },
     user_id: params.context.user_id
@@ -36,6 +37,12 @@ async function replyMethod(params) {
 
   await MessageUtil.sendEvent(message);
   return { message: 'Successfully sent.' };
+}
+
+async function addUsersMethod(params) {
+  const response = await DatabaseUtil.execute({ resource: 'note', operation: 'addUsersToConversation'},
+    { conversation_id: params.conversation_id, user_list: params.user_list })
+  return response;
 }
 
 async function conversationsMethod(params) {
@@ -53,6 +60,7 @@ async function conversationMethod(params) {
 const operations = {
   send: sendMethod,
   reply: replyMethod,
+  add_users: addUsersMethod,
   conversations: conversationsMethod,
   conversation: conversationMethod
 };
