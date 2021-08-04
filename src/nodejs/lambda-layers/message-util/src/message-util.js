@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const uuid = require('uuid');
 
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
@@ -42,6 +43,7 @@ function sendEvent(eventMessage) {
 
 function sendMetric(eventMessage) {
   const { data, ...cleanedMessage } = eventMessage;
+  cleanedMessage.message_id = uuid.v4();
   const params = {
     Subject: 'metric',
     Message: JSON.stringify(cleanedMessage),
