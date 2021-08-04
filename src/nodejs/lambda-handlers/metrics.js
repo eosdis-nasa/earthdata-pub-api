@@ -13,8 +13,11 @@ const MessageUtil = require('message-util');
 
 const bucket = process.env.METRICS_BUCKET;
 
+const region = process.env.REGION;
+
+const s3 = new S3({ region });
+
 async function getReport({ key }) {
-  const s3 = new S3({ region });
   const params = { Bucket: bucket, Key: `${key}.png` };
   const data = await s3.getObject(params).promise();
   return { image: `data:image/png;base64,${data.Body.toString('base64')}` };
@@ -22,9 +25,7 @@ async function getReport({ key }) {
 
 async function listReports() {
   const list = await s3.listObjectsV2({ Bucket: bucket }).promise();
-  const keys = list.Contents.map(object => {
-    return path.parse(object.Key).name;
-  });
+  const keys = list.Contents.map((object) => path.parse(object.Key).name);
   return keys;
 }
 

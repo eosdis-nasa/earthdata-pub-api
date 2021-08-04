@@ -13,8 +13,8 @@ async function sendMethod(params) {
   const message = {
     event_type: 'direct_message',
     data: {
-      subject: params.subject && params.subject != '' ?
-        params.subject : 'No Subject',
+      subject: params.subject && params.subject !== ''
+        ? params.subject : 'No Subject',
       text: params.text,
       user_list: params.user_list
     },
@@ -40,8 +40,8 @@ async function replyMethod(params) {
 }
 
 async function addUsersMethod(params) {
-  const response = await DatabaseUtil.execute({ resource: 'note', operation: 'addUsersToConversation'},
-    { conversation_id: params.conversation_id, user_list: params.user_list })
+  const response = await DatabaseUtil.execute({ resource: 'note', operation: 'addUsersToConversation' },
+    { conversation_id: params.conversation_id, user_list: params.user_list });
   return response;
 }
 

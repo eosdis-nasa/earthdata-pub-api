@@ -81,23 +81,19 @@ function parseSqsMessage(message) {
   if (body.TopicArn) {
     return parseSnsMessage(body);
   }
-  else {
-    const timestamp = new Date(unixTime).toISOString();
-    const unixTime = parseInt(message.attributes.SentTimestamp);
-    return {
-      eventMessage: body,
-      timestamp
-    }
-  }
+  const unixTime = parseInt(message.attributes.SentTimestamp, 0);
+  const timestamp = new Date(unixTime).toISOString();
+  return {
+    eventMessage: body,
+    timestamp
+  };
 }
 
 function parseRecord(record) {
   if (record.Sns) {
     return parseSnsMessage(record.Sns);
-  } else {
-    return parseSqsMessage(record);
   }
-  return {};
+  return parseSqsMessage(record);
 }
 
 module.exports.sendEvent = sendEvent;
