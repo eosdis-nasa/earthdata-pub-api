@@ -12,7 +12,7 @@ const mapping = {
   // "funding_program_name": "text",
   "data_product_name_value": (value) => [{ path: '$', assign: { 'ShortName': value, 'EntryTitle': value } }] ,
   "data_product_description": (value) => [{ path: '$', assign: { 'Abstract': value } }],
-  "publication_dois": (value) => [{ path: '$.PublicationReferences[n].DOI', type: 'space_delimited_list', assign: { 'DOI' : value} }],
+  //"publication_dois": (value) => [{ path: '$.PublicationReferences[n].DOI', type: 'space_delimited_list', assign: { 'DOI' : value} }],
   "science_value_description": (value) => [{ path: '$', assign: { 'Purpose': value } }],
   // "data_submission_reason_description": "textarea",
   // "data_submission_approval_dependencies_radios": "radio",

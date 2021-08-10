@@ -39,7 +39,10 @@
     "textarea"
   ],
   "publication_dois": [
-    "text"
+    "table"
+  ],
+  "data_producers_table": [
+    "table"
   ],
   "science_value_description": [
     "textarea"

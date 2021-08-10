@@ -136,7 +136,7 @@ INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organ
 INSERT INTO input VALUES ('4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 'funding_program_name', 0, 'Program', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 'data_product_name_value', 0, 'Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('39701413-ac96-4b66-9c2f-2d9c08a18ed9', 'data_product_description', 0, 'Description', 'textarea', '{}', '{"rows":3,"cols":20}', '[]','[]',  True);
-INSERT INTO input VALUES ('ab57f5e8-9ec5-46c9-978e-d06125346d37', 'publication_dois', 0, 'DOIs', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('ab57f5e8-9ec5-46c9-978e-d06125346d37', 'publication_dois', 0, '', 'table', '[{"key": "doi","label": "DOIs","sortable": false, "type": "text"}]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('7fd7bccf-5065-4033-9956-9e80bc99c205', 'science_value_description', 0, 'Description', 'textarea', '{}', '{"rows":3,"cols":20}', '[]','[]',  True);
 INSERT INTO input VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_submission_reason_description', 0, 'Description', 'textarea', '{}', '{"rows":5,"cols":20,"maxlength":1000,"placeholder":"This is a placeholder"}', '[]','[]',  True);
 INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_submission_approval_dependencies_radios', 0, 'Has Dependencies', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
@@ -172,7 +172,7 @@ INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_sup
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_orcid', 3, 'Orcid', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('d2bc7af7-211e-494a-a0bd-11b44f112eaa', 'funding_grant_number', 0, 'Grant Number', 'text', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'data_producers_table', 0, 'Organization', 'table', '[{"key": "organization","label": "Organization","sortable": false},{"key": "first_name","label": "First Name","sortable": false},{"key": "last_name","label": "Last Name","sortable": false}]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'data_producers_table', 0, '', 'table', '[{"key": "organization","label": "Organization","sortable": false, "type":"text"},{"key": "first_name","label": "First Name","sortable": false, "type":"text"},{"key": "last_name","label": "Last Name","sortable": false, "type":"text"}]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_type_observational', 0, 'Observational', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_type_model', 1, 'Model', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('9767336b-a9a9-41d2-8d2d-4fc2858c9b6f', 'platform_instrument', 0, 'Platform - instrument', 'text', '{}', '{}', '[]','[]',  False);
