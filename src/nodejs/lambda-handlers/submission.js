@@ -25,6 +25,7 @@ async function resumeMethod(event, userId) {
   const eventMessage = {
     event_type: 'workflow_promote_step',
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step_name,
     user_id: userId
@@ -37,8 +38,9 @@ async function initializeMethod(event, userId) {
   const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'initialize' },
     { user_id: userId, ...event });
   const eventMessage = {
-    event_type: 'submission_initialized',
+    event_type: 'request_initialized',
     submission_id: submission.id,
+    conversation_id: submission.conversation_id,
     user_id: userId
   };
   await MessageUtil.sendEvent(eventMessage);
@@ -54,8 +56,9 @@ async function applyMethod(event, userId) {
   await DatabaseUtil.execute({ resource: 'submission', operation: 'applyWorkflow' },
     { submission: { id }, workflow: { id: workflowId } });
   const eventMessage = {
-    event_type: 'submission_workflow_started',
+    event_type: 'workflow_started',
     submission_id: id,
+    conversation_id: status.conversation_id,
     workflow_id: workflowId
   };
   await MessageUtil.sendEvent(eventMessage);
@@ -68,14 +71,12 @@ async function metadataMethod(event, userId) {
   const { id, metadata } = event;
   const response = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateMetadata' },
     { submission: { id, metadata: JSON.stringify(metadata) } });
-  // const submission = await DatabaseUtil.execute({
-  //   resource: 'submission',
-  //   operation: 'findShortById'
-  // },
-  // { submission: { id } });
+  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
+    { submission: { id } });
   const eventMessage = {
-    event_type: 'submission_metadata_updated',
+    event_type: 'metadata_updated',
     submission_id: id,
+    conversation_id: status.conversation_id,
     user_id: userId
   };
   await MessageUtil.sendEvent(eventMessage);
@@ -98,15 +99,16 @@ async function submitMethod(event, userId) {
   let { id } = event;
   const response = await saveMethod(event, userId);
   id = response.id;
+  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
+    { submission: { id } });
   const eventMessage = {
-    event_type: 'submission_form_submitted',
+    event_type: 'form_submitted',
     submission_id: id,
+    conversation_id: status.conversation_id,
     form_id: formId,
     user_id: userId
   };
   await MessageUtil.sendEvent(eventMessage);
-  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
-    { submission: { id } });
   if (status.type === 'form' && status.form_id === formId) {
     await resumeMethod(event, userId);
   }

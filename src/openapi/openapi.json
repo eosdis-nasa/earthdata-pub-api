@@ -150,7 +150,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -309,7 +309,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"action\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -438,7 +438,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -597,7 +597,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"daac\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -726,7 +726,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -925,7 +925,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1123,7 +1123,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1282,7 +1282,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"group\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1411,7 +1411,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1570,7 +1570,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"role\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1699,7 +1699,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1858,7 +1858,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1987,7 +1987,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -2146,7 +2146,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -2344,7 +2344,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -2503,7 +2503,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"service\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -2632,7 +2632,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -2887,7 +2887,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3016,7 +3016,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3175,7 +3175,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3304,7 +3304,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3463,7 +3463,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3661,7 +3661,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"model\": \"$req.path.get('model')\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"model\": \"$req.path.get('model')\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3779,7 +3779,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\": \"send\", \"text\":\"$body.get('text')\", #if($body.containsKey('subject')),\"subject\":\"$body.get('subject')\"#end #if($body.containsKey('user_list')),\"user_list\":$input.json('$.user_list')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\": \"send\", \"text\":\"$body.get('text')\", #if($body.containsKey('subject')),\"subject\":\"$body.get('subject')\"#end #if($body.containsKey('user_list')),\"user_list\":$input.json('$.user_list')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3897,7 +3897,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -4015,7 +4015,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"add_users\", \"user_list\":\"$body.get('user_list')\", #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"add_users\", \"user_list\":\"$body.get('user_list')\", #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -4123,7 +4123,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "{\"operation\":\"conversations\", \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "{\"operation\":\"conversations\", \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -4242,7 +4242,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"operation\":\"conversation\", \"conversation_id\":\"$req.path.get('id')\", \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"operation\":\"conversation\", \"conversation_id\":\"$req.path.get('id')\", \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -4360,7 +4360,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req=$input.params()) { #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req=$input.params()) { #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -4612,7 +4612,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"operation\":\"interface\",\"module\": \"$req.path.get('module')\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"operation\":\"interface\",\"module\": \"$req.path.get('module')\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -4681,7 +4681,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"operation\":\"request\",\"module\":\"$req.path.get('module')\" \"payload\": $input.body,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"operation\":\"request\",\"module\":\"$req.path.get('module')\" \"payload\": $input.body,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5047,7 +5047,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\" #if($body.containsKey('id')),\"id\":\"$body.get('id')\"#end #if($body.containsKey('form_id')),\"form_id\":\"$body.get('form_id')\"#end #if($body.containsKey('daac_id')),\"daac_id\":\"$body.get('daac_id')\"#end #if($body.containsKey('workflow_id')),\"workflow_id\":\"$body.get('workflow_id')\"#end #if($body.containsKey('data')),\"data\":$input.json('$.data')#end #if($body.containsKey('metadata')),\"metadata\":$input.json('$.metadata')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\" #if($body.containsKey('id')),\"id\":\"$body.get('id')\"#end #if($body.containsKey('form_id')),\"form_id\":\"$body.get('form_id')\"#end #if($body.containsKey('daac_id')),\"daac_id\":\"$body.get('daac_id')\"#end #if($body.containsKey('workflow_id')),\"workflow_id\":\"$body.get('workflow_id')\"#end #if($body.containsKey('data')),\"data\":$input.json('$.data')#end #if($body.containsKey('metadata')),\"metadata\":$input.json('$.metadata')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5196,7 +5196,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req=$input.params()) { \"operation\": \"search\", \"filter\": { #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end } ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req=$input.params()) { \"operation\": \"search\", \"filter\": { #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end } ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5268,7 +5268,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) {\"operation\": \"put\", \"payload\": $body, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) {\"operation\": \"put\", \"payload\": $body, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5378,7 +5378,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req=$input.params()) { \"operation\": \"get_report\", \"key\": \"$req.path.get('key')\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set($req=$input.params()) { \"operation\": \"get_report\", \"key\": \"$req.path.get('key')\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5501,7 +5501,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "{ \"operation\": \"list_reports\" ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "{ \"operation\": \"list_reports\" ,\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5738,7 +5738,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req=$input.params()) { \"refresh\": true, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\"}"
+            "application/json": "#set($req=$input.params()) { \"refresh\": true, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}"
           },
           "responses": {
             "default": {

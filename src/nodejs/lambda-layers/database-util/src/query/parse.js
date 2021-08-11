@@ -28,6 +28,7 @@ module.exports.refreshUser = one;
 module.exports.addRole = one;
 module.exports.addGroup = one;
 module.exports.getEmails = many;
+module.exports.findSystemUser = one;
 module.exports.metricsFilter = many;
 module.exports.metricsStats = many;
 module.exports.subscribe = one;

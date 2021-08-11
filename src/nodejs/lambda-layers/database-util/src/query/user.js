@@ -191,6 +191,14 @@ const findAll = (params) => sql.select({
 
 const findById = () => `${findAll()} WHERE edpuser.id = {{user.id}}`;
 
+const findSystemUser = () => sql.select({
+  fields: fields(['id', 'name', 'email']),
+  from: { base: table },
+  where: {
+    filters: [{ field: fieldMap.email, literal: 'no_email'}]
+  }
+});
+
 const getRefreshToken = () => `
 SELECT edpuser.refresh_token FROM edpuser
 WHERE edpuser.id = {{user.id}}`;
@@ -277,6 +285,7 @@ module.exports.loginUser = loginUser;
 module.exports.refreshUser = refreshUser;
 module.exports.addRole = addRole;
 module.exports.addGroup = addGroup;
+module.exports.findSystemUser = findSystemUser;
 module.exports.getEmails = getEmails;
 module.exports.getKayakoIdByEDPUserId = getKayakoIdByEDPUserId;
 module.exports.getEDPUserIdByKayakoId = getEDPUserIdByKayakoId;

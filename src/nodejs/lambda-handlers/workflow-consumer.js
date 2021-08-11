@@ -17,6 +17,7 @@ async function actionMethod(status) {
     event_type: 'action_request',
     action_id: status.action_id,
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step_name,
     data: status.data
@@ -29,6 +30,7 @@ async function formMethod(status) {
     event_type: 'form_request',
     form_id: status.form_id,
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step_name,
     data: status.data
@@ -40,6 +42,7 @@ async function reviewMethod(status) {
   const eventMessage = {
     event_type: 'review_request',
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step_name,
     data: status.data
@@ -52,6 +55,7 @@ async function serviceMethod(status) {
     event_type: 'service_call',
     service_id: status.service_id,
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step_name,
     data: status.data
@@ -63,6 +67,7 @@ async function closeMethod(status) {
   const eventMessage = {
     event_type: 'workflow_completed',
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step_name,
     data: status.data

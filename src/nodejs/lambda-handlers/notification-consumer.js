@@ -10,50 +10,21 @@ const DatabaseUtil = require('database-util');
 
 const MessageUtil = require('message-util');
 
-const textTemplates = {
-  submission_initialized: (p) => `A new request has been initialized with ID ${p.submission_id}.`
-};
-
-const subjectTemplates = {
-  submission_initialized: (p) => `Submission ID ${p.submission_id}`
-};
-
-async function directMessage(eventMessage) {
-  const { user_id: senderId, data } = eventMessage;
-  const params = {
-    user_id: senderId,
-    ...data
-  };
-  const operation = data.conversation_id ? 'reply' : 'sendNote';
-  await DatabaseUtil.execute({ resource: 'note', operation }, params);
-}
-
-async function submissionInitialized(eventMessage) {
-  const params = {
-    user_id: eventMessage.user_id,
-    subject: subjectTemplates.submission_initialized(eventMessage),
-    text: textTemplates.submission_initialized(eventMessage),
-    user_list: []
-  };
-  const newNote = await DatabaseUtil.execute({ resource: 'note', operation: 'sendNote' }, params);
-
-  const test = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateConversation' },
-    {
-      id: eventMessage.submission_id,
-      conversation_id: newNote.conversation_id
-    });
-  console.info(test);
-}
-
-const operations = {
-  direct_message: directMessage,
-  submission_initialized: submissionInitialized
-};
+const { getTemplate } = require('./notification-consumer/templates.js');
 
 async function processRecord(record) {
   const { eventMessage } = MessageUtil.parseRecord(record);
-  if (operations[eventMessage.event_type]) {
-    await operations[eventMessage.event_type](eventMessage);
+  const message = getTemplate(eventMessage);
+  if (message) {
+    const operation = message.conversation_id ? 'reply' : 'sendNote';
+    if (!message.user_id) {
+      const systemUser = await DatabaseUtil.execute({ resource: 'user', operation: 'findSystemUser' }, {});
+      message.user_id = systemUser.id;
+    }
+    if (operation === 'sendNote' && !message.subject) {
+      message.subject = 'No Subject';
+    }
+    await DatabaseUtil.execute({ resource: 'note', operation }, message);
   }
 }
 

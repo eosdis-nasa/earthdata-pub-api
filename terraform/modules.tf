@@ -39,6 +39,8 @@ module "lambda_functions" {
   api_id = module.apigateway_endpoints.api_id
   edpub_action_sqs_arn = module.sqs_queues.edpub_action_sqs_arn
   edpub_action_sqs_url = module.sqs_queues.edpub_action_sqs_url
+  edpub_inbound_sqs_arn = module.sqs_queues.edpub_inbound_sqs_arn
+  edpub_inbound_sqs_url = module.sqs_queues.edpub_inbound_sqs_url
   edpub_metrics_sqs_arn = module.sqs_queues.edpub_metrics_sqs_arn
   edpub_metrics_sqs_url = module.sqs_queues.edpub_metrics_sqs_url
   edpub_notification_sqs_arn = module.sqs_queues.edpub_notification_sqs_arn

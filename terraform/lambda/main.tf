@@ -122,6 +122,50 @@ resource "aws_lambda_permission" "data" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
+# Inbound Consumer Lambda
+
+resource "aws_lambda_function" "inbound_consumer" {
+  filename      = "../artifacts/inbound-consumer-lambda.zip"
+  function_name = "inbound_consumer"
+  role          = var.edpub_lambda_role_arn
+  handler       = "inbound-consumer.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn
+  ]
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/inbound-consumer-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "inbound_consumer" {
+  statement_id  = "AllowExecutionFromSQS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.inbound_consumer.function_name
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.edpub_inbound_sqs_arn
+}
+
+resource "aws_lambda_event_source_mapping" "inbound_consumer_sqs_event" {
+  event_source_arn = var.edpub_inbound_sqs_arn
+  function_name    = aws_lambda_function.inbound_consumer.function_name
+}
+
 # Invoke Lambda
 
 resource "aws_lambda_function" "invoke" {
@@ -668,9 +712,34 @@ resource "aws_lambda_function" "remap_statics" {
   environment {
     variables = {
       REGION              = var.region
+      STAGE               = var.stage
       DASHBOARD_BUCKET    = var.edpub_dashboard_s3_bucket
       FORMS_BUCKET        = var.edpub_forms_s3_bucket
       OVERVIEW_BUCKET     = var.edpub_overview_s3_bucket
+      API_ID              = var.api_id
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+# APIProxy Lambda
+
+resource "aws_lambda_function" "api_proxy" {
+  filename      = "../artifacts/api-proxy-lambda.zip"
+  function_name = "api_proxy"
+  role          = var.edpub_lambda_role_arn
+  handler       = "api-proxy.handler"
+  layers        = []
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/api-proxy-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION              = var.region
+      STAGE               = var.stage
       API_ID              = var.api_id
     }
   }

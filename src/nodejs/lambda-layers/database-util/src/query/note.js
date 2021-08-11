@@ -145,13 +145,20 @@ WITH user_update AS (UPDATE conversation_edpuser SET
  WHERE conversation_edpuser.conversation_id = {{conversation_id}}
  AND conversation_edpuser.edpuser_id = {{user_id}})
 ${sql.select({
-  fields: ['conversation.id', 'conversation.subject', 'notes', 'participants'],
+  fields: ['conversation.id', 'conversation.subject', 'participants',
+    {
+      type: 'coalesce',
+      src: 'notes',
+      fallback: '\'[]\'::JSONB',
+      alias: 'notes'
+    }
+  ],
   from: {
     base: 'conversation',
     joins: [refs.conversation_user, refs.participant_agg, refs.note_agg] },
   where: {
     filters: [
-      { field: 'note_agg.conversation_id', param: 'conversation_id' },
+      { field: 'conversation.id', param: 'conversation_id' },
       { field: 'conversation_edpuser.edpuser_id', param: 'user_id' }
     ]
   },
@@ -193,7 +200,9 @@ SELECT * FROM new_note`;
 
 const addUsersToConversation = (params) => `
 INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
-SELECT {{conversation_id}} conversation_id, UNNEST({{user_list}}::uuid[]) edpuser_id
+SELECT {{conversation_id}} conversation_id, edpuser.id sender_edpuser_id
+FROM edpuser
+WHERE edpuser.email = ANY({{user_list}}::VARCHAR[])
 RETURNING *`;
 
 const getTicketIdByConversationId = (params) => sql.select({
