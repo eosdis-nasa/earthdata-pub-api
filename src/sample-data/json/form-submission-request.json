@@ -196,11 +196,17 @@
           "help": "For example, a overview paper describing the research, methods, or initial results related to this data product.",
           "inputs": [
             {
-              "type": "text",
+              "type": "table",
               "control_id": "publication_dois",
-              "label": "DOIs",
-              "validation_error_msg": "Please enter Digital Object Identifiers.",
-              "required": true
+              "enums":[
+                {
+                  "key": "doi",
+                  "label": "DOIs",
+                  "sortable": false,
+                  "type":"text"
+                }
+              ],
+              "required":true
             }
           ],
           "id": "ab57f5e8-9ec5-46c9-978e-d06125346d37",
