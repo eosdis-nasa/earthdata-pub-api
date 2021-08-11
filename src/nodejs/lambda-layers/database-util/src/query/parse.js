@@ -22,6 +22,7 @@ module.exports.initialize = one;
 module.exports.getState = one;
 module.exports.promoteStep = one;
 module.exports.applyWorkflow = one;
+module.exports.rollback = one;
 module.exports.loginUser = one;
 module.exports.getRefreshToken = one;
 module.exports.refreshUser = one;

@@ -14,17 +14,19 @@ const { getTemplate } = require('./notification-consumer/templates.js');
 
 async function processRecord(record) {
   const { eventMessage } = MessageUtil.parseRecord(record);
-  const message = getTemplate(eventMessage);
-  if (message) {
-    const operation = message.conversation_id ? 'reply' : 'sendNote';
-    if (!message.user_id) {
-      const systemUser = await DatabaseUtil.execute({ resource: 'user', operation: 'findSystemUser' }, {});
-      message.user_id = systemUser.id;
+  if (!(eventMessage.data && eventMessage.data.silent)) {
+    const message = getTemplate(eventMessage);
+    if (message) {
+      const operation = message.conversation_id ? 'reply' : 'sendNote';
+      if (!message.user_id) {
+        const systemUser = await DatabaseUtil.execute({ resource: 'user', operation: 'findSystemUser' }, {});
+        message.user_id = systemUser.id;
+      }
+      if (operation === 'sendNote' && !message.subject) {
+        message.subject = 'No Subject';
+      }
+      await DatabaseUtil.execute({ resource: 'note', operation }, message);
     }
-    if (operation === 'sendNote' && !message.subject) {
-      message.subject = 'No Subject';
-    }
-    await DatabaseUtil.execute({ resource: 'note', operation }, message);
   }
 }
 

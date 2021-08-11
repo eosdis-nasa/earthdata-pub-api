@@ -18,7 +18,7 @@ async function activeMethod(event, userId) {
   return activeSubmissions;
 }
 
-async function resumeMethod(event, userId) {
+async function resumeMethod(event, userId, silent = false) {
   const { id } = event;
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
     { submission: { id } });
@@ -27,8 +27,9 @@ async function resumeMethod(event, userId) {
     submission_id: status.id,
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
-    step_name: status.step_name,
-    user_id: userId
+    step_name: status.step.name,
+    user_id: userId,
+    ...(silent ? { data: { silent } } : {})
   };
   await MessageUtil.sendEvent(eventMessage);
   return status;
@@ -105,27 +106,39 @@ async function submitMethod(event, userId) {
     event_type: 'form_submitted',
     submission_id: id,
     conversation_id: status.conversation_id,
+    workflow_id: status.workflow_id,
     form_id: formId,
     user_id: userId
   };
   await MessageUtil.sendEvent(eventMessage);
-  if (status.type === 'form' && status.form_id === formId) {
+  if (status.step.type === 'form' && status.step.form_id === formId) {
     await resumeMethod(event, userId);
   }
   return response;
 }
 
 async function reviewMethod(event, userId) {
-  // Similar to submit, but for reviews. In case of rejecting a Submission
-  // during review users can send a comment with reason for rejection.
-  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  // if (body.approval) {
-  //   const message = constructMessage(submission, 'review', true);
-  //   await msgDriver.sendSns(message);
-  //   return [true];
-  // }
-  // return [false, 'Bad request.'];
-  console.info('Not Implemented', event, userId);
+  const { id, approve } = event;
+  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
+    { submission: { id } });
+  if (status.step.type === 'review') {
+    if (!approve) {
+      await DatabaseUtil.execute({ resource: 'submission', operation: 'rollback' },
+        { submission: { id, rollback: status.step.data.rollback } });
+    }
+    const eventMessage = {
+      event_type: approve ? 'review_approved' : 'review_rejected',
+      submission_id: id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      user_id: userId,
+      data: status.step.data
+    };
+    await MessageUtil.sendEvent(eventMessage);
+    const response = await resumeMethod(event, userId, !approve);
+    return response;
+  }
+  return {};
 }
 
 async function lockMethod(event, userId) {

@@ -114,6 +114,7 @@ const refs = {
             ['service_id', 'step.service_id'],
             ['data', 'step.data']
           ],
+          strip: true,
           alias: 'step_data'
         }
       ],
@@ -256,10 +257,22 @@ data = EXCLUDED.data
 RETURNING *`;
 
 const getState = () => `
-SELECT submission.conversation_id, submission_status.*, step.*, workflows
+SELECT submission.conversation_id, submission_status.*, step_data.step, workflows
 FROM submission_status
 NATURAL JOIN submission
-NATURAL JOIN step
+NATURAL JOIN (
+  SELECT
+    step.workflow_id,
+    step.step_name,
+    JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
+      'type', step.type,
+      'name', step.step_name,
+      'action_id', step.action_id,
+      'form_id', step.form_id,
+      'service_id', step.service_id,
+      'data', step.data
+    )) step
+  FROM step) step_data
 NATURAL JOIN (
   SELECT
     submission_workflow.id,
@@ -301,6 +314,17 @@ step_name = (
 WHERE submission_status.id = {{submission.id}}
 RETURNING *`;
 
+const rollback = (params) => `
+UPDATE submission_status SET
+last_change = NOW(),
+step_name = (
+  SELECT step_edge.step_name step_name
+  FROM step_edge
+  WHERE step_edge.workflow_id = submission_status.workflow_id
+  AND step_edge.next_step_name = {{submission.rollback}})
+WHERE submission_status.id = {{submission.id}}
+RETURNING *`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -319,3 +343,4 @@ module.exports.updateActionData = updateActionData;
 module.exports.getFormData = getFormData;
 module.exports.updateFormData = updateFormData;
 module.exports.applyWorkflow = applyWorkflow;
+module.exports.rollback = rollback;

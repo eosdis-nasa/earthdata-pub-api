@@ -12,7 +12,9 @@ const stage = process.env.STAGE;
 
 const hostname = `${apiId}.execute-api.${region}.amazonaws.com`;
 
-function send({ method, headers, url, payload }) {
+function send({
+  method, headers, url, payload
+}) {
   console.info(method, headers, url, payload);
   const reqOptions = {
     hostname,
