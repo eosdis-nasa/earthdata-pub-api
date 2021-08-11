@@ -15,11 +15,12 @@ const MessageUtil = require('message-util');
 async function actionMethod(status) {
   const eventMessage = {
     event_type: 'action_request',
-    action_id: status.action_id,
+    action_id: status.step.action_id,
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
-    step_name: status.step_name,
-    data: status.data
+    step_name: status.step.name,
+    data: status.step.data
   };
   await MessageUtil.sendEvent(eventMessage);
 }
@@ -27,11 +28,12 @@ async function actionMethod(status) {
 async function formMethod(status) {
   const eventMessage = {
     event_type: 'form_request',
-    form_id: status.form_id,
+    form_id: status.step.form_id,
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
-    step_name: status.step_name,
-    data: status.data
+    step_name: status.step.name,
+    data: status.step.data
   };
   await MessageUtil.sendEvent(eventMessage);
 }
@@ -40,9 +42,10 @@ async function reviewMethod(status) {
   const eventMessage = {
     event_type: 'review_request',
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
-    step_name: status.step_name,
-    data: status.data
+    step_name: status.step.name,
+    data: status.step.data
   };
   await MessageUtil.sendEvent(eventMessage);
 }
@@ -50,11 +53,12 @@ async function reviewMethod(status) {
 async function serviceMethod(status) {
   const eventMessage = {
     event_type: 'service_call',
-    service_id: status.service_id,
+    service_id: status.step.service_id,
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
-    step_name: status.step_name,
-    data: status.data
+    step_name: status.step.name,
+    data: status.step.data
   };
   await MessageUtil.sendEvent(eventMessage);
 }
@@ -63,9 +67,10 @@ async function closeMethod(status) {
   const eventMessage = {
     event_type: 'workflow_completed',
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
-    step_name: status.step_name,
-    data: status.data
+    step_name: status.step.name,
+    data: status.step.data
   };
   await MessageUtil.sendEvent(eventMessage);
 }
@@ -85,7 +90,7 @@ async function processRecord(record) {
     { submission: { id } });
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
     { submission: { id } });
-  const method = stepMethods[status.type];
+  const method = stepMethods[status.step.type];
   await method(status);
 }
 

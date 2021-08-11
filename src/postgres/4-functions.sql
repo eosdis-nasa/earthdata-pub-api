@@ -43,6 +43,23 @@ RETURN NEW;
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION before_init_submission()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+conv_id UUID;
+BEGIN
+SELECT UUID_GENERATE_V4() INTO conv_id;
+INSERT INTO conversation(id, subject)
+  VALUES(conv_id, 'Request ID ' || NEW.id);
+INSERT INTO conversation_edpuser(edpuser_id, conversation_id)
+  VALUES(NEW.initiator_edpuser_id, conv_id);
+NEW.conversation_id := conv_id;
+RETURN NEW;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION check_workflow_state()
 RETURNS TRIGGER
 LANGUAGE plpgsql

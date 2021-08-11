@@ -7,6 +7,7 @@
 const { S3, APIGateway } = require('aws-sdk');
 
 const region = process.env.REGION;
+const stage = process.env.STAGE;
 const apiId = process.env.API_ID;
 
 const staticSites = {
@@ -78,6 +79,11 @@ function createTemplate(mappings) {
   return template;
 }
 
+async function deployChanges() {
+  const params = { restApiId: apiId, stageName: stage };
+  await apigateway.createDeployment(params).promise();
+}
+
 async function handler() {
   const resourceIds = await getResourceIds();
   await Promise.all(Object.entries(staticSites).map(async ([key, site]) => {
@@ -87,6 +93,8 @@ async function handler() {
     const resourceId = resourceIds[site.path];
     await updateRequestTemplate(resourceId, template);
   }));
+
+  await deployChanges();
 
   return { statusCode: 200 };
 }

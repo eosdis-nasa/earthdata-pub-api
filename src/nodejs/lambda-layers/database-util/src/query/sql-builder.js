@@ -71,9 +71,11 @@ const naturalJoin = ({ src }) => ` NATURAL JOIN ${src.type ? complexParse(src) :
 const naturalLeftJoin = ({ src, on }) => ` NATURAL LEFT JOIN ${src.type ? complexParse(src) : src}`;
 
 const filter = ({
-  logOp, field, op, value, param, any
-}) => `${logOp ? ` ${opTypes[logOp]}` : ''} ${field} ${opTypes[op] || '='} ${value
-  ? typeCheck(value) : any ? anyClause(any) : ` {{${param || field}}}`}`;
+  logOp, field, op, value, param, any, literal
+}) => `${logOp ? ` ${opTypes[logOp]}` : ''} ${field} ${opTypes[op] || '='} ${literal
+  ? strWrapper(literal) : value
+  ? typeCheck(value) : any
+  ? anyClause(any) : ` {{${param || field}}}`}`;
 
 const sub = ({ query, alias }) => `(${query})${alias ? ` ${alias}` : ''}`;
 
@@ -106,6 +108,10 @@ const getValueList = (query, params) => {
   return { text, values };
 };
 
+const strWrapper = (value) => ` '${value}'`;
+
+const strLiteral = ({ value }) => strLiteral(value);
+
 const complexTypes = {
   select,
   insert,
@@ -120,7 +126,8 @@ const complexTypes = {
   coalesce,
   json_agg: jsonAgg,
   json_merge_agg: jsonMergeAgg,
-  json_obj: jsonObj
+  json_obj: jsonObj,
+  literal: strLiteral
 };
 
 module.exports = {

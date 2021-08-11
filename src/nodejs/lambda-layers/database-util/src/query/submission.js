@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'workflow_id', 'workflow_name', 'daac_id', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'workflow_id', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -14,6 +14,7 @@ const fieldMap = {
   workflow_name: 'workflow.long_name workflow_name',
   daac_id: 'submission.daac_id',
   step_name: 'step.step_name',
+  step_data: 'step.step_data',
   status: 'step.status',
   forms: 'forms',
   action_data: 'COALESCE(submission_action_data.action_data, \'{}\'::JSONB) action_data',
@@ -102,6 +103,19 @@ const refs = {
             { field: 'type', value: 'close', result: 'Ready' }
           ],
           alias: 'status'
+        },
+        {
+          type: 'json_obj',
+          keys: [
+            ['type', 'step.type'],
+            ['name', 'step.step_name'],
+            ['action_id', 'step.action_id'],
+            ['form_id', 'step.form_id'],
+            ['service_id', 'step.service_id'],
+            ['data', 'step.data']
+          ],
+          strip: true,
+          alias: 'step_data'
         }
       ],
       from: { base: 'step' },
@@ -179,8 +193,8 @@ FROM submission
 WHERE submission.id = {{submission.id}}`;
 
 const initialize = (params) => `
-INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''})
-VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''})
+INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''})
+VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''})
 RETURNING *`;
 
 const updateName = () => `
@@ -243,9 +257,22 @@ data = EXCLUDED.data
 RETURNING *`;
 
 const getState = () => `
-SELECT submission_status.*, step.*, workflows
+SELECT submission.conversation_id, submission_status.*, step_data.step, workflows
 FROM submission_status
-NATURAL JOIN step
+NATURAL JOIN submission
+NATURAL JOIN (
+  SELECT
+    step.workflow_id,
+    step.step_name,
+    JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
+      'type', step.type,
+      'name', step.step_name,
+      'action_id', step.action_id,
+      'form_id', step.form_id,
+      'service_id', step.service_id,
+      'data', step.data
+    )) step
+  FROM step) step_data
 NATURAL JOIN (
   SELECT
     submission_workflow.id,
@@ -287,6 +314,17 @@ step_name = (
 WHERE submission_status.id = {{submission.id}}
 RETURNING *`;
 
+const rollback = (params) => `
+UPDATE submission_status SET
+last_change = NOW(),
+step_name = (
+  SELECT step_edge.step_name step_name
+  FROM step_edge
+  WHERE step_edge.workflow_id = submission_status.workflow_id
+  AND step_edge.next_step_name = {{submission.rollback}})
+WHERE submission_status.id = {{submission.id}}
+RETURNING *`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -305,3 +343,4 @@ module.exports.updateActionData = updateActionData;
 module.exports.getFormData = getFormData;
 module.exports.updateFormData = updateFormData;
 module.exports.applyWorkflow = applyWorkflow;
+module.exports.rollback = rollback;

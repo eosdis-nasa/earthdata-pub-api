@@ -4,7 +4,8 @@
   "description": "Local test server for EDPUB",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "start-proxy": "node local-proxy.js"
   },
   "keywords": [
     "OAI"

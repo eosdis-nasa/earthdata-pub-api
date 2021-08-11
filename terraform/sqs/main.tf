@@ -36,6 +36,7 @@ resource "aws_sns_topic_subscription" "edpub_action_sqs" {
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.edpub_action_sqs.arn
   filter_policy = data.local_file.edpub_action_sqs_filter.content
+  raw_message_delivery = true
 }
 
 # Metrics Queue
@@ -68,6 +69,7 @@ resource "aws_sns_topic_subscription" "edpub_metrics_sqs" {
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.edpub_metrics_sqs.arn
   filter_policy = data.local_file.edpub_metrics_sqs_filter.content
+  raw_message_delivery = true
 }
 
 # Notification Queue
@@ -100,6 +102,7 @@ resource "aws_sns_topic_subscription" "edpub_notification_sqs" {
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.edpub_notification_sqs.arn
   filter_policy = data.local_file.edpub_notification_sqs_filter.content
+  raw_message_delivery = true
 }
 
 # Workflow Queue
@@ -132,4 +135,5 @@ resource "aws_sns_topic_subscription" "edpub_workflow_sqs" {
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.edpub_workflow_sqs.arn
   filter_policy = data.local_file.edpub_workflow_sqs_filter.content
+  raw_message_delivery = true
 }

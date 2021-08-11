@@ -27,8 +27,10 @@ install_layer schema-util
 #Add more layer modules here <--
 
 install_lambda action-consumer
+install_lambda api-proxy
 install_lambda auth
 install_lambda data
+install_lambda inbound-consumer
 install_lambda invoke
 install_lambda metrics
 install_lambda metrics-consumer

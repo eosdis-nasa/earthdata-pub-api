@@ -420,6 +420,18 @@ module.exports.notificationReply = function notificationReply(req, res, next) {
   });
 };
 
+module.exports.notificationAddUsers = function notificationAddUsers(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'add_users',
+    ...params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
 module.exports.notificationConversations = function notificationConversations(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -521,7 +533,7 @@ module.exports.metricsListReports = function metricsListReports(req, res, next) 
 
 module.exports.metricsGetReport = function putMetric(req, res, next) {
   res.status(200);
-  res.sendFile(`${__dirname}/static/report_2021-06-20.jpeg`);
+  res.sendFile(`${__dirname}/static/2021-06-20.json`);
 };
 
 module.exports.getModel = function getModel(req, res, next) {

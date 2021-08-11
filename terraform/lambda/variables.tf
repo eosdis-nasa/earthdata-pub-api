@@ -26,6 +26,14 @@ variable "edpub_action_sqs_url" {
   type = string
 }
 
+variable "edpub_inbound_sqs_arn" {
+  type = string
+}
+
+variable "edpub_inbound_sqs_url" {
+  type = string
+}
+
 variable "edpub_metrics_sqs_arn" {
   type = string
 }
