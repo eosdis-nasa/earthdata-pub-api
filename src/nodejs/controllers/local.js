@@ -2,8 +2,6 @@ const fs = require('fs');
 const uuid = require('uuid');
 const { sign, verify, decode } = require('jsonwebtoken');
 const DatabaseUtil = require('database-util');
-const { SQS } = require('aws-sdk');
-const { Consumer } = require('sqs-consumer');
 const handlers = require('./handlers.js');
 
 const issuer = 'Earthdata Pub Dev';
@@ -12,15 +10,6 @@ const exp = parseInt(process.env.AUTH_TOKEN_EXP);
 const redirectEndpoint = process.env.AUTH_CALLBACK_URL;
 const respectExp = process.env.AUTH_RESPECT_EXP === 'true';
 const codes = {};
-
-const consumer = Consumer.create({
-  sqs: new SQS({ endpoint: process.env.SNS_ENDPOINT }),
-  queueUrl: 'http://goaws:4100/000000000000/edpub_action_sqs',
-  pollingWaitTimeMs: 15000,
-  handleMessage: handlers.actionConsumer
-});
-
-consumer.start();
 
 function aclAllowAll(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');

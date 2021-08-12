@@ -11,5 +11,6 @@ module.exports.subscribe = require('../lambda-handlers/subscribe.js').handler;
 module.exports.version = require('../lambda-handlers/version.js').handler;
 module.exports.actionConsumer = require('../lambda-handlers/action-consumer.js').handler;
 module.exports.metricsConsumer = require('../lambda-handlers/metrics-consumer.js').handler;
+module.exports.inboundConsumer = require('../lambda-handlers/inbound-consumer.js').handler;
 module.exports.notificationConsumer = require('../lambda-handlers/notification-consumer.js').handler;
 module.exports.workflowConsumer = require('../lambda-handlers/workflow-consumer.js').handler;

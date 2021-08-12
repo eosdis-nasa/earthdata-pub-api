@@ -11,6 +11,8 @@ Local:
   Queues:
     - Name: edpub_action_sqs
       ReceiveMessageWaitTimeSeconds: 20
+    - Name: edpub_inbound_sqs
+      ReceiveMessageWaitTimeSeconds: 20
   Topics:
     - Name: edpub_event_sns
       Subscriptions:

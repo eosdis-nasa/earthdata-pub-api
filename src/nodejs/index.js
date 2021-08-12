@@ -12,6 +12,8 @@ const bodyParser = require('body-parser');
 
 const local = require('./controllers/local.js');
 
+const { inboundListener } = require('./controllers/sqs-listeners.js');
+
 const serverPort = 8080;
 
 const app = express();
@@ -63,3 +65,5 @@ oasTools.initialize(oasDoc, app, () => {
     }
   });
 });
+
+inboundListener.start();

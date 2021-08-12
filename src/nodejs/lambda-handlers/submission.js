@@ -85,26 +85,29 @@ async function metadataMethod(event, userId) {
 }
 
 async function saveMethod(event, userId) {
-  const { form_id: formId, data } = event;
+  const { form_id: formId, daac_id: daacId, data } = event;
   let { id } = event;
   if (!id) {
     const submission = await initializeMethod(event, userId);
     id = submission.id;
   }
-  const response = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateFormData' }, { submission: { id }, form: { id: formId, data: JSON.stringify(data) } });
-  return response;
+  await DatabaseUtil.execute({ resource: 'submission', operation: 'updateFormData' }, { submission: { id }, form: { id: formId, data: JSON.stringify(data) } });
+  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
+    { submission: { id } });
+  if (daacId !== status.daac_id) {
+    await DatabaseUtil.execute({ resource: 'submission', operation: 'updateDaac' },
+      { submission: { id, daac_id: daacId } });
+      status.daac_id = daacId;
+  }
+  return status;
 }
 
 async function submitMethod(event, userId) {
   const { form_id: formId } = event;
-  let { id } = event;
-  const response = await saveMethod(event, userId);
-  id = response.id;
-  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
-    { submission: { id } });
+  const status = await saveMethod(event, userId);
   const eventMessage = {
     event_type: 'form_submitted',
-    submission_id: id,
+    submission_id: status.id,
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     form_id: formId,
@@ -112,9 +115,9 @@ async function submitMethod(event, userId) {
   };
   await MessageUtil.sendEvent(eventMessage);
   if (status.step.type === 'form' && status.step.form_id === formId) {
-    await resumeMethod(event, userId);
+    await resumeMethod({ id: status.id }, userId);
   }
-  return response;
+  return status;
 }
 
 async function reviewMethod(event, userId) {
