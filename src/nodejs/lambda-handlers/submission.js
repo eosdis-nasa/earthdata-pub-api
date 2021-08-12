@@ -94,7 +94,7 @@ async function saveMethod(event, userId) {
   await DatabaseUtil.execute({ resource: 'submission', operation: 'updateFormData' }, { submission: { id }, form: { id: formId, data: JSON.stringify(data) } });
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
     { submission: { id } });
-  if (daacId !== status.daac_id) {
+  if (daacId && daacId !== status.daac_id) {
     await DatabaseUtil.execute({ resource: 'submission', operation: 'updateDaac' },
       { submission: { id, daac_id: daacId } });
       status.daac_id = daacId;
