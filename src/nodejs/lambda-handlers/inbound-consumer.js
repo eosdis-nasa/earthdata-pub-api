@@ -18,7 +18,6 @@ async function processRecord(record) {
 }
 
 async function handler(event) {
-  console.log(JSON.stringify(event, null, 2));
   const records = event.Records;
   const promises = records.map((record) => processRecord(record));
   await Promise.all(promises);

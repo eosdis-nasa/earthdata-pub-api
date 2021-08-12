@@ -97,7 +97,7 @@ async function saveMethod(event, userId) {
   if (daacId && daacId !== status.daac_id) {
     await DatabaseUtil.execute({ resource: 'submission', operation: 'updateDaac' },
       { submission: { id, daac_id: daacId } });
-      status.daac_id = daacId;
+    status.daac_id = daacId;
   }
   return status;
 }
