@@ -257,7 +257,7 @@ data = EXCLUDED.data
 RETURNING *`;
 
 const getState = () => `
-SELECT submission.conversation_id, submission_status.*, step_data.step, workflows
+SELECT submission.conversation_id, submission.daac_id, submission_status.*, step_data.step, workflows
 FROM submission_status
 NATURAL JOIN submission
 NATURAL JOIN (
