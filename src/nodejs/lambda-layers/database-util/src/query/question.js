@@ -39,7 +39,7 @@ const refs = {
               ['enums', 'input.enums']
             ]
           },
-          order: 'input.list_order',
+          sort: 'input.list_order',
           alias: 'inputs'
         }
       ],
@@ -74,7 +74,7 @@ const sectionJoin = () => sql.select({
           ['inputs', 'inputs']
         ]
       },
-      order: 'section_question.list_order',
+      sort: 'section_question.list_order',
       alias: 'questions'
     }],
   from: {
