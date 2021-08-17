@@ -26,8 +26,8 @@ const refs = {
               ['email', 'edpuser.email']
             ]
           },
-          order: 'edpuser.name',
-          sort: 'ASC',
+          sort: 'edpuser.name',
+          order: 'ASC',
           alias: 'participants'
         }
       ],
@@ -58,8 +58,8 @@ const refs = {
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }]
             ]
           },
-          order: 'note.created_at',
-          sort: 'DESC',
+          sort: 'note.created_at',
+          order: 'DESC',
           alias: 'notes'
         }
       ],
@@ -135,8 +135,8 @@ const getConversationList = (params) => sql.select({
   where: {
     filters: [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id' }]
   },
-  order: 'conversation.last_change',
-  sort: 'DESC'
+  sort: 'conversation.last_change',
+  order: 'DESC'
 });
 
 const readConversation = (params) => `
@@ -162,8 +162,8 @@ ${sql.select({
       { field: 'conversation_edpuser.edpuser_id', param: 'user_id' }
     ]
   },
-  order: 'created_at',
-  sort: 'DESC'
+  sort: 'created_at',
+  order: 'DESC'
 })}`;
 
 const reply = () => `

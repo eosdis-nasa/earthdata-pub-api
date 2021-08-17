@@ -38,8 +38,8 @@ const findAll = ({
       ...(created_before ? [{ field: 'form.created_at', op: 'lte', param: 'created_before' }] : [])
     ]
   },
-  ...(order ? { order } : {}),
   ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
   ...(page ? { offset: page } : {})
 });

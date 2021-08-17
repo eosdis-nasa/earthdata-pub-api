@@ -19,13 +19,13 @@ const complexParse = (src) => complexTypes[src.type](src);
 const typeCheck = (stub) => `${stub.type ? complexParse(stub) : stub.param ? param(stub) : stub}`;
 
 const select = ({
-  fields, from, where, group, order, sort, limit, offset, alias
+  fields, from, where, group, sort, order, limit, offset, alias
 }) => `${alias ? '(' : ''}SELECT${fields
   ? ` ${fields.map(typeCheck)}` : ' *'}${from
   ? fromClause(from) : ''}${where
   ? whereClause(where) : ''}${group
-  ? ` GROUP BY ${group}` : ''}${order
-  ? ` ORDER BY ${order}${sort ? ` ${sort}` : ''}` : ''}${limit
+  ? ` GROUP BY ${group}` : ''}${sort
+  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''}${limit
   ? ` LIMIT ${limit}` : ''}${offset
   ? ` OFFSET ${offset}` : ''}${alias ? `) ${alias}` : ''}`;
 
@@ -83,15 +83,15 @@ const coalesce = ({ src, fallback, alias }) => ` COALESCE(${src.type ? complexPa
   ? ` ${alias}` : ''}`;
 
 const jsonAgg = ({
-  src, order, sort, alias
-}) => `JSONB_AGG(${src.type ? complexParse(src) : src}${order
-  ? ` ORDER BY ${order}${sort ? ` ${sort}` : ''}` : ''})${alias
+  src, sort, order, alias
+}) => `JSONB_AGG(${src.type ? complexParse(src) : src}${sort
+  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${alias
   ? ` ${alias}` : ''}`;
 
 const jsonMergeAgg = ({
-  src, order, sort, alias
-}) => `JSONB_MERGE_AGG(${src.type ? complexParse(src) : src}${order
-  ? ` ORDER BY ${order}${sort ? ` ${sort}` : ''}` : ''})${alias
+  src, sort, order, alias
+}) => `JSONB_MERGE_AGG(${src.type ? complexParse(src) : src}${sort
+  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${alias
   ? ` ${alias}` : ''}`;
 
 const jsonObj = ({ keys, alias, strip }) => `${strip ? 'JSONB_STRIP_NULLS(' : ''}JSONB_BUILD_OBJECT(${keys.map(([key, src]) => `'${key}', ${src.type ? complexParse(src) : src}`)})${strip ? ')' : ''}${alias

@@ -54,7 +54,7 @@ const refs = {
           src: {
             type: 'json_merge_agg',
             src: 'submission_form_data.data',
-            order: 'submitted_at'
+            sort: 'submitted_at'
           },
           fallback: '\'{}\'::JSONB',
           alias: 'form_data'
@@ -151,8 +151,8 @@ const getUsersSubmissions = (params) => sql.select({
   where: {
     filters: [{ field: 'submission.initiator_edpuser_id', param: 'user_id' }]
   },
-  order: fieldMap.last_change,
-  sort: 'DESC'
+  sort: fieldMap.last_change,
+  order: 'DESC'
 });
 
 const findAll = ({
@@ -181,8 +181,8 @@ const findAll = ({
       ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before' }] : [])
     ]
   },
-  ...(order ? { order } : {}),
   ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
   ...(page ? { offset: page } : {})
 });
