@@ -155,7 +155,7 @@
           {
             "key": "doi",
             "label": "DOIs",
-            "sortable": false,
+            "editable": true,
             "type":"text"
           }
         ],
