@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+- [Updated content for table type to support inline editing](8197e55abd9f5e0b6d259e6ff8555274db9ac420)
 - [Updated table type json elements](1382f4f017d0d03b267c1216256d4f3875232a09)
 - [Added CONTRIBUTING.md](9219219248105e44da35fe1204514733a885fd96)
 - [Lint fixes](5798a2c77b0dc4995e2ba054874003e322b2dada)
