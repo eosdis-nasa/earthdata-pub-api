@@ -6,16 +6,15 @@
  * @module MetricsHandler
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-const MessageUtil = require('message-util');
+const msg = require('message-util');
 
 async function processRecord(record) {
-  const { eventMessage } = MessageUtil.parseRecord(record);
+  const { eventMessage } = msg.parseRecord(record);
   console.info(eventMessage);
-  await DatabaseUtil.execute({ resource: 'metrics', operation: 'putMetric' },
-    { metrics: { event: JSON.stringify(eventMessage) } });
-  await MessageUtil.sendMetric(eventMessage);
+  await db.metrics.putMetric({ event: JSON.stringify(eventMessage) });
+  await msg.sendMetric(eventMessage);
 }
 
 async function handler(event) {

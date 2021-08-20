@@ -56,4 +56,4 @@ services:
       PGADMIN_DEFAULT_EMAIL: edpub@edpub.com
       PGADMIN_DEFAULT_PASSWORD: edpub
     ports:
-      - 80:80
+      - 8001:80

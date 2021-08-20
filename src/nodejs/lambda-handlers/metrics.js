@@ -7,9 +7,9 @@ const path = require('path');
 
 const { S3 } = require('aws-sdk');
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-const MessageUtil = require('message-util');
+const msg = require('message-util');
 
 const bucket = process.env.METRICS_BUCKET;
 
@@ -31,7 +31,7 @@ async function listReports() {
 
 async function search({ filter }) {
   if (filter.count) {
-    const response = await DatabaseUtil.execute({ resource: 'metrics', operation: 'metricsStats' }, {});
+    const response = await db.metrics.metricsStats();
     return response;
   }
   return { message: 'Not Implemented' };
@@ -53,7 +53,7 @@ async function put({ payload, context }) {
     ...(payload.workflow_id && { workflow_id: payload.workflow_id }),
     ...(payload.data && { data: payload.data })
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
   return { message: 'Success!' };
 }
 

@@ -608,9 +608,31 @@ module.exports.refreshToken = function refreshToken(req, res, next) {
 };
 
 module.exports.getVersion = function getVersion(req, res, next) {
-  const { params } = req.swagger;
   const lambdaEvent = {};
   handlers.version(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.pageFindById = function pageFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'page',
+    operation: 'findById',
+    params: { page_key: params.page_key.value }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.pageFindOverview = function pageFindOverview(req, res, next) {
+  const lambdaEvent = {
+    resource: 'page',
+    operation: 'findById',
+    params: { page_key: 'overview' }
+  };
+  handlers.data(lambdaEvent).then((body) => {
     res.send(body);
   });
 };

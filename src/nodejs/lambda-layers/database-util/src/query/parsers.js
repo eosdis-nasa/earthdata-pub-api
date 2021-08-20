@@ -1,8 +1,8 @@
-function one([row]) {
+function one({ rows: [row] }) {
   return row;
 }
 
-function many(rows) {
+function many({ rows }) {
   return rows;
 }
 
@@ -12,6 +12,7 @@ module.exports.findAll = many;
 module.exports.findAllEx = many;
 module.exports.findAllWithInterface = many;
 module.exports.putItem = one;
+module.exports.update = one;
 module.exports.updateName = one;
 module.exports.updateDaac = one;
 module.exports.updateConversation = one;
@@ -26,8 +27,8 @@ module.exports.rollback = one;
 module.exports.loginUser = one;
 module.exports.getRefreshToken = one;
 module.exports.refreshUser = one;
-module.exports.addRole = one;
-module.exports.addGroup = one;
+module.exports.addRoles = one;
+module.exports.addGroups = one;
 module.exports.getEmails = many;
 module.exports.findSystemUser = one;
 module.exports.metricsFilter = many;
@@ -44,7 +45,3 @@ module.exports.readConversation = one;
 module.exports.reply = one;
 module.exports.sendNote = one;
 module.exports.addUsersToConversation = many;
-module.exports.getTicketIdByConversationId = one;
-module.exports.syncConversation = one;
-module.exports.getKayakoIdByEDPUserId = one;
-module.exports.getEDPUserIdByKayakoId = one;

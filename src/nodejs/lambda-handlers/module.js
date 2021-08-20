@@ -6,7 +6,7 @@
  * @see module:Module
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
 const { Lambda } = require('aws-sdk');
 
@@ -35,12 +35,11 @@ function invokeLambda(functionArn, payload) {
 }
 
 async function listMethod() {
-  return DatabaseUtil.execute({ resource: 'module', operation: 'findAllWithInterface' }, {});
+  return db.module.findAllWithInterface();
 }
 
 async function interfaceMethod(event) {
-  const moduleMeta = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName' },
-    { short_name: event.module });
+  const moduleMeta = await db.module.findByName({ short_name: event.module });
   if (moduleMeta.error) {
     return errors.not_found;
   }
@@ -52,8 +51,7 @@ async function interfaceMethod(event) {
 }
 
 async function requestMethod(event) {
-  const moduleMeta = await DatabaseUtil.execute({ resource: 'module', operation: 'findByName' },
-    { short_name: event.module });
+  const moduleMeta = await db.module.findByName({ short_name: event.module });
   if (moduleMeta.error) {
     return errors.not_found;
   }

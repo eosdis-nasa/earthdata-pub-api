@@ -208,7 +208,7 @@ INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978e', 'additional_fi
 INSERT INTO edpuser(id, name, email, refresh_token) VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', 'Earthdata Pub System', 'no_email', 'none');
 
 -- Group(id, short_name, long_name, description)
-INSERT INTO edpgroup VALUES ('4daa6b22-f015-4ce2-8dac-8b3510004fca','root_group',  'Root Group', 'Full system access for administrators.');
+INSERT INTO edpgroup VALUES ('4daa6b22-f015-4ce2-8dac-8b3510004fca', 'root_group', 'Root Group', 'Full system access for administrators.');
 INSERT INTO edpgroup VALUES ('bf07c445-8217-4f97-827a-82838cce36fb', 'asdc', 'ASDC', 'Top level group for ASDC');
 INSERT INTO edpgroup VALUES ('b9e586c8-f602-4eae-98e1-5b406cd15ad2', 'asf_daac', 'ASF DAAC', 'Top level group for ASF DAAC');
 INSERT INTO edpgroup VALUES ('fbc74dbc-4704-4b3e-b06a-43a78d6e7685', 'cddis', 'CDDIS', 'Top level group for CDDIS');
@@ -221,6 +221,7 @@ INSERT INTO edpgroup VALUES ('65ba2a19-b296-4f2b-bf0c-4c1e8f226298', 'ob_daac', 
 INSERT INTO edpgroup VALUES ('89816689-5375-4c81-a30c-bf6ed12d30fb', 'ornl_daac', 'ORNL DAAC', 'Top level group for ORNL DAAC');
 INSERT INTO edpgroup VALUES ('e847900e-90e2-47f8-85c6-94e06bcbcca0', 'po_daac', 'PO.DAAC', 'Top level group for PO.DAAC');
 INSERT INTO edpgroup VALUES ('f0a89bc6-707f-4a34-8041-1593934c2e42', 'sedac', 'SEDAC', 'Top level group for SEDAC');
+INSERT INTO edpgroup VALUES ('5be24b44-d66b-4396-9266-a9d066000d9e', 'unassigned', 'No DAAC', 'Group for assets and users not otherwise assigned to a DAAC');
 
 -- UserGroup(edpuser_id, edpgroup_id)
 INSERT INTO edpuser_edpgroup VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', '4daa6b22-f015-4ce2-8dac-8b3510004fca');
@@ -233,27 +234,26 @@ INSERT INTO edprole VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'coordinator
 INSERT INTO edprole VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'observer', 'DAAC Observer', 'A DAAC or ESDIS staff member who is interested in monitoring progress in Earthdata Pub but does not need edit or write permission. This can be a DAAC Manager or similar.');
 INSERT INTO edprole VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'admin', 'Earthdata Pub Administrator', 'An Earthdata Pub admin can see and edit most aspects of Earthdata Pub.');
 
--- RolePrivilege(edprole_id, privilege)
-INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'ALL_ALL');
-
 -- UserRole(edpuser_id, edrole_id)
 INSERT INTO edpuser_edprole VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', '75605ac9-bf65-4dec-8458-93e018dcca97');
 
 -- Workflow(id, short_name, version, long_name, description)
 INSERT INTO workflow VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init_workflow', 1, 'Initialization Workflow', 'This workflow performs no actions and is used for initializing submissions.');
-INSERT INTO workflow VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'archival_interest_workflow', 1, 'Archival Interest Workflow', 'This is the default initial workflow for a new archival request.');
+INSERT INTO workflow VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_publication_request_workflow', 1, 'Data Publication Request Workflow', 'This is the default initial workflow for a new publication request.');
 
 -- Step(workflow_id, step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(workflow_id, step_name, type) VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'init');
 INSERT INTO step(workflow_id, step_name, type) VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'close', 'close');
 INSERT INTO step(workflow_id, step_name, type) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'init');
-INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'archival_interest_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
+INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'dpr_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
+INSERT INTO step(workflow_id, step_name, type, data) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'dpr_review', 'review', '{"rollback":"dpr_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
 INSERT INTO step(workflow_id, step_name, type) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'close', 'close');
 
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'close');
-INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'archival_interest_form');
-INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'archival_interest_form', 'close');
+INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'dpr_form');
+INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'dpr_form', 'dpr_review');
+INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'dpr_review', 'close');
 
 -- DAAC(id, short_name, long_name, url, description, workflow_id, edpgroup_id)
 INSERT INTO daac VALUES ('40397fe8-4841-4e4c-b84a-6ece359ff5ff', 'ASDC', 'Atmospheric Science Data Center (ASDC)', 'https://eosweb.larc.nasa.gov/', 'NASA''s Atmospheric Science Data Center (ASDC) is in the Science Directorate located at NASA''S Langley Research Center in Hampton, Virginia. The Science Directorate''s Climate Science Branch, Atmospheric Composition Branch, and Chemistry and Dynamics Branch work with ASDC to study changes in the Earth and its atmosphere. Data products translate those findings into meaningful knowledge that inspires action by scientists, educators, decision makers, and the public. ASDC supports over 50 projects and provides access to more than 1,000 archived data sets. These data sets were created from satellite measurements, field experiments, and modeled data products. ASDC projects focus on the Earth science disciplines Radiation Budget, Clouds, Aerosols, and Tropospheric Composition.', '4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'bf07c445-8217-4f97-827a-82838cce36fb');
@@ -268,5 +268,62 @@ INSERT INTO daac VALUES ('fe75c306-ac04-4689-a702-073d9cb071fe', 'OB.DAAC', 'Oce
 INSERT INTO daac VALUES ('15df4fda-ed0d-417f-9124-558fb5e5b561', 'ORNL DAAC', 'Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center (DAAC)', 'http://daac.ornl.gov/', 'NASA''s Oak Ridge National Laboratory (ORNL) Distributed Active Archive Center (DAAC) is located at the Oak Ridge National Laboratory in Oak Ridge, Tennessee. ORNL DAAC was established in 1993 and is under an interagency agreement between NASA and the Department of Energy. ORNL DAAC specializes on data and information relevant to terrestrial biogeochemistry, ecology, and environmental processes, which are critical to understanding the dynamics of Earth''s biological, geological, and chemical components.', '4bc927f2-f34a-4033-afe3-02520cc7dcf7', '89816689-5375-4c81-a30c-bf6ed12d30fb');
 INSERT INTO daac VALUES ('6b3ea184-57c5-4fc5-a91b-e49708f91b67', 'PO.DAAC', 'Physical Oceanography Distributed Active Archive Center (PO.DAAC)', 'http://podaac.jpl.nasa.gov/', 'NASA''s Physical Oceanography Distributed Active Archive Center (PO.DAAC) is located at NASA''s Jet Propulsion Laboratory in Pasadena, California. PO.DAAC manages and provides tools and services for NASA''s oceanographic and hydrologic data (satellite, airborne, and in-situ) to enable greater understanding of the physical processes and condition of the global ocean. Measurements include gravity, ocean winds, sea surface temperature, ocean surface topography, sea surface salinity, ocean currents, and circulation. The data support a wide range of applications including climate research, weather prediction, resource management, policy, and the stewardship of ocean data resources. Sample data holdings include Aquarius, Soil Moisture Active Passive (SMAP), Gravity Recovery and Climate Experiment(GRACE), GRACE Follow-on (GRACE-FO), NASA Scatterometer (NSCAT), Quick Scatterometer (QuikSCAT), Rapid Scatterometer (RapidScat), Cyclone Global Navigation Satellite System (CYGNSS), TOPEX/POSEIDON, Jason-1, Group for High Resolution Sea Surface Temperature (GHRSST), Oceans Melting Greenland (OMG), Salinity Processes in the Upper Ocean Regional Study (SPURS), and Making Earth System Data Records for Use in Research Environments (MEaSUREs). Data access services include PO.DAAC Drive, Thematic Real-time Environmental Distributed Data Services (THREDDS), Open-source Project for a Network Data Access Protocol (OPeNDAP), PO.DAAC Web Services, and PO.DAAC GitHub repository. Tools that provide subsetting, extraction, and visualization capabilities include High-level Tool for Interactive Data Extraction (HiTIDE), Live Access Server (LAS), and State of the Ocean (SOTO).', '4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'e847900e-90e2-47f8-85c6-94e06bcbcca0');
 INSERT INTO daac VALUES ('00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1', 'SEDAC', 'Socioeconomic Data and Applications Data Center (SEDAC)', 'http://sedac.ciesin.columbia.edu/', 'NASA''s Socioeconomic Data and Applications Center (SEDAC) is operated by the Center for International Earth Science Information Network (CIESIN), a unit of the Earth Institute at Columbia University based at the Lamont-Doherty Earth Observatory in Palisades, New York. SEDAC''s missions are to synthesize Earth science and socioeconomic data and information in ways useful to a wide range of decision makers and other applied users, and to provide an “Information Gateway” between the socioeconomic and Earth science data and information domains. SEDAC datasets can be accessed via the dataset section of the SEDAC web site.', '4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'f0a89bc6-707f-4a34-8041-1593934c2e42');
-INSERT INTO daac VALUES ('1c36f0b9-b7fd-481b-9cab-3bc3cea35413', 'Unknown', 'Unknown DAAC', 'https://pub.earthdata.nasa.gov', 'Choose this if you are not sure where the data product should be archived.', '4bc927f2-f34a-4033-afe3-02520cc7dcf7', '4daa6b22-f015-4ce2-8dac-8b3510004fca');
+INSERT INTO daac VALUES ('1c36f0b9-b7fd-481b-9cab-3bc3cea35413', 'Unknown', 'Unknown DAAC', 'https://pub.earthdata.nasa.gov', 'Choose this if you are not sure where the data product should be archived.', '4bc927f2-f34a-4033-afe3-02520cc7dcf7', '5be24b44-d66b-4396-9266-a9d066000d9e');
 
+--Privilege(privilege)
+INSERT INTO privilege VALUES ('ADMIN');
+
+INSERT INTO privilege VALUES ('REQUEST_READ');
+INSERT INTO privilege VALUES ('REQUEST_INITIALIZE');
+INSERT INTO privilege VALUES ('REQUEST_RESUME');
+INSERT INTO privilege VALUES ('REQUEST_SUBMIT');
+INSERT INTO privilege VALUES ('REQUEST_APPLY');
+INSERT INTO privilege VALUES ('REQUEST_REVIEW');
+INSERT INTO privilege VALUES ('REQUEST_REASSIGN');
+INSERT INTO privilege VALUES ('REQUEST_LOCK');
+INSERT INTO privilege VALUES ('REQUEST_UNLOCK');
+
+INSERT INTO privilege VALUES ('USER_READ');
+INSERT INTO privilege VALUES ('USER_ADDGROUP');
+INSERT INTO privilege VALUES ('USER_ADDROLE');
+INSERT INTO privilege VALUES ('USER_ADDPERMISSION');
+
+INSERT INTO privilege VALUES ('GROUP_CREATE');
+INSERT INTO privilege VALUES ('GROUP_READ');
+INSERT INTO privilege VALUES ('GROUP_UPDATE');
+INSERT INTO privilege VALUES ('GROUP_DELETE');
+INSERT INTO privilege VALUES ('GROUP_ADDPERMISSION');
+
+INSERT INTO privilege VALUES ('ROLE_CREATE');
+INSERT INTO privilege VALUES ('ROLE_READ');
+INSERT INTO privilege VALUES ('ROLE_UPDATE');
+INSERT INTO privilege VALUES ('ROLE_DELETE');
+INSERT INTO privilege VALUES ('ROLE_ADDPRIVILEGE');
+
+INSERT INTO privilege VALUES ('DAAC_CREATE');
+INSERT INTO privilege VALUES ('DAAC_READ');
+INSERT INTO privilege VALUES ('DAAC_UPDATE');
+INSERT INTO privilege VALUES ('DAAC_DELETE');
+
+INSERT INTO privilege VALUES ('FORM_CREATE');
+INSERT INTO privilege VALUES ('FORM_READ');
+INSERT INTO privilege VALUES ('FORM_UPDATE');
+INSERT INTO privilege VALUES ('FORM_DELETE');
+
+INSERT INTO privilege VALUES ('WORKFLOW_CREATE');
+INSERT INTO privilege VALUES ('WORKFLOW_READ');
+INSERT INTO privilege VALUES ('WORKFLOW_UPDATE');
+INSERT INTO privilege VALUES ('WORKFLOW_DELETE');
+
+INSERT INTO privilege VALUES ('METRICS_READ');
+
+INSERT INTO privilege VALUES ('NOTE_NEW');
+INSERT INTO privilege VALUES ('NOTE_REPLY');
+INSERT INTO privilege VALUES ('NOTE_ADDUSER');
+INSERT INTO privilege VALUES ('NOTE_ADDGROUP');
+
+-- RolePrivilege(edprole_id, privilege)
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'ADMIN');
+
+-- Page(page_key, content)
+INSERT INTO page VALUES ('overview', '{"page_key":"overview","id":4, "heading":"Data Scope and Acceptance Policy", "paragraphs":["Data from NASA science missions and some NASA research programs are automatically assigned to a DAAC by NASA ESDS.  All other data must be approved by NASA ESDS and ESDIS in order to be submitted to a DAAC for publication. This approval process is initiated by submitting the Data Publication Request form.","When a Data Publication Request is received, the DAAC and the DAAC‘s User Working Group will then conduct an assessment of the data product’s alignment with the DAAC’s science domain, the scientific impact and community need, and the DAAC resources necessary to publish and support the data. The DAAC provides the information supplied in your Data Publication Request and their assessment to the NASA ESDIS project and ESDS program for review and approval.  For instructions on how to submit a Data Publication Request, see the Earthdata Pub Instructions for Data Producers page.","For more information on NASA EOSDIS data scope and acceptance policies, visit the Earthdata Adding New Data to EOSDIS page.","NASA’s Earth Observing System Data and Information System (EOSDIS) is responsible for the storage and public distribution of NASA Earth observation data. The scope of data which will be considered for publication at a NASA DAAC includes data:"], "list":["produced by NASA science missions","produced by scientists at NASA facilities","resulting from NASA research program funding","resulting from NASA Applied Science funding if aligned with Earth observation data","created from NASA data","strongly supporting NASA Earth observation data"]}');

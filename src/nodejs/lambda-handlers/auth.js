@@ -2,34 +2,37 @@
  * Lambda to handle authentication interactions with identity provider.
  * @module Version
  */
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-const AuthUtil = require('auth-util');
+const auth = require('auth-util');
 
 async function handler(event) {
   const {
     code, refresh, logout, state, context
   } = event;
   if (code) {
-    const { token, user } = await AuthUtil.getToken(event);
-    await DatabaseUtil.execute({ resource: 'user', operation: 'loginUser' },
-      { user });
-    return { token, state };
+    const { access, refresh, decoded } = await auth.getToken(event);
+    await db.user.loginUser({
+      id: decoded.sub, refresh_token: refresh, ...decoded });
+    const user = await db.user.findById({ id: decoded.sub });
+    return { token: access, user, state };
   }
   if (refresh && context) {
-    const { refresh_token: refreshToken } = await DatabaseUtil.execute({ resource: 'user', operation: 'getRefreshToken' },
-      { user: { id: context.user_id } });
-    const { token, user } = await AuthUtil.refreshToken({ token: refreshToken });
-    await DatabaseUtil.execute({ resource: 'user', operation: 'refreshUser' },
-      { user });
-    return { token };
+    const { refresh_token: refreshToken } = await db.user.getRefreshToken({
+      id: context.user_id });
+    const { access, refresh, decoded } = await auth.refreshToken({
+      token: refreshToken });
+    await db.user.refreshUser({
+      id: decoded.sub, refresh_token: refresh, ...decoded });
+    const user = await db.user.findById({ id: decoded.sub });
+    return { token: access, user };
   }
   if (logout) {
-    const { redirect } = await AuthUtil.getLogoutUrl(event);
+    const { redirect } = await auth.getLogoutUrl(event);
     return { redirect };
   }
 
-  const { redirect } = await AuthUtil.getLoginUrl(event);
+  const { redirect } = await auth.getLoginUrl(event);
   return { redirect };
 }
 

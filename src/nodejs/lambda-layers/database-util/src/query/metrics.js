@@ -4,7 +4,7 @@ const findAll = () => `
 SELECT * FROM metrics`;
 
 const findById = () => `
-${findAll()} WHERE metrics.id = {{metrics.id}}`;
+${findAll()} WHERE metrics.id = {{id}}`;
 
 const metricsFilter = () => `
 ${findAll()}`;

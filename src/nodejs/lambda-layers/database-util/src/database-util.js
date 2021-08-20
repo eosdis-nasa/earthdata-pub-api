@@ -2,11 +2,9 @@ const fs = require('fs');
 
 const { Pool } = require('pg');
 
-const statements = require('./query/statements.js');
+const parse = require('./query/parsers.js');
 
-const parse = require('./query/parse.js');
-
-const { getValueList } = require('./utils.js');
+const queryBuilder = require('./query/index.js');
 
 const config = {
   user: process.env.PG_USER,
@@ -21,10 +19,8 @@ const pool = new Pool(config);
 async function execute({ resource, operation }, params) {
   const response = { data: {} };
   try {
-    const query = statements[resource][operation](params);
-    const { text, values } = getValueList(query, params);
-    const { rows } = await pool.query({ text, values, rowMode: 'object' });
-    const data = parse[operation](rows);
+    const { parser, ...query } = queryBuilder[resource][operation](params);
+    const data = parser(await pool.query(query));
     if (data) {
       Object.assign(response, { data });
     } else {
@@ -67,6 +63,14 @@ async function seed() {
   }
   return response.data || response.error;
 }
+
+module.exports = Object.entries(queryBuilder).reduce((exportable, [resource, operations]) => {
+  exportable[resource] = Object.keys(operations).reduce((ops, operation) => {
+    ops[operation] = (params = {}) => execute({ resource, operation }, params);
+    return ops;
+  }, {});
+  return exportable;
+}, {});
 
 module.exports.execute = execute;
 module.exports.seed = seed;

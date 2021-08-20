@@ -18,7 +18,7 @@ const complexParse = (src) => complexTypes[src.type](src);
 
 const typeCheck = (stub) => `${stub.type ? complexParse(stub) : stub.param ? param(stub) : stub}`;
 
-const select = ({
+const selectQuery = ({
   fields, from, where, group, sort, order, limit, offset, alias
 }) => `${alias ? '(' : ''}SELECT${fields
   ? ` ${fields.map(typeCheck)}` : ' *'}${from
@@ -29,17 +29,23 @@ const select = ({
   ? ` LIMIT ${limit}` : ''}${offset
   ? ` OFFSET ${offset}` : ''}${alias ? `) ${alias}` : ''}`;
 
-const insert = ({
+const insertQuery = ({
   table, values, conflict, returning
 }) => `INSERT INTO ${typeCheck(table)} ${typeCheck(values)}${conflict
   ? onConflict(conflict) : ''}${returning
   ? returningClause(returning) : ''}`;
 
-const update = ({
+const updateQuery = ({
   table, set, where, returning
 }) => `UPDATE ${table ? `${table} ` : ''}SET ${set.map(filter).join(',')}${where
   ? whereClause(where) : ''}${returning
-  ? returningClause : ''}`;
+  ? returningClause(returning) : ''}`;
+
+const deleteQuery = ({
+  table, where, returning
+}) => `DELETE FROM ${table}${where
+  ? whereClause(where) : ''}${returning
+  ? returningClause(returning) : ''}`;
 
 const onConflict = ({ constraints, update }) => ` ON CONFLICT ${constraints ? `(${constraints.join(',')}) ` : ''} DO ${update
   ? typeCheck(update) : 'NOTHING'}`;
@@ -97,25 +103,15 @@ const jsonMergeAgg = ({
 const jsonObj = ({ keys, alias, strip }) => `${strip ? 'JSONB_STRIP_NULLS(' : ''}JSONB_BUILD_OBJECT(${keys.map(([key, src]) => `'${key}', ${src.type ? complexParse(src) : src}`)})${strip ? ')' : ''}${alias
   ? ` ${alias}` : ''}`;
 
-const getValueList = (query, params) => {
-  let count = 0;
-  const values = [];
-  const text = query.replace(/\{\{(.*?)\}\}/g, (match, token) => {
-    values.push(params[token]);
-    count += 1;
-    return `$${count}`;
-  });
-  return { text, values };
-};
-
 const strWrapper = (value) => ` '${value}'`;
 
 const strLiteral = ({ value }) => strLiteral(value);
 
 const complexTypes = {
-  select,
-  insert,
-  update,
+  select: selectQuery,
+  insert: insertQuery,
+  update: updateQuery,
+  delete: deleteQuery,
   insert_values: insertValues,
   short_table: shortTable,
   param,
@@ -130,6 +126,4 @@ const complexTypes = {
   literal: strLiteral
 };
 
-module.exports = {
-  select, insert, update, complexParse, fromClause, whereClause, filter, sub, coalesce, jsonAgg, jsonObj, getValueList
-};
+module.exports = complexTypes;

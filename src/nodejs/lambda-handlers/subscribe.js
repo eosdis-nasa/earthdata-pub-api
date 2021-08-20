@@ -6,7 +6,7 @@
  * @see module:NotificationHandler
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
 // const MessageUtil = require('message-util');
 
@@ -23,7 +23,7 @@ async function handler(event) {
     ...(event.submission_id && { submission_id: event.submission_id, type: 'submission' }),
     ...(event.workflow_id && { workflow_id: event.workflow_id, type: 'workflow' })
   };
-  const response = await DatabaseUtil.execute({ resource: 'subscription', operation: event.operation }, params);
+  const response = await db.subscription[event.operation](params);
   return response;
 }
 

@@ -35,10 +35,10 @@ async function getToken({ code }) {
     grant_type: 'authorization_code',
     redirect_uri: clientUrl
   });
-  const user = jwt.decode(tokens.id_token);
-  user.id = user.sub;
-  user.refresh_token = tokens.refresh_token;
-  return { token: tokens.access_token, user };
+  const decoded = jwt.decode(tokens.id_token);
+  const refresh = tokens.refresh_token;
+  const access = tokens.access_token;
+  return { access, refresh, decoded };
 }
 
 async function refreshToken({ token }) {
@@ -46,10 +46,10 @@ async function refreshToken({ token }) {
     grant_type: 'refresh_token',
     refresh_token: token
   });
-  const user = jwt.decode(tokens.id_token);
-  user.id = user.sub;
-  user.refresh_token = tokens.refresh_token;
-  return { token: tokens.access_token, user };
+  const decoded = jwt.decode(tokens.id_token);
+  const refresh = tokens.refresh_token;
+  const access = tokens.access_token;
+  return { access, refresh, decoded };
 }
 
 async function getLoginUrl({ state }) {

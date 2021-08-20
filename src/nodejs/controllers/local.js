@@ -1,7 +1,7 @@
 const fs = require('fs');
 const uuid = require('uuid');
 const { sign, verify, decode } = require('jsonwebtoken');
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 const handlers = require('./handlers.js');
 
 const issuer = 'Earthdata Pub Dev';
@@ -27,32 +27,46 @@ function login(req, res) {
 
 function authenticate(req, res) {
   const code = uuid.v4().replace(/-/g, '');
-  const { state, ...user } = req.body;
-  if (user.id === 'register') {
-    user.id = uuid.v4();
-    user.refresh_token = code;
+  const { state, ...data } = req.body;
+  if (data.new_user) {
+    data.id = uuid.v4();
   }
-  DatabaseUtil.execute({ resource: 'user', operation: 'loginUser' }, { user })
-    .then((data) => {
-      Object.assign(user, data);
-      const authTime = Math.floor(Date.parse(user.last_login) / 1000);
-      Object.assign(user, {
-        sub: user.id,
-        scope: 'openid',
-        auth_time: authTime,
-        iss: issuer,
-        exp: authTime + exp,
-        iat: authTime
-      });
-      // const newToken = sign(user, tokenSecret, { algorithm: 'HS256'});
-      codes[code] = user;
+  data.refresh_token = code;
+  db.user.loginUser(data)
+  .then(() => {
+    if (data.new_user && data.user_roles.length > 0) {
+      return db.user.addRoles(data)
+    }
+  })
+  .then(() => {
+    if (data.new_user && data.user_groups.length > 0) {
+      return db.user.addGroups(data);
+    }
+  })
+  .then(() => {
+    return db.user.findById(data);
+  })
+  .then((user) => {
+    const authTime = Math.floor(Date.parse(user.last_login) / 1000);
+    const tokenBase = {
+      sub: user.id,
+      name: user.name,
+      email: user.email,
+      scope: 'openid',
+      auth_time: authTime,
+      iss: issuer,
+      exp: authTime + exp,
+      iat: authTime
+    };
 
-      const redirect = new URL('http://localhost:3000/auth');
-      redirect.searchParams.set('code', code);
-      if (state) redirect.searchParams.set('state', state);
-      res.status(200);
-      res.send({ redirect: redirect.href });
-    });
+    codes[code] = tokenBase;
+
+    const redirect = new URL('http://localhost:3000/auth');
+    redirect.searchParams.set('code', code);
+    if (state) redirect.searchParams.set('state', state);
+    res.status(200);
+    res.send({ redirect: redirect.href });
+  });
 }
 
 function getToken(req, res) {
@@ -103,7 +117,7 @@ function getToken(req, res) {
 }
 
 function userList(req, res) {
-  DatabaseUtil.execute({ resource: 'user', operation: 'findAll' }, {})
+  db.user.findAll()
     .then((users) => {
       res.status(200);
       res.send(users);
@@ -111,7 +125,7 @@ function userList(req, res) {
 }
 
 function groupList(req, res) {
-  DatabaseUtil.execute({ resource: 'group', operation: 'findAll' }, {})
+  db.group.findAll()
     .then((groups) => {
       res.status(200);
       res.send(groups);
@@ -119,7 +133,7 @@ function groupList(req, res) {
 }
 
 function roleList(req, res) {
-  DatabaseUtil.execute({ resource: 'role', operation: 'findAll' }, {})
+  db.role.findAll()
     .then((roles) => {
       res.status(200);
       res.send(roles);
@@ -137,8 +151,8 @@ function check(req, secDef, token, next) {
           if (respectExp && decoded.exp < currentTime) {
             next(req.res.sendStatus(403));
           }
-          DatabaseUtil.execute({ resource: 'user', operation: 'findById' },
-            { user: { id: decoded.sub } }).then((user) => {
+          db.user.findById({id: decoded.sub })
+          .then((user) => {
             if (user.error) { return next(req.res.sendStatus(403)); }
             Object.assign(req, { user_id: decoded.sub });
             return next();
@@ -153,7 +167,7 @@ function check(req, secDef, token, next) {
 }
 
 function reseed(req, res) {
-  DatabaseUtil.seed().then((response) => {
+  db.seed().then((response) => {
     res.status(200);
     res.send();
   });
@@ -193,7 +207,7 @@ function wrapSns(req) {
 
 function dbTest(req, res) {
   const { resource, operation, params } = req.body;
-  DatabaseUtil.execute({ resource, operation }, params)
+  db[resource][operation](params)
     .then((data) => {
       res.status(200);
       res.send(data);

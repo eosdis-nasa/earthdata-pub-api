@@ -69,8 +69,8 @@ const findAll = () => sql.select({
   from: { base: table, joins: [refs.role_privilege] }
 });
 const findAllEx = () => `${findAll()} `;
-const findById = () => `${findAll()} WHERE edprole.id = {{role.id}}`;
-const findByName = () => `${findAll()} WHERE edprole.short_name = {{role.short_name}}`;
+const findById = () => `${findAll()} WHERE edprole.id = {{id}}`;
+const findByName = () => `${findAll()} WHERE edprole.short_name = {{short_name}}`;
 
 module.exports.findAll = findAll;
 module.exports.findAllEx = findAllEx;
