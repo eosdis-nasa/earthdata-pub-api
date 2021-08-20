@@ -1,7 +1,7 @@
 {
   "id": "6c544723-241c-4896-a38c-adbc0a364293",
-  "version": 1,
-  "long_name": "Data Publication Request",
+  "version": 3,
+  "long_name": "Data Accession Request",
   "short_name": "data_publication_request",
   "description": "This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.",
   "text": "To express interest in archiving a data product, please fill out the following form.",
@@ -18,7 +18,7 @@
             {
               "type": "text",
               "control_id": "data_producer_info_name",
-              "label": "Name",
+              "label": "First and Last Name",
               "validation_error_msg": "Please enter a name for the point of contact.",
               "required": true
             },
@@ -44,18 +44,18 @@
             }
           ],
           "id": "80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2",
-          "version": 1
+          "version": 3
         },
         {
           "short_name": "publication_point_of_contact",
-          "long_name": "Publication Point of Contact",
-          "text": "During the publication process, who should the DAAC contact with questions regarding this data product?",
-          "help": "The publication process includes ingesting, archiving, quality checking, documenting, and making the data product publicly accessible.",
+          "long_name": "Data Accession Point of Contact",
+          "text": "Who should the DAAC contact with questions regarding this Data Accession request?",
+          "help": "This person should have in-depth knowledge of this data product, allowing them to provide additional information as needed.",
           "inputs": [
             {
               "type": "text",
               "control_id": "publication_poc_name",
-              "label": "Name",
+              "label": "First and Last Name",
               "validation_error_msg": "Please enter a name for the point of contact.",
               "required": true
             },
@@ -81,7 +81,7 @@
             }
           ],
           "id": "f3e2eab9-6375-4e53-9cc2-3d16f318d333",
-          "version": 1
+          "version": 3
         }
       ]
     },
@@ -90,7 +90,7 @@
       "questions": [
         {
           "short_name": "funding_organization",
-          "long_name": "Funding Source: Organization",
+          "long_name": "Funding Organization",
           "text": "What organization(s) funded the creation of this data product?",
           "help": "This the organization that funded the creation of the data product.",
           "inputs": [
@@ -127,11 +127,11 @@
             }
           ],
           "id": "8a364184-42ac-48fe-b831-acb2eb08c728",
-          "version": 1
+          "version": 3
         },
         {
           "short_name": "funding_program",
-          "long_name": "Funding source: Program/Program Element",
+          "long_name": "Funding Program/Element",
           "text": "Under what program or program element within the funding organization was this data product created?",
           "help": "For example, NASA programs such as MEaSUREs, Terrestrial Hydrology, Earth Venture, ACCESS, or AIST.",
           "inputs": [
@@ -144,12 +144,12 @@
             }
           ],
           "id": "4ecc885f-daf8-4bc6-a8cd-d30c2a54d085",
-          "version": 1
+          "version": 3
         }
       ]
     },
     {
-      "heading": "Data Product Information",
+      "heading": "General Information",
       "questions": [
         {
           "short_name": "data_product_name",
@@ -166,7 +166,7 @@
             }
           ],
           "id": "f74c6c20-7483-40f9-a63e-58cc20ae8c8f",
-          "version": 1
+          "version": 3
         },
         {
           "short_name": "data_product_description",
@@ -187,158 +187,7 @@
             }
           ],
           "id": "39701413-ac96-4b66-9c2f-2d9c08a18ed9",
-          "version": 1
-        },
-        {
-          "short_name": "publication",
-          "long_name": "Publications Describing Data Product",
-          "text": "Please provide the citation or Digital Object Identifier (DOI) for any publications describing this data product.",
-          "help": "For example, a overview paper describing the research, methods, or initial results related to this data product.",
-          "inputs": [
-            {
-              "type": "table",
-              "control_id": "publication_dois",
-              "enums":[
-                {
-                  "key": "doi",
-                  "label": "DOIs",
-                  "editable": true,
-                  "type":"text"
-                }
-              ],
-              "required":true
-            }
-          ],
-          "id": "ab57f5e8-9ec5-46c9-978e-d06125346d37",
-          "version": 1
-        },
-        {
-          "short_name": "science_value",
-          "long_name": "Science Value of Data Product",
-          "text": "Please describe the science value of this data product.",
-          "help": "For example, how will this data product benefit the science community? What are the strengths and the limitations of this data product? What other data products does it compliment?",
-          "inputs": [
-            {
-              "type": "textarea",
-              "control_id": "science_value_description",
-              "label": "Description",
-              "validation_error_msg": "Please enter a description.",
-              "attributes": {
-                "rows": 3,
-                "cols": 20
-              },
-              "required": true
-            }
-          ],
-          "id": "7fd7bccf-5065-4033-9956-9e80bc99c205",
-          "version": 1
-        },
-        {
-          "short_name": "data_submission_reason",
-          "long_name": "Reason for Data Submission Request",
-          "text": "Please briefly explain your reasons for requesting approval to publish this data product at the DAAC.",
-          "help": "For example, are you attempting to publish a paper which requires data to be archived in a trusted repository? Have you been instructed by a NASA program manager to submit your data to the DAAC? Do you want this data product archived with related data?",
-          "inputs": [
-            {
-              "type": "textarea",
-              "control_id": "data_submission_reason_description",
-              "label": "Description",
-              "validation_error_msg": "Please enter a description.",
-              "attributes": {
-                "rows": 5,
-                "cols": 20,
-                "maxlength":1000,
-                "placeholder":"This is a placeholder"
-              },
-              "required": true
-            }
-          ],
-          "id": "bd00dbb7-1d3c-46fa-82a4-734236f4e06c",
-          "version": 1
-        },
-        {
-          "short_name": "data_submission_approval_dependencies",
-          "long_name": "Dependencies for Data Submission Approval",
-          "text": "Do you have any dependencies related to this data product being approved to be published at the DAAC? If 'Yes', please provide a brief explanation.",
-          "help": "For example, are you hoping to have this data product approved to be published at the DAAC prior publishing a paper or presenting at a conference? Does your project have a defined timeline in which this data product needs to be published?",
-          "inputs": [
-            {
-              "type": "radio",
-              "control_id": "data_submission_approval_dependencies_radios",
-              "label": "Has Dependencies",
-              "enums": [
-                "Yes",
-                "No"
-              ],
-              "required": true
-            },
-            {
-              "type": "text",
-              "control_id": "data_submission_approval_dependencies_explanation",
-              "label": "If Yes, provide explanation",
-              "required_if": [
-                {
-                  "field": "data_submission_approval_dependencies_radios",
-                  "value": "Yes",
-                  "message":"Please provide an explanation of the data product's dependencies."
-                }
-              ]
-            }
-          ],
-          "id": "f40956c3-9af8-400e-8dd8-c5e2965dcb8a",
-          "version": 1
-        },
-        {
-          "short_name": "data_product_restrictions",
-          "long_name": "Data Product Restrictions",
-          "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No, please provide a brief explanation.",
-          "help": "For a description of the policy, please refer to the NASA Earthdata Data and Information Policy web page (https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy).",
-          "inputs": [
-            {
-              "type": "radio",
-              "control_id": "data_product_restrictions_public",
-              "label": "Releasable to public",
-              "enums": [
-                "Yes",
-                "No"
-              ],
-              "required": true
-            },
-            {
-              "type": "text",
-              "control_id": "data_product_restrictions_explanation",
-              "label": "If No, provide explanation",
-              "required_if": [
-                {
-                  "field": "data_product_restrictions_public",
-                  "value": "No",
-                  "message":"Please provide an explanation of the data product's restrictions."
-                }
-              ]
-            }
-          ],
-          "id": "2dd6c8b1-22a8-4866-91c3-da9b4ce849dc",
-          "version": 1
-        },
-        {
-          "short_name": "data_product_documentation",
-          "long_name": "Additional Documentation",
-          "text": "Please upload additional documents that describe this data product or provide URLs to additional documents.",
-          "help": "For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality.",
-          "inputs": [
-            {
-              "type": "file",
-              "control_id": "data_product_documentation_upload",
-              "label": "Upload Additional Documentation"
-            },
-            {
-              "type": "text",
-              "control_id": "data_product_documentation_url",
-              "label": "Additional Documentation URL"
-            }
-          ],
-          "id": "ad568b2f-89fe-4afd-a0bf-9e5832b71ce9",
-          "version": 1
+          "version": 3
         },
         {
           "short_name": "data_product_doi",
@@ -366,127 +215,142 @@
             }
           ],
           "id": "c9c73e88-837a-42d2-aa1a-50874a333607",
-          "version": 1
-        }
-      ]
-    },
-    {
-      "heading": "Data Product Coverage",
-      "questions": [
+          "version": 3
+        },
         {
-          "short_name": "product_temporal_coverage",
-          "long_name": "Data Product",
-          "text": "What period of time is covered by the entire data product?",
-          "help":"The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file, even if there are time gaps. If there is additional information you want to provide, please include that in Temporal Coverage Notes.",
+          "short_name": "science_value",
+          "long_name": "Science Value of Data Product",
+          "text": "Please describe the science value of this data product.",
+          "help": "For example, how will this data product benefit the science community? What are the strengths and the limitations of this data product? What other data products does it compliment?",
           "inputs": [
             {
-              "type": "date",
-              "control_id": "product_temporal_coverage_start",
-              "label": "Start",
-              "required": true
-            },
-            {
-              "type": "date",
-              "control_id": "product_temporal_coverage_end",
-              "label": "End",
-              "required": true
-            },
-            {
-              "type": "radio",
-              "control_id": "product_temporal_coverage_ongoing",
-              "label": "Ongoing",
-              "enums":[
-                "Yes",
-                "No"
-              ],
+              "type": "textarea",
+              "control_id": "science_value_description",
+              "label": "Description",
+              "validation_error_msg": "Please enter a description.",
+              "attributes": {
+                "rows": 3,
+                "cols": 20
+              },
               "required": true
             }
           ],
-          "id": "4f2dd369-d865-47ba-8504-8694493f129f",
-          "version": 1
+          "id": "7fd7bccf-5065-4033-9956-9e80bc99c205",
+          "version": 3
         },
         {
-          "short_name": "data_product_status",
-          "long_name": "Data Product Status",
-          "text": "After this data product has been published at the DAAC, will you continue to collect or create new data to extend the time series?",
-          "help": "",
+          "short_name": "data_submission_reason",
+          "long_name": "Reason for Data Accession Request",
+          "text": "Please briefly explain your reasons for requesting to have this data product archived and distributed at the DAAC.",
+          "help": "For example, are you attempting to publish a paper which requires data to be archived in a trusted repository? Have you been instructed by a NASA program manager to archive your data to the DAAC? Do you want this data product distributed with related data?",
+          "inputs": [
+            {
+              "type": "textarea",
+              "control_id": "data_submission_reason_description",
+              "label": "Description",
+              "validation_error_msg": "Please enter a description.",
+              "attributes": {
+                "rows": 5,
+                "cols": 20,
+                "maxlength":1000,
+                "placeholder":"This is a placeholder"
+              },
+              "required": true
+            }
+          ],
+          "id": "bd00dbb7-1d3c-46fa-82a4-734236f4e06c",
+          "version": 3
+        },
+        {
+          "short_name": "data_submission_approval_dependencies",
+          "long_name": "Dependencies for Data Accession Approval",
+          "text": "Do you have any dependencies related to this data product being approved to be published at the DAAC? If \"Yes\", please provide a brief explanation.",
+          "help": "For example, are you hoping to have this data product approved to be published at the DAAC prior publishing a paper or presenting at a conference? Does your project have a defined timeline in which this data product needs to be published?",
           "inputs": [
             {
               "type": "radio",
-              "control_id": "data_product_status",
-              "label": "Product Status",
+              "control_id": "data_submission_approval_dependencies_radios",
+              "label": "Has Dependencies",
               "enums": [
                 "Yes",
                 "No"
               ],
               "required": true
-            }
-          ],
-          "id": "f4d8ab9d-0959-41b8-8449-430986ddfe81",
-          "version": 1
-        },
-        {
-          "short_name": "data_production_latency",
-          "long_name": "Data Production Latency",
-          "text": "What is the average time between the observation of the data and the creation of the data product?",
-          "show_if": [
-            {
-              "field": "data_product_status",
-              "value": "Yes"
-            }
-          ],
-          "inputs": [
-            {
-              "type": "number",
-              "control_id": "data_production_latency_amount",
-              "label": "Amount",
-              "validation_error_msg": "You must enter a positive value."
             },
             {
-              "type": "radio",
-              "control_id": "data_production_latency_units",
-              "label": "Unit",
-              "enums": [
-                "Minute(s)",
-                "Hour(s)",
-                "Day(s)",
-                "Week(s)",
-                "Month(s)",
-                "Year(s)",
-                "Varies"
+              "type": "text",
+              "control_id": "data_submission_approval_dependencies_explanation",
+              "label": "If Yes, provide explanation",
+              "required_if": [
+                {
+                  "field": "data_submission_approval_dependencies_radios",
+                  "value": "Yes",
+                  "message":"Please provide an explanation of the data product's dependencies."
+                }
               ]
             }
           ],
-          "id": "f4d8ab9d-0959-41b8-8449-430986ddfe84",
-          "version": 1
+          "id": "f40956c3-9af8-400e-8dd8-c5e2965dcb8a",
+          "version": 3
         },
         {
-          "short_name": "spatial_general",
-          "long_name": "General",
-          "text": "What is the general geographic region covered by this data product?",
-          "help": "For example: Global, Northern Hemisphere, Alaska, Korean Peninsula, East Tropical Pacific, or Gulf Stream.",
+          "short_name": "data_product_restrictions",
+          "long_name": "Data Product Restrictions",
+          "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No, please provide a brief explanation.",
+          "help": "For a description of the policy, please refer to the NASA Earthdata Data and Information Policy web page (https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy).",
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "data_product_restrictions_public",
+              "label": "Releasable to public",
+              "enums": [
+                "Yes",
+                "No",
+                "Not sure"
+              ],
+              "required": true
+            },
+            {
+              "type": "text",
+              "control_id": "data_product_restrictions_explanation",
+              "label": "If No, provide explanation",
+              "required_if": [
+                {
+                  "field": "data_product_restrictions_public",
+                  "value": "No",
+                  "message":"Please provide an explanation of the data product's restrictions."
+                }
+              ]
+            }
+          ],
+          "id": "2dd6c8b1-22a8-4866-91c3-da9b4ce849dc",
+          "version": 3
+        },
+        {
+          "short_name": "data_product_documentation",
+          "long_name": "Data Product Documentation",
+          "text": "Please provide URLs to additional documents.",
+          "help": "For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality.",
           "inputs": [
             {
               "type": "text",
-              "control_id": "spatial_general_region",
-              "label": "Coverage",
-              "validation_error_msg": "Please enter a spatial coverage.",
-              "required": true
+              "control_id": "data_product_documentation_url",
+              "label": "Additional Documentation URL"
             }
           ],
-          "id": "228cb0d6-78fb-449a-8061-b1e6fb3f59d1",
-          "version": 1
+          "id": "ad568b2f-89fe-4afd-a0bf-9e5832b71ce9",
+          "version": 3
         }
       ]
     },
     {
-      "heading": "Data Product Technical Details",
+      "heading": "Technical Information",
       "questions": [
         {
           "short_name": "data_format",
           "long_name": "Data Format",
-          "text": "What is the format(s) of the files within this data product? If selecting Other, please upload code to read the data or provide a URL to code to read the data.",
-          "help": "For a list of NASA approved data formats, please refer to the NASA Earthdata Standards and Practicies web page (https://earthdata.nasa.gov/esdis/eso/standards-and-references#data-formats). Providing code to read non-standard data formats will assist the DAAC in understanding the structure and content of this data product.",
+          "text": "What is the format(s) of the files in this data product?",
+          "help": "For a list of NASA-approved data formats, please refer to the NASA Earthdata Standards and Practices web page <https://earthdata.nasa.gov/esdis/eso/standards-and-references#data-formats>.",
           "required": true,
           "inputs": [
             {
@@ -502,12 +366,12 @@
             {
               "type": "checkbox",
               "control_id": "data_format_hdf5",
-              "label": "HDF-5"
+              "label": "HDF 5"
             },
             {
               "type": "checkbox",
               "control_id": "data_format_hdf_eos",
-              "label": "HDF-EOS-5"
+              "label": "HDF-EOS 5"
             },
             {
               "type": "checkbox",
@@ -542,8 +406,88 @@
             }
           ],
           "id": "50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27",
-          "version": 1
+          "version": 3
         },
+        {
+          "short_name": "spatial_general",
+          "long_name": "Spatial Coverage",
+          "text": "What is the general geographic region covered by this data product?",
+          "help": "For example, Global, Northern Hemisphere, Alaska, Korean Peninsula, East Tropical Pacific, or Gulf Stream.",
+          "inputs": [
+            {
+              "type": "text",
+              "control_id": "spatial_general_region",
+              "label": "Coverage",
+              "validation_error_msg": "Please enter spatial coverage.",
+              "required": true
+            }
+          ],
+          "id": "228cb0d6-78fb-449a-8061-b1e6fb3f59d1",
+          "version": 3
+        },
+        {
+          "short_name": "product_temporal_coverage",
+          "long_name": "Temporal Coverage",
+          "text": "What period of time is covered by the data product upon planned delivery to the DAAC?",
+          "help":"The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file, even if there are time gaps.",
+          "inputs": [
+            {
+              "type": "date",
+              "control_id": "product_temporal_coverage_start",
+              "label": "Start",
+              "required": true
+            },
+            {
+              "type": "date",
+              "control_id": "product_temporal_coverage_end",
+              "label": "End",
+              "required": true
+            }
+          ],
+          "id": "4f2dd369-d865-47ba-8504-8694493f129f",
+          "version": 3
+        },
+        {
+          "short_name": "data_product_status",
+          "long_name": "Data Product Status",
+          "text": "After this data product has been published at the DAAC, will you continue to collect or create new data to extend the time series?",
+          "help": "",
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "data_product_status",
+              "label": "Product Status",
+              "enums": [
+                "Yes",
+                "No"
+              ],
+              "required": true
+            }
+          ],
+          "id": "f4d8ab9d-0959-41b8-8449-430986ddfe81",
+          "version": 3
+        },
+
+        {
+          "short_name": "data_delivery_frequency",
+          "long_name": "Data Delivery Frequency",
+          "text": "If \"Yes\", what is the anticipated frequency of additional data deliveries to the DAAC?",
+          "help": "",
+          "inputs": [
+            {
+              "type": "radio",
+              "control_id": "data_product_status",
+              "label": "Product Status",
+              "enums": [
+                "daily", "weekly", "monthly", "quarterly", "yearly", "ad-hoc"
+              ],
+              "required": false
+            }
+          ],
+          "id": "b743513f-0d82-46cc-93cb-82059782b2cf",
+          "version": 3
+        },
+
         {
           "short_name": "data_product_volume",
           "long_name": "Data Product Volume",
@@ -555,7 +499,7 @@
               "control_id": "data_product_volume_amount",
               "label": "Amount",
               "required": true,
-              "validation_error_msg": "You must enter a positive value."
+              "validation_error_msg": "Volume must be positive."
             },
             {
               "type": "radio",
@@ -572,20 +516,15 @@
             }
           ],
           "id": "40672516-2220-4edc-8c1b-fd9f7e0b978f",
-          "version": 1
+          "version": 3
         },
         {
           "short_name": "sample_data_file",
-          "long_name": "Sample Data File",
-          "text": "Please upload a sample data file(s) or provide a URL to a location where a sample data file(s) can be accessed.",
-          "help": "Providing data files that are representative of the range of data within this data product will help the DAAC to better understand the data format, structure, and content.",
+          "long_name": "Sample Data File(s)",
+          "text": "Please provide a URL to a sample file(s).",
+          "help": "Providing sample data files that are representative of the range of data within this data product will help the DAAC understand the data format, structure, and content.",
           "required": true,
           "inputs": [
-            {
-              "type": "file",
-              "control_id": "example_file_upload",
-              "label": "Upload Sample File"
-            },
             {
               "type": "text",
               "control_id": "example_file_url",
@@ -593,7 +532,7 @@
             }
           ],
           "id": "53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3",
-          "version": 1
+          "version": 3
         }
       ]
     }
