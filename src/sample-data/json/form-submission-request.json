@@ -1,8 +1,8 @@
 {
   "id": "6c544723-241c-4896-a38c-adbc0a364293",
-  "version": 3,
+  "version": 1,
   "long_name": "Data Accession Request",
-  "short_name": "data_publication_request",
+  "short_name": "data_accession_request",
   "description": "This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.",
   "text": "To express interest in archiving a data product, please fill out the following form.",
   "sections": [
@@ -44,7 +44,7 @@
             }
           ],
           "id": "80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "publication_point_of_contact",
@@ -81,7 +81,7 @@
             }
           ],
           "id": "f3e2eab9-6375-4e53-9cc2-3d16f318d333",
-          "version": 3
+          "version": 1
         }
       ]
     },
@@ -92,7 +92,7 @@
           "short_name": "funding_organization",
           "long_name": "Funding Organization",
           "text": "What organization(s) funded the creation of this data product?",
-          "help": "This the organization that funded the creation of the data product.",
+          "help": "",
           "inputs": [
             {
               "type": "radio",
@@ -127,7 +127,7 @@
             }
           ],
           "id": "8a364184-42ac-48fe-b831-acb2eb08c728",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "funding_program",
@@ -144,7 +144,7 @@
             }
           ],
           "id": "4ecc885f-daf8-4bc6-a8cd-d30c2a54d085",
-          "version": 3
+          "version": 1
         }
       ]
     },
@@ -155,7 +155,7 @@
           "short_name": "data_product_name",
           "long_name": "Data Product Name",
           "text": "How do you refer to this data product?",
-          "help": "This is how the DAAC will refer to this data product during the data submission request process.",
+          "help": "The DAAC will use this information to develop an official data product name in compliance with DAAC/ESDIS standards.",
           "inputs": [
             {
               "type": "text",
@@ -166,7 +166,7 @@
             }
           ],
           "id": "f74c6c20-7483-40f9-a63e-58cc20ae8c8f",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "data_product_description",
@@ -187,7 +187,7 @@
             }
           ],
           "id": "39701413-ac96-4b66-9c2f-2d9c08a18ed9",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "data_product_doi",
@@ -215,7 +215,7 @@
             }
           ],
           "id": "c9c73e88-837a-42d2-aa1a-50874a333607",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "science_value",
@@ -236,7 +236,7 @@
             }
           ],
           "id": "7fd7bccf-5065-4033-9956-9e80bc99c205",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "data_submission_reason",
@@ -259,7 +259,7 @@
             }
           ],
           "id": "bd00dbb7-1d3c-46fa-82a4-734236f4e06c",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "data_submission_approval_dependencies",
@@ -291,13 +291,13 @@
             }
           ],
           "id": "f40956c3-9af8-400e-8dd8-c5e2965dcb8a",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "data_product_restrictions",
           "long_name": "Data Product Restrictions",
           "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No, please provide a brief explanation.",
-          "help": "For a description of the policy, please refer to the NASA Earthdata Data and Information Policy web page (https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy).",
+          "help": "For a description of the open data policy, please refer to the NASA Earthdata Data and Information Policy web page <https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy>.",
           "inputs": [
             {
               "type": "radio",
@@ -324,7 +324,7 @@
             }
           ],
           "id": "2dd6c8b1-22a8-4866-91c3-da9b4ce849dc",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "data_product_documentation",
@@ -339,7 +339,7 @@
             }
           ],
           "id": "ad568b2f-89fe-4afd-a0bf-9e5832b71ce9",
-          "version": 3
+          "version": 1
         }
       ]
     },
@@ -406,11 +406,11 @@
             }
           ],
           "id": "50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "spatial_general",
-          "long_name": "Spatial Coverage",
+          "long_name": "Data Product Spatial Coverage",
           "text": "What is the general geographic region covered by this data product?",
           "help": "For example, Global, Northern Hemisphere, Alaska, Korean Peninsula, East Tropical Pacific, or Gulf Stream.",
           "inputs": [
@@ -423,13 +423,13 @@
             }
           ],
           "id": "228cb0d6-78fb-449a-8061-b1e6fb3f59d1",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "product_temporal_coverage",
-          "long_name": "Temporal Coverage",
-          "text": "What period of time is covered by the data product upon planned delivery to the DAAC?",
-          "help":"The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file, even if there are time gaps.",
+          "long_name": "Data Product Temporal Coverage",
+          "text": "What period of time is covered by the entire data product, upon planned delivery to the DAAC?",
+          "help": "The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file, even if there are time gaps.",
           "inputs": [
             {
               "type": "date",
@@ -445,7 +445,7 @@
             }
           ],
           "id": "4f2dd369-d865-47ba-8504-8694493f129f",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "data_product_status",
@@ -464,30 +464,37 @@
               "required": true
             }
           ],
-          "id": "f4d8ab9d-0959-41b8-8449-430986ddfe81",
-          "version": 3
+          "id": "dbf70495-433a-439e-8173-0cb20f972c16",
+          "version": 1
         },
-
         {
           "short_name": "data_delivery_frequency",
           "long_name": "Data Delivery Frequency",
-          "text": "If \"Yes\", what is the anticipated frequency of additional data deliveries to the DAAC?",
-          "help": "",
+          "text": "What is the anticipated frequency of additional data deliveries to the DAAC?",
+          "show_if": [
+            {
+              "field": "data_product_status",
+              "value": "Yes"
+            }
+          ],
           "inputs": [
             {
               "type": "radio",
-              "control_id": "data_product_status",
-              "label": "Product Status",
+              "control_id": "data_delivery_frequency",
+              "label": "Unit",
               "enums": [
-                "daily", "weekly", "monthly", "quarterly", "yearly", "ad-hoc"
-              ],
-              "required": false
+                "Daily",
+                "Weekly",
+                "Monthly",
+                "Quarterly",
+                "Yearly",
+                "Varies"
+              ]
             }
           ],
-          "id": "b743513f-0d82-46cc-93cb-82059782b2cf",
-          "version": 3
+          "id": "4c42796a-8ff1-444e-8fc5-82ccad82e5fb",
+          "version": 1
         },
-
         {
           "short_name": "data_product_volume",
           "long_name": "Data Product Volume",
@@ -516,7 +523,7 @@
             }
           ],
           "id": "40672516-2220-4edc-8c1b-fd9f7e0b978f",
-          "version": 3
+          "version": 1
         },
         {
           "short_name": "sample_data_file",
@@ -532,7 +539,7 @@
             }
           ],
           "id": "53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3",
-          "version": 3
+          "version": 1
         }
       ]
     }
