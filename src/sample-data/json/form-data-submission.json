@@ -92,7 +92,7 @@
             {
               "type": "text",
               "control_id": "long_term_support_poc_name",
-              "label": "Name",
+              "label": "First and Last Name",
               "validation_error_msg": "Please enter a name for the long-term point of contact.",
               "required": true
             },
@@ -396,7 +396,7 @@
         {
           "short_name": "data_production_latency",
           "long_name": "Data Production Latency",
-          "text": "What is the average time between the observation of the data and the creation of the data product?",
+          "text": "What is the expected time difference between the latest data observation reference time and the delivery of that data to the DAAC?",
           "show_if": [
             {
               "field": "data_product_status",
@@ -415,13 +415,15 @@
               "control_id": "data_production_latency_units",
               "label": "Unit",
               "enums": [
-                "Minute(s)",
-                "Hour(s)",
-                "Day(s)",
-                "Week(s)",
-                "Month(s)",
-                "Year(s)",
-                "Varies"
+                "3 hours or less",
+                "24 hours or less",
+                "48 hours or less",
+                "2 to 7 days",
+                "1 week to 1 month",
+                "1 to 3 months",
+                "3 to 6 months",
+                "6 months to 1 year",
+                "more than 1 year"
               ]
             }
           ],
@@ -744,7 +746,7 @@
           "short_name": "platform_and_instrument",
           "long_name": "Platform and Instrument",
           "text": "What platform(s) and instrument(s) were used to collect the data within this data product?",
-          "help": "Please be as specific as possible when including the platforms and instruments. For example, include tail numbers for aircraft or uniquely identify instruments when multiple instances exist on the same platform.",      
+          "help": "Please be as specific as possible when including the platforms and instruments. For example, include tail numbers for aircraft or uniquely identify instruments when multiple instances exist on the same platform.",
           "show_if": [
             {
               "field": "data_product_type_observational",

@@ -4,16 +4,16 @@ INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_accession
 INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_product_information', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 
 -- Section(id, form_id, heading, list_order)
-INSERT INTO section VALUES ('b7faa209-4761-488b-aa1f-366719227f33', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 0, '[]', '[]');
-INSERT INTO section VALUES ('bd7f2426-095b-496b-9573-11a54f7f1ba7', '6c544723-241c-4896-a38c-adbc0a364293', 'Funding Information', 1, '[]', '[]');
-INSERT INTO section VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', '6c544723-241c-4896-a38c-adbc0a364293', 'General Information', 2, '[]', '[]');
-INSERT INTO section VALUES ('c4e945a2-9543-4397-abbf-f507a62fde6b', '6c544723-241c-4896-a38c-adbc0a364293', 'Technical Information', 3, '[]', '[]');
-INSERT INTO section VALUES ('b57ffd62-15d2-44aa-a8ef-83542896eccb', '19025579-99ca-4344-8610-704dae626343', 'Contact Information', 0, '[]', '[]');
-INSERT INTO section VALUES ('d3853ae2-3d06-43c7-bfb7-05dc3f85ae7c', '19025579-99ca-4344-8610-704dae626343', 'Funding Information', 1, '[]', '[]');
-INSERT INTO section VALUES ('1dfb06ea-d143-499f-9d58-a0c78f6761ec', '19025579-99ca-4344-8610-704dae626343', 'General Information', 2, '[]', '[]');
-INSERT INTO section VALUES ('48d0f351-c8e2-4415-a547-b5921ca7b2cb', '19025579-99ca-4344-8610-704dae626343', 'Temporal Information', 3, '[]', '[]');
-INSERT INTO section VALUES ('59b0a9fb-588f-4a93-98af-c372f1e40dfd', '19025579-99ca-4344-8610-704dae626343', 'Spatial Information', 4, '[]', '[]');
-INSERT INTO section VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', '19025579-99ca-4344-8610-704dae626343', 'Technical Information', 5, '[]', '[]');
+INSERT INTO section VALUES ('75947588-ef74-487b-9b76-59db796f28f2', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 0, '[]', '[]');
+INSERT INTO section VALUES ('c77ba4ed-351e-4555-a07d-417b91781c37', '6c544723-241c-4896-a38c-adbc0a364293', 'Funding Information', 1, '[]', '[]');
+INSERT INTO section VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', '6c544723-241c-4896-a38c-adbc0a364293', 'General Information', 2, '[]', '[]');
+INSERT INTO section VALUES ('417ccb2c-2bde-41b0-9635-4aa654738fbb', '6c544723-241c-4896-a38c-adbc0a364293', 'Technical Information', 3, '[]', '[]');
+INSERT INTO section VALUES ('f0007459-7c3e-479b-925a-6241d0a0a410', '19025579-99ca-4344-8610-704dae626343', 'Contact Information', 0, '[]', '[]');
+INSERT INTO section VALUES ('bc356d6e-550d-4c3e-9c8c-21680566af4a', '19025579-99ca-4344-8610-704dae626343', 'Funding Information', 1, '[]', '[]');
+INSERT INTO section VALUES ('0dd7e065-425f-4fc8-b3ab-18e95ffb7415', '19025579-99ca-4344-8610-704dae626343', 'General Information', 2, '[]', '[]');
+INSERT INTO section VALUES ('4aae9a29-a836-41e5-b7b1-a082bb942682', '19025579-99ca-4344-8610-704dae626343', 'Temporal Information', 3, '[]', '[]');
+INSERT INTO section VALUES ('51bddf49-df07-4f37-9d78-a4dace14f08e', '19025579-99ca-4344-8610-704dae626343', 'Spatial Information', 4, '[]', '[]');
+INSERT INTO section VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', '19025579-99ca-4344-8610-704dae626343', 'Technical Information', 5, '[]', '[]');
 
 -- Question(id, short_name, version, long_name, text, help)
 INSERT INTO question VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info', 1, 'Primary Data Producer', 'Who is the primary person responsible for the collection or creation of this data product?', 'Often this is the Principle Investigator, Project Scientist, or Project Manager');
@@ -43,7 +43,7 @@ Example data product citations:
 McGill, Matthew , Dennis L Hlavka, John E. Yorks and Patrick A. Selmer. 2019. GOES-R PLT Cloud Physics LiDAR (CPL). Dataset available online from the NASA Global Hydrology Resource Center DAAC, Huntsville, Alabama, U.S.A. DOI: http://dx.doi.org/10.5067/GOESRPLT/CPL/DATA101
 
 CARVE Science Team. 2017. CARVE: In-flight Photos from the CARVE Aircraft, Alaska, 2013-2015. ORNL DAAC, Oak Ridge, Tennessee, USA. https://doi.org/10.3334/ORNLDAAC/1435');
-INSERT INTO question VALUES ('f625108f-7203-4045-9d1c-b1312b585584', 'data_production_latency', 1, 'Data Production Latency', 'What is the average time between the observation of the data and the creation of the data product?', 'undefined');
+INSERT INTO question VALUES ('f625108f-7203-4045-9d1c-b1312b585584', 'data_production_latency', 1, 'Data Production Latency', 'What is the expected time difference between the latest data observation reference time and the delivery of that data to the DAAC?', 'undefined');
 INSERT INTO question VALUES ('91c123bf-702e-458c-90a1-b26f6498937e', 'file_temporal_coverage', 1, 'Data File Temporal Coverage', 'On average, how much time is covered by an individual data file?', '');
 INSERT INTO question VALUES ('4f2dd369-d865-47ba-8504-8694493f139f', 'value_temporal_resolution', 1, 'Temporal Resolution', 'On average, what is the temporal resolution of an individual data value within the data files?', 'The temporal resolution is specific to the data stored in this data product and does not necessarily represent the input data or instrument sampling rate. 
 
@@ -65,62 +65,62 @@ INSERT INTO question VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b979e', 'data_produ
 INSERT INTO question VALUES ('f2d8ab9d-0959-41b8-8449-430986ddfe84', 'browse_images', 1, 'Browse Images', 'Will browse images representing the data be provided as part of this data product?', 'A browse image provides a visual preview of the data which can assist users in assessing and selecting a data product.');
 
 -- SectionQuestion(section_id, question_id, list_order, required_if, show_if))
-INSERT INTO section_question VALUES ('b7faa209-4761-488b-aa1f-366719227f33', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('b7faa209-4761-488b-aa1f-366719227f33', 'f3e2eab9-6375-4e53-9cc2-3d16f318d333', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('bd7f2426-095b-496b-9573-11a54f7f1ba7', '8a364184-42ac-48fe-b831-acb2eb08c728', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('bd7f2426-095b-496b-9573-11a54f7f1ba7', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', 'f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', '39701413-ac96-4b66-9c2f-2d9c08a18ed9', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', 'c9c73e88-837a-42d2-aa1a-50874a333607', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', '7fd7bccf-5065-4033-9956-9e80bc99c205', 3, '[]', '[]');
-INSERT INTO section_question VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', 'bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 4, '[]', '[]');
-INSERT INTO section_question VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', 'f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 5, '[]', '[]');
-INSERT INTO section_question VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', '2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 6, '[]', '[]');
-INSERT INTO section_question VALUES ('4b96ae60-933b-4e3a-b902-271d12fedd36', 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 7, '[]', '[]');
-INSERT INTO section_question VALUES ('c4e945a2-9543-4397-abbf-f507a62fde6b', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('c4e945a2-9543-4397-abbf-f507a62fde6b', '228cb0d6-78fb-449a-8061-b1e6fb3f59d1', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('c4e945a2-9543-4397-abbf-f507a62fde6b', '4f2dd369-d865-47ba-8504-8694493f129f', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('c4e945a2-9543-4397-abbf-f507a62fde6b', 'dbf70495-433a-439e-8173-0cb20f972c16', 3, '[]', '[]');
-INSERT INTO section_question VALUES ('c4e945a2-9543-4397-abbf-f507a62fde6b', '4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 4, '[]', '[{"field":"data_product_status","value":"Yes"}]');
-INSERT INTO section_question VALUES ('c4e945a2-9543-4397-abbf-f507a62fde6b', '40672516-2220-4edc-8c1b-fd9f7e0b978f', 5, '[]', '[]');
-INSERT INTO section_question VALUES ('c4e945a2-9543-4397-abbf-f507a62fde6b', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 6, '[]', '[]');
-INSERT INTO section_question VALUES ('b57ffd62-15d2-44aa-a8ef-83542896eccb', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('b57ffd62-15d2-44aa-a8ef-83542896eccb', 'f3e2eab9-6375-4e53-9cc2-3d16f318d333', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('b57ffd62-15d2-44aa-a8ef-83542896eccb', 'f3e2eab9-6375-4e53-9cc2-3d16f318d332', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('d3853ae2-3d06-43c7-bfb7-05dc3f85ae7c', '8a364184-42ac-48fe-b831-acb2eb08c728', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('d3853ae2-3d06-43c7-bfb7-05dc3f85ae7c', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('d3853ae2-3d06-43c7-bfb7-05dc3f85ae7c', 'd2bc7af7-211e-494a-a0bd-11b44f112eaa', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('1dfb06ea-d143-499f-9d58-a0c78f6761ec', 'f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('1dfb06ea-d143-499f-9d58-a0c78f6761ec', '39701413-ac96-4b66-9c2f-2d9c08a18ed9', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('1dfb06ea-d143-499f-9d58-a0c78f6761ec', 'c9c73e88-837a-42d2-aa1a-50874a333607', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('1dfb06ea-d143-499f-9d58-a0c78f6761ec', '8a364184-42ac-48fe-b831-acb2eb08c729', 3, '[]', '[]');
-INSERT INTO section_question VALUES ('1dfb06ea-d143-499f-9d58-a0c78f6761ec', '2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 4, '[]', '[]');
-INSERT INTO section_question VALUES ('48d0f351-c8e2-4415-a547-b5921ca7b2cb', '4f2dd369-d865-47ba-8504-8694493f129f', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('48d0f351-c8e2-4415-a547-b5921ca7b2cb', 'dbf70495-433a-439e-8173-0cb20f972c16', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('48d0f351-c8e2-4415-a547-b5921ca7b2cb', '4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 2, '[]', '[{"field":"data_product_status","value":"Yes"}]');
-INSERT INTO section_question VALUES ('48d0f351-c8e2-4415-a547-b5921ca7b2cb', 'f625108f-7203-4045-9d1c-b1312b585584', 3, '[]', '[{"field":"data_product_status","value":"Yes"}]');
-INSERT INTO section_question VALUES ('48d0f351-c8e2-4415-a547-b5921ca7b2cb', '91c123bf-702e-458c-90a1-b26f6498937e', 4, '[]', '[]');
-INSERT INTO section_question VALUES ('48d0f351-c8e2-4415-a547-b5921ca7b2cb', '4f2dd369-d865-47ba-8504-8694493f139f', 5, '[]', '[]');
-INSERT INTO section_question VALUES ('48d0f351-c8e2-4415-a547-b5921ca7b2cb', '4f2dd369-d865-47ba-8504-8694493f128f', 6, '[]', '[]');
-INSERT INTO section_question VALUES ('59b0a9fb-588f-4a93-98af-c372f1e40dfd', '228cb0d6-78fb-449a-8061-b1e6fb3f59d1', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('59b0a9fb-588f-4a93-98af-c372f1e40dfd', '15a012d0-9b4b-4979-9fa9-81fac1600b09', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('59b0a9fb-588f-4a93-98af-c372f1e40dfd', '0f640f21-37ec-4d04-af2c-da955ae98e12', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('59b0a9fb-588f-4a93-98af-c372f1e40dfd', 'a3701d37-77cf-4ccc-8068-c6860a7a8929', 3, '[]', '[{"field":"spatial_vertical_answer","value":"Yes"}]');
-INSERT INTO section_question VALUES ('59b0a9fb-588f-4a93-98af-c372f1e40dfd', '91577abc-a59c-40f7-b0e6-f954542e6b19', 4, '[]', '[]');
-INSERT INTO section_question VALUES ('59b0a9fb-588f-4a93-98af-c372f1e40dfd', 'a12ccd39-1d94-46a5-8aad-3587fd50c4ad', 5, '[]', '[]');
-INSERT INTO section_question VALUES ('59b0a9fb-588f-4a93-98af-c372f1e40dfd', 'd1ef0a6f-284e-40a7-9248-75dd8f1f0ded', 6, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', '0a2fd2eb-62de-40e1-8143-3e8087a4062d', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', 'fbd25b6f-2731-4456-882b-ef840c11b671', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', '70274fc6-86e8-4d95-8b2c-60135eff43f5', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', '9767336b-a9a9-41d2-8d2d-4fc2858c9b6f', 3, '[]', '[{"field":"data_product_type_observational","value":"true"}]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', 'ab57f5e8-9ec5-46c9-978e-d06125346d36', 4, '[]', '[{"field":"data_product_type_model","value":"true"}]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 5, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', '40672516-2220-4edc-8c1b-fd9f7e0b978f', 6, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', 'f1d8ab9d-0959-41b8-8449-430986ddfe84', 7, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', '40672516-2220-4edc-8c1b-fd9f7e0b979e', 8, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 9, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', 'f2d8ab9d-0959-41b8-8449-430986ddfe84', 10, '[]', '[]');
-INSERT INTO section_question VALUES ('a0a11da3-51eb-485e-aeb1-f3d0c6e1c7ed', 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 11, '[]', '[]');
+INSERT INTO section_question VALUES ('75947588-ef74-487b-9b76-59db796f28f2', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('75947588-ef74-487b-9b76-59db796f28f2', 'f3e2eab9-6375-4e53-9cc2-3d16f318d333', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('c77ba4ed-351e-4555-a07d-417b91781c37', '8a364184-42ac-48fe-b831-acb2eb08c728', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('c77ba4ed-351e-4555-a07d-417b91781c37', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', 'f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', '39701413-ac96-4b66-9c2f-2d9c08a18ed9', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', 'c9c73e88-837a-42d2-aa1a-50874a333607', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', '7fd7bccf-5065-4033-9956-9e80bc99c205', 3, '[]', '[]');
+INSERT INTO section_question VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', 'bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 4, '[]', '[]');
+INSERT INTO section_question VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', 'f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 5, '[]', '[]');
+INSERT INTO section_question VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', '2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 6, '[]', '[]');
+INSERT INTO section_question VALUES ('c9537e7f-f9b3-4a99-8fae-2877ad7cc162', 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 7, '[]', '[]');
+INSERT INTO section_question VALUES ('417ccb2c-2bde-41b0-9635-4aa654738fbb', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('417ccb2c-2bde-41b0-9635-4aa654738fbb', '228cb0d6-78fb-449a-8061-b1e6fb3f59d1', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('417ccb2c-2bde-41b0-9635-4aa654738fbb', '4f2dd369-d865-47ba-8504-8694493f129f', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('417ccb2c-2bde-41b0-9635-4aa654738fbb', 'dbf70495-433a-439e-8173-0cb20f972c16', 3, '[]', '[]');
+INSERT INTO section_question VALUES ('417ccb2c-2bde-41b0-9635-4aa654738fbb', '4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 4, '[]', '[{"field":"data_product_status","value":"Yes"}]');
+INSERT INTO section_question VALUES ('417ccb2c-2bde-41b0-9635-4aa654738fbb', '40672516-2220-4edc-8c1b-fd9f7e0b978f', 5, '[]', '[]');
+INSERT INTO section_question VALUES ('417ccb2c-2bde-41b0-9635-4aa654738fbb', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 6, '[]', '[]');
+INSERT INTO section_question VALUES ('f0007459-7c3e-479b-925a-6241d0a0a410', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('f0007459-7c3e-479b-925a-6241d0a0a410', 'f3e2eab9-6375-4e53-9cc2-3d16f318d333', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('f0007459-7c3e-479b-925a-6241d0a0a410', 'f3e2eab9-6375-4e53-9cc2-3d16f318d332', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('bc356d6e-550d-4c3e-9c8c-21680566af4a', '8a364184-42ac-48fe-b831-acb2eb08c728', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('bc356d6e-550d-4c3e-9c8c-21680566af4a', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('bc356d6e-550d-4c3e-9c8c-21680566af4a', 'd2bc7af7-211e-494a-a0bd-11b44f112eaa', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('0dd7e065-425f-4fc8-b3ab-18e95ffb7415', 'f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('0dd7e065-425f-4fc8-b3ab-18e95ffb7415', '39701413-ac96-4b66-9c2f-2d9c08a18ed9', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('0dd7e065-425f-4fc8-b3ab-18e95ffb7415', 'c9c73e88-837a-42d2-aa1a-50874a333607', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('0dd7e065-425f-4fc8-b3ab-18e95ffb7415', '8a364184-42ac-48fe-b831-acb2eb08c729', 3, '[]', '[]');
+INSERT INTO section_question VALUES ('0dd7e065-425f-4fc8-b3ab-18e95ffb7415', '2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 4, '[]', '[]');
+INSERT INTO section_question VALUES ('4aae9a29-a836-41e5-b7b1-a082bb942682', '4f2dd369-d865-47ba-8504-8694493f129f', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('4aae9a29-a836-41e5-b7b1-a082bb942682', 'dbf70495-433a-439e-8173-0cb20f972c16', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('4aae9a29-a836-41e5-b7b1-a082bb942682', '4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 2, '[]', '[{"field":"data_product_status","value":"Yes"}]');
+INSERT INTO section_question VALUES ('4aae9a29-a836-41e5-b7b1-a082bb942682', 'f625108f-7203-4045-9d1c-b1312b585584', 3, '[]', '[{"field":"data_product_status","value":"Yes"}]');
+INSERT INTO section_question VALUES ('4aae9a29-a836-41e5-b7b1-a082bb942682', '91c123bf-702e-458c-90a1-b26f6498937e', 4, '[]', '[]');
+INSERT INTO section_question VALUES ('4aae9a29-a836-41e5-b7b1-a082bb942682', '4f2dd369-d865-47ba-8504-8694493f139f', 5, '[]', '[]');
+INSERT INTO section_question VALUES ('4aae9a29-a836-41e5-b7b1-a082bb942682', '4f2dd369-d865-47ba-8504-8694493f128f', 6, '[]', '[]');
+INSERT INTO section_question VALUES ('51bddf49-df07-4f37-9d78-a4dace14f08e', '228cb0d6-78fb-449a-8061-b1e6fb3f59d1', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('51bddf49-df07-4f37-9d78-a4dace14f08e', '15a012d0-9b4b-4979-9fa9-81fac1600b09', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('51bddf49-df07-4f37-9d78-a4dace14f08e', '0f640f21-37ec-4d04-af2c-da955ae98e12', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('51bddf49-df07-4f37-9d78-a4dace14f08e', 'a3701d37-77cf-4ccc-8068-c6860a7a8929', 3, '[]', '[{"field":"spatial_vertical_answer","value":"Yes"}]');
+INSERT INTO section_question VALUES ('51bddf49-df07-4f37-9d78-a4dace14f08e', '91577abc-a59c-40f7-b0e6-f954542e6b19', 4, '[]', '[]');
+INSERT INTO section_question VALUES ('51bddf49-df07-4f37-9d78-a4dace14f08e', 'a12ccd39-1d94-46a5-8aad-3587fd50c4ad', 5, '[]', '[]');
+INSERT INTO section_question VALUES ('51bddf49-df07-4f37-9d78-a4dace14f08e', 'd1ef0a6f-284e-40a7-9248-75dd8f1f0ded', 6, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', '0a2fd2eb-62de-40e1-8143-3e8087a4062d', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', 'fbd25b6f-2731-4456-882b-ef840c11b671', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', '70274fc6-86e8-4d95-8b2c-60135eff43f5', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', '9767336b-a9a9-41d2-8d2d-4fc2858c9b6f', 3, '[]', '[{"field":"data_product_type_observational","value":"true"}]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', 'ab57f5e8-9ec5-46c9-978e-d06125346d36', 4, '[]', '[{"field":"data_product_type_model","value":"true"}]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 5, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', '40672516-2220-4edc-8c1b-fd9f7e0b978f', 6, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', 'f1d8ab9d-0959-41b8-8449-430986ddfe84', 7, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', '40672516-2220-4edc-8c1b-fd9f7e0b979e', 8, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 9, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', 'f2d8ab9d-0959-41b8-8449-430986ddfe84', 10, '[]', '[]');
+INSERT INTO section_question VALUES ('9554e17b-1567-430f-9ca3-23750ac8f31c', 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 11, '[]', '[]');
 
 -- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))
 
@@ -163,14 +163,14 @@ INSERT INTO input VALUES ('4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 'data_delivery
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_amount', 0, 'Amount', 'number', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_units', 1, 'Unit', 'radio', '["KB","MB","GB","TB","PB"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_file_url', 0, 'Sample File URL', 'text', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_name', 0, 'Name', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_orcid', 3, 'Orcid', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('d2bc7af7-211e-494a-a0bd-11b44f112eaa', 'funding_grant_number', 0, 'Grant Number', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'data_producers_table', 0, 'undefined', 'table', '[{"key":"producer_first_name","label":"First Name","type":"text","editable":true},{"key":"producer_last_name_or_organization","label":"Last Name or Organization","type":"text","editable":true}]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f625108f-7203-4045-9d1c-b1312b585584', 'data_production_latency_amount', 0, 'Amount', 'number', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('f625108f-7203-4045-9d1c-b1312b585584', 'data_production_latency_units', 1, 'Unit', 'radio', '["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Varies"]', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('f625108f-7203-4045-9d1c-b1312b585584', 'data_production_latency_units', 1, 'Unit', 'radio', '["3 hours or less","24 hours or less","48 hours or less","2 to 7 days","1 week to 1 month","1 to 3 months","3 to 6 months","6 months to 1 year","more than 1 year"]', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('91c123bf-702e-458c-90a1-b26f6498937e', 'file_temporal_coverage_answer', 0, 'Time', 'number', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('91c123bf-702e-458c-90a1-b26f6498937e', 'file_temporal_coverage_units', 1, 'Unit', 'radio', '["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Varies"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f139f', 'value_temporal_resolution_answer', 0, 'Value', 'number', '{}', '{}', '[]','[]',  True);
