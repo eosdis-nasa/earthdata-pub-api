@@ -29,6 +29,11 @@ const fieldMap = {
         ['description', 'edprole.description']]
     },
     alias: 'user_roles'
+  },
+  privilege_agg: {
+    type: 'json_agg',
+    src: 'edprole_privilege.privilege',
+    alias: 'user_privileges'
   }
 };
 const fields = (list) => list.map((field) => fieldMap[field]);
@@ -37,6 +42,11 @@ const refs = {
     type: 'left_join',
     src: 'edpuser_edprole',
     on: { left: fieldMap.id, right: fieldMap.role_id }
+  },
+  user_privilege: {
+    type: 'left_join',
+    src: 'edprole_privilege',
+    on: { left: 'edprole_privilege.edprole_id', right: fieldMap.id }
   },
   role_privilege: {
     type: 'left_join',
@@ -59,8 +69,8 @@ const refs = {
 };
 const userJoin = {
   type: 'select',
-  fields: fields(['user_id', 'role_agg']),
-  from: { base: table, joins: [refs.user_role] },
+  fields: fields(['user_id', 'role_agg', 'privilege_agg']),
+  from: { base: table, joins: [refs.user_role, refs.user_privilege] },
   group: fieldMap.user_id,
   alias: 'role_agg'
 };

@@ -3,7 +3,7 @@ const role = require('./role.js');
 const group = require('./group.js');
 
 const table = 'edpuser';
-const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'subscriptions'];
+const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'user_privileges', 'subscriptions'];
 const fieldMap = {
   id: 'edpuser.id',
   name: 'edpuser.name',
@@ -22,6 +22,12 @@ const fieldMap = {
     src: 'user_roles',
     fallback: '\'[]\'::JSONB',
     alias: 'user_roles'
+  },
+  user_privileges: {
+    type: 'coalesce',
+    src: 'role_agg.user_privileges',
+    fallback: '\'[]\'::JSONB',
+    alias: 'user_privileges'
   },
   permissions: {
     type: 'coalesce',

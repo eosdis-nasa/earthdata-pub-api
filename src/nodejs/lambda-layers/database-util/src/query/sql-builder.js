@@ -90,7 +90,7 @@ const coalesce = ({ src, fallback, alias }) => ` COALESCE(${src.type ? complexPa
 
 const jsonAgg = ({
   src, sort, order, alias
-}) => `JSONB_AGG(${src.type ? complexParse(src) : src}${sort
+}) => `JSONB_AGG(${typeCheck(src)}${sort
   ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${alias
   ? ` ${alias}` : ''}`;
 
