@@ -250,6 +250,7 @@ li label {
         label.appendChild(text);
         item.append(label);
         groupUList.appendChild(item);
+        groups[group.id] = input;
       });
     });
     fetch('http://localhost:8080/auth/role_list')
@@ -266,6 +267,7 @@ li label {
         label.appendChild(text);
         item.append(label);
         roleUList.appendChild(item);
+        roles[role.id] = input
       });
     });
 
@@ -292,14 +294,28 @@ li label {
 
     function handleLogin(e) {
       const id = userSelect.value;
-      const payload = {
-        ...(id === 'register' ? {
-          id,
-          name: nameInput.value,
-          email: emailInput.value
-        } : users[id] ),
-        ...(state && { state })
+      const user = users[id];
+      user.new_user = false;
+      login(user);
+    }
+
+    function handleRegister(e) {
+      const user = {
+        new_user: true,
+        name: nameInput.value,
+        email: emailInput.value,
+        user_groups: Object.entries(groups).reduce((acc, [k, v]) => {
+          if (v.checked) acc.push(k);
+          return acc; }, []),
+        user_roles: Object.entries(roles).reduce((acc, [k, v]) => {
+          if (v.checked) acc.push(k);
+          return acc; }, [])
       };
+      login(user);
+    }
+
+    function login(payload) {
+      payload.state = state;
       fetch('http://localhost:8080/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -315,7 +331,7 @@ li label {
     }
 
     userSelect.addEventListener('change', handleSelect, false);
-    registerButton.addEventListener('click', handleLogin, false);
+    registerButton.addEventListener('click', handleRegister, false);
     loginButton.addEventListener('click', handleLogin, false);
   </script>
 </body>

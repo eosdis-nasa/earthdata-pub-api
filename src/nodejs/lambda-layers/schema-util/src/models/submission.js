@@ -3,6 +3,7 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
+    conversation_id: { $ref: `#${path}UUID` },
     workflow_id: { $ref: `#${path}UUID` },
     workflow_name: { type: 'string' },
     daac_id: { type: 'string' },

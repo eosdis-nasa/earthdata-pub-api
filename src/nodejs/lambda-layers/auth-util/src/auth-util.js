@@ -11,9 +11,10 @@ const logoutPath = process.env.AUTH_LOGOUT_PATH;
 const tokenPath = process.env.AUTH_TOKEN_PATH;
 // const userPath = process.env.AUTH_USER_PATH;
 
+const clientRoot = process.env.CLIENT_ROOT_URL;
 const clientId = process.env.AUTH_CLIENT_ID;
 const clientSecret = process.env.AUTH_CLIENT_SECRET;
-const clientUrl = process.env.AUTH_CLIENT_URL;
+const clientPath = process.env.AUTH_CLIENT_PATH;
 
 async function tokenService(data) {
   const tokenRequest = {
@@ -30,15 +31,16 @@ async function tokenService(data) {
 }
 
 async function getToken({ code }) {
+  const clientUri = new URL(clientPath, clientRoot);
   const tokens = await tokenService({
     code,
     grant_type: 'authorization_code',
-    redirect_uri: clientUrl
+    redirect_uri: clientUri.href
   });
-  const user = jwt.decode(tokens.id_token);
-  user.id = user.sub;
-  user.refresh_token = tokens.refresh_token;
-  return { token: tokens.access_token, user };
+  const decoded = jwt.decode(tokens.id_token);
+  const refresh = tokens.refresh_token;
+  const access = tokens.access_token;
+  return { access, refresh, decoded };
 }
 
 async function refreshToken({ token }) {
@@ -46,17 +48,18 @@ async function refreshToken({ token }) {
     grant_type: 'refresh_token',
     refresh_token: token
   });
-  const user = jwt.decode(tokens.id_token);
-  user.id = user.sub;
-  user.refresh_token = tokens.refresh_token;
-  return { token: tokens.access_token, user };
+  const decoded = jwt.decode(tokens.id_token);
+  const refresh = tokens.refresh_token;
+  const access = tokens.access_token;
+  return { access, refresh, decoded };
 }
 
 async function getLoginUrl({ state }) {
+  const clientUri = new URL(clientPath, clientRoot);
   const redirect = new URL(loginPath, providerUrl);
   redirect.search = new URLSearchParams({
     client_id: clientId,
-    redirect_uri: clientUrl,
+    redirect_uri: clientUri.href,
     scope: 'openid',
     response_type: 'code',
     state
@@ -64,11 +67,12 @@ async function getLoginUrl({ state }) {
   return { redirect: redirect.href };
 }
 
-async function getLogoutUrl() {
+async function getLogoutUrl({ host }) {
+  const clientUri = new URL(clientPath, host);
   const redirect = new URL(logoutPath, providerUrl);
   redirect.search = new URLSearchParams({
     client_id: clientId,
-    logout_uri: clientUrl
+    logout_uri: clientUri.href
   });
   return { redirect: redirect.href };
 }
