@@ -171,7 +171,7 @@
         {
           "short_name": "data_product_description",
           "long_name": "Data Product Description",
-          "text": "Please provide a brief description of this data product following the guidance in the help text.",
+          "text": "Please provide a brief description of this data product.",
           "help": "The description should mimic a journal abstract and should provide a reader with the information needed to quickly understand the relevance and usefulness of the data.",
           "inputs": [
             {
@@ -242,7 +242,7 @@
           "short_name": "data_submission_reason",
           "long_name": "Reason for Data Accession Request",
           "text": "Please briefly explain your reasons for requesting to have this data product archived and distributed at the DAAC.",
-          "help": "For example, are you attempting to publish a paper which requires data to be archived in a trusted repository? Have you been instructed by a NASA program manager to archive your data to the DAAC? Do you want this data product distributed with related data?",
+          "help": "For example, are you attempting to publish a paper which requires data to be archived in a trusted repository? Have you been instructed by a NASA program manager to archive your data at a DAAC? Do you want this data product distributed with related data?",
           "inputs": [
             {
               "type": "textarea",
@@ -253,7 +253,7 @@
                 "rows": 5,
                 "cols": 20,
                 "maxlength":1000,
-                "placeholder":"This is a placeholder"
+                "placeholder":""
               },
               "required": true
             }
@@ -264,7 +264,7 @@
         {
           "short_name": "data_submission_approval_dependencies",
           "long_name": "Dependencies for Data Accession Approval",
-          "text": "Do you have any dependencies related to this data product being approved to be published at the DAAC? If \"Yes\", please provide a brief explanation.",
+          "text": "Do you have any dependencies related to this data product being approved to be published at the DAAC? If Yes, please provide a brief explanation.",
           "help": "For example, are you hoping to have this data product approved to be published at the DAAC prior publishing a paper or presenting at a conference? Does your project have a defined timeline in which this data product needs to be published?",
           "inputs": [
             {
@@ -296,7 +296,7 @@
         {
           "short_name": "data_product_restrictions",
           "long_name": "Data Product Restrictions",
-          "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No, please provide a brief explanation.",
+          "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No or Not sure, please provide a brief explanation.",
           "help": "For a description of the open data policy, please refer to the NASA Earthdata Data and Information Policy web page <https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy>.",
           "inputs": [
             {
@@ -396,7 +396,7 @@
             {
               "type": "text",
               "control_id": "data_format_other_info",
-              "label": "If Other",
+              "label": "If Other, please provide the data format(s).",
               "required_if": [
                 {
                   "field": "data_format_other",

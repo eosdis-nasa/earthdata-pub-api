@@ -217,7 +217,7 @@
         {
           "short_name": "data_product_description",
           "long_name": "Data Product Description",
-          "text": "Please provide a brief description of this data product following the guidance in the help text.",
+          "text": "Please provide a brief description of this data product.",
           "help": "The description should mimic a journal abstract and should provide a reader with the information needed to quickly understand the relevance and usefulness of the data.",
           "inputs": [
             {
@@ -281,7 +281,7 @@
                 },
                 {
                   "key": "producer_last_name_or_organization",
-                  "label": "Last Name or Organization",
+                  "label": "Last Name or Group",
                   "type": "text",
                   "editable": true
                 }
@@ -295,7 +295,7 @@
         {
           "short_name": "data_product_restrictions",
           "long_name": "Data Product Restrictions",
-          "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No, please provide a brief explanation.",
+          "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No or Not sure, please provide a brief explanation.",
           "help": "For a description of the open data policy, please refer to the NASA Earthdata Data and Information Policy web page <https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy>.",
           "inputs": [
             {
@@ -487,7 +487,8 @@
                 "Day(s)",
                 "Week(s)",
                 "Month(s)",
-                "Year(s)"
+                "Year(s)",
+                "Varies"
               ],
               "required": true
             }
@@ -545,7 +546,8 @@
           "inputs": [
             {
               "type": "bbox",
-              "control_id": "spatial_horizontal_1"
+              "control_id": "spatial_horizontal_1",
+              "required": true
             },
             {
               "type": "bbox",
@@ -835,7 +837,7 @@
             {
               "type": "text",
               "control_id": "data_format_other_info",
-              "label": "If Other",
+              "label": "If Other, please provide the data format(s).",
               "required_if": [
                 {
                   "field": "data_format_other",
@@ -937,25 +939,10 @@
             {
               "type": "text",
               "control_id": "browse_images_other",
-              "label": "Any Other Information"
+              "label": "Additional information about browse images"
             }
           ],
           "id": "f2d8ab9d-0959-41b8-8449-430986ddfe84",
-          "version": 1
-        },
-        {
-          "short_name": "data_product_documentation",
-          "long_name": "Data Product Documentation",
-          "text": "Please provide URLs to additional documents.",
-          "help": "For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality.",
-          "inputs": [
-            {
-              "type": "text",
-              "control_id": "data_product_documentation_url",
-              "label": "Additional Documentation URL"
-            }
-          ],
-          "id": "ad568b2f-89fe-4afd-a0bf-9e5832b71ce9",
           "version": 1
         }
       ]
