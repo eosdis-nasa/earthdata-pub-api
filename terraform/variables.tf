@@ -58,12 +58,30 @@ variable "api_root_url" {
 variable "cognito_user_pool_id" {
   type = string
 }
-variable "cognito_domain_url" {
-  type = string
-}
 variable "client_root_url" {
   type = string
 }
-variable "client_auth_url" {
+variable "auth_provider_url" {
+  type = string
+}
+variable "auth_logout_path" {
+  type = string
+}
+variable "auth_login_path" {
+  type = string
+}
+variable "auth_user_path" {
+  type = string
+}
+variable "auth_token_path" {
+  type = string
+}
+variable "auth_client_id" {
+  type = string
+}
+variable "auth_client_secret" {
+  type = string
+}
+variable "auth_client_path" {
   type = string
 }

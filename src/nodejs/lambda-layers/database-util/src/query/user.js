@@ -3,15 +3,32 @@ const role = require('./role.js');
 const group = require('./group.js');
 
 const table = 'edpuser';
-const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'subscriptions'];
+const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'user_privileges', 'subscriptions'];
 const fieldMap = {
   id: 'edpuser.id',
   name: 'edpuser.name',
   email: 'edpuser.email',
   registered: 'edpuser.registered',
   last_login: 'edpuser.last_login',
-  user_groups: 'user_groups',
-  user_roles: 'user_roles',
+  refresh_token: 'edpuser.refresh_token',
+  user_groups: {
+    type: 'coalesce',
+    src: 'user_groups',
+    fallback: '\'[]\'::JSONB',
+    alias: 'user_groups'
+  },
+  user_roles: {
+    type: 'coalesce',
+    src: 'user_roles',
+    fallback: '\'[]\'::JSONB',
+    alias: 'user_roles'
+  },
+  user_privileges: {
+    type: 'coalesce',
+    src: 'role_agg.user_privileges',
+    fallback: '\'[]\'::JSONB',
+    alias: 'user_privileges'
+  },
   permissions: {
     type: 'coalesce',
     src: 'permissions',
@@ -189,7 +206,7 @@ const findAll = (params) => sql.select({
   }
 });
 
-const findById = () => `${findAll()} WHERE edpuser.id = {{user.id}}`;
+const findById = () => `${findAll()} WHERE edpuser.id = {{id}}`;
 
 const findSystemUser = () => sql.select({
   fields: fields(['id', 'name', 'email']),
@@ -199,27 +216,46 @@ const findSystemUser = () => sql.select({
   }
 });
 
-const getRefreshToken = () => `
-SELECT edpuser.refresh_token FROM edpuser
-WHERE edpuser.id = {{user.id}}`;
-
-const addRole = (params) => sql.insert({
-  table: 'edpuser_edprole',
-  values: {
-    type: 'insert_values',
-    values: [{ type: 'param', param: 'user_id' }, { type: 'param', param: 'role_id' }]
-  },
-  returning: ['*']
+const getRefreshToken = () => sql.select({
+  fields: fields(['refresh_token']),
+  from: { base: table },
+  where:{
+    filters: [{ field: fieldMap.id, param: 'id' }]
+  }
 });
 
-const addGroup = (params) => sql.insert({
-  table: 'edpuser_edpgroup',
+const addRoles = (params) => sql.insert({
+  table: 'edpuser_edprole',
   values: {
-    type: 'insert_values',
-    values: [{ param: 'user_id' }, { param: 'group_id' }]
+    type: 'select',
+    fields: ['{{id}} edpuser_id', 'UNNEST({{user_roles}}::uuid[]) edprole_id']
   },
   conflict: {},
   returning: ['*']
+});
+
+const removeRole = () => sql.delete({
+  table: 'edpuser_edprole',
+  where: {
+    filters: [{ field: 'edpuser_id', param: '{{id}}'}, { field: 'edprole_id', param: '{{role_id}}'}]
+  }
+});
+
+const addGroups = (params) => sql.insert({
+  table: 'edpuser_edpgroup',
+  values: {
+    type: 'select',
+    fields: ['{{id}} edpuser_id', 'UNNEST({{user_groups}}::uuid[]) edpgroup_id']
+  },
+  conflict: {},
+  returning: ['*']
+});
+
+const removeGroup = () => sql.delete({
+  table: 'edpuser_edpgroup',
+  where: {
+    filters: [{ field: 'edpuser_id', param: '{{id}}'}, { field: 'edpgroup_id', param: '{{role_id}}'}]
+  }
 });
 
 const findByGroupId = () => `
@@ -227,7 +263,7 @@ ${findAll()}
 WHERE edpuser.id IN (
   SELECT edpuser_edpgroup.edpuser_id
   FROM edpuser_edpgroup
-  WHERE edpuser_edpgroup.edpgroup_id = {{group.id}})`;
+  WHERE edpuser_edpgroup.edpgroup_id = {{id}})`;
 
 const findByGroupName = () => `
 ${findAll()}
@@ -236,11 +272,11 @@ WHERE edpuser.id IN (
   FROM edpuser_edpgroup
   WHERE edpuser_edpgroup.edpgroup_id IN (
     SELECT edpgroup.id FROM edpgroup
-    WHERE edpgroup.short_name = {{group.short_name}})`;
+    WHERE edpgroup.short_name = {{short_name}})`;
 
 const loginUser = () => `
 INSERT INTO edpuser(id, name, email, refresh_token) VALUES
-({{user.id}}, {{user.name}}, {{user.email}}, {{user.refresh_token}})
+({{id}}, {{name}}, {{email}}, {{refresh_token}})
 ON CONFLICT (id) DO UPDATE SET
 last_login = EXCLUDED.last_login,
 refresh_token = EXCLUDED.refresh_token
@@ -248,8 +284,8 @@ RETURNING *`;
 
 const refreshUser = () => `
 UPDATE edpuser SET
-refresh_token = {{user.refresh_token}}
-WHERE edpuser.id = {{user.id}}
+refresh_token = {{refresh_token}}
+WHERE edpuser.id = {{id}}
 RETURNING *`;
 
 const getEmails = (params) => sql.select({
@@ -260,22 +296,6 @@ const getEmails = (params) => sql.select({
   }
 });
 
-const getKayakoIdByEDPUserId = (params) => sql.select({
-  fields: ['edpuser_kayako_user.kayako_id'],
-  from: { base: 'edpuser_kayako_user' },
-  where: {
-    filters: [{ field: 'id' }]
-  }
-});
-
-const getEDPUserIdByKayakoId = (params) => sql.select({
-  fields: ['edpuser_kayako_user.id'],
-  from: { base: 'edpuser_kayako_user' },
-  where: {
-    filters: [{ field: 'kayako_id' }]
-  }
-});
-
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getRefreshToken = getRefreshToken;
@@ -283,9 +303,9 @@ module.exports.findByGroupId = findByGroupId;
 module.exports.findByGroupName = findByGroupName;
 module.exports.loginUser = loginUser;
 module.exports.refreshUser = refreshUser;
-module.exports.addRole = addRole;
-module.exports.addGroup = addGroup;
+module.exports.addRoles = addRoles;
+module.exports.removeRole = removeRole;
+module.exports.addGroups = addGroups;
+module.exports.removeGroup = removeGroup;
 module.exports.findSystemUser = findSystemUser;
 module.exports.getEmails = getEmails;
-module.exports.getKayakoIdByEDPUserId = getKayakoIdByEDPUserId;
-module.exports.getEDPUserIdByKayakoId = getEDPUserIdByKayakoId;

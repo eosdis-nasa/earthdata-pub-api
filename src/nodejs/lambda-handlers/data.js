@@ -6,38 +6,24 @@
  * @module Data
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-async function findById(event) {
-  const query = {
-    resource: event.resource,
-    operation: event.operation
-  };
-  const { id } = event.params;
-  const params = {
-    [event.resource]: { id }
-  };
-  return DatabaseUtil.execute(query, params);
+async function findById({ resource, params }) {
+  return db[resource].findById(params);
 }
 
-async function findAll({ resource, operation, params }) {
-  return DatabaseUtil.execute({ resource, operation }, params);
-}
-
-async function putItem(event) {
-  console.info('Not Implemented', event);
-  return {};
+async function findAll({ resource, params }) {
+  return db[resource].findAll(params);
 }
 
 async function seed() {
-  const response = await DatabaseUtil.seed();
+  const response = await db.seed();
   return response;
 }
 
 const operations = {
   findById,
   findAll,
-  putItem,
   seed
 };
 

@@ -6,9 +6,9 @@
  * @see module:Actions
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-const MessageUtil = require('message-util');
+const msg = require('message-util');
 
 async function registerAction(event) {
   console.info('Not Implemented', event);
@@ -32,7 +32,7 @@ async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
 
   // Temporary to prevent lint errors
-  console.info(MessageUtil, DatabaseUtil);
+  console.info(msg, db);
   console.info(operations);
   return { message: 'Not implemented.' };
 }

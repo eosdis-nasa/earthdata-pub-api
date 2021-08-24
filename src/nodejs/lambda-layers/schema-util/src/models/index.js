@@ -11,6 +11,7 @@ const LogEventRequest = require('./log-event-request.js');
 const Note = require('./note.js');
 const NotificationReplyRequest = require('./notification-reply-request.js');
 const NotificationSendRequest = require('./notification-send-request.js');
+const Page = require('./page.js');
 const Permission = require('./permission.js');
 const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
@@ -47,6 +48,7 @@ const models = {
   Note,
   NotificationReplyRequest,
   NotificationSendRequest,
+  Page,
   Permission,
   Question,
   QuestionList,

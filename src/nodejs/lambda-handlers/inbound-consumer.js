@@ -3,16 +3,16 @@
  * @module InboundConsumer
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-const MessageUtil = require('message-util');
+const msg = require('message-util');
 
 async function databaseOperation({ resource, operation, params }) {
-  await DatabaseUtil.execute({ resource, operation }, params);
+  await db[resource][operation](params);
 }
 
 async function processRecord(record) {
-  const { eventMessage } = MessageUtil.parseRecord(record);
+  const { eventMessage } = msg.parseRecord(record);
   console.info(eventMessage);
   await databaseOperation(eventMessage);
 }

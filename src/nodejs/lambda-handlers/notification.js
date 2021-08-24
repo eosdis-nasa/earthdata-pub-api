@@ -6,8 +6,8 @@
  * @see module:NotificationHandler
  */
 
-const MessageUtil = require('message-util');
-const DatabaseUtil = require('database-util');
+const msg = require('message-util');
+const db = require('database-util');
 
 async function sendMethod(params) {
   const message = {
@@ -21,7 +21,7 @@ async function sendMethod(params) {
     user_id: params.context.user_id
   };
 
-  await MessageUtil.sendEvent(message);
+  await msg.sendEvent(message);
   return { message: 'Successfully sent.' };
 }
 
@@ -35,25 +35,25 @@ async function replyMethod(params) {
     user_id: params.context.user_id
   };
 
-  await MessageUtil.sendEvent(message);
+  await msg.sendEvent(message);
   return { message: 'Successfully sent.' };
 }
 
 async function addUsersMethod(params) {
-  const response = await DatabaseUtil.execute({ resource: 'note', operation: 'addUsersToConversation' },
-    { conversation_id: params.conversation_id, user_list: params.user_list });
+  const response = await db.note.addUsersToConversation(params);
   return response;
 }
 
 async function conversationsMethod(params) {
-  const note = await DatabaseUtil.execute({ resource: 'note', operation: 'getConversationList' },
-    { user_id: params.context.user_id });
+  const note = await db.note.getConversationList({ user_id: params.context.user_id });
   return note;
 }
 
 async function conversationMethod(params) {
-  const conversation = await DatabaseUtil.execute({ resource: 'note', operation: 'readConversation' },
-    { user_id: params.context.user_id, conversation_id: params.conversation_id });
+  const conversation = await db.note.readConversation({
+    user_id: params.context.user_id,
+    conversation_id: params.conversation_id
+  });
   return conversation;
 }
 

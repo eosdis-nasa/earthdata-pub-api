@@ -6,7 +6,7 @@
  * @see module:ActionHandler
  */
 
-const MessageUtil = require('message-util');
+const msg = require('message-util');
 
 // const DatabaseUtil = require('database-util');
 
@@ -21,7 +21,7 @@ async function handler(event) {
     user_id: event.context.user_id
   };
 
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
 
   return { message: 'Action requested' };
 }

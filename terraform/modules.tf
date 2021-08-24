@@ -17,15 +17,6 @@ module "iam_roles" {
   permissions_boundary_arn = var.permissions_boundary_arn
 }
 
-module "cognito" {
-  source = "./cognito"
-
-  region = var.region
-  stage = var.stage
-  cognito_user_pool_id = var.cognito_user_pool_id
-  client_auth_url = var.client_auth_url
-}
-
 module "lambda_functions" {
   source = "./lambda"
 
@@ -59,14 +50,15 @@ module "lambda_functions" {
   db_database = module.rds.db_database
   db_user = module.rds.db_user
   db_password = var.db_password
-  cognito_url = var.cognito_domain_url
-  cognito_logout_path = module.cognito.cognito_logout_path
-  cognito_login_path = module.cognito.cognito_login_path
-  cognito_token_path = module.cognito.cognito_token_path
-  cognito_user_path = module.cognito.cognito_user_path
-  cognito_client_id = module.cognito.cognito_client_id
-  cognito_client_secret = module.cognito.cognito_client_secret
-  cognito_client_auth_url = var.client_auth_url
+  client_root_url = var.client_root_url
+  auth_provider_url = var.auth_provider_url
+  auth_logout_path = var.auth_logout_path
+  auth_login_path = var.auth_login_path
+  auth_token_path = var.auth_token_path
+  auth_user_path = var.auth_user_path
+  auth_client_id = var.auth_client_id
+  auth_client_secret = var.auth_client_secret
+  auth_client_path = var.auth_client_path
 }
 
 module "apigateway_endpoints" {

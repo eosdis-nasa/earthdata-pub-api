@@ -93,39 +93,7 @@ const findById = (params) => sql.select({
   fields: ['note.*'],
   from: { base: 'note' },
   where: {
-    filters: [{ field: 'note.id' }]
-  }
-});
-
-const getNoteByPostId = (params) => sql.select({
-  fields: ['note.*'],
-  from: { base: 'note', joins: [refs.note_kayako] },
-  where: {
-    filters: [{ field: 'post_id' }]
-  }
-});
-
-const linkPostId = (params) => sql.insert({
-  table: 'note_kayako_post',
-  values: {
-    type: 'insert_values',
-    values: [{ param: 'note_id' }, { param: 'post_id' }]
-  }
-});
-
-const getConversationByTicketId = (params) => sql.select({
-  fields: ['conversation.*'],
-  from: { base: 'conversation', joins: [refs.conversation_kayako] },
-  where: {
-    filters: [{ field: 'ticket_id' }]
-  }
-});
-
-const linkTicketId = (params) => sql.insert({
-  table: 'conversation_kayako_ticket',
-  values: {
-    type: 'insert_values',
-    values: [{ param: 'conversation_id' }, { param: 'ticket_id' }]
+    filters: [{ field: 'note.id', param: 'id' }]
   }
 });
 
@@ -205,36 +173,10 @@ FROM edpuser
 WHERE edpuser.email = ANY({{user_list}}::VARCHAR[])
 RETURNING *`;
 
-const getTicketIdByConversationId = (params) => sql.select({
-  fields: ['conversation_kayako_ticket.ticket_id'],
-  from: { base: 'conversation_kayako_ticket' },
-  where: {
-    filters: [{ field: 'id' }]
-  }
-});
-
-const syncConversation = () => `
-WITH new_conv AS (INSERT INTO conversation(subject) VALUES({{subject}}) RETURNING *),
-conv_user AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
- SELECT new_conv.id conversation_id, UNNEST({{user_list}}::uuid[]) edpuser_id
- FROM new_conv
-RETURNING *),
-conv_sender AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
- SELECT new_conv.id conversation_id, {{user_id}} edpuser_id
- FROM new_conv
-RETURNING *),
-SELECT * FROM new_conv`;
-
 module.exports.findAll = findAll;
 module.exports.findById = findById;
-module.exports.getNoteByPostId = getNoteByPostId;
-module.exports.linkPostId = linkPostId;
-module.exports.getConversationByTicketId = getConversationByTicketId;
-module.exports.linkTicketId = linkTicketId;
 module.exports.getConversationList = getConversationList;
 module.exports.readConversation = readConversation;
 module.exports.reply = reply;
 module.exports.sendNote = sendNote;
 module.exports.addUsersToConversation = addUsersToConversation;
-module.exports.getTicketIdByConversationId = getTicketIdByConversationId;
-module.exports.syncConversation = syncConversation;
