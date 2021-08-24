@@ -587,9 +587,11 @@ module.exports.moduleRequest = function moduleRequest(req, res, next) {
 
 module.exports.getToken = function getToken(req, res, next) {
   const { params } = req.swagger;
+  const { host } = req.headers;
   const lambdaEvent = {
     code: params.code.value,
-    state: params.state.value
+    state: params.state.value,
+    host
   };
   handlers.auth(lambdaEvent).then((body) => {
     res.send(body);

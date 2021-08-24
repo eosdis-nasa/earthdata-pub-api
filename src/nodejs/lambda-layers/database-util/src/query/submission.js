@@ -138,7 +138,7 @@ const findById = (params) => sql.select({
     joins: [refs.submission_status, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   where: {
-    filters: [{ field: fieldMap.id }]
+    filters: [{ field: fieldMap.id, param: 'id' }]
   }
 });
 

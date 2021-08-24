@@ -118,34 +118,38 @@ variable "api_version" {
   type = string
 }
 
-variable "cognito_url" {
+variable "client_root_url" {
   type = string
 }
 
-variable "cognito_logout_path" {
+variable "auth_provider_url" {
   type = string
 }
 
-variable "cognito_login_path" {
+variable "auth_logout_path" {
   type = string
 }
 
-variable "cognito_token_path" {
+variable "auth_login_path" {
   type = string
 }
 
-variable "cognito_user_path" {
+variable "auth_token_path" {
   type = string
 }
 
-variable "cognito_client_id" {
+variable "auth_user_path" {
   type = string
 }
 
-variable "cognito_client_secret" {
+variable "auth_client_id" {
   type = string
 }
 
-variable "cognito_client_auth_url" {
+variable "auth_client_secret" {
+  type = string
+}
+
+variable "auth_client_path" {
   type = string
 }

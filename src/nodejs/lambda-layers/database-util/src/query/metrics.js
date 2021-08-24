@@ -17,7 +17,7 @@ FROM metrics GROUP BY metrics.event->>'event_type'`;
 
 const putMetric = () => `
 INSERT INTO metrics(event)
-VALUES ({{metrics.event}}::JSONB)`;
+VALUES ({{$}}::JSONB)`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
