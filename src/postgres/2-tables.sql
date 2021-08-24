@@ -322,6 +322,7 @@ CREATE TABLE IF NOT EXISTS daac (
   long_name VARCHAR NOT NULL,
   url VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
+  disciplines VARCHAR NOT NULL,
   workflow_id UUID NOT NULL,
   edpgroup_id UUID NOT NULL,
   PRIMARY KEY (id),
