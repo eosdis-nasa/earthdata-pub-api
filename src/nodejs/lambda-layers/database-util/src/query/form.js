@@ -51,7 +51,7 @@ const findById = (params) => sql.select({
     joins: [refs.section]
   },
   where: {
-    filters: [{ field: fieldMap.id }]
+    filters: [{ field: 'form.id', param: 'id' }]
   }
 });
 

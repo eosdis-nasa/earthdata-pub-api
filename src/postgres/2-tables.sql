@@ -86,7 +86,11 @@ DROP TABLE IF EXISTS edpgroup_subscription_workflow CASCADE;
 
 DROP TABLE IF EXISTS edprole_privilege CASCADE;
 
+DROP TABLE IF EXISTS privilege CASCADE;
+
 DROP TABLE IF EXISTS metrics CASCADE;
+
+DROP TABLE IF EXISTS page CASCADE;
 
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
@@ -219,7 +223,7 @@ CREATE TABLE IF NOT EXISTS edpgroup (
 CREATE TABLE IF NOT EXISTS edpgroup_parent (
   id UUID NOT NULL,
   parent_id UUID NOT NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (id, parent_id),
   FOREIGN KEY (id) REFERENCES edpgroup (id),
   FOREIGN KEY (parent_id) REFERENCES edpgroup (id)
 );
@@ -415,11 +419,17 @@ CREATE TABLE IF NOT EXISTS edpgroup_permission_submission (
   FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
 
+CREATE TABLE IF NOT EXISTS privilege (
+  privilege VARCHAR NOT NULL,
+  PRIMARY KEY (privilege)
+);
+
 CREATE TABLE IF NOT EXISTS edprole_privilege (
   edprole_id UUID NOT NULL,
   privilege VARCHAR NOT NULL,
   PRIMARY KEY (edprole_id, privilege),
-  FOREIGN KEY (edprole_id) REFERENCES edprole (id)
+  FOREIGN KEY (edprole_id) REFERENCES edprole (id),
+  FOREIGN KEY (privilege) REFERENCES privilege (privilege)
 );
 
 CREATE TABLE IF NOT EXISTS edpuser_subscription_action (
@@ -512,4 +522,10 @@ CREATE TABLE IF NOT EXISTS metrics (
   id UUID DEFAULT UUID_GENERATE_V4(),
   event JSONB NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS page (
+  page_key VARCHAR NOT NULL,
+  content JSONB NOT NULL,
+  PRIMARY KEY (page_key)
 );

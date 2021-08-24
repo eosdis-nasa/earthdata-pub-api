@@ -103,17 +103,12 @@ const findAllEx = () => `
         'enums', input.enums) ORDER BY input.list_order) inputs
     FROM input
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
-const findById = () => `${findAllEx()} WHERE question.id = {{question.id}}`;
-const findByName = () => `${findAllEx()} WHERE question.short_name = {{question.short_name}}`;
-const findBySectionId = () => `${findAllEx()} WHERE question.id IN (
-  SELECT section_question.question_id
-  FROM section_question
-  WHERE section_question.section_id = {{section.id}})`;
+const findById = () => `${findAllEx()} WHERE question.id = {{id}}`;
+const findByName = () => `${findAllEx()} WHERE question.short_name = {{short_name}}`;
 
 module.exports.sectionJoin = sectionJoin;
 
 module.exports.findAll = findAll;
 module.exports.findAllEx = findAllEx;
 module.exports.findByName = findByName;
-module.exports.findBySectionId = findBySectionId;
 module.exports.findById = findById;

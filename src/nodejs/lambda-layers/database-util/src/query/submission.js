@@ -138,7 +138,7 @@ const findById = (params) => sql.select({
     joins: [refs.submission_status, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   where: {
-    filters: [{ field: fieldMap.id }]
+    filters: [{ field: fieldMap.id, param: 'id' }]
   }
 });
 
@@ -190,7 +190,7 @@ const findAll = ({
 const findShortById = () => `
 SELECT submission.*
 FROM submission
-WHERE submission.id = {{submission.id}}`;
+WHERE submission.id = {{id}}`;
 
 const initialize = (params) => `
 INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''})
@@ -199,14 +199,14 @@ RETURNING *`;
 
 const updateName = () => `
 UPDATE submission
-SET name = {{submission.name}}
-WHERE id = {{submission.id}}
+SET name = {{name}}
+WHERE id = {{id}}
 RETURNING *`;
 
 const updateDaac = () => `
 UPDATE submission
-SET daac_id = {{submission.daac_id}}
-WHERE id = {{submission.id}}
+SET daac_id = {{daac_id}}
+WHERE id = {{id}}
 RETURNING *`;
 
 const updateConversation = () => `
@@ -218,12 +218,12 @@ RETURNING *`;
 const getMetadata = () => `
 SELECT submission_metadata.*
 FROM submission_metadata
-WHERE submission_metadata.id = {{submission.id}}`;
+WHERE submission_metadata.id = {{id}}`;
 
 const updateMetadata = () => `
 UPDATE submission_metadata
-SET metadata = {{submission.metadata}}::JSONB
-WHERE id = {{submission.id}}
+SET metadata = {{metadata}}::JSONB
+WHERE id = {{id}}
 RETURNING *`;
 
 const getFormData = () => `
@@ -232,11 +232,11 @@ submission_form_data.id,
 COALESCE(JSONB_OBJECT_AGG(data ORDER BY submitted_at ASC), '{}'::JSONB) form_data
 FROM submission_form_data
 GROUP BY submission_form_data.id
-WHERE submission_form_data.id = {{submission.id}}`;
+WHERE submission_form_data.id = {{id}}`;
 
 const updateFormData = () => `
 INSERT INTO submission_form_data(id, form_id, data) VALUES
-({{submission.id}}, {{form.id}}, {{form.data}}::JSONB)
+({{id}}, {{form_id}}, {{data}}::JSONB)
 ON CONFLICT (id, form_id) DO UPDATE SET
 data = EXCLUDED.data
 RETURNING *`;
@@ -247,11 +247,11 @@ submission_form_data.id,
 COALESCE(JSONB_OBJECT_AGG(submission_form_data.form_id, data), '{}'::JSONB) form_data
 FROM submission_form_data
 GROUP BY submission_form_data.id
-WHERE submission_action_data.id = {{submission.id}}`;
+WHERE submission_action_data.id = {{id}}`;
 
 const updateActionData = () => `
 INSERT INTO submission_action_data(id, action_id, data) VALUES
-({{submission.id}}, {{action.id}}, {{action.data}}::JSONB)
+({{id}}, {{action_id}}, {{data}}::JSONB)
 ON CONFLICT (id, action_id) DO UPDATE SET
 data = EXCLUDED.data
 RETURNING *`;
@@ -283,16 +283,16 @@ NATURAL JOIN (
     ))) workflows
   FROM submission_workflow
   GROUP BY submission_workflow.id) submission_workflow
-WHERE submission_status.id = {{submission.id}}`;
+WHERE submission_status.id = {{id}}`;
 
 const applyWorkflow = () => `
 WITH sub AS
 (INSERT INTO submission_workflow(id, workflow_id)
-VALUES({{submission.id}}, {{workflow.id}}))
+VALUES({{id}}, {{workflow_id}}))
 UPDATE submission_status SET
 workflow_id = {{workflow.id}},
 step_name = 'init'
-WHERE submission_status.id = {{submission.id}}
+WHERE submission_status.id = {{id}}
 RETURNING *`;
 
 const getNextstep = () => `
@@ -300,7 +300,7 @@ SELECT submission_status.workflow_id, step_edge.next_step_name step_name
 FROM step
 NATURAL JOIN submission_status
 NATURAL JOIN step_edge
-WHERE submission_status.id = {{submission.id}}`;
+WHERE submission_status.id = {{id}}`;
 
 const promoteStep = () => `
 UPDATE submission_status SET
@@ -310,8 +310,8 @@ step_name = (
   FROM step
   NATURAL JOIN submission_status
   NATURAL JOIN step_edge
-  WHERE submission_status.id = {{submission.id}})
-WHERE submission_status.id = {{submission.id}}
+  WHERE submission_status.id = {{id}})
+WHERE submission_status.id = {{id}}
 RETURNING *`;
 
 const rollback = (params) => `
@@ -321,8 +321,8 @@ step_name = (
   SELECT step_edge.step_name step_name
   FROM step_edge
   WHERE step_edge.workflow_id = submission_status.workflow_id
-  AND step_edge.next_step_name = {{submission.rollback}})
-WHERE submission_status.id = {{submission.id}}
+  AND step_edge.next_step_name = {{rollback}})
+WHERE submission_status.id = {{id}}
 RETURNING *`;
 
 module.exports.findAll = findAll;

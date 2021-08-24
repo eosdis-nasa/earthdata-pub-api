@@ -6,26 +6,26 @@
  * @module NotificationHandler
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-const MessageUtil = require('message-util');
+const msg = require('message-util');
 
 const { getTemplate } = require('./notification-consumer/templates.js');
 
 async function processRecord(record) {
-  const { eventMessage } = MessageUtil.parseRecord(record);
+  const { eventMessage } = msg.parseRecord(record);
   if (!(eventMessage.data && eventMessage.data.silent)) {
     const message = getTemplate(eventMessage);
     if (message) {
       const operation = message.conversation_id ? 'reply' : 'sendNote';
       if (!message.user_id) {
-        const systemUser = await DatabaseUtil.execute({ resource: 'user', operation: 'findSystemUser' }, {});
+        const systemUser = await db.user.findSystemUser();
         message.user_id = systemUser.id;
       }
       if (operation === 'sendNote' && !message.subject) {
         message.subject = 'No Subject';
       }
-      await DatabaseUtil.execute({ resource: 'note', operation }, message);
+      await db.note[operation](message);
     }
   }
 }

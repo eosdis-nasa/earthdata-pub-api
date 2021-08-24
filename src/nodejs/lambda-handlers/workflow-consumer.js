@@ -8,9 +8,9 @@
  * @see module:ActionHandler
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-const MessageUtil = require('message-util');
+const msg = require('message-util');
 
 async function actionMethod(status) {
   const eventMessage = {
@@ -22,7 +22,7 @@ async function actionMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
 }
 
 async function formMethod(status) {
@@ -35,7 +35,7 @@ async function formMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
 }
 
 async function reviewMethod(status) {
@@ -47,7 +47,7 @@ async function reviewMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
 }
 
 async function serviceMethod(status) {
@@ -60,7 +60,7 @@ async function serviceMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
 }
 
 async function closeMethod(status) {
@@ -72,7 +72,7 @@ async function closeMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
 }
 
 const stepMethods = {
@@ -84,12 +84,10 @@ const stepMethods = {
 };
 
 async function processRecord(record) {
-  const { eventMessage } = MessageUtil.parseRecord(record);
+  const { eventMessage } = msg.parseRecord(record);
   const { submission_id: id } = eventMessage;
-  await DatabaseUtil.execute({ resource: 'submission', operation: 'promoteStep' },
-    { submission: { id } });
-  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
-    { submission: { id } });
+  await db.submission.promoteStep({ id });
+  const status = await db.submission.getState({ id });
   const method = stepMethods[status.step.type];
   await method(status);
 }
