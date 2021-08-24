@@ -2,8 +2,6 @@ const fs = require('fs');
 
 const { Pool } = require('pg');
 
-const parse = require('./query/parsers.js');
-
 const queryBuilder = require('./query/index.js');
 
 const config = {
@@ -27,7 +25,6 @@ async function execute({ resource, operation }, params) {
       Object.assign(response, { data: { error: 'No results' } });
     }
   } catch (e) {
-    console.log(e);
     Object.assign(response, { data: { error: e } });
   }
   return response.data;

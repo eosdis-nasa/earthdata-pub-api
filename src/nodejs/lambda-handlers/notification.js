@@ -45,15 +45,15 @@ async function addUsersMethod(params) {
 }
 
 async function conversationsMethod(params) {
-  const note = await db.note.getConversationList({
-    user_id: params.context.user_id });
+  const note = await db.note.getConversationList({ user_id: params.context.user_id });
   return note;
 }
 
 async function conversationMethod(params) {
   const conversation = await db.note.readConversation({
     user_id: params.context.user_id,
-    conversation_id: params.conversation_id });
+    conversation_id: params.conversation_id
+  });
   return conversation;
 }
 

@@ -7,27 +7,22 @@ const db = require('database-util');
 const auth = require('auth-util');
 
 async function handler(event) {
-  const {
-    code, refresh, logout, state, context
-  } = event;
-  if (code) {
+  if (event.code) {
     const { access, refresh, decoded } = await auth.getToken(event);
-    await db.user.loginUser({
-      id: decoded.sub, refresh_token: refresh, ...decoded });
+    await db.user.loginUser({ id: decoded.sub, refresh_token: refresh, ...decoded });
     const user = await db.user.findById({ id: decoded.sub });
-    return { token: access, user, state };
+    return { token: access, state: event.state, user };
   }
-  if (refresh && context) {
-    const { refresh_token: refreshToken } = await db.user.getRefreshToken({
-      id: context.user_id });
-    const { access, refresh, decoded } = await auth.refreshToken({
-      token: refreshToken });
-    await db.user.refreshUser({
-      id: decoded.sub, refresh_token: refresh, ...decoded });
+  if (event.refresh && event.context) {
+    const { refresh_token: refreshToken } = await db.user.getRefreshToken(
+      { id: event.context.user_id }
+    );
+    const { access, refresh, decoded } = await auth.refreshToken({ token: refreshToken });
+    await db.user.refreshUser({ id: decoded.sub, refresh_token: refresh, ...decoded });
     const user = await db.user.findById({ id: decoded.sub });
     return { token: access, user };
   }
-  if (logout) {
+  if (event.logout) {
     const { redirect } = await auth.getLogoutUrl(event);
     return { redirect };
   }

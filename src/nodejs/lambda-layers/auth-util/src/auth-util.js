@@ -68,7 +68,7 @@ async function getLoginUrl({ state }) {
 }
 
 async function getLogoutUrl({ host }) {
-  const clienttUri = new URL(clientPath, host);
+  const clientUri = new URL(clientPath, host);
   const redirect = new URL(logoutPath, providerUrl);
   redirect.search = new URLSearchParams({
     client_id: clientId,

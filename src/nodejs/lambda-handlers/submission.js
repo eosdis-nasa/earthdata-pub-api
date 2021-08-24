@@ -12,8 +12,8 @@ const msg = require('message-util');
 
 async function activeMethod(event, userId) {
   const submissions = await db.submission.getUsersSubmissions({
-      user_id: userId
-    });
+    user_id: userId
+  });
   return submissions;
 }
 
@@ -36,7 +36,8 @@ async function resumeMethod(event, userId, silent = false) {
 async function initializeMethod(event, userId) {
   const submission = await db.submission.initialize({
     user_id: userId,
-    ...event });
+    ...event
+  });
   const eventMessage = {
     event_type: 'request_initialized',
     submission_id: submission.id,
@@ -67,8 +68,7 @@ async function applyMethod(event, userId) {
 async function metadataMethod(event, userId) {
   // Update Metadata for a Submission
   const { id, metadata } = event;
-  const response = await db.submission.updateMetadata({
-    id, metadata: JSON.stringify(metadata) });
+  const response = await db.submission.updateMetadata({ id, metadata: JSON.stringify(metadata) });
   const status = await db.submission.getState({ id });
   const eventMessage = {
     event_type: 'metadata_updated',
@@ -87,8 +87,7 @@ async function saveMethod(event, userId) {
     const submission = await initializeMethod(event, userId);
     id = submission.id;
   }
-  await db.submission.updateFormData({
-    id, form_id: formId, data: JSON.stringify(data) });
+  await db.submission.updateFormData({ id, form_id: formId, data: JSON.stringify(data) });
   const status = await db.submission.getState({ id });
   if (daacId && daacId !== status.daac_id) {
     await db.submission.updateDaac({ id, daac_id: daacId });
@@ -120,8 +119,7 @@ async function reviewMethod(event, userId) {
   const status = await db.submission.getState({ id });
   if (status.step.type === 'review') {
     if (!approve) {
-      await db.submission.rollback({
-        id, rollback: status.step.data.rollback });
+      await db.submission.rollback({ id, rollback: status.step.data.rollback });
     }
     const eventMessage = {
       event_type: approve ? 'review_approved' : 'review_rejected',
