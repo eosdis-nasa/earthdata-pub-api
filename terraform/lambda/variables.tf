@@ -26,6 +26,38 @@ variable "edpub_action_sqs_url" {
   type = string
 }
 
+variable "edpub_inbound_sqs_arn" {
+  type = string
+}
+
+variable "edpub_inbound_sqs_url" {
+  type = string
+}
+
+variable "edpub_metrics_sqs_arn" {
+  type = string
+}
+
+variable "edpub_metrics_sqs_url" {
+  type = string
+}
+
+variable "edpub_notification_sqs_arn" {
+  type = string
+}
+
+variable "edpub_notification_sqs_url" {
+  type = string
+}
+
+variable "edpub_workflow_sqs_arn" {
+  type = string
+}
+
+variable "edpub_workflow_sqs_url" {
+  type = string
+}
+
 variable "edpub_event_sns_arn" {
   type = string
 }
@@ -47,6 +79,10 @@ variable "edpub_forms_s3_bucket" {
 }
 
 variable "edpub_overview_s3_bucket" {
+  type = string
+}
+
+variable "edpub_metrics_s3_bucket" {
   type = string
 }
 
@@ -82,34 +118,38 @@ variable "api_version" {
   type = string
 }
 
-variable "cognito_url" {
+variable "client_root_url" {
   type = string
 }
 
-variable "cognito_logout_path" {
+variable "auth_provider_url" {
   type = string
 }
 
-variable "cognito_login_path" {
+variable "auth_logout_path" {
   type = string
 }
 
-variable "cognito_token_path" {
+variable "auth_login_path" {
   type = string
 }
 
-variable "cognito_user_path" {
+variable "auth_token_path" {
   type = string
 }
 
-variable "cognito_client_id" {
+variable "auth_user_path" {
   type = string
 }
 
-variable "cognito_client_secret" {
+variable "auth_client_id" {
   type = string
 }
 
-variable "cognito_client_auth_url" {
+variable "auth_client_secret" {
+  type = string
+}
+
+variable "auth_client_path" {
   type = string
 }

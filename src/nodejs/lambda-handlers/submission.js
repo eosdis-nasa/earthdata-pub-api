@@ -6,59 +6,61 @@
  * @module Submission
  */
 
-const DatabaseUtil = require('database-util');
+const db = require('database-util');
 
-const MessageUtil = require('message-util');
+const msg = require('message-util');
 
 async function activeMethod(event, userId) {
-  const activeSubmissions = await DatabaseUtil.execute({ resource: 'submission', operation: 'getUsersSubmissions' },
-    {
-      user_id: userId
-    });
-  return activeSubmissions;
+  const submissions = await db.submission.getUsersSubmissions({
+    user_id: userId
+  });
+  return submissions;
 }
 
-async function resumeMethod(event, userId) {
+async function resumeMethod(event, userId, silent = false) {
   const { id } = event;
-  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
-    { submission: { id } });
+  const status = await db.submission.getState({ id });
   const eventMessage = {
     event_type: 'workflow_promote_step',
     submission_id: status.id,
+    conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
-    step_name: status.step_name,
-    user_id: userId
+    step_name: status.step.name,
+    user_id: userId,
+    ...(silent ? { data: { silent } } : {})
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
   return status;
 }
 
 async function initializeMethod(event, userId) {
-  const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'initialize' },
-    { user_id: userId, ...event });
+  const submission = await db.submission.initialize({
+    user_id: userId,
+    ...event
+  });
   const eventMessage = {
-    event_type: 'submission_initialized',
+    event_type: 'request_initialized',
     submission_id: submission.id,
+    conversation_id: submission.conversation_id,
     user_id: userId
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
   await resumeMethod({ id: submission.id }, userId);
   return submission;
 }
 
 async function applyMethod(event, userId) {
   const { id, workflow_id: workflowId } = event;
-  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
-    { submission: { id } });
-  // Check if in ready state and if the proposed workflow has been run previously
-  await DatabaseUtil.execute({ resource: 'submission', operation: 'applyWorkflow' },
-    { submission: { id }, workflow: { id: workflowId } });
+  const status = await db.submission.getState({ id });
+  // TODO: Check if in ready state and if the proposed workflow has been run previously
+  await db.submission.applyWorkflow({ id, workflow_id: workflowId });
   const eventMessage = {
-    event_type: 'submission_workflow_started',
+    event_type: 'workflow_started',
     submission_id: id,
+    conversation_id: status.conversation_id,
     workflow_id: workflowId
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
   await resumeMethod(event, userId);
   return status;
 }
@@ -66,64 +68,72 @@ async function applyMethod(event, userId) {
 async function metadataMethod(event, userId) {
   // Update Metadata for a Submission
   const { id, metadata } = event;
-  const response = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateMetadata' },
-    { submission: { id, metadata: JSON.stringify(metadata) } });
-  // const submission = await DatabaseUtil.execute({
-  //   resource: 'submission',
-  //   operation: 'findShortById'
-  // },
-  // { submission: { id } });
+  const response = await db.submission.updateMetadata({ id, metadata: JSON.stringify(metadata) });
+  const status = await db.submission.getState({ id });
   const eventMessage = {
-    event_type: 'submission_metadata_updated',
+    event_type: 'metadata_updated',
     submission_id: id,
+    conversation_id: status.conversation_id,
     user_id: userId
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
   return response;
 }
 
 async function saveMethod(event, userId) {
-  const { form_id: formId, data } = event;
+  const { form_id: formId, daac_id: daacId, data } = event;
   let { id } = event;
   if (!id) {
     const submission = await initializeMethod(event, userId);
     id = submission.id;
   }
-  const response = await DatabaseUtil.execute({ resource: 'submission', operation: 'updateFormData' }, { submission: { id }, form: { id: formId, data: JSON.stringify(data) } });
-  return response;
+  await db.submission.updateFormData({ id, form_id: formId, data: JSON.stringify(data) });
+  const status = await db.submission.getState({ id });
+  if (daacId && daacId !== status.daac_id) {
+    await db.submission.updateDaac({ id, daac_id: daacId });
+    status.daac_id = daacId;
+  }
+  return status;
 }
 
 async function submitMethod(event, userId) {
   const { form_id: formId } = event;
-  let { id } = event;
-  const response = await saveMethod(event, userId);
-  id = response.id;
+  const status = await saveMethod(event, userId);
   const eventMessage = {
-    event_type: 'submission_form_submitted',
-    submission_id: id,
+    event_type: 'form_submitted',
+    submission_id: status.id,
+    conversation_id: status.conversation_id,
+    workflow_id: status.workflow_id,
     form_id: formId,
     user_id: userId
   };
-  await MessageUtil.sendEvent(eventMessage);
-  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getState' },
-    { submission: { id } });
-  if (status.type === 'form' && status.form_id === formId) {
-    await resumeMethod(event, userId);
+  await msg.sendEvent(eventMessage);
+  if (status.step.type === 'form' && status.step.form_id === formId) {
+    await resumeMethod({ id: status.id }, userId);
   }
-  return response;
+  return status;
 }
 
 async function reviewMethod(event, userId) {
-  // Similar to submit, but for reviews. In case of rejecting a Submission
-  // during review users can send a comment with reason for rejection.
-  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  // if (body.approval) {
-  //   const message = constructMessage(submission, 'review', true);
-  //   await msgDriver.sendSns(message);
-  //   return [true];
-  // }
-  // return [false, 'Bad request.'];
-  console.info('Not Implemented', event, userId);
+  const { id, approve } = event;
+  const status = await db.submission.getState({ id });
+  if (status.step.type === 'review') {
+    if (!approve) {
+      await db.submission.rollback({ id, rollback: status.step.data.rollback });
+    }
+    const eventMessage = {
+      event_type: approve ? 'review_approved' : 'review_rejected',
+      submission_id: id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      user_id: userId,
+      data: status.step.data
+    };
+    await msg.sendEvent(eventMessage);
+    const response = await resumeMethod(event, userId, !approve);
+    return response;
+  }
+  return {};
 }
 
 async function lockMethod(event, userId) {

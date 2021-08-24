@@ -1,9 +1,7 @@
 const fs = require('fs');
 const uuid = require('uuid');
 const { sign, verify, decode } = require('jsonwebtoken');
-const DatabaseUtil = require('database-util');
-const { SQS } = require('aws-sdk');
-const { Consumer } = require('sqs-consumer');
+const db = require('database-util');
 const handlers = require('./handlers.js');
 
 const issuer = 'Earthdata Pub Dev';
@@ -12,15 +10,6 @@ const exp = parseInt(process.env.AUTH_TOKEN_EXP);
 const redirectEndpoint = process.env.AUTH_CALLBACK_URL;
 const respectExp = process.env.AUTH_RESPECT_EXP === 'true';
 const codes = {};
-
-const consumer = Consumer.create({
-  sqs: new SQS({ endpoint: process.env.SNS_ENDPOINT }),
-  queueUrl: 'http://goaws:4100/000000000000/edpub_action_sqs',
-  pollingWaitTimeMs: 15000,
-  handleMessage: handlers.actionConsumer
-});
-
-consumer.start();
 
 function aclAllowAll(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -38,38 +27,52 @@ function login(req, res) {
 
 function authenticate(req, res) {
   const code = uuid.v4().replace(/-/g, '');
-  const { state, ...user } = req.body;
-  if (user.id === 'register') {
-    user.id = uuid.v4();
-    user.refresh_token = code;
+  const { state, ...data } = req.body;
+  if (data.new_user) {
+    data.id = uuid.v4();
   }
-  DatabaseUtil.execute({ resource: 'user', operation: 'loginUser' }, { user })
-    .then((data) => {
-      Object.assign(user, data);
-      const authTime = Date.parse(user.last_login);
-      Object.assign(user, {
-        sub: user.id,
-        scope: 'openid',
-        auth_time: authTime,
-        iss: issuer,
-        exp: authTime + exp,
-        iat: authTime
-      });
-      // const newToken = sign(user, tokenSecret, { algorithm: 'HS256'});
-      codes[code] = user;
+  data.refresh_token = code;
+  db.user.loginUser(data)
+  .then(() => {
+    if (data.new_user && data.user_roles.length > 0) {
+      return db.user.addRoles(data)
+    }
+  })
+  .then(() => {
+    if (data.new_user && data.user_groups.length > 0) {
+      return db.user.addGroups(data);
+    }
+  })
+  .then(() => {
+    return db.user.findById(data);
+  })
+  .then((user) => {
+    const authTime = Math.floor(Date.parse(user.last_login) / 1000);
+    const tokenBase = {
+      sub: user.id,
+      name: user.name,
+      email: user.email,
+      scope: 'openid',
+      auth_time: authTime,
+      iss: issuer,
+      exp: authTime + exp,
+      iat: authTime
+    };
 
-      const redirect = new URL('http://localhost:3000/auth');
-      redirect.searchParams.set('code', code);
-      if (state) redirect.searchParams.set('state', state);
-      res.status(200);
-      res.send({ redirect: redirect.href });
-    });
+    codes[code] = tokenBase;
+
+    const redirect = new URL('http://localhost:3000/auth');
+    redirect.searchParams.set('code', code);
+    if (state) redirect.searchParams.set('state', state);
+    res.status(200);
+    res.send({ redirect: redirect.href });
+  });
 }
 
-function token(req, res) {
+function getToken(req, res) {
   const { code, refresh_token } = req.body;
   if (code) {
-    const authTime = Date.now();
+    const authTime = Math.floor(Date.now() / 1000);
     const user = codes[code];
     Object.assign(user, {
       auth_time: authTime,
@@ -85,10 +88,12 @@ function token(req, res) {
       token_type: 'Bearer'
     };
     console.info(tokens);
-    res.status(200);
-    res.send(tokens);
+    setTimeout(function() {
+      res.status(200);
+      res.send(tokens);
+    }, 3000);
   } else if (refresh_token) {
-    const authTime = Date.now();
+    const authTime = Math.floor(Date.now() / 1000);
     const user = codes[refresh_token];
     Object.assign(user, {
       auth_time: authTime,
@@ -103,13 +108,16 @@ function token(req, res) {
       expires_in: exp,
       token_type: 'Bearer'
     };
-    res.status(200);
-    res.send(tokens);
+    console.info(tokens);
+    setTimeout(function() {
+      res.status(200);
+      res.send(tokens);
+    }, 3000);
   }
 }
 
 function userList(req, res) {
-  DatabaseUtil.execute({ resource: 'user', operation: 'findAll' }, {})
+  db.user.findAll()
     .then((users) => {
       res.status(200);
       res.send(users);
@@ -117,7 +125,7 @@ function userList(req, res) {
 }
 
 function groupList(req, res) {
-  DatabaseUtil.execute({ resource: 'group', operation: 'findAll' }, {})
+  db.group.findAll()
     .then((groups) => {
       res.status(200);
       res.send(groups);
@@ -125,7 +133,7 @@ function groupList(req, res) {
 }
 
 function roleList(req, res) {
-  DatabaseUtil.execute({ resource: 'role', operation: 'findAll' }, {})
+  db.role.findAll()
     .then((roles) => {
       res.status(200);
       res.send(roles);
@@ -139,9 +147,12 @@ function check(req, secDef, token, next) {
     verify(newToken, tokenSecret, { issuer },
       (error, decoded) => {
         if (error === null && decoded) {
-          if (respectExp && decoded.exp < Date.now()) { next(req.res.sendStatus(403)); }
-          DatabaseUtil.execute({ resource: 'user', operation: 'findById' },
-            { user: { id: decoded.sub } }).then((user) => {
+          const currentTime = Math.floor(Date.now() / 1000);
+          if (respectExp && decoded.exp < currentTime) {
+            next(req.res.sendStatus(403));
+          }
+          db.user.findById({id: decoded.sub })
+          .then((user) => {
             if (user.error) { return next(req.res.sendStatus(403)); }
             Object.assign(req, { user_id: decoded.sub });
             return next();
@@ -156,7 +167,7 @@ function check(req, secDef, token, next) {
 }
 
 function reseed(req, res) {
-  DatabaseUtil.seed().then((response) => {
+  db.seed().then((response) => {
     res.status(200);
     res.send();
   });
@@ -194,18 +205,9 @@ function wrapSns(req) {
   return { Records: [{ Sns: { ...req.body } }] };
 }
 
-function kayakoMock(req, res) {
-  // Placeholder that logs requests, will update to return useful mock values
-  console.info('Headers: ', JSON.stringify(req.headers || {}));
-  console.info('Query: ', JSON.stringify(req.query || {}));
-  console.info('Request Body: ', JSON.stringify(req.body || {}));
-  res.status(200);
-  res.send();
-}
-
 function dbTest(req, res) {
   const { resource, operation, params } = req.body;
-  DatabaseUtil.execute({ resource, operation }, params)
+  db[resource][operation](params)
     .then((data) => {
       res.status(200);
       res.send(data);
@@ -216,7 +218,7 @@ module.exports = {
   aclAllowAll,
   issuer,
   tokenSecret,
-  token,
+  getToken,
   login,
   authenticate,
   check,
@@ -227,7 +229,6 @@ module.exports = {
   handleWorkflow,
   handleMetrics,
   handleNotification,
-  kayakoMock,
   dbTest,
   favico
 };

@@ -420,6 +420,18 @@ module.exports.notificationReply = function notificationReply(req, res, next) {
   });
 };
 
+module.exports.notificationAddUsers = function notificationAddUsers(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'add_users',
+    ...params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
 module.exports.notificationConversations = function notificationConversations(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -515,6 +527,15 @@ module.exports.putMetric = function putMetric(req, res, next) {
   });
 };
 
+module.exports.metricsListReports = function metricsListReports(req, res, next) {
+  res.send(["2021-06-20", "2021-06-21", "2021-06-22"]);
+};
+
+module.exports.metricsGetReport = function putMetric(req, res, next) {
+  res.status(200);
+  res.sendFile(`${__dirname}/static/2021-06-20.json`);
+};
+
 module.exports.getModel = function getModel(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -526,11 +547,51 @@ module.exports.getModel = function getModel(req, res, next) {
   });
 };
 
-module.exports.getToken = function getToken(req, res, next) {
+module.exports.moduleList = function moduleList(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
+    operation: "list",
+    context: { user_id: req.user_id }
+  }
+  handlers.module(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+}
+
+module.exports.moduleInterface = function moduleInterface(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: "interface",
+    module: params.module.value,
+    context: { user_id: req.user_id }
+  }
+  res.sendFile(`${__dirname}/static/module-ui.html`);
+}
+
+module.exports.moduleRequest = function moduleRequest(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: "request",
+    module: params.module.value,
+    payload: params.payload.value,
+    context: { user_id: req.user_id }
+  }
+  const { payload } = lambdaEvent;
+  if (payload.operation == "test") {
+    res.send({ message: "Success" });
+  }
+  else {
+    res.send({ error: "Error" });
+  }
+}
+
+module.exports.getToken = function getToken(req, res, next) {
+  const { params } = req.swagger;
+  const { host } = req.headers;
+  const lambdaEvent = {
     code: params.code.value,
-    state: params.state.value
+    state: params.state.value,
+    host
   };
   handlers.auth(lambdaEvent).then((body) => {
     res.send(body);
@@ -549,9 +610,31 @@ module.exports.refreshToken = function refreshToken(req, res, next) {
 };
 
 module.exports.getVersion = function getVersion(req, res, next) {
-  const { params } = req.swagger;
   const lambdaEvent = {};
   handlers.version(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.pageFindById = function pageFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'page',
+    operation: 'findById',
+    params: { page_key: params.page_key.value }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    res.send(body);
+  });
+};
+
+module.exports.pageFindOverview = function pageFindOverview(req, res, next) {
+  const lambdaEvent = {
+    resource: 'page',
+    operation: 'findById',
+    params: { page_key: 'overview' }
+  };
+  handlers.data(lambdaEvent).then((body) => {
     res.send(body);
   });
 };

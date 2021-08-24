@@ -13,14 +13,15 @@ services:
       - AWS_ACCESS_KEY_ID=fake
       - AWS_SECRET_ACCESS_KEY=fake
       - EVENT_SNS=arn:aws:sns:us-east-1:000000000000:edpub_event_sns
+      - METRICS_SNS=arn:aws:sns:us-east-1:000000000000:edpub_metrics_sns
       - SNS_ENDPOINT=http://goaws:4100
       - PG_USER=edpub
       - PG_HOST=postgres
       - PG_DB=edpub
       - PG_PASS=edpub
       - PG_PORT=5432
-      - AUTH_RESPECT_EXP=false
-      - AUTH_TOKEN_EXP=1800000
+      - AUTH_RESPECT_EXP=true
+      - AUTH_TOKEN_EXP=3600
       - AUTH_PROVIDER_URL=http://localhost:8080
       - AUTH_LOGIN_PATH=auth/login
       - AUTH_LOGOUT_PATH=auth/logout
@@ -28,11 +29,8 @@ services:
       - AUTH_USER_PATH=auth/user_info
       - AUTH_CLIENT_ID=1or0vuut22m9a5r9hd4s00er9k
       - AUTH_CLIENT_SECRET=1drni35hoa4tcp63jv9dr5pa8dfj8talscgv4m7e5fabc1qemsuv
-      - AUTH_CLIENT_URL=http://localhost:3000/auth
-      - APIKEY=fake
-      - SECRETKEY=fake
-      - HOSTNAME=http://localhost:3000/kayako
-      - SALTLENGTH=10
+      - AUTH_CLIENT_PATH=auth
+      - CLIENT_ROOT_URL=http://localhost:3000
     command: ["npm", "start"]
     ports:
       - 8080:8080
@@ -59,4 +57,4 @@ services:
       PGADMIN_DEFAULT_EMAIL: edpub@edpub.com
       PGADMIN_DEFAULT_PASSWORD: edpub
     ports:
-      - 80:80
+      - 8001:80

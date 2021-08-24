@@ -1,6 +1,9 @@
 const AWS = require('aws-sdk');
+const uuid = require('uuid');
 
 const eventSns = process.env.EVENT_SNS;
+const metricsSns = process.env.METRICS_SNS;
+const eventGroupId = 'edpub-event-group';
 
 const sns = new AWS.SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -31,7 +34,20 @@ function sendEvent(eventMessage) {
     Subject: 'event',
     Message: JSON.stringify(eventMessage),
     MessageAttributes: marshalAttributes(eventMessage),
+    MessageGroupId: eventGroupId,
     TopicArn: eventSns
+  };
+  const response = sns.publish(params).promise().catch((e) => { console.error(e); });
+  return response;
+}
+
+function sendMetric(eventMessage) {
+  const { data, ...cleanedMessage } = eventMessage;
+  cleanedMessage.message_id = uuid.v4();
+  const params = {
+    Subject: 'metric',
+    Message: JSON.stringify(cleanedMessage),
+    TopicArn: metricsSns
   };
   const response = sns.publish(params).promise().catch((e) => { console.error(e); });
   return response;
@@ -63,21 +79,26 @@ function parseSnsMessage(message) {
 }
 
 function parseSqsMessage(message) {
+  const body = JSON.parse(message.body);
+  if (body.TopicArn) {
+    return parseSnsMessage(body);
+  }
+  const unixTime = parseInt(message.attributes.SentTimestamp, 0);
+  const timestamp = new Date(unixTime).toISOString();
   return {
-    eventMessage: JSON.parse(message.body),
-    timestamp: new Date(message.attributes.ApproximateReceiveTimestamp).toISOString()
+    eventMessage: body,
+    timestamp
   };
 }
 
 function parseRecord(record) {
   if (record.Sns) {
     return parseSnsMessage(record.Sns);
-  } if (record.Sqs) {
-    return parseSqsMessage(record.Sqs);
   }
-  return {};
+  return parseSqsMessage(record);
 }
 
 module.exports.sendEvent = sendEvent;
+module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
 module.exports.parseAttributesFromParams = parseAttributesFromParams;

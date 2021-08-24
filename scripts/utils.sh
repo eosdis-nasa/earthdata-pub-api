@@ -33,7 +33,11 @@ install_layer() {
 
 install_lambda() {
   cd ${DIR}/temp
-  cp ${DIR}/src/nodejs/lambda-handlers/${1}.js ./.
+  cp ${DIR}/src/nodejs/lambda-handlers/${1}.js .
+  if [ -d ${DIR}/src/nodejs/lambda-handlers/${1} ]
+  then
+    cp -R ${DIR}/src/nodejs/lambda-handlers/${1} .
+  fi
   zip -r ${DIR}/artifacts/${1}-lambda.zip .
   cd ${DIR}
   rm -rf ${DIR}/temp/*

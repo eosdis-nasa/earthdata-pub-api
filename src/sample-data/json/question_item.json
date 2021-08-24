@@ -124,7 +124,7 @@
   {
     "question_name": "data_product_description",
     "title": "Data Product Description",
-    "text": "Please provide a brief description of this data product following the guidance in the help text.",
+    "text": "Please provide a brief description of this data product.",
     "help": "The description should mimic a journal abstract and should provide a reader with the information needed to quickly understand the relevance and usefulness of the data.",
     "inputs": [
       {
@@ -149,11 +149,17 @@
     "help": "For example, a overview paper describing the research, methods, or initial results related to this data product.",
     "inputs": [
       {
-        "type": "text",
-        "id": "publication_dois",
-        "label": "Publication",
-        "validation_error_msg": "Please enter Digital Object Identifiers.",
-        "required": true
+        "type": "table",
+        "control_id": "publication_dois",
+        "enums":[
+          {
+            "key": "doi",
+            "label": "DOIs",
+            "editable": true,
+            "type":"text"
+          }
+        ],
+        "required":true
       }
     ],
     "id": "ab57f5e8-9ec5-46c9-978e-d06125346d36",
@@ -225,7 +231,7 @@
   {
     "question_name": "data_product_restrictions",
     "title": "Data Product Restrictions",
-    "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No, please provide a brief explanation.",
+    "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No or Not sure, please provide a brief explanation.",
     "help": "For a description policy, please refer to the NASA Earthdata Data and Information Policy web page (https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy).",
     "inputs": [
       {
@@ -327,7 +333,7 @@
         "required": true
       }
     ],
-    "id": "f4d8ab9d-0959-41b8-8449-430986ddfe84",
+    "id": "4c42796a-8ff1-444e-8fc5-82ccad82e5fb",
     "version": 1
   },
   {
@@ -397,7 +403,7 @@
       {
         "type": "text",
         "id": "data_format_other_info",
-        "label": "If Other"
+        "label": "If Other, please provide the data format(s)."
       }
     ],
     "id": "50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27",

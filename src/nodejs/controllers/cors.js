@@ -54,6 +54,10 @@ module.exports.optionsNotify = optionsHeaders;
 
 module.exports.optionsSubscribe = optionsHeaders;
 
+module.exports.optionsModule = optionsHeaders;
+
+module.exports.optionsModuleList = optionsHeaders;
+
 module.exports.optionsInvoke = optionsHeaders;
 
 module.exports.optionsRegister = optionsHeaders;
@@ -61,6 +65,10 @@ module.exports.optionsRegister = optionsHeaders;
 module.exports.optionsSubmission = optionsHeaders;
 
 module.exports.optionsMetrics = optionsHeaders;
+
+module.exports.optionsMetricsGetReport = optionsHeaders;
+
+module.exports.optionsMetricsListReports = optionsHeaders;
 
 module.exports.optionsModel = optionsHeaders;
 

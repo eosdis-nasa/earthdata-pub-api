@@ -16,15 +16,6 @@ resource "aws_lambda_layer_version" "database_util" {
   source_code_hash    = filesha256("../artifacts/database-util-layer.zip")
 }
 
-# Kayako Util Layer
-
-resource "aws_lambda_layer_version" "kayako_util" {
-  filename            = "../artifacts/kayako-util-layer.zip"
-  layer_name          = "kayakoUtilLayer"
-  compatible_runtimes = ["nodejs12.x"]
-  source_code_hash    = filesha256("../artifacts/kayako-util-layer.zip")
-}
-
 # Message Util Layer
 
 resource "aws_lambda_layer_version" "message_util" {
@@ -62,6 +53,8 @@ resource "aws_lambda_function" "action_consumer" {
     variables = {
       REGION    = var.region
       EVENT_SNS = var.edpub_event_sns_arn
+      EMAIL_SNS = var.edpub_email_sns_arn
+      METRICS_SNS = var.edpub_metrics_sns_arn
       PG_USER   = var.db_user
       PG_HOST   = var.db_host
       PG_DB     = var.db_database
@@ -107,6 +100,7 @@ resource "aws_lambda_function" "data" {
     variables = {
       REGION    = var.region
       EVENT_SNS = var.edpub_event_sns_arn
+      METRICS_SNS = var.edpub_metrics_sns_arn
       PG_USER   = var.db_user
       PG_HOST   = var.db_host
       PG_DB     = var.db_database
@@ -128,6 +122,50 @@ resource "aws_lambda_permission" "data" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
+# Inbound Consumer Lambda
+
+resource "aws_lambda_function" "inbound_consumer" {
+  filename      = "../artifacts/inbound-consumer-lambda.zip"
+  function_name = "inbound_consumer"
+  role          = var.edpub_lambda_role_arn
+  handler       = "inbound-consumer.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn
+  ]
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/inbound-consumer-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "inbound_consumer" {
+  statement_id  = "AllowExecutionFromSQS"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.inbound_consumer.function_name
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.edpub_inbound_sqs_arn
+}
+
+resource "aws_lambda_event_source_mapping" "inbound_consumer_sqs_event" {
+  event_source_arn = var.edpub_inbound_sqs_arn
+  function_name    = aws_lambda_function.inbound_consumer.function_name
+}
+
 # Invoke Lambda
 
 resource "aws_lambda_function" "invoke" {
@@ -147,6 +185,7 @@ resource "aws_lambda_function" "invoke" {
     variables = {
       REGION    = var.region
       EVENT_SNS = var.edpub_event_sns_arn
+      METRICS_SNS = var.edpub_metrics_sns_arn
       PG_USER   = var.db_user
       PG_HOST   = var.db_host
       PG_DB     = var.db_database
@@ -187,6 +226,8 @@ resource "aws_lambda_function" "metrics" {
     variables = {
       REGION    = var.region
       EVENT_SNS = var.edpub_event_sns_arn
+      METRICS_SNS = var.edpub_metrics_sns_arn
+      METRICS_S3  = var.edpub_metrics_s3_bucket
       PG_USER   = var.db_user
       PG_HOST   = var.db_host
       PG_DB     = var.db_database
@@ -227,6 +268,7 @@ resource "aws_lambda_function" "metrics_consumer" {
     variables = {
       REGION    = var.region
       EVENT_SNS = var.edpub_event_sns_arn
+      METRICS_SNS = var.edpub_metrics_sns_arn
       PG_USER   = var.db_user
       PG_HOST   = var.db_host
       PG_DB     = var.db_database
@@ -241,22 +283,16 @@ resource "aws_lambda_function" "metrics_consumer" {
 }
 
 resource "aws_lambda_permission" "metrics_consumer" {
-  statement_id  = "AllowExecutionFromSNS"
+  statement_id  = "AllowExecutionFromSQS"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.metrics_consumer.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_event_sns_arn
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.edpub_metrics_sqs_arn
 }
 
-data "local_file" "metrics_consumer_filter" {
-  filename = "./sns/metrics_consumer_filter.json"
-}
-
-resource "aws_sns_topic_subscription" "metrics_consumer_lambda" {
-  topic_arn     = var.edpub_event_sns_arn
-  protocol      = "lambda"
-  endpoint      = aws_lambda_function.metrics_consumer.arn
-  filter_policy = data.local_file.metrics_consumer_filter.content
+resource "aws_lambda_event_source_mapping" "metrics_consumer_sqs_event" {
+  event_source_arn = var.edpub_metrics_sqs_arn
+  function_name    = aws_lambda_function.metrics_consumer.function_name
 }
 
 # Model Lambda
@@ -299,6 +335,43 @@ resource "aws_lambda_permission" "model" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
+# Module Lambda
+
+resource "aws_lambda_function" "module" {
+  filename      = "../artifacts/module-lambda.zip"
+  function_name = "module"
+  role          = var.edpub_lambda_role_arn
+  handler       = "module.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn
+  ]
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/module-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION    = var.region
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "module" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.module.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
+}
+
 # Notify Lambda
 
 resource "aws_lambda_function" "notification" {
@@ -308,7 +381,6 @@ resource "aws_lambda_function" "notification" {
   handler       = "notification.handler"
   layers = [
     aws_lambda_layer_version.database_util.arn,
-    aws_lambda_layer_version.kayako_util.arn,
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
@@ -337,7 +409,7 @@ resource "aws_lambda_permission" "notification" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.notification.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/notification/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification/*"
 }
 
 # Notification Consumer Lambda
@@ -349,7 +421,6 @@ resource "aws_lambda_function" "notification_consumer" {
   handler       = "notification-consumer.handler"
   layers = [
     aws_lambda_layer_version.database_util.arn,
-    aws_lambda_layer_version.kayako_util.arn,
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
@@ -374,22 +445,16 @@ resource "aws_lambda_function" "notification_consumer" {
 }
 
 resource "aws_lambda_permission" "notification_consumer" {
-  statement_id  = "AllowExecutionFromSNS"
+  statement_id  = "AllowExecutionFromSQS"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.notification_consumer.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_event_sns_arn
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.edpub_notification_sqs_arn
 }
 
-data "local_file" "notification_consumer_filter" {
-  filename = "./sns/notification_consumer_filter.json"
-}
-
-resource "aws_sns_topic_subscription" "notification_consumer_lambda" {
-  topic_arn     = var.edpub_event_sns_arn
-  protocol      = "lambda"
-  endpoint      = aws_lambda_function.notification_consumer.arn
-  filter_policy = data.local_file.notification_consumer_filter.content
+resource "aws_lambda_event_source_mapping" "notification_consumer_sqs_event" {
+  event_source_arn = var.edpub_notification_sqs_arn
+  function_name    = aws_lambda_function.notification_consumer.function_name
 }
 
 # Register Lambda
@@ -545,22 +610,16 @@ resource "aws_lambda_function" "workflow_consumer" {
 }
 
 resource "aws_lambda_permission" "workflow_consumer" {
-  statement_id  = "AllowExecutionFromSNS"
+  statement_id  = "AllowExecutionFromSQS"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.workflow_consumer.function_name
-  principal     = "sns.amazonaws.com"
-  source_arn    = var.edpub_event_sns_arn
+  principal     = "sqs.amazonaws.com"
+  source_arn    = var.edpub_workflow_sqs_arn
 }
 
-data "local_file" "workflow_consumer_filter" {
-  filename = "./sns/workflow_consumer_filter.json"
-}
-
-resource "aws_sns_topic_subscription" "workflow_consumer" {
-  topic_arn     = var.edpub_event_sns_arn
-  protocol      = "lambda"
-  endpoint      = aws_lambda_function.workflow_consumer.arn
-  filter_policy = data.local_file.workflow_consumer_filter.content
+resource "aws_lambda_event_source_mapping" "workflow_consumer_sqs_event" {
+  event_source_arn = var.edpub_workflow_sqs_arn
+  function_name    = aws_lambda_function.workflow_consumer.function_name
 }
 
 # Auth Lambda
@@ -586,14 +645,15 @@ resource "aws_lambda_function" "auth" {
       PG_DB               = var.db_database
       PG_PASS             = var.db_password
       PG_PORT             = var.db_port
-      AUTH_PROVIDER_URL   = var.cognito_url
-      AUTH_LOGOUT_PATH    = var.cognito_logout_path
-      AUTH_LOGIN_PATH     = var.cognito_login_path
-      AUTH_TOKEN_PATH     = var.cognito_token_path
-      AUTH_USER_PATH      = var.cognito_user_path
-      AUTH_CLIENT_ID      = var.cognito_client_id
-      AUTH_CLIENT_SECRET  = var.cognito_client_secret
-      AUTH_CLIENT_URL     = var.cognito_client_auth_url
+      CLIENT_ROOT_URL     = var.client_root_url
+      AUTH_PROVIDER_URL   = var.auth_provider_url
+      AUTH_LOGOUT_PATH    = var.auth_logout_path
+      AUTH_LOGIN_PATH     = var.auth_login_path
+      AUTH_TOKEN_PATH     = var.auth_token_path
+      AUTH_USER_PATH      = var.auth_user_path
+      AUTH_CLIENT_ID      = var.auth_client_id
+      AUTH_CLIENT_SECRET  = var.auth_client_secret
+      AUTH_CLIENT_PATH     = var.auth_client_path
     }
   }
   vpc_config {
@@ -653,9 +713,34 @@ resource "aws_lambda_function" "remap_statics" {
   environment {
     variables = {
       REGION              = var.region
+      STAGE               = var.stage
       DASHBOARD_BUCKET    = var.edpub_dashboard_s3_bucket
       FORMS_BUCKET        = var.edpub_forms_s3_bucket
       OVERVIEW_BUCKET     = var.edpub_overview_s3_bucket
+      API_ID              = var.api_id
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+# APIProxy Lambda
+
+resource "aws_lambda_function" "api_proxy" {
+  filename      = "../artifacts/api-proxy-lambda.zip"
+  function_name = "api_proxy"
+  role          = var.edpub_lambda_role_arn
+  handler       = "api-proxy.handler"
+  layers        = []
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/api-proxy-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION              = var.region
+      STAGE               = var.stage
       API_ID              = var.api_id
     }
   }

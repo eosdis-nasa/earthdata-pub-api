@@ -3,13 +3,35 @@
  * @module Data
  */
 
-const DatabaseUtil = require('database-util');
+const path = require('path');
 
-const MessageUtil = require('message-util');
+const { S3 } = require('aws-sdk');
+
+const db = require('database-util');
+
+const msg = require('message-util');
+
+const bucket = process.env.METRICS_BUCKET;
+
+const region = process.env.REGION;
+
+const s3 = new S3({ region });
+
+async function getReport({ key }) {
+  const params = { Bucket: bucket, Key: `${key}.png` };
+  const data = await s3.getObject(params).promise();
+  return { image: `data:image/png;base64,${data.Body.toString('base64')}` };
+}
+
+async function listReports() {
+  const list = await s3.listObjectsV2({ Bucket: bucket }).promise();
+  const keys = list.Contents.map((object) => path.parse(object.Key).name);
+  return keys;
+}
 
 async function search({ filter }) {
   if (filter.count) {
-    const response = await DatabaseUtil.execute({ resource: 'metrics', operation: 'metricsStats' }, {});
+    const response = await db.metrics.metricsStats();
     return response;
   }
   return { message: 'Not Implemented' };
@@ -31,13 +53,15 @@ async function put({ payload, context }) {
     ...(payload.workflow_id && { workflow_id: payload.workflow_id }),
     ...(payload.data && { data: payload.data })
   };
-  await MessageUtil.sendEvent(eventMessage);
+  await msg.sendEvent(eventMessage);
   return { message: 'Success!' };
 }
 
 const operations = {
   search,
-  put
+  put,
+  get_report: getReport,
+  list_reports: listReports
 };
 
 async function handler(event) {

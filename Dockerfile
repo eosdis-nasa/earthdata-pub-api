@@ -1,3 +1,5 @@
+FROM amazon/aws-cli:latest as aws
+
 FROM node:12.16.1
 
 RUN \
@@ -5,11 +7,13 @@ apt-get update -y && \
 apt-get install zip -y
 
 RUN \
-wget --quiet https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip && \
-unzip terraform_0.12.24_linux_amd64.zip && \
+wget --quiet https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip && \
+unzip terraform_1.0.0_linux_amd64.zip && \
 mv terraform /usr/local/bin && \
-rm terraform_0.12.24_linux_amd64.zip
+rm terraform_1.0.0_linux_amd64.zip
 
 RUN \
-npm install -g jsdoc && \
-npm install -g google-closure-compiler
+npm install -g snyk
+
+COPY --from=aws /usr/local/aws-cli/ /usr/local/aws-cli/
+COPY --from=aws /usr/local/bin/ /usr/local/bin/

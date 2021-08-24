@@ -10,6 +10,8 @@ DROP TABLE IF EXISTS input CASCADE;
 
 DROP TABLE IF EXISTS action CASCADE;
 
+DROP TABLE IF EXISTS module CASCADE;
+
 DROP TABLE IF EXISTS service CASCADE;
 
 DROP TABLE IF EXISTS service_secret CASCADE;
@@ -25,8 +27,6 @@ DROP TABLE IF EXISTS edprole CASCADE;
 DROP TABLE IF EXISTS edpuser_edpgroup CASCADE;
 
 DROP TABLE IF EXISTS edpuser_edprole CASCADE;
-
-DROP TABLE IF EXISTS edpuser_kayako_user CASCADE;
 
 DROP TABLE IF EXISTS daac CASCADE;
 
@@ -86,11 +86,11 @@ DROP TABLE IF EXISTS edpgroup_subscription_workflow CASCADE;
 
 DROP TABLE IF EXISTS edprole_privilege CASCADE;
 
+DROP TABLE IF EXISTS privilege CASCADE;
+
 DROP TABLE IF EXISTS metrics CASCADE;
 
-DROP TABLE IF EXISTS conversation_kayako_ticket CASCADE;
-
-DROP TABLE IF EXISTS note_kayako_post CASCADE;
+DROP TABLE IF EXISTS page CASCADE;
 
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
@@ -166,6 +166,18 @@ CREATE TABLE IF NOT EXISTS action (
   UNIQUE (short_name, version)
 );
 
+CREATE TABLE IF NOT EXISTS module (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  short_name VARCHAR NOT NULL,
+  long_name VARCHAR NOT NULL,
+  description VARCHAR NOT NULL,
+  arn VARCHAR NOT NULL,
+  has_interface BOOLEAN NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (id),
+  UNIQUE (short_name)
+);
+
 CREATE TABLE IF NOT EXISTS service (
   id UUID DEFAULT UUID_GENERATE_V4(),
   short_name VARCHAR NOT NULL,
@@ -211,7 +223,7 @@ CREATE TABLE IF NOT EXISTS edpgroup (
 CREATE TABLE IF NOT EXISTS edpgroup_parent (
   id UUID NOT NULL,
   parent_id UUID NOT NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (id, parent_id),
   FOREIGN KEY (id) REFERENCES edpgroup (id),
   FOREIGN KEY (parent_id) REFERENCES edpgroup (id)
 );
@@ -242,26 +254,12 @@ CREATE TABLE IF NOT EXISTS edpuser_edprole (
   FOREIGN KEY (edprole_id) REFERENCES edprole (id)
 );
 
-CREATE TABLE IF NOT EXISTS edpuser_kayako_user (
-  id UUID NOT NULL,
-  kayako_id VARCHAR NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES edpuser (id)
-);
-
 CREATE TABLE IF NOT EXISTS conversation (
   id UUID DEFAULT UUID_GENERATE_V4(),
   subject VARCHAR DEFAULT 'No Subject',
   created_at TIMESTAMP DEFAULT NOW(),
   last_change TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS conversation_kayako_ticket (
-  id UUID NOT NULL,
-  ticket_id VARCHAR NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES conversation (id)
 );
 
 CREATE TABLE IF NOT EXISTS note (
@@ -274,13 +272,6 @@ CREATE TABLE IF NOT EXISTS note (
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
   UNIQUE (id)
-);
-
-CREATE TABLE IF NOT EXISTS note_kayako_post (
-  id UUID NOT NULL,
-  post_id VARCHAR NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES note (id)
 );
 
 CREATE TABLE IF NOT EXISTS conversation_edpuser (
@@ -335,6 +326,7 @@ CREATE TABLE IF NOT EXISTS daac (
   long_name VARCHAR NOT NULL,
   url VARCHAR NOT NULL,
   description VARCHAR NOT NULL,
+  discipline VARCHAR NOT NULL,
   workflow_id UUID NOT NULL,
   edpgroup_id UUID NOT NULL,
   PRIMARY KEY (id),
@@ -427,11 +419,17 @@ CREATE TABLE IF NOT EXISTS edpgroup_permission_submission (
   FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
 
+CREATE TABLE IF NOT EXISTS privilege (
+  privilege VARCHAR NOT NULL,
+  PRIMARY KEY (privilege)
+);
+
 CREATE TABLE IF NOT EXISTS edprole_privilege (
   edprole_id UUID NOT NULL,
   privilege VARCHAR NOT NULL,
   PRIMARY KEY (edprole_id, privilege),
-  FOREIGN KEY (edprole_id) REFERENCES edprole (id)
+  FOREIGN KEY (edprole_id) REFERENCES edprole (id),
+  FOREIGN KEY (privilege) REFERENCES privilege (privilege)
 );
 
 CREATE TABLE IF NOT EXISTS edpuser_subscription_action (
@@ -524,4 +522,10 @@ CREATE TABLE IF NOT EXISTS metrics (
   id UUID DEFAULT UUID_GENERATE_V4(),
   event JSONB NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS page (
+  page_key VARCHAR NOT NULL,
+  content JSONB NOT NULL,
+  PRIMARY KEY (page_key)
 );

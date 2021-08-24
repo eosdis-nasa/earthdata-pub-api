@@ -13,14 +13,13 @@
     "start:detached": "docker-compose up -d",
     "stop": "docker-compose down",
     "lint": "eslint ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
+    "lint-fix": "eslint --fix ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
     "test": "jest -c jest.config.js --all",
     "generate-docs": "bash ./scripts/generate-jsdoc.sh; bash ./scripts/generate-apidoc.sh"
   },
   "author": "Brian Ellingson",
   "license": "ISC",
-  "dependencies": {
-    "redoc-cli": "^0.10.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-bamboo-formatter": "^0.1.1",

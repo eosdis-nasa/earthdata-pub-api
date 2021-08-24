@@ -22,6 +22,10 @@ variable "metrics_lambda_arn" {
   type = string
 }
 
+variable "module_lambda_arn" {
+  type = string
+}
+
 variable "model_lambda_arn" {
   type = string
 }
@@ -51,6 +55,10 @@ variable "edpub_forms_s3_bucket" {
 }
 
 variable "edpub_overview_s3_bucket" {
+  type = string
+}
+
+variable "edpub_metrics_s3_bucket" {
   type = string
 }
 

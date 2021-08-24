@@ -11,6 +11,38 @@ const refs = {
     src: 'conversation_edpuser',
     on: { left: 'conversation.id', right: 'conversation_edpuser.conversation_id' }
   },
+  participant_agg: {
+    type: 'left_join',
+    src: sql.select({
+      fields: [
+        'conversation_edpuser.conversation_id',
+        {
+          type: 'json_agg',
+          src: {
+            type: 'json_obj',
+            keys: [
+              ['id', 'edpuser.id'],
+              ['name', 'edpuser.name'],
+              ['email', 'edpuser.email']
+            ]
+          },
+          sort: 'edpuser.name',
+          order: 'ASC',
+          alias: 'participants'
+        }
+      ],
+      from: {
+        base: 'conversation_edpuser',
+        joins: [{
+          type: 'left_join', src: 'edpuser',
+          on: { left: 'conversation_edpuser.edpuser_id', right: 'edpuser.id' }
+        }]
+      },
+      group: 'conversation_edpuser.conversation_id',
+      alias: 'participant_agg'
+    }),
+    on: { left: 'participant_agg.conversation_id', right: 'conversation.id' }
+  },
   note_agg: {
     type: 'left_join',
     src: sql.select({
@@ -26,8 +58,8 @@ const refs = {
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }]
             ]
           },
-          order: 'note.created_at',
-          sort: 'DESC',
+          sort: 'note.created_at',
+          order: 'DESC',
           alias: 'notes'
         }
       ],
@@ -61,39 +93,7 @@ const findById = (params) => sql.select({
   fields: ['note.*'],
   from: { base: 'note' },
   where: {
-    filters: [{ field: 'note.id' }]
-  }
-});
-
-const getNoteByPostId = (params) => sql.select({
-  fields: ['note.*'],
-  from: { base: 'note', joins: [refs.note_kayako] },
-  where: {
-    filters: [{ field: 'post_id' }]
-  }
-});
-
-const linkPostId = (params) => sql.insert({
-  table: 'note_kayako_post',
-  values: {
-    type: 'insert_values',
-    values: [{ param: 'note_id' }, { param: 'post_id' }]
-  }
-});
-
-const getConversationByTicketId = (params) => sql.select({
-  fields: ['conversation.*'],
-  from: { base: 'conversation', joins: [refs.conversation_kayako] },
-  where: {
-    filters: [{ field: 'ticket_id' }]
-  }
-});
-
-const linkTicketId = (params) => sql.insert({
-  table: 'conversation_kayako_ticket',
-  values: {
-    type: 'insert_values',
-    values: [{ param: 'conversation_id' }, { param: 'ticket_id' }]
+    filters: [{ field: 'note.id', param: 'id' }]
   }
 });
 
@@ -103,22 +103,36 @@ const getConversationList = (params) => sql.select({
   where: {
     filters: [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id' }]
   },
-  order: 'conversation.last_change',
-  sort: 'DESC'
+  sort: 'conversation.last_change',
+  order: 'DESC'
 });
 
-const readConversation = (params) => sql.select({
-  fields: ['conversation.id', 'conversation.subject', 'notes'],
-  from: { base: 'conversation', joins: [refs.conversation_user, refs.note_agg] },
+const readConversation = (params) => `
+WITH user_update AS (UPDATE conversation_edpuser SET
+ unread = FALSE
+ WHERE conversation_edpuser.conversation_id = {{conversation_id}}
+ AND conversation_edpuser.edpuser_id = {{user_id}})
+${sql.select({
+  fields: ['conversation.id', 'conversation.subject', 'participants',
+    {
+      type: 'coalesce',
+      src: 'notes',
+      fallback: '\'[]\'::JSONB',
+      alias: 'notes'
+    }
+  ],
+  from: {
+    base: 'conversation',
+    joins: [refs.conversation_user, refs.participant_agg, refs.note_agg] },
   where: {
     filters: [
-      { field: 'note_agg.conversation_id', param: 'conversation_id' },
+      { field: 'conversation.id', param: 'conversation_id' },
       { field: 'conversation_edpuser.edpuser_id', param: 'user_id' }
     ]
   },
-  order: 'created_at',
-  sort: 'DESC'
-});
+  sort: 'created_at',
+  order: 'DESC'
+})}`;
 
 const reply = () => `
 WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text) VALUES
@@ -152,35 +166,17 @@ new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text)
 RETURNING *)
 SELECT * FROM new_note`;
 
-const getTicketIdByConversationId = (params) => sql.select({
-  fields: ['conversation_kayako_ticket.ticket_id'],
-  from: { base: 'conversation_kayako_ticket' },
-  where: {
-    filters: [{ field: 'id' }]
-  }
-});
-
-const syncConversation = () => `
-WITH new_conv AS (INSERT INTO conversation(subject) VALUES({{subject}}) RETURNING *),
-conv_user AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
- SELECT new_conv.id conversation_id, UNNEST({{user_list}}::uuid[]) edpuser_id
- FROM new_conv
-RETURNING *),
-conv_sender AS (INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
- SELECT new_conv.id conversation_id, {{user_id}} edpuser_id
- FROM new_conv
-RETURNING *),
-SELECT * FROM new_conv`;
+const addUsersToConversation = (params) => `
+INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+SELECT {{conversation_id}} conversation_id, edpuser.id sender_edpuser_id
+FROM edpuser
+WHERE edpuser.email = ANY({{user_list}}::VARCHAR[])
+RETURNING *`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
-module.exports.getNoteByPostId = getNoteByPostId;
-module.exports.linkPostId = linkPostId;
-module.exports.getConversationByTicketId = getConversationByTicketId;
-module.exports.linkTicketId = linkTicketId;
 module.exports.getConversationList = getConversationList;
 module.exports.readConversation = readConversation;
 module.exports.reply = reply;
 module.exports.sendNote = sendNote;
-module.exports.getTicketIdByConversationId = getTicketIdByConversationId;
-module.exports.syncConversation = syncConversation;
+module.exports.addUsersToConversation = addUsersToConversation;

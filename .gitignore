@@ -7,16 +7,18 @@ npm-debug.log
 
 #Ignore all dynamic and generated components
 /terraform/*.tfvars
-/terraform/remote.tf
-/terraform/apigateway/openapi.json
 /terraform/.terraform/
+/terraform/.terraform.lock.hcl
 /terraform/terraform.tfstate
 /terraform/terraform.tfstate.backup
+/terraform/.terraform.lock.hcl
 /terraform/tfplan
+/terraform/apigateway/openapi.json
 jsdoc/
 apidoc/
 /src/nodejs/api/openapi.json
-/src/nodejs/lambda-layers/database-util/src/db-setup/*.sql
+/src/nodejs/lambda-layers/database-util/src/db-setup
+/ecr-credentials
 
 #Ignore eslint and jest outputs
 eslint.json

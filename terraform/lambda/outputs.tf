@@ -26,6 +26,10 @@ output "model_lambda_arn" {
   value = aws_lambda_function.model.invoke_arn
 }
 
+output "module_lambda_arn" {
+  value = aws_lambda_function.module.invoke_arn
+}
+
 output "subscribe_lambda_arn" {
   value = aws_lambda_function.subscribe.invoke_arn
 }

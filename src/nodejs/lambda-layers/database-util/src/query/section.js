@@ -20,7 +20,7 @@ const fieldMap = {
         ['show_if', 'section.show_if'],
         ['questions', 'questions']]
     },
-    order: 'section.list_order',
+    sort: 'section.list_order',
     alias: 'sections'
   },
   questions: 'questions'

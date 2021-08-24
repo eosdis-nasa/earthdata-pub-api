@@ -4,21 +4,17 @@ module "iam_roles" {
   region = var.region
   account_id = var.account_id
   stage = var.stage
+  edpub_inbound_sqs_arn = module.sqs_queues.edpub_inbound_sqs_arn
   edpub_action_sqs_arn = module.sqs_queues.edpub_action_sqs_arn
+  edpub_metrics_sqs_arn = module.sqs_queues.edpub_metrics_sqs_arn
+  edpub_notification_sqs_arn = module.sqs_queues.edpub_notification_sqs_arn
+  edpub_workflow_sqs_arn = module.sqs_queues.edpub_workflow_sqs_arn
+  edpub_outbound_sns_arn = module.sns_topics.edpub_outbound_sns_arn
   edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
   edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
   lambda_execution_policy_arn = var.lambda_execution_policy_arn
   permissions_boundary_arn = var.permissions_boundary_arn
-}
-
-module "cognito" {
-  source = "./cognito"
-
-  region = var.region
-  stage = var.stage
-  cognito_user_pool_id = var.cognito_user_pool_id
-  client_auth_url = var.client_auth_url
 }
 
 module "lambda_functions" {
@@ -34,9 +30,18 @@ module "lambda_functions" {
   api_id = module.apigateway_endpoints.api_id
   edpub_action_sqs_arn = module.sqs_queues.edpub_action_sqs_arn
   edpub_action_sqs_url = module.sqs_queues.edpub_action_sqs_url
+  edpub_inbound_sqs_arn = module.sqs_queues.edpub_inbound_sqs_arn
+  edpub_inbound_sqs_url = module.sqs_queues.edpub_inbound_sqs_url
+  edpub_metrics_sqs_arn = module.sqs_queues.edpub_metrics_sqs_arn
+  edpub_metrics_sqs_url = module.sqs_queues.edpub_metrics_sqs_url
+  edpub_notification_sqs_arn = module.sqs_queues.edpub_notification_sqs_arn
+  edpub_notification_sqs_url = module.sqs_queues.edpub_notification_sqs_url
+  edpub_workflow_sqs_arn = module.sqs_queues.edpub_workflow_sqs_arn
+  edpub_workflow_sqs_url = module.sqs_queues.edpub_workflow_sqs_url
   edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
   edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
+  edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
   edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
@@ -45,14 +50,15 @@ module "lambda_functions" {
   db_database = module.rds.db_database
   db_user = module.rds.db_user
   db_password = var.db_password
-  cognito_url = var.cognito_domain_url
-  cognito_logout_path = module.cognito.cognito_logout_path
-  cognito_login_path = module.cognito.cognito_login_path
-  cognito_token_path = module.cognito.cognito_token_path
-  cognito_user_path = module.cognito.cognito_user_path
-  cognito_client_id = module.cognito.cognito_client_id
-  cognito_client_secret = module.cognito.cognito_client_secret
-  cognito_client_auth_url = var.client_auth_url
+  client_root_url = var.client_root_url
+  auth_provider_url = var.auth_provider_url
+  auth_logout_path = var.auth_logout_path
+  auth_login_path = var.auth_login_path
+  auth_token_path = var.auth_token_path
+  auth_user_path = var.auth_user_path
+  auth_client_id = var.auth_client_id
+  auth_client_secret = var.auth_client_secret
+  auth_client_path = var.auth_client_path
 }
 
 module "apigateway_endpoints" {
@@ -64,6 +70,7 @@ module "apigateway_endpoints" {
   notification_lambda_arn = module.lambda_functions.notification_lambda_arn
   metrics_lambda_arn = module.lambda_functions.metrics_lambda_arn
   model_lambda_arn = module.lambda_functions.model_lambda_arn
+  module_lambda_arn = module.lambda_functions.module_lambda_arn
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn
   subscribe_lambda_arn = module.lambda_functions.subscribe_lambda_arn
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn
@@ -74,6 +81,7 @@ module "apigateway_endpoints" {
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
   edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
+  edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   vpc_endpoint_id = var.vpc_endpoint_id
 }
 

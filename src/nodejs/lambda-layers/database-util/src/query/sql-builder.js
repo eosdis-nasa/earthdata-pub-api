@@ -18,28 +18,34 @@ const complexParse = (src) => complexTypes[src.type](src);
 
 const typeCheck = (stub) => `${stub.type ? complexParse(stub) : stub.param ? param(stub) : stub}`;
 
-const select = ({
-  fields, from, where, group, order, sort, limit, offset, alias
+const selectQuery = ({
+  fields, from, where, group, sort, order, limit, offset, alias
 }) => `${alias ? '(' : ''}SELECT${fields
   ? ` ${fields.map(typeCheck)}` : ' *'}${from
   ? fromClause(from) : ''}${where
   ? whereClause(where) : ''}${group
-  ? ` GROUP BY ${group}` : ''}${order
-  ? ` ORDER BY ${order}${sort ? ` ${sort}` : ''}` : ''}${limit
+  ? ` GROUP BY ${group}` : ''}${sort
+  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''}${limit
   ? ` LIMIT ${limit}` : ''}${offset
   ? ` OFFSET ${offset}` : ''}${alias ? `) ${alias}` : ''}`;
 
-const insert = ({
+const insertQuery = ({
   table, values, conflict, returning
 }) => `INSERT INTO ${typeCheck(table)} ${typeCheck(values)}${conflict
   ? onConflict(conflict) : ''}${returning
   ? returningClause(returning) : ''}`;
 
-const update = ({
+const updateQuery = ({
   table, set, where, returning
 }) => `UPDATE ${table ? `${table} ` : ''}SET ${set.map(filter).join(',')}${where
   ? whereClause(where) : ''}${returning
-  ? returningClause : ''}`;
+  ? returningClause(returning) : ''}`;
+
+const deleteQuery = ({
+  table, where, returning
+}) => `DELETE FROM ${table}${where
+  ? whereClause(where) : ''}${returning
+  ? returningClause(returning) : ''}`;
 
 const onConflict = ({ constraints, update }) => ` ON CONFLICT ${constraints ? `(${constraints.join(',')}) ` : ''} DO ${update
   ? typeCheck(update) : 'NOTHING'}`;
@@ -71,9 +77,11 @@ const naturalJoin = ({ src }) => ` NATURAL JOIN ${src.type ? complexParse(src) :
 const naturalLeftJoin = ({ src, on }) => ` NATURAL LEFT JOIN ${src.type ? complexParse(src) : src}`;
 
 const filter = ({
-  logOp, field, op, value, param, any
-}) => `${logOp ? ` ${opTypes[logOp]}` : ''} ${field} ${opTypes[op] || '='} ${value
-  ? typeCheck(value) : any ? anyClause(any) : ` {{${param || field}}}`}`;
+  logOp, field, op, value, param, any, literal
+}) => `${logOp ? ` ${opTypes[logOp]}` : ''} ${field} ${opTypes[op] || '='} ${literal
+  ? strWrapper(literal) : value
+  ? typeCheck(value) : any
+  ? anyClause(any) : ` {{${param || field}}}`}`;
 
 const sub = ({ query, alias }) => `(${query})${alias ? ` ${alias}` : ''}`;
 
@@ -81,35 +89,29 @@ const coalesce = ({ src, fallback, alias }) => ` COALESCE(${src.type ? complexPa
   ? ` ${alias}` : ''}`;
 
 const jsonAgg = ({
-  src, order, sort, alias
-}) => `JSONB_AGG(${src.type ? complexParse(src) : src}${order
-  ? ` ORDER BY ${order}${sort ? ` ${sort}` : ''}` : ''})${alias
+  src, sort, order, alias
+}) => `JSONB_AGG(${typeCheck(src)}${sort
+  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${alias
   ? ` ${alias}` : ''}`;
 
 const jsonMergeAgg = ({
-  src, order, sort, alias
-}) => `JSONB_MERGE_AGG(${src.type ? complexParse(src) : src}${order
-  ? ` ORDER BY ${order}${sort ? ` ${sort}` : ''}` : ''})${alias
+  src, sort, order, alias
+}) => `JSONB_MERGE_AGG(${src.type ? complexParse(src) : src}${sort
+  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${alias
   ? ` ${alias}` : ''}`;
 
 const jsonObj = ({ keys, alias, strip }) => `${strip ? 'JSONB_STRIP_NULLS(' : ''}JSONB_BUILD_OBJECT(${keys.map(([key, src]) => `'${key}', ${src.type ? complexParse(src) : src}`)})${strip ? ')' : ''}${alias
   ? ` ${alias}` : ''}`;
 
-const getValueList = (query, params) => {
-  let count = 0;
-  const values = [];
-  const text = query.replace(/\{\{(.*?)\}\}/g, (match, token) => {
-    values.push(params[token]);
-    count += 1;
-    return `$${count}`;
-  });
-  return { text, values };
-};
+const strWrapper = (value) => ` '${value}'`;
+
+const strLiteral = ({ value }) => strLiteral(value);
 
 const complexTypes = {
-  select,
-  insert,
-  update,
+  select: selectQuery,
+  insert: insertQuery,
+  update: updateQuery,
+  delete: deleteQuery,
   insert_values: insertValues,
   short_table: shortTable,
   param,
@@ -120,9 +122,8 @@ const complexTypes = {
   coalesce,
   json_agg: jsonAgg,
   json_merge_agg: jsonMergeAgg,
-  json_obj: jsonObj
+  json_obj: jsonObj,
+  literal: strLiteral
 };
 
-module.exports = {
-  select, insert, update, complexParse, fromClause, whereClause, filter, sub, coalesce, jsonAgg, jsonObj, getValueList
-};
+module.exports = complexTypes;

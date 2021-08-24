@@ -21,7 +21,7 @@ The [`CONTRIBUTING.md`](./CONTRIBUTING.md) has instruction for contributing to t
 ### Prerequisites
 The following are required for following the packaging and deploying steps:
 * [Amazon AWS](https://aws.amazon.com/) An AWS account is required for live deployment.
-* [Terraform](https://github.com/hashicorp/terraform) AWS components are provisioned using Terraform.
+* [Terraform](https://github.com/hashicorp/terraform) AWS components are provisioned using Terraform v1.0.0.
 * [Node.js](https://nodejs.org/en/download/) AWS Lambda functions and layers are implemented in Node.js 12.16.2. The Node Package Manager is also required but included with a standard Node.js installation.
 * [Docker](https://www.docker.com/) Docker is used to create the local test environment including the following services Postgresql, PgAdmin, GoAws for mocking SNS and SQS, Node OASTools for serving the API.
 
@@ -59,7 +59,7 @@ Listed here are some QOL tag-ons to the local instance of the API.
 `/auth` This is an authentication endpoint that mimics the behavior of Cognito, but allows you to choose a test user from a dropdown list, and register new test users.
 `/reseed` This is an endpoint that triggers a reseed of the database to prevent the need to prune docker volumes to force the Postgres container to rerun the setup.
 `/goaws/` The endpoints under here expose the backend SNS consumers and wraps incoming requests to imitate SNS triggered lambda events.
-`pgAdmin` This helps with trouble-shooting queries and browsing data in your database. In a browser navigate to http://localhost:80
+`pgAdmin` This helps with trouble-shooting queries and browsing data in your database. In a browser navigate to http://localhost:8001
   Log in with:
     Email: edpub@edpub.com
     Password: edpub,
