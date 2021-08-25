@@ -12,7 +12,6 @@
   "funding_program_name": "text",
   "data_product_name_value": "text",
   "data_product_description": "textarea",
-  "data_product_doi_exists": "checkbox",
   "data_product_doi_value": "text",
   "science_value_description": "textarea",
   "data_submission_reason_description": "textarea",
