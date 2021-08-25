@@ -196,22 +196,11 @@
           "help": "This would be the DOI for the actual data product and not for a publication related to this data product.",
           "inputs": [
             {
-              "type": "checkbox",
-              "control_id": "data_product_doi_exists",
-              "label": "Has DOI"
-            },
-            {
               "type": "text",
               "control_id": "data_product_doi_value",
-              "label": "If yes, provide DOI",
+              "label": "DOI",
               "validation_error_msg": "Please enter Digital Object Identifiers.",
-              "required_if":[
-                {
-                  "field":"data_product_doi_exists",
-                  "value":"checked",
-                  "message":"You checked that this data product has a DOI, please provide it in the textbox provided."
-                }
-              ]
+              "required": true
             }
           ],
           "id": "c9c73e88-837a-42d2-aa1a-50874a333607",
@@ -313,7 +302,7 @@
             {
               "type": "text",
               "control_id": "data_product_restrictions_explanation",
-              "label": "If No, provide explanation",
+              "label": "If No or Not Sure, provide explanation",
               "required_if": [
                 {
                   "field": "data_product_restrictions_public",

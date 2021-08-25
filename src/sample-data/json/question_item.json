@@ -276,15 +276,10 @@
     "help": "This would be a DOI for this data product and not for a publication related to this data product.",
     "inputs": [
       {
-        "type": "checkbox",
-        "id": "data_product_doi_exists",
-        "label": "Has DOI"
-      },
-      {
         "type": "text",
-        "id": "data_product_doi_value",
-        "label": "If yes, provide DOI",
-        "validation_error_msg": "Please enter Digital Object Identifiers."
+        "control_id": "data_product_doi_value",
+        "validation_error_msg": "Please enter Digital Object Identifiers.",
+        "required": true
       }
     ],
     "id": "c9c73e88-837a-42d2-aa1a-50874a333607",
