@@ -74,6 +74,7 @@ module "apigateway_endpoints" {
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn
   subscribe_lambda_arn = module.lambda_functions.subscribe_lambda_arn
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn
+  user_lambda_arn = module.lambda_functions.user_lambda_arn
   register_lambda_arn = module.lambda_functions.register_lambda_arn
   version_lambda_arn = module.lambda_functions.version_lambda_arn
   cognito_user_pool_arn = "arn:aws:cognito-idp:${var.region}:${var.account_id}:userpool/${var.cognito_user_pool_id}"

@@ -577,6 +577,46 @@ resource "aws_lambda_permission" "subscribe" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification/subscribe"
 }
 
+# User Lambda
+
+resource "aws_lambda_function" "user" {
+  filename      = "../artifacts/user-lambda.zip"
+  function_name = "user"
+  role          = var.edpub_lambda_role_arn
+  handler       = "user.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
+  runtime       = "nodejs12.x"
+  source_code_hash    = filesha256("../artifacts/user-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "user" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.user.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/user/*"
+}
+
 # Workflow Consumer Lambda
 
 resource "aws_lambda_function" "workflow_consumer" {

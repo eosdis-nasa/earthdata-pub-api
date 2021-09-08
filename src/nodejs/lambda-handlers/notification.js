@@ -39,8 +39,8 @@ async function replyMethod(params) {
   return { message: 'Successfully sent.' };
 }
 
-async function addUsersMethod(params) {
-  const response = await db.note.addUsersToConversation(params);
+async function addUserMethod(params) {
+  const response = await db.note.addUserToConversation(params);
   return response;
 }
 
@@ -60,7 +60,7 @@ async function conversationMethod(params) {
 const operations = {
   send: sendMethod,
   reply: replyMethod,
-  add_users: addUsersMethod,
+  add_user: addUserMethod,
   conversations: conversationsMethod,
   conversation: conversationMethod
 };

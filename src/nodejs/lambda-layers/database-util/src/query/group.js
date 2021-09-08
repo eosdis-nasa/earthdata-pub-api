@@ -207,7 +207,23 @@ const userJoin = {
   group: fieldMap.user_id,
   alias: 'group_agg'
 };
-const findAll = () => sql.select({
+const findAll = ({ short_name, long_name, sort, order, per_page, page }) => sql.select({
+  fields: ['edpgroup.*'],
+  from: { base: table },
+  ...(short_name || long_name ? {
+    where: {
+      filters: [
+        ...(short_name ? [{ field: 'edpgroup.short_name', like: 'short_name' }] : []),
+        ...(long_name ? [{ field: 'edpgroup.long_name', like: 'long_name' }] : []),
+      ]
+    }
+  } : {}),
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
+});
+const findById = () => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
@@ -220,15 +236,34 @@ const findAll = () => sql.select({
       refs.group_subscription_submission,
       refs.group_subscription_workflow
     ]
+  },
+  where: {
+    filters: [ { field: fieldMap.id, param: 'id' } ]
   }
 });
-const findById = () => `${findAll()} WHERE edpgroup.id = {{id}}`;
-const findByName = () => `${findAll()} WHERE edpgroup.short_name = {{short_name}}`;
-const findByUserId = () => `${findAll()}
-  WHERE edpgroup.id IN (SELECT edpuser_edpgroup.edpuser_id WHERE edpuser_edpgroup.edpuser_id = {{user_id}})`;
+const findByName = (params) => sql.select({
+  fields: fields(allFields),
+  from: {
+    base: table,
+    joins: [
+      refs.group_permission_submission,
+      refs.group_subscription_action,
+      refs.group_subscription_daac,
+      refs.group_subscription_form,
+      refs.group_subscription_service,
+      refs.group_subscription_submission,
+      refs.group_subscription_workflow
+    ]
+  },
+  where: {
+    filters: [
+      ...(short_name ? [{ field: 'edpgroup.short_name', like: 'short_name' }] : []),
+      ...(long_name ? [{ field: 'edpgroup.long_name', like: 'long_name' }] : []),
+    ]
+  }
+});
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByName = findByName;
-module.exports.findByUserId = findByUserId;
 module.exports.userJoin = userJoin;

@@ -5,13 +5,14 @@ const opTypes = {
   gte: '>=',
   lt: '<',
   lte: '<=',
-  lk: 'LIKE',
   or: 'OR',
   '||': 'OR',
   and: 'AND',
   '&&': 'AND',
   not: 'NOT',
-  '!': 'NOT'
+  '!': 'NOT',
+  is_not: 'IS NOT',
+  is: 'IS'
 };
 
 const complexParse = (src) => complexTypes[src.type](src);
@@ -26,8 +27,9 @@ const selectQuery = ({
   ? whereClause(where) : ''}${group
   ? ` GROUP BY ${group}` : ''}${sort
   ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''}${limit
-  ? ` LIMIT ${limit}` : ''}${offset
-  ? ` OFFSET ${offset}` : ''}${alias ? `) ${alias}` : ''}`;
+  ? ` LIMIT ${limit}${offset
+  ? ` OFFSET ${offset * limit}` : ''}` : ''}${alias
+  ? `) ${alias}` : ''}`;
 
 const insertQuery = ({
   table, values, conflict, returning
@@ -54,7 +56,7 @@ const returningClause = (field) => ` RETURNING ${field.join(',')}`;
 
 const shortTable = ({ base, field }) => `${base}(${field.join(',')})`;
 
-const insertValues = ({ values }) => ` VALUES(${values.map(typeCheck).join(',')})`;
+const valuesList = ({ items }) => ` VALUES(${items.map(typeCheck).join(',')})`;
 
 const param = ({ param }) => `{{${param}}}`;
 
@@ -77,11 +79,12 @@ const naturalJoin = ({ src }) => ` NATURAL JOIN ${src.type ? complexParse(src) :
 const naturalLeftJoin = ({ src, on }) => ` NATURAL LEFT JOIN ${src.type ? complexParse(src) : src}`;
 
 const filter = ({
-  logOp, field, op, value, param, any, literal
-}) => `${logOp ? ` ${opTypes[logOp]}` : ''} ${field} ${opTypes[op] || '='} ${literal
-  ? strWrapper(literal) : value
-  ? typeCheck(value) : any
-  ? anyClause(any) : ` {{${param || field}}}`}`;
+  logOp, field, like, op, value, param, any, literal
+}) => like ? `${field} ILIKE '%' || {{${like}}} || '%'` :
+  `${logOp ? ` ${opTypes[logOp]}` : ''} ${field} ${opTypes[op] || '='} ${literal
+    ? strWrapper(literal) : value
+    ? typeCheck(value) : any
+    ? anyClause(any) : ` {{${param || field}}}`}`;
 
 const sub = ({ query, alias }) => `(${query})${alias ? ` ${alias}` : ''}`;
 
@@ -89,9 +92,10 @@ const coalesce = ({ src, fallback, alias }) => ` COALESCE(${src.type ? complexPa
   ? ` ${alias}` : ''}`;
 
 const jsonAgg = ({
-  src, sort, order, alias
-}) => `JSONB_AGG(${typeCheck(src)}${sort
-  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${alias
+  src, distinct, sort, order, filters, alias
+}) => `JSONB_AGG(${distinct ? 'DISTINCT ': ''}${typeCheck(src)}${sort
+  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${filters
+    ? `FILTER (${whereClause({ filters })})` : ''}${alias
   ? ` ${alias}` : ''}`;
 
 const jsonMergeAgg = ({
@@ -112,7 +116,7 @@ const complexTypes = {
   insert: insertQuery,
   update: updateQuery,
   delete: deleteQuery,
-  insert_values: insertValues,
+  values_list: valuesList,
   short_table: shortTable,
   param,
   left_join: leftJoin,

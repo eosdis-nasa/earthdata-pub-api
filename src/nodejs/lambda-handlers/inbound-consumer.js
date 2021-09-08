@@ -13,7 +13,6 @@ async function databaseOperation({ resource, operation, params }) {
 
 async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
-  console.info(eventMessage);
   await databaseOperation(eventMessage);
 }
 
