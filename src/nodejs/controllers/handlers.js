@@ -8,6 +8,7 @@ module.exports.notification = require('../lambda-handlers/notification.js').hand
 module.exports.register = require('../lambda-handlers/register.js').handler;
 module.exports.submission = require('../lambda-handlers/submission.js').handler;
 module.exports.subscribe = require('../lambda-handlers/subscribe.js').handler;
+module.exports.user = require('../lambda-handlers/user.js').handler;
 module.exports.version = require('../lambda-handlers/version.js').handler;
 module.exports.actionConsumer = require('../lambda-handlers/action-consumer.js').handler;
 module.exports.metricsConsumer = require('../lambda-handlers/metrics-consumer.js').handler;

@@ -189,6 +189,36 @@ const refs = {
   }
 };
 
+const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
+  fields: fields(allFields),
+  from: {
+    base: table,
+    joins: [
+      refs.group,
+      refs.role,
+      refs.user_permission_submission,
+      refs.user_subscription_action,
+      refs.user_subscription_form,
+      refs.user_subscription_service,
+      refs.user_subscription_submission,
+      refs.user_subscription_workflow
+    ]
+  },
+  ...(id || name || email ? {
+    where: {
+      filters: [
+        ...(id ? [{ field: 'edpuser.id', param: 'id' }] : []),
+        ...(name ? [{ field: 'edpuser.name', like: 'name' }] : []),
+        ...(email ? [{ field: 'edpuser.email', like: 'email' }] : []),
+      ]
+    }
+  } : {}),
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
+});
+
 const findAll = (params) => sql.select({
   fields: fields(allFields),
   from: {
@@ -206,7 +236,7 @@ const findAll = (params) => sql.select({
   }
 });
 
-const findById = () => `${findAll()} WHERE edpuser.id = {{id}}`;
+const findById = (params) => find(params);
 
 const findSystemUser = () => sql.select({
   fields: fields(['id', 'name', 'email']),
@@ -224,6 +254,16 @@ const getRefreshToken = () => sql.select({
   }
 });
 
+const addRole = (params) => sql.insert({
+  table: 'edpuser_edprole',
+  values: {
+    type: 'values_list',
+    items: ['{{id}}', '{{role_id}}']
+  },
+  conflict: {},
+  returning: ['*']
+});
+
 const addRoles = (params) => sql.insert({
   table: 'edpuser_edprole',
   values: {
@@ -237,8 +277,19 @@ const addRoles = (params) => sql.insert({
 const removeRole = () => sql.delete({
   table: 'edpuser_edprole',
   where: {
-    filters: [{ field: 'edpuser_id', param: '{{id}}'}, { field: 'edprole_id', param: '{{role_id}}'}]
-  }
+    filters: [{ field: 'edpuser_id', param: 'id'}, { field: 'edprole_id', param: 'role_id'}]
+  },
+  returning: ['*']
+});
+
+const addGroup = (params) => sql.insert({
+  table: 'edpuser_edpgroup',
+  values: {
+    type: 'values_list',
+    items: ['{{id}}', '{{group_id}}']
+  },
+  conflict: {},
+  returning: ['*']
 });
 
 const addGroups = (params) => sql.insert({
@@ -254,8 +305,9 @@ const addGroups = (params) => sql.insert({
 const removeGroup = () => sql.delete({
   table: 'edpuser_edpgroup',
   where: {
-    filters: [{ field: 'edpuser_id', param: '{{id}}'}, { field: 'edpgroup_id', param: '{{role_id}}'}]
-  }
+    filters: [{ field: 'edpuser_id', param: 'id'}, { field: 'edpgroup_id', param: 'group_id'}]
+  },
+  returning: ['*']
 });
 
 const findByGroupId = () => `
@@ -296,6 +348,7 @@ const getEmails = (params) => sql.select({
   }
 });
 
+module.exports.find = find;
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getRefreshToken = getRefreshToken;
@@ -303,8 +356,10 @@ module.exports.findByGroupId = findByGroupId;
 module.exports.findByGroupName = findByGroupName;
 module.exports.loginUser = loginUser;
 module.exports.refreshUser = refreshUser;
+module.exports.addRole = addRole;
 module.exports.addRoles = addRoles;
 module.exports.removeRole = removeRole;
+module.exports.addGroup = addGroup;
 module.exports.addGroups = addGroups;
 module.exports.removeGroup = removeGroup;
 module.exports.findSystemUser = findSystemUser;

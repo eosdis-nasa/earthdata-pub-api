@@ -42,6 +42,7 @@ install_lambda register
 install_lambda remap-statics
 install_lambda submission
 install_lambda subscribe
+install_lambda user
 install_lambda version
 install_lambda workflow-consumer
 #Add more lambda functions here <--

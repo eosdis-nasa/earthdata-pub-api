@@ -31,9 +31,9 @@ const findAll = ({
   },
   where: {
     filters: [
-      ...(short_name ? [{ field: 'form.short_name', param: 'short_name' }] : []),
+      ...(short_name ? [{ field: 'form.short_name', like: 'short_name' }] : []),
       ...(version ? [{ field: 'form.version', param: 'version' }] : []),
-      ...(long_name ? [{ field: 'form.long_name', param: 'long_name' }] : []),
+      ...(long_name ? [{ field: 'form.long_name', like: 'long_name' }] : []),
       ...(created_after ? [{ field: 'form.created_at', op: 'gte', param: 'created_after' }] : []),
       ...(created_before ? [{ field: 'form.created_at', op: 'lte', param: 'created_before' }] : [])
     ]
