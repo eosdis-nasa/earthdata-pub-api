@@ -21,7 +21,7 @@ async function activeMethod(event, user) {
     return db.submission.getUsersSubmissions({ user_id: user.id });
   }
 
-  return { error: 'No read privilege for Requests.' };
+  return [];
 }
 
 async function resumeMethod(event, user, silent = false) {
