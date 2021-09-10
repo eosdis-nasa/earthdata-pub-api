@@ -326,18 +326,18 @@ WHERE edpuser.id IN (
     SELECT edpgroup.id FROM edpgroup
     WHERE edpgroup.short_name = {{short_name}})`;
 
-const loginUser = () => `
-INSERT INTO edpuser(id, name, email, refresh_token) VALUES
-({{id}}, {{name}}, {{email}}, {{refresh_token}})
+const loginUser = ({ id, sub, refresh_token }) => `
+INSERT INTO edpuser(${id || sub ? 'id, ' : ''}name, email, refresh_token) VALUES
+(${sub ? `{{sub}}, ` : id ? `{{id}}, `: ``}{{name}}, {{email}}, ${refresh_token ? `{{refresh_token}}` : `'none'`})
 ON CONFLICT (id) DO UPDATE SET
 last_login = EXCLUDED.last_login,
 refresh_token = EXCLUDED.refresh_token
 RETURNING *`;
 
-const refreshUser = () => `
+const refreshUser = ({ sub }) => `
 UPDATE edpuser SET
 refresh_token = {{refresh_token}}
-WHERE edpuser.id = {{id}}
+WHERE edpuser.id = {{${sub ? `sub` : `id`}}}
 RETURNING *`;
 
 const getEmails = (params) => sql.select({
