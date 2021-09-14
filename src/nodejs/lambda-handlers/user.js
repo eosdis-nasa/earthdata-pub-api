@@ -7,8 +7,7 @@
  */
 
 const db = require('database-util');
-const CognitoIdentityServiceProvider = require('aws-sdk/clients/CognitoIdentityServiceProvider');
-
+const { CognitoIdentityServiceProvider } = require('aws-sdk');
 const idp = new CognitoIdentityServiceProvider({ region: process.env.REGION });
 const userPoolId = process.env.CUP_ID;
 const dev = process.env.DEVELOPMENT || false;
@@ -36,21 +35,24 @@ async function createCognitoUser({ username, name, email }) {
       return acc;
     }, { username: userData.Username });
     return user;
-  } catch (e) {
+  }
+  catch(e) {
     return { error: e.message };
   }
 }
 
 async function createMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_CREATE')) {
+  if (privileges.includes('ADMIN') ||
+    privileges.includes('USER_CREATE')) {
     const newUser = await createCognitoUser(params);
     const user = await db.user.loginUser(newUser);
     if (params.user_roles && params.user_roles.length > 0) {
-      await db.user.addRoles({ ...user, user_roles: params.user_roles });
+      await db.user.addRoles({
+        ...user, user_roles: params.user_roles });
     }
     if (params.user_groups && params.user_groups.length > 0) {
-      await db.user.addGroups({ ...user, user_groups: params.user_groups });
+      await db.user.addGroups({
+        ...user, user_groups: params.user_groups });
     }
     return user;
   }
@@ -58,8 +60,8 @@ async function createMethod(params, privileges) {
 }
 
 async function findMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_READ')) {
+  if (privileges.includes('ADMIN') ||
+    privileges.includes('USER_READ')) {
     if (params.id) return db.user.findById(params);
     return db.user.find(params);
   }
@@ -67,8 +69,8 @@ async function findMethod(params, privileges) {
 }
 
 async function addGroupMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_ADDGROUP')) {
+  if (privileges.includes('ADMIN') ||
+    privileges.includes('USER_ADDGROUP')) {
     const response = await db.user.addGroup(params);
     return response;
   }
@@ -76,8 +78,8 @@ async function addGroupMethod(params, privileges) {
 }
 
 async function removeGroupMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_REMOVEGROUP')) {
+  if (privileges.includes('ADMIN') ||
+    privileges.includes('USER_REMOVEGROUP')) {
     const response = await db.user.removeGroup(params);
     return response;
   }
@@ -85,8 +87,8 @@ async function removeGroupMethod(params, privileges) {
 }
 
 async function addRoleMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_ADDROLE')) {
+  if (privileges.includes('ADMIN') ||
+    privileges.includes('USER_ADDROLE')) {
     const response = await db.user.addRole(params);
     return response;
   }
@@ -94,8 +96,8 @@ async function addRoleMethod(params, privileges) {
 }
 
 async function removeRoleMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_REMOVEROLE')) {
+  if (privileges.includes('ADMIN') ||
+    privileges.includes('USER_REMOVEROLE')) {
     const response = await db.user.removeRole(params);
     return response;
   }
