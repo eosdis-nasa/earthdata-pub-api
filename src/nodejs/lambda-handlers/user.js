@@ -13,7 +13,9 @@ const idp = new CognitoIdentityServiceProvider({ region: process.env.REGION });
 const userPoolId = process.env.CUP_ID;
 const dev = process.env.DEVELOPMENT || false;
 
-async function createCognitoUser({ sub, username, name, email }) {
+async function createCognitoUser({
+  sub, username, name, email
+}) {
   if (dev) {
     return {
       username, name, email, ...(sub ? { sub } : {})
