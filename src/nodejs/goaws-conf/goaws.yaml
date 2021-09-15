@@ -19,7 +19,6 @@ Local:
         - Protocol: http
           Endpoint: http://local_api:8080/goaws/workflow_consumer
           TopicArn: arn:aws:sns:us-east-1:000000000000:edpub_event_sns
-          FilterPolicy: '{"event_type": ["workflow_promote_step"]}'
         - Protocol: http
           Endpoint: http://local_api:8080/goaws/notification_consumer
           TopicArn: arn:aws:sns:us-east-1:000000000000:edpub_event_sns

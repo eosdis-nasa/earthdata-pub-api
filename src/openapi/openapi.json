@@ -1200,6 +1200,22 @@
         "operationId": "groupFindAll",
         "parameters": [
           {
+            "name": "short_name",
+            "in": "query",
+            "description": "Short name to search for.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "long_name",
+            "in": "query",
+            "description": "Long name to search for.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "sort",
             "in": "query",
             "description": "What field to sort results on.",
@@ -1487,6 +1503,22 @@
         "description": "Returns list of roles",
         "operationId": "roleFindAll",
         "parameters": [
+          {
+            "name": "short_name",
+            "in": "query",
+            "description": "Short name to search for.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "long_name",
+            "in": "query",
+            "description": "Long name to search for.",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "sort",
             "in": "query",
@@ -3964,14 +3996,14 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/notification/add_users": {
+    "/api/notification/add_user": {
       "post": {
         "tags": [
           "notification"
         ],
-        "summary": "Add users to a conversation.",
-        "description": "Add users to a conversation.",
-        "operationId": "notificationAddUsers",
+        "summary": "Add a user to a conversation.",
+        "description": "Add a user to a conversation.",
+        "operationId": "notificationAddUser",
         "requestBody": {
           "x-name": "payload",
           "content": {
@@ -4015,7 +4047,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"add_users\", \"user_list\":\"$body.get('user_list')\", #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"add_user\", #if($body.containsKey('user_id'))\"user_id\":\"$body.get('user_id')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -4939,6 +4971,266 @@
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsRegister",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/user/{operation}": {
+      "parameters": [
+        {
+          "name": "operation",
+          "in": "path",
+          "description": "Which user operation to perform.",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "add_permission"]
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get user(s)",
+        "description": "Returns list of users or a single user by id",
+        "operationId": "userOperationGet",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "What field to sort results on.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Order of results, 'asc' for ascending, 'desc' for descending.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of results per page for pagination.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number to start at for pagination.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Unique id of user to find.",
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name of user to search",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Email of user to search",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${user_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) {\"operation\":\"$req.path.get('operation')\", #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Perform an operation on a User",
+        "description": "Perform an operation for a User account, i.e. add or remove a Group, add or remove a Role.",
+        "operationId": "userOperationPost",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${user_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\" #if($body.containsKey('id')),\"id\":\"$body.get('id')\"#end #if($body.containsKey('group_id')),\"group_id\":\"$body.get('group_id')\"#end #if($body.containsKey('role_id')),\"role_id\":\"$body.get('role_id')\"#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsUser",
         "responses": {
           "200": {
             "description": "OK",

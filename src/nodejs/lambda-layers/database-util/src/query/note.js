@@ -170,7 +170,12 @@ const addUsersToConversation = (params) => `
 INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
 SELECT {{conversation_id}} conversation_id, edpuser.id sender_edpuser_id
 FROM edpuser
-WHERE edpuser.email = ANY({{user_list}}::VARCHAR[])
+WHERE edpuser.id = ANY({{user_list}}::UUID[])
+RETURNING *`;
+const addUserToConversation = (params) => `
+INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
+VALUES ({{conversation_id}}, {{user_id}})
+ON CONFLICT DO NOTHING
 RETURNING *`;
 
 module.exports.findAll = findAll;
@@ -180,3 +185,4 @@ module.exports.readConversation = readConversation;
 module.exports.reply = reply;
 module.exports.sendNote = sendNote;
 module.exports.addUsersToConversation = addUsersToConversation;
+module.exports.addUserToConversation = addUserToConversation;

@@ -28,13 +28,21 @@ const fieldMap = {
         ['long_name', 'edprole.long_name'],
         ['description', 'edprole.description']]
     },
+    distinct: true,
     alias: 'user_roles'
   },
   privilege_agg: {
     type: 'json_agg',
     src: 'edprole_privilege.privilege',
+    distinct: true,
+    sort: 'edprole_privilege.privilege',
+    order: 'ASC',
+    filters: [
+      { field: 'privilege', op: 'is_not', value: 'NULL' }
+    ],
     alias: 'user_privileges'
   }
+  // privilege_agg: 'JSONB_AGG(DISTINCT edprole_privilege.privilege ORDER BY privilege ASC) FILTER (WHERE privilege IS NOT NULL) user_privileges'
 };
 const fields = (list) => list.map((field) => fieldMap[field]);
 const refs = {
@@ -74,16 +82,41 @@ const userJoin = {
   group: fieldMap.user_id,
   alias: 'role_agg'
 };
-const findAll = () => sql.select({
-  fields: fields(allFields),
-  from: { base: table, joins: [refs.role_privilege] }
+const findAll = ({ short_name, long_name, sort, order, per_page, page }) => sql.select({
+  fields: ['edprole.*'],
+  from: { base: table },
+  ...(short_name || long_name ? {
+    where: {
+      filters: [
+        ...(short_name ? [{ field: 'edprole.short_name', like: 'short_name' }] : []),
+        ...(long_name ? [{ field: 'edprole.long_name', like: 'long_name' }] : []),
+      ]
+    }
+  } : {}),
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
 });
-const findAllEx = () => `${findAll()} `;
-const findById = () => `${findAll()} WHERE edprole.id = {{id}}`;
-const findByName = () => `${findAll()} WHERE edprole.short_name = {{short_name}}`;
+const findById = () => sql.select({
+  fields: fields(allFields),
+  from: { base: table, joins: [refs.role_privilege] },
+  where: {
+    filters: [ { field: fieldMap.id, param: 'id' } ]
+  }
+});
+const findByName = (params) => sql.select({
+  fields: fields(allFields),
+  from: { base: table, joins: [refs.role_privilege] },
+  where: {
+    filters: [
+      ...(short_name ? [{ field: 'edprole.short_name', like: 'short_name' }] : []),
+      ...(long_name ? [{ field: 'edprole.long_name', like: 'long_name' }] : []),
+    ]
+  }
+});
 
 module.exports.findAll = findAll;
-module.exports.findAllEx = findAllEx;
 module.exports.findById = findById;
 module.exports.findByName = findByName;
 module.exports.userJoin = userJoin;

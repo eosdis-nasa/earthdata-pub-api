@@ -9,7 +9,7 @@ const auth = require('auth-util');
 async function handler(event) {
   if (event.code) {
     const { access, refresh, decoded } = await auth.getToken(event);
-    await db.user.loginUser({ id: decoded.sub, refresh_token: refresh, ...decoded });
+    await db.user.loginUser({ ...decoded, refresh_token: refresh });
     const user = await db.user.findById({ id: decoded.sub });
     return { token: access, state: event.state, user };
   }
@@ -18,7 +18,7 @@ async function handler(event) {
       { id: event.context.user_id }
     );
     const { access, refresh, decoded } = await auth.refreshToken({ token: refreshToken });
-    await db.user.refreshUser({ id: decoded.sub, refresh_token: refresh, ...decoded });
+    await db.user.refreshUser({ ...decoded, refresh_token: refresh });
     const user = await db.user.findById({ id: decoded.sub });
     return { token: access, user };
   }
