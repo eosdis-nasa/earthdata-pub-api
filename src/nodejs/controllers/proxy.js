@@ -1,3 +1,4 @@
+const latency = parseInt(process.env.SIMULATED_LATENCTY || '0');
 const handlers = require('./handlers.js');
 
 module.exports.actionFindById = function actionFindById(req, res, next) {
@@ -9,7 +10,7 @@ module.exports.actionFindById = function actionFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -29,7 +30,7 @@ module.exports.actionFindAll = function actionFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -42,7 +43,7 @@ module.exports.daacFindById = function daacFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -62,7 +63,7 @@ module.exports.daacFindAll = function daacFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -75,14 +76,13 @@ module.exports.formFindById = function formFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
 module.exports.formPut = function formPut(req, res, next) {
-  res.send({
-    message: 'This is the mockup controller for formput'
-  });
+  const body = { message: 'Not implemented' };
+  setTimeout(() => res.send(body), latency);
 };
 
 module.exports.formFindAll = function formFindAll(req, res, next) {
@@ -104,7 +104,7 @@ module.exports.formFindAll = function formFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -117,7 +117,7 @@ module.exports.groupFindById = function groupFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -127,17 +127,17 @@ module.exports.groupFindAll = function groupFindAll(req, res, next) {
     resource: 'group',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      short_name: params.short_name.value,
+      long_name: params.long_name.value,
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -150,7 +150,7 @@ module.exports.roleFindById = function roleFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -160,17 +160,17 @@ module.exports.roleFindAll = function roleFindAll(req, res, next) {
     resource: 'role',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      short_name: params.short_name.value,
+      long_name: params.long_name.value,
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -183,7 +183,7 @@ module.exports.noteFindById = function noteFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -203,7 +203,7 @@ module.exports.noteFindAll = function noteFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -216,15 +216,13 @@ module.exports.questionFindById = function questionFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
 module.exports.questionPut = function questionPut(req, res, next) {
-  const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for questionput'
-  });
+  const body = { message: 'Not implemented' };
+  setTimeout(() => res.send(body), latency);
 };
 
 module.exports.questionFindAll = function questionFindAll(req, res, next) {
@@ -243,7 +241,7 @@ module.exports.questionFindAll = function questionFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -256,7 +254,7 @@ module.exports.serviceFindById = function serviceFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -276,7 +274,7 @@ module.exports.serviceFindAll = function serviceFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -289,7 +287,7 @@ module.exports.submissionFindById = function submissionFindById(req, res, next) 
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -319,7 +317,7 @@ module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -332,7 +330,7 @@ module.exports.userFindById = function userFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -352,7 +350,7 @@ module.exports.userFindAll = function userFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -365,15 +363,13 @@ module.exports.workflowFindById = function workflowFindById(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
 module.exports.workflowPut = function workflowPut(req, res, next) {
-  const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for workflowput'
-  });
+  const body = { message: 'Not implemented' };
+  setTimeout(() => res.send(body), latency);
 };
 
 module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
@@ -392,7 +388,7 @@ module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -404,7 +400,7 @@ module.exports.notificationSend = function notificationSend(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.notification(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -416,19 +412,19 @@ module.exports.notificationReply = function notificationReply(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.notification(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
-module.exports.notificationAddUsers = function notificationAddUsers(req, res, next) {
+module.exports.notificationAddUser = function notificationAddUser(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
-    operation: 'add_users',
+    operation: 'add_user',
     ...params.payload.value,
     context: { user_id: req.user_id }
   };
   handlers.notification(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -439,7 +435,7 @@ module.exports.notificationConversations = function notificationConversations(re
     context: { user_id: req.user_id }
   };
   handlers.notification(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -451,15 +447,13 @@ module.exports.notificationConversation = function notificationConversation(req,
     context: { user_id: req.user_id }
   };
   handlers.notification(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
 module.exports.getSubscriptions = function getSubscriptions(req, res, next) {
-  const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for getSubscriptions'
-  });
+  const body = { message: 'Not implemented' };
+  setTimeout(() => res.send(body), latency);
 };
 
 module.exports.subscribe = function subscribe(req, res, next) {
@@ -467,21 +461,46 @@ module.exports.subscribe = function subscribe(req, res, next) {
   const lambdaEvent = params.payload.value;
   Object.assign(lambdaEvent, { context: { user_id: req.user_id } });
   handlers.subscribe(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
 module.exports.actionInvoke = function actionInvoke(req, res, next) {
-  const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for Invoke'
-  });
+  const body = { message: 'Not implemented' };
+  setTimeout(() => res.send(body), latency);
 };
 
 module.exports.actionRegister = function actionRegister(req, res, next) {
+  const body = { message: 'Not implemented' };
+  setTimeout(() => res.send(body), latency);
+};
+
+module.exports.userOperationGet = function userOperationGet(req, res, next) {
+  const params = Object.entries(req.swagger.params).reduce((acc, [key, value]) => {
+    Object.assign(acc, { [key]: value.value });
+    return acc;
+  }, {});
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: params.operation.value,
+    ...params,
+    context: { user_id: req.user_id }
+  };
+  handlers.user(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.userOperationPost = function userOperationPost(req, res, next) {
   const { params } = req.swagger;
-  res.send({
-    message: 'This is the mockup controller for RegisterAction'
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: params.operation.value,
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.user(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -494,7 +513,7 @@ module.exports.submissionOperation = function submissionOperation(req, res, next
     ...payload.value
   };
   handlers.submission(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -511,7 +530,7 @@ module.exports.searchMetrics = function searchMetrics(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.metrics(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -523,17 +542,18 @@ module.exports.putMetric = function putMetric(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.metrics(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
 module.exports.metricsListReports = function metricsListReports(req, res, next) {
-  res.send(["2021-06-20", "2021-06-21", "2021-06-22"]);
+  const body = ["2021-06-20", "2021-06-21", "2021-06-22"];
+  setTimeout(() => res.send(body), latency);
 };
 
 module.exports.metricsGetReport = function putMetric(req, res, next) {
-  res.status(200);
-  res.sendFile(`${__dirname}/static/2021-06-20.json`);
+  const file = `${__dirname}/static/2021-06-20.json`
+  setTimeout(() => res.sendFile(file), latency);
 };
 
 module.exports.getModel = function getModel(req, res, next) {
@@ -543,7 +563,7 @@ module.exports.getModel = function getModel(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.model(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -554,7 +574,7 @@ module.exports.moduleList = function moduleList(req, res, next) {
     context: { user_id: req.user_id }
   }
   handlers.module(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 }
 
@@ -565,7 +585,8 @@ module.exports.moduleInterface = function moduleInterface(req, res, next) {
     module: params.module.value,
     context: { user_id: req.user_id }
   }
-  res.sendFile(`${__dirname}/static/module-ui.html`);
+  const file = `${__dirname}/static/module-ui.html`
+  setTimeout(() => res.sendFile(file), latency);
 }
 
 module.exports.moduleRequest = function moduleRequest(req, res, next) {
@@ -578,10 +599,12 @@ module.exports.moduleRequest = function moduleRequest(req, res, next) {
   }
   const { payload } = lambdaEvent;
   if (payload.operation == "test") {
-    res.send({ message: "Success" });
+    const body = { message: 'Success' };
+    setTimeout(() => res.send(body), latency);
   }
   else {
-    res.send({ error: "Error" });
+    const body = { error: 'Error' };
+    setTimeout(() => res.send(body), latency);
   }
 }
 
@@ -594,7 +617,7 @@ module.exports.getToken = function getToken(req, res, next) {
     host
   };
   handlers.auth(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -605,14 +628,14 @@ module.exports.refreshToken = function refreshToken(req, res, next) {
     context: { user_id: req.user_id }
   };
   handlers.auth(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
 module.exports.getVersion = function getVersion(req, res, next) {
   const lambdaEvent = {};
   handlers.version(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -624,7 +647,7 @@ module.exports.pageFindById = function pageFindById(req, res, next) {
     params: { page_key: params.page_key.value }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 
@@ -635,7 +658,7 @@ module.exports.pageFindOverview = function pageFindOverview(req, res, next) {
     params: { page_key: 'overview' }
   };
   handlers.data(lambdaEvent).then((body) => {
-    res.send(body);
+    setTimeout(() => res.send(body), latency);
   });
 };
 

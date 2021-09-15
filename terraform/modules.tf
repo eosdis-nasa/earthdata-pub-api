@@ -50,6 +50,7 @@ module "lambda_functions" {
   db_database = module.rds.db_database
   db_user = module.rds.db_user
   db_password = var.db_password
+  cognito_user_pool_id = var.cognito_user_pool_id
   client_root_url = var.client_root_url
   auth_provider_url = var.auth_provider_url
   auth_logout_path = var.auth_logout_path
@@ -74,6 +75,7 @@ module "apigateway_endpoints" {
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn
   subscribe_lambda_arn = module.lambda_functions.subscribe_lambda_arn
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn
+  user_lambda_arn = module.lambda_functions.user_lambda_arn
   register_lambda_arn = module.lambda_functions.register_lambda_arn
   version_lambda_arn = module.lambda_functions.version_lambda_arn
   cognito_user_pool_arn = "arn:aws:cognito-idp:${var.region}:${var.account_id}:userpool/${var.cognito_user_pool_id}"

@@ -42,6 +42,10 @@ variable "subscribe_lambda_arn" {
   type = string
 }
 
+variable "user_lambda_arn" {
+  type = string
+}
+
 variable "version_lambda_arn" {
   type = string
 }

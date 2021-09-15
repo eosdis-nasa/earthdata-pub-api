@@ -83,13 +83,68 @@ const stepMethods = {
   close: closeMethod
 };
 
-async function processRecord(record) {
-  const { eventMessage } = msg.parseRecord(record);
+async function promoteStepMethod(eventMessage) {
   const { submission_id: id } = eventMessage;
   await db.submission.promoteStep({ id });
   const status = await db.submission.getState({ id });
   const method = stepMethods[status.step.type];
   await method(status);
+}
+
+async function workflowStartedMethod(eventMessage) {
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
+  await msg.sendEvent(newEvent);
+  await promoteStepMethod(eventMessage);
+}
+
+async function requestInitializedMethod(eventMessage) {
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
+  await msg.sendEvent(newEvent);
+  await promoteStepMethod(eventMessage);
+}
+
+async function formSubmittedMethod(eventMessage) {
+  const { submission_id: id, form_id: formId, user_id: userId } = eventMessage;
+  const status = await db.submission.getState({ id });
+  if (status.step.type === 'form' && status.step.form_id === formId) {
+    await promoteStepMethod(eventMessage);
+    const newEvent = {
+      event_type: 'workflow_promote_step',
+      submission_id: status.id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      step_name: status.step.name,
+      user_id: userId
+    };
+    await msg.sendEvent(newEvent);
+  }
+}
+
+async function reviewApprovedMethod(eventMessage) {
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
+  await msg.sendEvent(newEvent);
+  await promoteStepMethod(eventMessage);
+}
+
+async function reviewRejectedMethod(eventMessage) {
+  const { submission_id: id, data: { rollback } } = eventMessage;
+  await db.submission.rollback({ id, rollback });
+  await promoteStepMethod(eventMessage);
+}
+
+const eventMethods = {
+  workflow_promote_step: promoteStepMethod,
+  workflow_started: workflowStartedMethod,
+  request_initialized: requestInitializedMethod,
+  form_submitted: formSubmittedMethod,
+  review_approved: reviewApprovedMethod,
+  review_rejected: reviewRejectedMethod
+};
+
+async function processRecord(record) {
+  const { eventMessage } = msg.parseRecord(record);
+  const method = eventMethods[eventMessage.event_type];
+  await method(eventMessage);
 }
 
 async function handler(event) {

@@ -11,6 +11,8 @@ const redirectEndpoint = process.env.AUTH_CALLBACK_URL;
 const respectExp = process.env.AUTH_RESPECT_EXP === 'true';
 const codes = {};
 
+const workflowEventFilter = ['request_initialized', 'workflow_resume', 'form_submitted', 'review_approved', 'review_rejected'];
+
 function aclAllowAll(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', '*');
@@ -88,10 +90,8 @@ function getToken(req, res) {
       token_type: 'Bearer'
     };
     console.info(tokens);
-    setTimeout(function() {
-      res.status(200);
-      res.send(tokens);
-    }, 3000);
+    res.status(200);
+    res.send(tokens);
   } else if (refresh_token) {
     const authTime = Math.floor(Date.now() / 1000);
     const user = codes[refresh_token];
@@ -109,10 +109,8 @@ function getToken(req, res) {
       token_type: 'Bearer'
     };
     console.info(tokens);
-    setTimeout(function() {
-      res.status(200);
-      res.send(tokens);
-    }, 3000);
+    res.status(200);
+    res.send(tokens);
   }
 }
 
@@ -151,7 +149,7 @@ function check(req, secDef, token, next) {
           if (respectExp && decoded.exp < currentTime) {
             next(req.res.sendStatus(403));
           }
-          db.user.findById({id: decoded.sub })
+          db.user.findById({ id: decoded.sub })
           .then((user) => {
             if (user.error) { return next(req.res.sendStatus(403)); }
             Object.assign(req, { user_id: decoded.sub });
@@ -179,12 +177,16 @@ function favico(req, res) {
 }
 
 function handleWorkflow(req, res) {
-  if (req.body.MessageAttributes.event_type.Value === 'workflow_promote_step') {
-    const records = { Records: [{ Sns: { ...req.body } }] };
-    handlers.workflowConsumer(records);
+  const eventType = req.body.MessageAttributes.event_type.Value;
+  if (workflowEventFilter.includes(eventType)) {
+    handlers.workflowConsumer(wrapSns(req)).then((body) => {
+      res.status(body.statusCode);
+      res.send();
+    });
+  } else {
+    res.status(200);
+    res.send();
   }
-  res.status(200);
-  res.send();
 }
 
 function handleNotification(req, res) {

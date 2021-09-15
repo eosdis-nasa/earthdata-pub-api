@@ -3,10 +3,11 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'workflow_id', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
+  initiator: 'initiator_ref.initiator',
   user_id: 'submission.initiator_edpuser_id user_id',
   daac_id: 'submission.daac_id',
   conversation_id: 'submission.conversation_id',
@@ -25,6 +26,27 @@ const fieldMap = {
   lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"'
 };
 const refs = {
+  initiator_ref: {
+    type: 'left_join',
+    src: {
+      type: 'select',
+      fields: [
+        'edpuser.id initiator_id',
+        {
+          type: 'json_obj',
+          keys: [
+            ['id', 'edpuser.id'],
+            ['name', 'edpuser.name'],
+            ['email', 'edpuser.email']
+          ],
+          alias: 'initiator'
+        }
+      ],
+      from: { base: 'edpuser' },
+      alias: 'initiator_ref'
+    },
+    on: { left: 'submission.initiator_edpuser_id', right: 'initiator_ref.initiator_id' }
+  },
   submission_status: {
     type: 'natural_join',
     src: 'submission_status'
@@ -135,7 +157,7 @@ const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   where: {
     filters: [{ field: fieldMap.id, param: 'id' }]
@@ -146,10 +168,52 @@ const getUsersSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   where: {
     filters: [{ field: 'submission.initiator_edpuser_id', param: 'user_id' }]
+  },
+  sort: fieldMap.last_change,
+  order: 'DESC'
+});
+
+const getDaacSubmissions = (params) => sql.select({
+  fields: fields(allFields),
+  from: {
+    base: table,
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+  },
+  where: {
+    filters: [{
+      field: 'submission.daac_id',
+      any: {
+        values: {
+          type: 'select',
+          fields: ['daac.id'],
+          from: {
+            base: 'daac',
+            joins: [{
+              type: 'left_join',
+              src: 'edpuser_edpgroup',
+              on: { left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id' }
+            }]
+          },
+          where: {
+            filters: [{ field: 'edpuser_edpgroup.edpuser_id', param: 'user_id' }]
+          }
+        }
+      }
+    }]
+  },
+  sort: fieldMap.last_change,
+  order: 'DESC'
+});
+
+const getAdminSubmissions = (params) => sql.select({
+  fields: fields(allFields),
+  from: {
+    base: table,
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   sort: fieldMap.last_change,
   order: 'DESC'
@@ -329,6 +393,8 @@ module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
 module.exports.getUsersSubmissions = getUsersSubmissions;
+module.exports.getDaacSubmissions = getDaacSubmissions;
+module.exports.getAdminSubmissions = getAdminSubmissions;
 module.exports.initialize = initialize;
 module.exports.getNextstep = getNextstep;
 module.exports.promoteStep = promoteStep;

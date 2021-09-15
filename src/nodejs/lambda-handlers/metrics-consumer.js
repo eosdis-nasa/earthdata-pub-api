@@ -12,7 +12,6 @@ const msg = require('message-util');
 
 async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
-  console.info(eventMessage);
   await db.metrics.putMetric(eventMessage);
   await msg.sendMetric(eventMessage);
 }

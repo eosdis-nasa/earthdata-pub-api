@@ -38,6 +38,10 @@ output "submission_lambda_arn" {
   value = aws_lambda_function.submission.invoke_arn
 }
 
+output "user_lambda_arn" {
+  value = aws_lambda_function.user.invoke_arn
+}
+
 output "register_lambda_arn" {
   value = aws_lambda_function.register.invoke_arn
 }
