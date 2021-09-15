@@ -15,7 +15,9 @@ const dev = process.env.DEVELOPMENT || false;
 
 async function createCognitoUser({ sub, username, name, email }) {
   if (dev) {
-    return { username, name, email, ...(sub ? { sub } : {}) };
+    return {
+      username, name, email, ...(sub ? { sub } : {})
+    };
   }
   const params = {
     UserPoolId: userPoolId,
