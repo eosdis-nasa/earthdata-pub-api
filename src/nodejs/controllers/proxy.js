@@ -221,8 +221,45 @@ module.exports.questionFindById = function questionFindById(req, res, next) {
 };
 
 module.exports.questionPut = function questionPut(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
+  //TODO- This method needs to be cleaned up. Optimizations should be done so that there is only one request to the db
+  // however current knowledge limitations exist as to how to expand the input array within the sql values query
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'update',
+    params: {
+      payload: params.payload.value,
+      requiredBool: params.payload.value.required ? 'TRUE' : 'FALSE'
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then(() => {
+    const inputLambdaEvent = {
+      resource: 'question',
+      operation: 'updateInput',
+      context: {user_id: req.user_id}
+    }
+    const requests = params.payload.value.inputs.map((inputElem) => {
+      inputLambdaEvent.params = {
+        input: inputElem,
+        questionId: params.payload.value.id,
+        requiredBool: inputElem.required ? 'TRUE': 'FALSE'
+      }
+      return handlers.data(inputLambdaEvent);
+    })
+
+    Promise.all(requests).then(() => {
+      const requestLambdaEvent = {
+        resource: 'question',
+        operation: 'findById',
+        params: { id: params.payload.value.id },
+        context: { user_id: req.user_id }
+      };
+      handlers.data(requestLambdaEvent).then((body) => {
+        setTimeout(() => res.send(body), latency);
+      });
+    });
+  })
 };
 
 module.exports.questionFindAll = function questionFindAll(req, res, next) {
