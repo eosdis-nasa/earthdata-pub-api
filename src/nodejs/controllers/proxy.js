@@ -222,7 +222,7 @@ module.exports.questionFindById = function questionFindById(req, res, next) {
 
 module.exports.questionPut = function questionPut(req, res, next) {
   //TODO- This method needs to be cleaned up. Optimizations should be done so that there is only one request to the db
-  // however current knowledge limitations exist as to how to expand the input array within the sql values query
+  // however current knowledge limitations exist as to how to expand the input array within the sql values query.
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'question',
