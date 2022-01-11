@@ -83,7 +83,7 @@ function parseSqsMessage(message) {
   if (body.TopicArn) {
     return parseSnsMessage(body);
   }
-  const unixTime = parseInt(message.attributes.SentTimestamp, 0);
+  const unixTime = parseInt(message.attributes.SentTimestamp, 10);
   const timestamp = new Date(unixTime).toISOString();
   return {
     eventMessage: body,
