@@ -20,7 +20,7 @@
   "author": "Brian Ellingson",
   "license": "Apache-2.0",
   "devDependencies": {
-    "eslint": "^8.1.0",
+    "eslint": "^7.27.0",
     "eslint-bamboo-formatter": "^0.1.1",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
