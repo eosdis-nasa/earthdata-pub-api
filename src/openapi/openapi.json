@@ -3639,7 +3639,7 @@
           "description": "Name of JSON schema model to retrieve",
           "required": true,
           "schema": {
-            "$ref": "#/components/schemas/UUID"
+            "type": "string"
           }
         }
       ],
