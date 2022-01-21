@@ -674,6 +674,14 @@
           "schema": {
             "$ref": "#/components/schemas/UUID"
           }
+        },
+        {
+          "name": "daac_id",
+          "in": "query",
+          "description": "DAAC ID to filter form sections",
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
         }
       ],
       "get": {
