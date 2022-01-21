@@ -151,7 +151,8 @@ CREATE TABLE IF NOT EXISTS input (
   show_if JSONB DEFAULT '[]'::JSONB,
   required BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (question_id, list_order),
-  FOREIGN KEY (question_id) REFERENCES question (id)
+  FOREIGN KEY (question_id) REFERENCES question (id),
+  UNIQUE (question_id, control_id)
 );
 
 CREATE TABLE IF NOT EXISTS action (

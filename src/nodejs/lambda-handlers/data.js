@@ -21,10 +21,20 @@ async function seed() {
   return response;
 }
 
+async function update({ resource, params }) {
+  return db[resource].update(params);
+}
+
+async function updateInput({ resource, params }) {
+  return db[resource].updateInput(params);
+}
+
 const operations = {
   findById,
   findAll,
-  seed
+  seed,
+  update,
+  updateInput
 };
 
 async function handler(event) {
