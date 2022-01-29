@@ -2,7 +2,7 @@ const sql = require('./sql-builder.js');
 const table = 'page';
 
 const findAll = () => sql.select({
-  fields: ['page.content'],
+  fields: ['page.*'],
   from: { base: table }
 });
 
