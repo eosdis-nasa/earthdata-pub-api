@@ -14,7 +14,7 @@ const findById = () => sql.select({
 
 const update = () => `
 INSERT INTO page VALUES
-({{page_key}}, {{$}}::JSONB)
+({{payload.page_key}}, {{payload.content}}::JSONB)
 ON CONFLICT(page_key) DO UPDATE SET
 content = EXCLUDED.content
 RETURNING *`;
