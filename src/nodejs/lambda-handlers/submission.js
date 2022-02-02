@@ -60,19 +60,25 @@ async function initializeMethod(event, user) {
 
 async function applyMethod(event, user) {
   const { id, workflow_id: workflowId } = event;
-  const status = await db.submission.getState({ id });
-  if (status.step.type === 'close') {
-    await db.submission.applyWorkflow({ id, workflow_id: workflowId });
-    const eventMessage = {
-      event_type: 'workflow_started',
-      submission_id: id,
-      conversation_id: status.conversation_id,
-      workflow_id: workflowId,
-      step_name: 'init',
-      user_id: user.id
-    };
-    await msg.sendEvent(eventMessage);
-  }
+  let status = await db.submission.getState({ id });
+  // if (status.step && status.step.type === 'close') {
+  //   await db.submission.applyWorkflow({ id, workflow_id: workflowId });
+  //   const eventMessage = {
+  //     event_type: 'workflow_started',
+  //     submission_id: id,
+  //     conversation_id: status.conversation_id,
+  //     workflow_id: workflowId,
+  //     step_name: 'init',
+  //     user_id: user.id
+  //   };
+  //   await msg.sendEvent(eventMessage);
+  // }
+  // else {
+  await db.submission.reassignWorkflow({ id, workflowId })
+  await db.submission.promoteStep({ id })
+  status = await db.submission.getState({ id });
+    // TODO- May need to update this clause to then send the event similar to the other flow of this method above
+  // }
   return status;
 }
 

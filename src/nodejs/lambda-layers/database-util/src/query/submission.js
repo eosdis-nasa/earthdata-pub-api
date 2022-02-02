@@ -389,6 +389,13 @@ step_name = (
 WHERE submission_status.id = {{id}}
 RETURNING *`;
 
+const reassignWorkflow = () => `
+WITH  close_current AS (UPDATE submission_workflow SET complete_time=NOW() WHERE id={{id}} RETURNING *),
+      update_status AS (UPDATE submission_status SET workflow_id={{workflowId}}, step_name='init', last_change=NOW() WHERE id ={{id}}),
+      open_new AS (INSERT INTO submission_workflow (id, workflow_id, start_time) VALUES ({{id}}, {{workflowId}}, NOW()))
+SELECT * from close_current;
+`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -410,3 +417,4 @@ module.exports.getFormData = getFormData;
 module.exports.updateFormData = updateFormData;
 module.exports.applyWorkflow = applyWorkflow;
 module.exports.rollback = rollback;
+module.exports.reassignWorkflow = reassignWorkflow;
