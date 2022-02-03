@@ -2,7 +2,7 @@ const sql = require('./sql-builder.js');
 const question = require('./question.js');
 
 const table = 'section';
-const allFields = ['id', 'form_id', 'heading', 'required_if', 'show_if', 'sections', 'questions', 'list_order'];
+const allFields = ['id', 'form_id', 'heading', 'required_if', 'show_if', 'sections', 'questions', 'list_order', 'daac_id'];
 const fieldMap = {
   id: 'section.id',
   form_id: 'section.form_id',
@@ -10,6 +10,7 @@ const fieldMap = {
   required_if: 'section.required_if',
   show_if: 'section.show_if',
   list_order: 'section.list_order',
+  daac_id: 'section.daac_id',
   sections: {
     type: 'json_agg',
     src: {
@@ -18,6 +19,7 @@ const fieldMap = {
         ['heading', 'section.heading'],
         ['required_if', 'section.required_if'],
         ['show_if', 'section.show_if'],
+        ['daac_id', 'section.daac_id'],
         ['questions', 'questions']]
     },
     sort: 'section.list_order',
@@ -41,6 +43,12 @@ const formJoin = () => sql.select({
   from: {
     base: table,
     joins: [refs.question]
+  },
+  where: {
+    filters:[
+      ...([{ field: 'question_agg.questions', op: 'is_not', value: 'null'}]),
+      ...([{cmd: '(section.daac_id IS NULL OR section.daac_id = {{daac_id}})'}]),
+    ]
   },
   group: 'section.form_id',
   alias: 'section_agg'

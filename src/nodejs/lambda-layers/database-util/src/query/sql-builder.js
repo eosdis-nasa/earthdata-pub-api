@@ -79,8 +79,8 @@ const naturalJoin = ({ src }) => ` NATURAL JOIN ${src.type ? complexParse(src) :
 const naturalLeftJoin = ({ src, on }) => ` NATURAL LEFT JOIN ${src.type ? complexParse(src) : src}`;
 
 const filter = ({
-  logOp, field, like, op, value, param, any, literal
-}) => like ? `${field} ILIKE '%' || {{${like}}} || '%'` :
+  logOp, field, like, op, value, param, any, literal, cmd,
+}) => cmd ? `${cmd}` : like ? `${field} ILIKE '%' || {{${like}}} || '%'` :
   `${logOp ? ` ${opTypes[logOp]}` : ''} ${field} ${opTypes[op] || '='} ${literal
     ? strWrapper(literal) : value
     ? typeCheck(value) : any

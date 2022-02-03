@@ -116,6 +116,16 @@ const update = () => `
   long_name = EXCLUDED.long_name, text = EXCLUDED.text, help = EXCLUDED.help,
   required = EXCLUDED.required, created_at = EXCLUDED.created_at
   RETURNING *`;
+const updateSection = () => `
+  WITH new_question AS (${update()}),
+  new_section_question AS (INSERT INTO section_question (section_id, question_id, list_order, required_if, show_if)
+  VALUES ({{payload.section_question.section_id}}, {{payload.section_question.question_id}}, 
+  {{payload.section_question.list_order}}, {{payload.section_question.required_if}}, 
+  {{payload.section_question.show_if}}) ON CONFLICT(section_id, question_id) DO UPDATE SET
+  section_id = EXCLUDED.section_id, question_id = EXCLUDED.question_id, list_order = EXCLUDED.list_order,
+  required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if
+  RETURNING *)
+  SELECT * FROM new_question`;
 const updateInput = () => `
   INSERT INTO input (question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required)
   VALUES ({{questionId}}, {{input.control_id}}, {{input.list_order}}, {{input.label}}, {{input.type}},
@@ -134,3 +144,4 @@ module.exports.findByName = findByName;
 module.exports.findById = findById;
 module.exports.update = update;
 module.exports.updateInput = updateInput;
+module.exports.updateSection = updateSection;

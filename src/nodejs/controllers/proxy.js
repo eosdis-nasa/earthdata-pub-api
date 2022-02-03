@@ -72,7 +72,10 @@ module.exports.formFindById = function formFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'form',
     operation: 'findById',
-    params: { id: params.id.value },
+    params: {
+      id: params.id.value,
+      daac_id: params.daac_id.value
+    },
     context: { user_id: req.user_id }
   };
   handlers.data(lambdaEvent).then((body) => {
@@ -223,13 +226,16 @@ module.exports.questionFindById = function questionFindById(req, res, next) {
 module.exports.questionPut = function questionPut(req, res, next) {
   //TODO- This method needs to be cleaned up. Optimizations should be done so that there is only one request to the db
   // however current knowledge limitations exist as to how to expand the input array within the sql values query.
+  // Current (sloppy) method of adding/updating question is 1. update question in question table 2. update question
+  // section link in section_question table 3. update any question inputs in input table 4. query for this question
+  // addition/update to return as the API response
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'question',
-    operation: 'update',
+    operation: params.payload.value.section_question ? 'updateSection' : 'update',
     params: {
       payload: params.payload.value,
-      requiredBool: params.payload.value.required ? 'TRUE' : 'FALSE'
+      requiredBool: params.payload.value.required ? 'true' : 'false',
     },
     context: { user_id: req.user_id }
   };
@@ -237,13 +243,13 @@ module.exports.questionPut = function questionPut(req, res, next) {
     const inputLambdaEvent = {
       resource: 'question',
       operation: 'updateInput',
-      context: {user_id: req.user_id}
+      context: { user_id: req.user_id }
     }
     const requests = params.payload.value.inputs.map((inputElem) => {
       inputLambdaEvent.params = {
         input: inputElem,
         questionId: params.payload.value.id,
-        requiredBool: inputElem.required ? 'TRUE': 'FALSE'
+        requiredBool: inputElem.required ? 'true' : 'false'
       }
       return handlers.data(inputLambdaEvent);
     })
