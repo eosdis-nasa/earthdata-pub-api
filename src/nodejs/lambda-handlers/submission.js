@@ -165,6 +165,22 @@ async function unlockMethod(event, user) {
   console.info('Not Implemented', event, user);
 }
 
+async function withdrawMethod(event, user) {
+  const { id } = event;
+  const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD']
+  if (approvedUserPrivileges.some( privilege => user.user_privileges.includes(privilege))) {
+    return await db.submission.withdrawSubmission({id});
+  }
+}
+
+async function restoreMethod(event, user) {
+  const { id } = event;
+  const approvedUserPrivileges = [ 'ADMIN']
+  if (approvedUserPrivileges.some( privilege => user.user_privileges.includes(privilege))) {
+    return await db.submission.restoreSubmission({id});
+  }
+}
+
 const operations = {
   initialize: initializeMethod,
   active: activeMethod,
@@ -175,7 +191,9 @@ const operations = {
   review: reviewMethod,
   resume: resumeMethod,
   lock: lockMethod,
-  unlock: unlockMethod
+  unlock: unlockMethod,
+  withdraw: withdrawMethod,
+  restore: restoreMethod
 };
 
 async function handler(event) {
