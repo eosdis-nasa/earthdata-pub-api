@@ -20,6 +20,7 @@ module.exports.optionsDataNote = optionsHeaders;
 module.exports.optionsDataNotes = optionsHeaders;
 module.exports.optionsDataQuestion = optionsHeaders;
 module.exports.optionsDataQuestions = optionsHeaders;
+module.exports.optionsDataPages = optionsHeaders;
 module.exports.optionsDataService = optionsHeaders;
 module.exports.optionsDataServices = optionsHeaders;
 module.exports.optionsDataSubmission = optionsHeaders;
