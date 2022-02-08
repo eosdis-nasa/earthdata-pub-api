@@ -59,20 +59,27 @@ async function initializeMethod(event, user) {
 }
 
 async function applyMethod(event, user) {
+  const approvedRoles = ['coordinator'];
   const { id, workflow_id: workflowId } = event;
-  const status = await db.submission.getState({ id });
-  if (status.step.type === 'close') {
-    await db.submission.applyWorkflow({ id, workflow_id: workflowId });
+  let status = await db.submission.getState({ id });
+  // Only allow reassigning a workflow if role is admin or role is coordinator and workflow has
+  // not been reassigned yet
+  if (user.user_roles.some((role) => role.short_name === 'admin'
+      || (approvedRoles.includes(role.short_name) && Object.keys(status.workflows).length < 2))) {
+    await db.submission.reassignWorkflow({ id, workflowId });
+    await db.submission.promoteStep({ id });
+    status = await db.submission.getState({ id });
     const eventMessage = {
       event_type: 'workflow_started',
       submission_id: id,
       conversation_id: status.conversation_id,
       workflow_id: workflowId,
-      step_name: 'init',
+      step_name: status.step.name,
       user_id: user.id
     };
     await msg.sendEvent(eventMessage);
   }
+
   return status;
 }
 
