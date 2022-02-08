@@ -694,11 +694,10 @@ module.exports.pageFindById = function pageFindById(req, res, next) {
   });
 };
 
-module.exports.pageFindOverview = function pageFindOverview(req, res, next) {
+module.exports.pageFindAll = function pageFindAll(req, res, next) {
   const lambdaEvent = {
     resource: 'page',
-    operation: 'findById',
-    params: { page_key: 'overview' }
+    operation: 'findAll'
   };
   handlers.data(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
