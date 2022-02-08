@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+- Added default forms workflow to test both forms
 - Updated Permissions for 'Data Producer', 'Data Point of Contact' and 'Data Manager' to include forms permissions.
 - Reduced vulnerabilities
 - Updated CONTRIBUTING.md
