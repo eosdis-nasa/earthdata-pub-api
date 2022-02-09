@@ -5415,7 +5415,8 @@
           "required": true,
           "schema": {
             "type": "string",
-            "enum": ["initialize", "active", "apply", "metadata", "submit", "save", "review", "resume", "lock", "unlock"]
+            "enum": ["initialize", "active", "apply", "metadata", "submit", "save", "review", "resume", "lock",
+              "unlock", "withdraw", "restore"]
           }
         }
       ],

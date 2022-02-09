@@ -50,3 +50,5 @@ module.exports.sendNote = one;
 module.exports.addUsersToConversation = many;
 module.exports.addUserToConversation = one;
 module.exports.reassignWorkflow = one;
+module.exports.withdrawSubmission = one;
+module.exports.restoreSubmission = one;

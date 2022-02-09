@@ -171,7 +171,9 @@ const getUsersSubmissions = (params) => sql.select({
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   where: {
-    filters: [{ field: 'submission.initiator_edpuser_id', param: 'user_id' }]
+    filters: [
+      ...([{ field: 'submission.initiator_edpuser_id', param: 'user_id' }])
+    ]
   },
   sort: fieldMap.last_change,
   order: 'DESC'
@@ -184,7 +186,8 @@ const getDaacSubmissions = (params) => sql.select({
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   where: {
-    filters: [{
+    filters: [
+      ...([{
       field: 'submission.daac_id',
       any: {
         values: {
@@ -203,7 +206,9 @@ const getDaacSubmissions = (params) => sql.select({
           }
         }
       }
-    }]
+    }]),
+    ...([{ field: 'submission.hidden', op: 'is_not', value: 'true'}])
+    ]
   },
   sort: fieldMap.last_change,
   order: 'DESC'
@@ -214,6 +219,11 @@ const getAdminSubmissions = (params) => sql.select({
   from: {
     base: table,
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+  },
+  where: {
+    filters: [
+        ...([{ field: 'submission.hidden', op: 'is_not', value: 'true'}])
+    ]
   },
   sort: fieldMap.last_change,
   order: 'DESC'
@@ -396,6 +406,18 @@ WITH  close_current AS (UPDATE submission_workflow SET complete_time=NOW() WHERE
 SELECT * from close_current;
 `;
 
+const withdrawSubmission = () => `
+UPDATE submission SET
+hidden='true'
+WHERE id={{id}}
+RETURNING *`;
+
+const restoreSubmission = () => `
+UPDATE submission SET
+hidden='false'
+WHERE id={{id}}
+RETURNING *`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -418,3 +440,5 @@ module.exports.updateFormData = updateFormData;
 module.exports.applyWorkflow = applyWorkflow;
 module.exports.rollback = rollback;
 module.exports.reassignWorkflow = reassignWorkflow;
+module.exports.withdrawSubmission = withdrawSubmission;
+module.exports.restoreSubmission = restoreSubmission;
