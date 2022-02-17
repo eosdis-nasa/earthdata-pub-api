@@ -278,7 +278,7 @@
                 {
                   "field":"data_product_doi_exists",
                   "value":"true",
-                  "message":"You checked that this data product has a DOI, please provide it in the textbox provided."
+                  "message":"You checked that this data product has a DOI."
                 }
               ]
             }
