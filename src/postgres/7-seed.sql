@@ -365,6 +365,7 @@ INSERT INTO workflow VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_acces
 INSERT INTO workflow VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'request_forms_workflow', 1, 'Request Forms Workflow', 'This is the default workflow for a new request that covers both forms.');
 INSERT INTO workflow VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_product_information_workflow', 1, 'Data Product Information Workflow', 'This is the default initial workflow for a new data product information request.');
 INSERT INTO workflow VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 1, 'Assign a Workflow', 'This is the default initial workflow.');
+INSERT INTO workflow VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'idealized_workflow', 1, 'Idealized Workflow', 'This is an idealize, yet realistic workflow for the purposes of testing and demonstration.');
 
 -- Step(workflow_id, step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(workflow_id, step_name, type) VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'init');
@@ -390,6 +391,22 @@ INSERT INTO step(workflow_id, step_name, type) VALUES ('056ca100-107e-4fe5-a54a-
 INSERT INTO step(workflow_id, step_name, type, data) VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 'action', '{"rollback":"init","type": "init"}');
 INSERT INTO step(workflow_id, step_name, type) VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'close', 'close');
 
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'init', 'init');
+INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
+INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
+INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_product_information_form', 'form', '19025579-99ca-4344-8610-704dae626343');
+INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_product_information_form_review', 'review', '{"rollback":"data_product_information_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_qa', 'action');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_qa', 'action');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_to_meditor', 'service');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'send_to_meditor', 'service');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_meditor_editing', 'action');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_meditor_editing', 'action');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'get_from_meditor', 'service');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_from_meditor', 'service');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'publish_to_cmr', 'service');
+INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'close', 'close');
+
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'close');
 INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'data_accession_request_form');
@@ -408,6 +425,21 @@ INSERT INTO step_edge VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_prod
 
 INSERT INTO step_edge VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'init', 'assign_a_workflow');
 INSERT INTO step_edge VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 'close');
+
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form_review', 'data_product_information_form');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_product_information_form', 'data_product_information_form_review');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_product_information_form_review', 'start_qa');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_qa', 'complete_qa');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_qa', 'map_to_meditor');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_to_meditor', 'send_to_meditor');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'send_to_meditor', 'start_meditor_editing');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_meditor_editing', 'complete_meditor_editing');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_meditor_editing', 'get_from_meditor');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'get_from_meditor', 'map_from_meditor');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_from_meditor', 'publish_to_cmr');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'publish_to_cmr', 'close');
 
 -- DAAC(id, short_name, long_name, url, description, discipline, workflow_id, edpgroup_id)
 INSERT INTO daac VALUES ('40397fe8-4841-4e4c-b84a-6ece359ff5ff', 'ASDC', 'Atmospheric Science Data Center (ASDC)', 'https://eosweb.larc.nasa.gov/', 'NASA''s Atmospheric Science Data Center (ASDC) is in the Science Directorate located at NASA''S Langley Research Center in Hampton, Virginia. The Science Directorate''s Climate Science Branch, Atmospheric Composition Branch, and Chemistry and Dynamics Branch work with ASDC to study changes in the Earth and its atmosphere. Data products translate those findings into meaningful knowledge that inspires action by scientists, educators, decision makers, and the public. ASDC supports over 50 projects and provides access to more than 1,000 archived data sets. These data sets were created from satellite measurements, field experiments, and modeled data products. ASDC projects focus on the Earth science disciplines Radiation Budget, Clouds, Aerosols, and Tropospheric Composition.', 'SAR Products, Change Detection, Sea Ice, Polar Processes', '056ca100-107e-4fe5-a54a-e5f2d902a27a', 'bf07c445-8217-4f97-827a-82838cce36fb');
