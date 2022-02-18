@@ -352,6 +352,7 @@ module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
       created_before: params.created_before.value,
       last_change_after: params.last_change_after.value,
       last_change_before: params.last_change_before.value,
+      hidden: params.hidden.value,
       sort: params.sort.value,
       order: params.order.value,
       per_page: params.per_page.value,

@@ -11,9 +11,9 @@ const fieldMap = {
   user_id: 'submission.initiator_edpuser_id user_id',
   daac_id: 'submission.daac_id',
   conversation_id: 'submission.conversation_id',
+  hidden: 'submission.hidden',
   workflow_id: 'submission_status.workflow_id',
   workflow_name: 'workflow.long_name workflow_name',
-  daac_id: 'submission.daac_id',
   step_name: 'step.step_name',
   step_data: 'step.step_data',
   status: 'step.status',
@@ -231,10 +231,10 @@ const getAdminSubmissions = (params) => sql.select({
 
 const findAll = ({
   name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
-  status, created_before, created_after, last_change_before, last_change_after, sort, order,
+  status, created_before, created_after, last_change_before, last_change_after, hidden, sort, order,
   per_page, page
 }) => sql.select({
-  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change],
+  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change, fieldMap.hidden],
   from: {
     base: table,
     joins: [refs.submission_status, refs.step, refs.workflow]
@@ -248,11 +248,12 @@ const findAll = ({
       ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name' }] : []),
       ...(step_name ? [{ field: 'step.step_name', param: 'step_name' }] : []),
       ...(status ? [{ field: 'step.status', param: 'status' }] : []),
-      ...(step_type ? [{ field: 'step.step_type', param: 'step_type' }] : []),
+      ...(step_type ? [{ field: 'step.type', param: 'step_type' }] : []),
       ...(created_after ? [{ field: 'submission.created_at', op: 'gte', param: 'created_after' }] : []),
       ...(created_before ? [{ field: 'submission.created_at', op: 'lte', param: 'created_before' }] : []),
       ...(last_change_after ? [{ field: 'submission_status.last_change', op: 'gte', param: 'last_change_after' }] : []),
-      ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before' }] : [])
+      ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before' }] : []),
+      ...(typeof(hidden)=='undefined' ? [] : (hidden==='false' || hidden===false) ? [{ cmd: 'NOT submission.hidden'}] : [{ cmd: 'submission.hidden'}]),
     ]
   },
   ...(sort ? { sort } : {}),
