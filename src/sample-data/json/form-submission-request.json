@@ -132,12 +132,12 @@
                 {
                   "field": "funding_university",
                   "value": "true",
-                  "message":"Please provide a University organization."
+                  "message":"Please provide a University organization.  "
                 },
                 {
                   "field": "funding_other",
                   "value": "true",
-                  "message":"Please provide a other text value for the funding organization."
+                  "message":"Please provide a text value for the funding organization."
                 }
               ]
             }

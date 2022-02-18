@@ -137,7 +137,7 @@ INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_nsf',
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_usgs', 3, 'USGS', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_university', 4, 'University', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_other', 5, 'Other', 'checkbox', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organization_other', 6, 'If University or Other', 'text', '{}', '{}', '[{"field":"funding_university","value":"true","message":"Please provide a University organization."},{"field":"funding_other","value":"true","message":"Please provide a other text value for the funding organization."}]','[]',  False);
+INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organization_other', 6, 'If University or Other', 'text', '{}', '{}', '[{"field":"funding_university","value":"true","message":"Please provide a University organization.  "},{"field":"funding_other","value":"true","message":"Please provide a text value for the funding organization."}]','[]',  False);
 INSERT INTO input VALUES ('4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 'funding_program_name', 0, 'Program', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 'data_product_name_value', 0, 'Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('39701413-ac96-4b66-9c2f-2d9c08a18ed9', 'data_product_description', 0, 'Description', 'textarea', '{}', '{"rows":3,"cols":20}', '[]','[]',  True);
