@@ -5423,7 +5423,7 @@
           "required": true,
           "schema": {
             "type": "string",
-            "enum": ["initialize", "active", "apply", "metadata", "submit", "save", "review", "resume", "lock",
+            "enum": ["initialize", "active", "inactive", "apply", "metadata", "submit", "save", "review", "resume", "lock",
               "unlock", "withdraw", "restore"]
           }
         }
