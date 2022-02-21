@@ -11,12 +11,12 @@ const db = require('database-util');
 const msg = require('message-util');
 
 async function statusMethod(event, user) {
-  const hidden = event.operation==='inactive';
+  const hidden = event.operation === 'inactive';
   if (user.user_privileges.includes('REQUEST_ADMINREAD') || user.user_privileges.includes('ADMIN')) {
-    return db.submission.getAdminSubmissions({hidden: hidden});
+    return db.submission.getAdminSubmissions({ hidden });
   }
   if (user.user_privileges.includes('REQUEST_DAACREAD')) {
-    return db.submission.getDaacSubmissions({ user_id: user.id, hidden: hidden });
+    return db.submission.getDaacSubmissions({ user_id: user.id, hidden });
   }
   if (user.user_privileges.includes('REQUEST_READ')) {
     return db.submission.getUsersSubmissions({ user_id: user.id });
