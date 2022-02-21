@@ -2967,6 +2967,14 @@
             }
           },
           {
+            "name": "hidden",
+            "in": "query",
+            "description": "Descriptor as to whether or not this submission is withdrawn.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "sort",
             "in": "query",
             "description": "What field to sort results on.",
