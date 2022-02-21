@@ -23,7 +23,7 @@ const fieldMap = {
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
-  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
+  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"'
 };
 const refs = {
   initiator_ref: {
