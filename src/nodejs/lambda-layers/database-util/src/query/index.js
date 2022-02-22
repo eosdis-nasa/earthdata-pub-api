@@ -7,7 +7,7 @@ const parameterize = (query, params) => {
   const values = [];
   const text = query.replace(/\{\{(.*?)\}\}/g, (match, token) => {
     const value = token.split('.')
-      .reduce((obj, key) => key === '$' ? obj : obj[key] || null, params)
+      .reduce((obj, key) => key === '$' ? obj : obj[key]==null ? null : obj[key], params)
     values.push(value);
     return `$${values.length}`;
   });

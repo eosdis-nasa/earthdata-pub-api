@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -207,7 +207,7 @@ const getDaacSubmissions = (params) => sql.select({
         }
       }
     }]),
-    ...([{ field: 'submission.hidden', op: 'is_not', value: 'true'}])
+    ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
     ]
   },
   sort: fieldMap.last_change,
@@ -222,7 +222,7 @@ const getAdminSubmissions = (params) => sql.select({
   },
   where: {
     filters: [
-        ...([{ field: 'submission.hidden', op: 'is_not', value: 'true'}])
+        ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
     ]
   },
   sort: fieldMap.last_change,

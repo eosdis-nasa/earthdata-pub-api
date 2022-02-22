@@ -10,12 +10,13 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
-async function activeMethod(event, user) {
+async function statusMethod(event, user) {
+  const hidden = event.operation === 'inactive';
   if (user.user_privileges.includes('REQUEST_ADMINREAD') || user.user_privileges.includes('ADMIN')) {
-    return db.submission.getAdminSubmissions();
+    return db.submission.getAdminSubmissions({ hidden });
   }
   if (user.user_privileges.includes('REQUEST_DAACREAD')) {
-    return db.submission.getDaacSubmissions({ user_id: user.id });
+    return db.submission.getDaacSubmissions({ user_id: user.id, hidden });
   }
   if (user.user_privileges.includes('REQUEST_READ')) {
     return db.submission.getUsersSubmissions({ user_id: user.id });
@@ -185,7 +186,8 @@ async function restoreMethod(event, user) {
 
 const operations = {
   initialize: initializeMethod,
-  active: activeMethod,
+  active: statusMethod,
+  inactive: statusMethod,
   apply: applyMethod,
   metadata: metadataMethod,
   submit: submitMethod,
