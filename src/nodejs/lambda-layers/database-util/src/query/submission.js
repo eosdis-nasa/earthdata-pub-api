@@ -248,7 +248,8 @@ const findAll = ({
       ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name' }] : []),
       ...(step_name ? [{ field: 'step.step_name', param: 'step_name' }] : []),
       ...(status ? [{ field: 'step.status', param: 'status' }] : []),
-      ...(step_type ? [{ field: 'step.type', param: 'step_type' }] : []),
+      ...(step_type ? step_type.startsWith('!') ? [{ field: 'step.type', op: 'ne', value: `'${step_type.substring(1)}'` }] :
+          [{ field: 'step.type', param: 'step_type' }] : []),
       ...(created_after ? [{ field: 'submission.created_at', op: 'gte', param: 'created_after' }] : []),
       ...(created_before ? [{ field: 'submission.created_at', op: 'lte', param: 'created_before' }] : []),
       ...(last_change_after ? [{ field: 'submission_status.last_change', op: 'gte', param: 'last_change_after' }] : []),
