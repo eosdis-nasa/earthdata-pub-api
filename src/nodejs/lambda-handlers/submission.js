@@ -19,7 +19,7 @@ async function statusMethod(event, user) {
     return db.submission.getDaacSubmissions({ user_id: user.id, hidden });
   }
   if (user.user_privileges.includes('REQUEST_READ')) {
-    return db.submission.getUsersSubmissions({ user_id: user.id });
+    return db.submission.getUsersSubmissions({ user_id: user.id, hidden });
   }
 
   return [];
