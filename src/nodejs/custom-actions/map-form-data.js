@@ -107,7 +107,6 @@ module.export.execute = execute;
     "publication_poc_name": "a",
     "publication_poc_organization": "a",
     "publication_poc_email": "a",
-    "funding_organization_name": "NASA",
     "funding_program_name": "a",
     "data_product_name_value": "a",
     "data_product_description": "a",

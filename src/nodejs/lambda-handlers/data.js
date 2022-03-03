@@ -29,12 +29,17 @@ async function updateInput({ resource, params }) {
   return db[resource].updateInput(params);
 }
 
+async function updateSection({ resource, params }) {
+  return db[resource].updateSection(params);
+}
+
 const operations = {
   findById,
   findAll,
   seed,
   update,
-  updateInput
+  updateInput,
+  updateSection
 };
 
 async function handler(event) {

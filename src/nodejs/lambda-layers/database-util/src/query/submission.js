@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -11,9 +11,9 @@ const fieldMap = {
   user_id: 'submission.initiator_edpuser_id user_id',
   daac_id: 'submission.daac_id',
   conversation_id: 'submission.conversation_id',
+  hidden: 'submission.hidden',
   workflow_id: 'submission_status.workflow_id',
   workflow_name: 'workflow.long_name workflow_name',
-  daac_id: 'submission.daac_id',
   step_name: 'step.step_name',
   step_data: 'step.step_data',
   status: 'step.status',
@@ -171,7 +171,9 @@ const getUsersSubmissions = (params) => sql.select({
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   where: {
-    filters: [{ field: 'submission.initiator_edpuser_id', param: 'user_id' }]
+    filters: [
+      ...([{ field: 'submission.initiator_edpuser_id', param: 'user_id' }])
+    ]
   },
   sort: fieldMap.last_change,
   order: 'DESC'
@@ -184,7 +186,8 @@ const getDaacSubmissions = (params) => sql.select({
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
   where: {
-    filters: [{
+    filters: [
+      ...([{
       field: 'submission.daac_id',
       any: {
         values: {
@@ -203,7 +206,9 @@ const getDaacSubmissions = (params) => sql.select({
           }
         }
       }
-    }]
+    }]),
+    ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
+    ]
   },
   sort: fieldMap.last_change,
   order: 'DESC'
@@ -215,16 +220,21 @@ const getAdminSubmissions = (params) => sql.select({
     base: table,
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
+  where: {
+    filters: [
+        ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
+    ]
+  },
   sort: fieldMap.last_change,
   order: 'DESC'
 });
 
 const findAll = ({
   name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
-  status, created_before, created_after, last_change_before, last_change_after, sort, order,
+  status, created_before, created_after, last_change_before, last_change_after, hidden, sort, order,
   per_page, page
 }) => sql.select({
-  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change],
+  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change, fieldMap.hidden],
   from: {
     base: table,
     joins: [refs.submission_status, refs.step, refs.workflow]
@@ -238,11 +248,13 @@ const findAll = ({
       ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name' }] : []),
       ...(step_name ? [{ field: 'step.step_name', param: 'step_name' }] : []),
       ...(status ? [{ field: 'step.status', param: 'status' }] : []),
-      ...(step_type ? [{ field: 'step.step_type', param: 'step_type' }] : []),
+      ...(step_type ? step_type.startsWith('!') ? [{ field: 'step.type', op: 'ne', value: `'${step_type.substring(1)}'` }] :
+          [{ field: 'step.type', param: 'step_type' }] : []),
       ...(created_after ? [{ field: 'submission.created_at', op: 'gte', param: 'created_after' }] : []),
       ...(created_before ? [{ field: 'submission.created_at', op: 'lte', param: 'created_before' }] : []),
       ...(last_change_after ? [{ field: 'submission_status.last_change', op: 'gte', param: 'last_change_after' }] : []),
-      ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before' }] : [])
+      ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before' }] : []),
+      ...(typeof(hidden)=='undefined' ? [] : (hidden==='false' || hidden===false) ? [{ cmd: 'NOT submission.hidden'}] : [{ cmd: 'submission.hidden'}]),
     ]
   },
   ...(sort ? { sort } : {}),
@@ -389,6 +401,25 @@ step_name = (
 WHERE submission_status.id = {{id}}
 RETURNING *`;
 
+const reassignWorkflow = () => `
+WITH  close_current AS (UPDATE submission_workflow SET complete_time=NOW() WHERE id={{id}} RETURNING *),
+      update_status AS (UPDATE submission_status SET workflow_id={{workflowId}}, step_name='init', last_change=NOW() WHERE id ={{id}}),
+      open_new AS (INSERT INTO submission_workflow (id, workflow_id, start_time) VALUES ({{id}}, {{workflowId}}, NOW()))
+SELECT * from close_current;
+`;
+
+const withdrawSubmission = () => `
+UPDATE submission SET
+hidden='true'
+WHERE id={{id}}
+RETURNING *`;
+
+const restoreSubmission = () => `
+UPDATE submission SET
+hidden='false'
+WHERE id={{id}}
+RETURNING *`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -410,3 +441,6 @@ module.exports.getFormData = getFormData;
 module.exports.updateFormData = updateFormData;
 module.exports.applyWorkflow = applyWorkflow;
 module.exports.rollback = rollback;
+module.exports.reassignWorkflow = reassignWorkflow;
+module.exports.withdrawSubmission = withdrawSubmission;
+module.exports.restoreSubmission = restoreSubmission;

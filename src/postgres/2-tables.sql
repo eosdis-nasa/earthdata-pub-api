@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS section (
   list_order SMALLINT NOT NULL,
   required_if JSONB DEFAULT '[]'::JSONB,
   show_if JSONB DEFAULT '[]'::JSONB,
+  daac_id UUID DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE (form_id, list_order),
   FOREIGN KEY (form_id) REFERENCES form (id)
@@ -136,7 +137,8 @@ CREATE TABLE IF NOT EXISTS section_question (
   show_if JSONB DEFAULT '[]'::JSONB,
   PRIMARY KEY (section_id, question_id, list_order),
   FOREIGN KEY (section_id) REFERENCES section (id),
-  FOREIGN KEY (question_id) REFERENCES question (id)
+  FOREIGN KEY (question_id) REFERENCES question (id),
+  UNIQUE (section_id, question_id)
 );
 
 CREATE TABLE IF NOT EXISTS input (
@@ -344,6 +346,7 @@ CREATE TABLE IF NOT EXISTS submission (
   daac_id UUID,
   conversation_id UUID,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  hidden BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (id),
   FOREIGN KEY (initiator_edpuser_id) REFERENCES edpuser (id),
   FOREIGN KEY (daac_id) REFERENCES daac (id)

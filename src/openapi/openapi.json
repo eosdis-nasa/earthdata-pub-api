@@ -674,6 +674,14 @@
           "schema": {
             "$ref": "#/components/schemas/UUID"
           }
+        },
+        {
+          "name": "daac_id",
+          "in": "query",
+          "description": "DAAC ID to filter form sections",
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
         }
       ],
       "get": {
@@ -1957,6 +1965,128 @@
         "x-router-controller": "cors"
       }
     },
+    "/api/data/pages": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Create or update a page",
+        "description": "Create a new page or update an existing page",
+        "operationId": "pagePut",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Page"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataPages",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
     "/api/data/question/{id}": {
       "parameters": [
         {
@@ -2834,6 +2964,14 @@
             "description": "Maximum datetime for narrowing results by most recent activity.",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "hidden",
+            "in": "query",
+            "description": "Descriptor as to whether or not this submission is withdrawn.",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -3811,7 +3949,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\": \"send\", \"text\":\"$body.get('text')\", #if($body.containsKey('subject')),\"subject\":\"$body.get('subject')\"#end #if($body.containsKey('user_list')),\"user_list\":$input.json('$.user_list')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\": \"send\", \"text\":\"$body.get('text')\", #if($body.containsKey('subject'))\"subject\":\"$body.get('subject')\",#end #if($body.containsKey('user_list'))\"user_list\":$input.json('$.user_list'),#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3929,7 +4067,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('conversation_id')),\"conversation_id\":\"$body.get('conversation_id')\"#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5209,7 +5347,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\" #if($body.containsKey('id')),\"id\":\"$body.get('id')\"#end #if($body.containsKey('group_id')),\"group_id\":\"$body.get('group_id')\"#end #if($body.containsKey('role_id')),\"role_id\":\"$body.get('role_id')\"#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('role_id'))\"role_id\":\"$body.get('role_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5285,7 +5423,8 @@
           "required": true,
           "schema": {
             "type": "string",
-            "enum": ["initialize", "active", "apply", "metadata", "submit", "save", "review", "resume", "lock", "unlock"]
+            "enum": ["initialize", "active", "inactive", "apply", "metadata", "submit", "save", "review", "resume", "lock",
+              "unlock", "withdraw", "restore"]
           }
         }
       ],
@@ -5339,7 +5478,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\" #if($body.containsKey('id')),\"id\":\"$body.get('id')\"#end #if($body.containsKey('form_id')),\"form_id\":\"$body.get('form_id')\"#end #if($body.containsKey('daac_id')),\"daac_id\":\"$body.get('daac_id')\"#end #if($body.containsKey('workflow_id')),\"workflow_id\":\"$body.get('workflow_id')\"#end #if($body.containsKey('data')),\"data\":$input.json('$.data')#end #if($body.containsKey('metadata')),\"metadata\":$input.json('$.metadata')#end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('data'))\"data\":$input.json('$.data'),#end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'),#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -6217,7 +6356,7 @@
         ],
         "summary": "Get page content for the overview app main page",
         "description": "Returns the frontpage content",
-        "operationId": "pageFindOverview",
+        "operationId": "pageFindAll",
         "responses": {
           "200": {
             "description": "OK",
@@ -6256,7 +6395,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "{\"resource\":\"page\",\"operation\":\"findById\",\"params\":{\"page_key\": \"overview\"}}"
+            "application/json": "{\"resource\":\"page\",\"operation\":\"findAll\"}"
           },
           "responses": {
             "default": {

@@ -7,6 +7,7 @@ module.exports.model = (path) => ({
     description: { type: 'string' },
     form_name: { type: 'string' },
     text: { type: 'string' },
+    daac_id: { $ref: `#${path}UUID` },
     sections: {
       type: 'array',
       items: {

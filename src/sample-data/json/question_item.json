@@ -66,22 +66,51 @@
     "help": "This the organization that funded the creation of the data product.",
     "inputs": [
       {
-        "type": "radio",
-        "id": "funding_organization_name",
-        "label": "Organization",
-        "enums": [
-          "NASA",
-          "NOAA",
-          "NSF",
-          "USGS",
-          "University",
-          "Other"
-        ]
+        "type": "checkbox",
+        "control_id": "funding_nasa",
+        "label": "NASA"
+      },
+      {
+        "type": "checkbox",
+        "control_id": "funding_noaa",
+        "label": "NOAA"
+      },
+      {
+        "type": "checkbox",
+        "control_id": "funding_nsf",
+        "label": "NSF"
+      },
+      {
+        "type": "checkbox",
+        "control_id": "funding_usgs",
+        "label": "USGS"
+      },
+      {
+        "type": "checkbox",
+        "control_id": "funding_university",
+        "label": "University"
+      },
+      {
+        "type": "checkbox",
+        "control_id": "funding_other",
+        "label": "Other"
       },
       {
         "type": "text",
-        "id": "funding_organization_other",
-        "label": "University or Other"
+        "control_id": "funding_organization_other",
+        "label": "If University or Other",
+        "required_if": [
+          {
+            "field": "funding_university",
+            "value": "true",
+            "message":"Please provide a University organization.  "
+          },
+          {
+            "field": "funding_other",
+            "value": "true",
+            "message":"Please provide a text value for the funding organization."
+          }
+        ]
       }
     ],
     "id": "8a364184-42ac-48fe-b831-acb2eb08c728",
@@ -276,10 +305,22 @@
     "help": "This would be a DOI for this data product and not for a publication related to this data product.",
     "inputs": [
       {
+        "type": "checkbox",
+        "control_id": "data_product_doi_exists",
+        "label": "Has DOI"
+      },
+      {
         "type": "text",
         "control_id": "data_product_doi_value",
+        "label": "If yes, provide DOI",
         "validation_error_msg": "Please enter Digital Object Identifiers.",
-        "required": true
+        "required_if":[
+          {
+            "field":"data_product_doi_exists",
+            "value":"true",
+            "message":"You checked that this data product has a DOI."
+          }
+        ]
       }
     ],
     "id": "c9c73e88-837a-42d2-aa1a-50874a333607",
