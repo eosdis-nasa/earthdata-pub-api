@@ -39,7 +39,7 @@
             {
               "type": "text",
               "control_id": "data_producer_info_orcid",
-              "label": "Orcid",
+              "label": "ORCID",
               "validation_error_msg": "An Open Researcher and Contributor Identifier (ORCID) provides a persistent digital identifier to distinguish researchers and properly attribute their research outputs. For more information, see the ORCID web site (https://support.orcid.org)."
             }
           ],
@@ -76,7 +76,7 @@
             {
               "type": "text",
               "control_id": "publication_poc_orcid",
-              "label": "Orcid",
+              "label": "ORCID",
               "validation_error_msg": "An Open Researcher and Contributor Identifier (ORCID) provides a persistent digital identifier to distinguish researchers and properly attribute their research outputs. For more information, see the ORCID web site (https://support.orcid.org)."
             }
           ],
@@ -95,18 +95,34 @@
           "help": "",
           "inputs": [
             {
-              "type": "radio",
-              "control_id": "funding_organization_name",
-              "label": "Organization",
-              "enums": [
-                "NASA",
-                "NOAA",
-                "NSF",
-                "USGS",
-                "University",
-                "Other"
-              ],
-              "required": true
+              "type": "checkbox",
+              "control_id": "funding_nasa",
+              "label": "NASA"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "funding_noaa",
+              "label": "NOAA"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "funding_nsf",
+              "label": "NSF"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "funding_usgs",
+              "label": "USGS"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "funding_university",
+              "label": "University"
+            },
+            {
+              "type": "checkbox",
+              "control_id": "funding_other",
+              "label": "Other"
             },
             {
               "type": "text",
@@ -114,14 +130,14 @@
               "label": "If University or Other",
               "required_if": [
                 {
-                  "field": "funding_organization_name",
-                  "value": "University",
-                  "message":"Please provide a University or other text value for the funding organization."
+                  "field": "funding_university",
+                  "value": "true",
+                  "message":"Please provide a University organization.  "
                 },
                 {
-                  "field": "funding_organization_name",
-                  "value": "Other",
-                  "message":"Please provide a University or other text value for the funding organization."
+                  "field": "funding_other",
+                  "value": "true",
+                  "message":"Please provide a text value for the funding organization."
                 }
               ]
             }
@@ -196,11 +212,22 @@
           "help": "This would be the DOI for the actual data product and not for a publication related to this data product.",
           "inputs": [
             {
+              "type": "checkbox",
+              "control_id": "data_product_doi_exists",
+              "label": "Has DOI"
+            },
+            {
               "type": "text",
               "control_id": "data_product_doi_value",
-              "label": "DOI",
+              "label": "If yes, provide DOI",
               "validation_error_msg": "Please enter Digital Object Identifiers.",
-              "required": true
+              "required_if":[
+                {
+                  "field":"data_product_doi_exists",
+                  "value":"true",
+                  "message":"You checked that this data product has a DOI."
+                }
+              ]
             }
           ],
           "id": "c9c73e88-837a-42d2-aa1a-50874a333607",
