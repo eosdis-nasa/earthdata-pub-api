@@ -19,7 +19,7 @@ async function statusMethod(event, user) {
     return db.submission.getDaacSubmissions({ user_id: user.id, hidden });
   }
   if (user.user_privileges.includes('REQUEST_READ')) {
-    return db.submission.getUsersSubmissions({ user_id: user.id });
+    return db.submission.getUsersSubmissions({ user_id: user.id, hidden });
   }
 
   return [];
@@ -133,19 +133,16 @@ async function submitMethod(event, user) {
 async function reviewMethod(event, user) {
   const { id, approve } = event;
   const status = await db.submission.getState({ id });
-  if (status.step.type === 'review') {
-    const eventMessage = {
-      event_type: approve ? 'review_approved' : 'review_rejected',
-      submission_id: id,
-      conversation_id: status.conversation_id,
-      workflow_id: status.workflow_id,
-      user_id: user.id,
-      data: status.step.data
-    };
-    await msg.sendEvent(eventMessage);
-    return status;
-  }
-  return {};
+  const eventMessage = {
+    event_type: approve ? 'review_approved' : 'review_rejected',
+    submission_id: id,
+    conversation_id: status.conversation_id,
+    workflow_id: status.workflow_id,
+    user_id: user.id,
+    data: status.step.data
+  };
+  await msg.sendEvent(eventMessage);
+  return status;
 }
 
 async function lockMethod(event, user) {

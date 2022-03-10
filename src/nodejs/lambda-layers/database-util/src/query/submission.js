@@ -172,7 +172,8 @@ const getUsersSubmissions = (params) => sql.select({
   },
   where: {
     filters: [
-      ...([{ field: 'submission.initiator_edpuser_id', param: 'user_id' }])
+      ...([{ field: 'submission.initiator_edpuser_id', param: 'user_id' }]),
+      ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
     ]
   },
   sort: fieldMap.last_change,
