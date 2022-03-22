@@ -142,4 +142,19 @@ UPDATE input SET label='ORCID' WHERE question_id='f3e2eab9-6375-4e53-9cc2-3d16f3
 -- 3/22/22
 -- Content updates (EDPUB-451)
 DELETE FROM input WHERE control_id = 'data_production_latency_amount';
-UPDATE question SET long_name = 'Frequency of Data Deliveries' where question_id = '4c42796a-8ff1-444e-8fc5-82ccad82e5fb';
+UPDATE question SET long_name = 'Frequency of Data Deliveries' where id = '4c42796a-8ff1-444e-8fc5-82ccad82e5fb';
+UPDATE question SET help = 'The Primary Data Producer is often the Principal Investigator, Project Scientist, or Project Manager.' WHERE id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2';
+UPDATE question SET help = 'Examples include NASA programs such as MEaSUREs, Terrestrial Hydrology, Earth Venture, ACCESS, or AIST.' WHERE id = '4ecc885f-daf8-4bc6-a8cd-d30c2a54d085';
+UPDATE question SET help = 'This is how the DAAC will refer to this data product during the data publication process. The DAAC will work with you to develop an official data product title in compliance with DAAC/ESDIS standards.' WHERE id = 'f74c6c20-7483-40f9-a63e-58cc20ae8c8f';
+UPDATE question SET text = 'What is the science value of this data product?', help = 'For example, describe the benefits to the science community, the strengths compared to similar data products, and/or other data products that it compliments.' WHERE id = '7fd7bccf-5065-4033-9956-9e80bc99c205';
+UPDATE question SET text = 'Why are you requesting to have this data product archived and distributed at the DAAC?', help = 'For example, you are publishing a paper and the publisher requires data to be archived in a trusted repository, you have been instructed by a NASA program manager to archive your data at a DAAC, or you want this data product to be distributed with related data products.' WHERE id = 'bd00dbb7-1d3c-46fa-82a4-734236f4e06c';
+UPDATE question SET help = 'For example, you are publishing a paper, you are presenting at a conference, or your project has a requirement to publish data by a certain time.' WHERE id = 'f40956c3-9af8-400e-8dd8-c5e2965dcb8a';
+UPDATE question SET text = 'Are there any existing documents that you would like to have included in the review of your data product? If "Yes", please provide URLs to the documents.' WHERE id = 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9';
+UPDATE question SET long_name = 'Spatial Coverage', help = 'Examples include Global, Northern Hemisphere, Alaska, Korean Peninsula, East Tropical Pacific, or Gulf Stream.' WHERE id = '228cb0d6-78fb-449a-8061-b1e6fb3f59d1';
+UPDATE question SET long_name = 'Temporal Coverage' WHERE id = '4f2dd369-d865-47ba-8504-8694493f129f';
+UPDATE question SET text = 'Is there any additional information about the temporal coverage that will help the DAAC understand this data product?' WHERE id = '4f2dd369-d865-47ba-8504-8694493f128f';
+UPDATE question SET help = 'Please describe the general nature of the geographic area. For example, a data file covers a single glacier, a 5 x 5m tile, a swath of 25 km across track for a single orbit, a single flight over the study campaing region, or the entire globe.' WHERE id = '91577abc-a59c-40f7-b0e6-f954542e6b19';
+UPDATE question SET text = 'Is there any additional information about the spatial coverage that will help the DAAC understand this data product?' WHERE id = 'd1ef0a6f-284e-40a7-9248-75dd8f1f0ded';
+UPDATE question SET text = 'What is the NASA Data Processing Level of this data product?', help = 'For descriptoin of the prcessing levels, please refer to the Earthdata Data Processing Levels page. <https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy/data-levels>' WHERE id = '0a2fd2eb-62de-40e1-8143-3e8087a4062d';
+UPDATE input SET enums = '["Level 0","Level 1A","Level 1B","Level 1C","Level 2","Level 2A","Level 3","Level 3A","Level 4","Other/Unsure"]' WHERE control_id = 'data_processing_level';
+UPDATE question SET long_name = 'Number of Data Files', help = 'If the final data product is not complete, please provide your best estimate of the total number of data files.' WHERE id = '40672516-2220-4edc-8c1b-fd9f7e0b979e';
