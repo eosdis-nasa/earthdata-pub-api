@@ -1,3 +1,8 @@
+-- This file is used to update existing DBs. If you are deploying from scratch,
+-- this file will error out; however, this won't be an issue because all lines of
+-- this file should be captured in 7-seed.sql
+
+
 -- EXAMPLES
 -- Create table if not exists:
 --     CREATE TABLE IF NOT EXISTS table_name (column_name data_type column_constraint, table_constraint);
@@ -136,3 +141,17 @@ INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organ
 UPDATE input SET control_id='data_product_doi_exists', label='Has DOI', type='checkbox', required=False WHERE question_id='c9c73e88-837a-42d2-aa1a-50874a333607' AND list_order=0;
 INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi_value', 1, 'If yes, provide DOI', 'text', '{}', '{}', '[{"field":"data_product_doi_exists","value":"true","message":"You checked that this data product has a DOI."}]','[]',  False);
 UPDATE input SET label='ORCID' WHERE question_id='f3e2eab9-6375-4e53-9cc2-3d16f318d332' AND list_order=3;
+
+
+-- 3/22/22
+-- DB Seed Updates
+-- This update should be removed when actions/services have been integrated into EDPub.
+UPDATE step SET type='action', data='{"rollback":"data_product_information_form_review","type": "review"}' WHERE step_name='start_qa';
+UPDATE step SET type='action', data='{"rollback":"start_qa","type": "action"}' WHERE step_name='complete_qa';
+UPDATE step SET type='action', data='{"rollback":"complete_qa","type": "action"}' WHERE step_name='map_to_meditor';
+UPDATE step SET type='action', data='{"rollback":"map_to_meditor","type": "action"}' WHERE step_name='send_to_meditor';
+UPDATE step SET type='action', data='{"rollback":"send_to_meditor","type": "action"}' WHERE step_name='start_meditor_editing';
+UPDATE step SET type='action', data='{"rollback":"start_meditor_editing","type": "action"}' WHERE step_name='complete_meditor_editing';
+UPDATE step SET type='action', data='{"rollback":"complete_meditor_editing","type": "action"}' WHERE step_name='get_from_meditor';
+UPDATE step SET type='action', data='{"rollback":"get_from_meditor","type": "action"}' WHERE step_name='map_from_meditor';
+UPDATE step SET type='action', data='{"rollback":"map_from_meditor","type": "action"}' WHERE step_name='publish_to_cmr';
