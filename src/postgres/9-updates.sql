@@ -9,6 +9,8 @@
 --     UPDATE table_name SET column_name = 'value' WHERE condition;
 -- Simple addition to db seed
 --     INSERT INTO table_name (column_name) VALUES ('actual_value')
+-- Delete row from table:
+---    DELETE FROM table_name WHERE column_name = 'actual_value';
 
 -- 2/17/22
 -- DB Schema Updates
@@ -136,3 +138,8 @@ INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organ
 UPDATE input SET control_id='data_product_doi_exists', label='Has DOI', type='checkbox', required=False WHERE question_id='c9c73e88-837a-42d2-aa1a-50874a333607' AND list_order=0;
 INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi_value', 1, 'If yes, provide DOI', 'text', '{}', '{}', '[{"field":"data_product_doi_exists","value":"true","message":"You checked that this data product has a DOI."}]','[]',  False);
 UPDATE input SET label='ORCID' WHERE question_id='f3e2eab9-6375-4e53-9cc2-3d16f318d332' AND list_order=3;
+
+-- 3/22/22
+-- Content updates (EDPUB-451)
+DELETE FROM input WHERE control_id = 'data_production_latency_amount';
+UPDATE question SET long_name = 'Frequency of Data Deliveries' where question_id = '4c42796a-8ff1-444e-8fc5-82ccad82e5fb';
