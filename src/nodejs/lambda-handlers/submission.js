@@ -135,7 +135,7 @@ async function reviewMethod(event, user) {
   const { id, approve } = event;
   const status = await db.submission.getState({ id });
   const eventMessage = {
-    event_type: approve ? 'review_approved' : 'review_rejected',
+    event_type: approve && approve === 'true' ? 'review_approved' : 'review_rejected',
     submission_id: id,
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
