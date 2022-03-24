@@ -30,7 +30,7 @@ app.get('/auth/user_list', local.userList);
 app.get('/auth/group_list', local.groupList);
 app.get('/auth/role_list', local.roleList);
 app.get('/reseed', local.reseed);
-app.get('/favicon.ico', local.favico);
+app.get('/favicon.svg', local.favico);
 app.post('/goaws/workflow_consumer', local.handleWorkflow);
 app.post('/goaws/metrics_consumer', local.handleMetrics);
 app.post('/goaws/notification_consumer', local.handleNotification);
