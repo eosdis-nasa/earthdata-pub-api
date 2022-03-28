@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+- Updated content to display links in forms properly.
 - Updated Review Method not to use step type in condition.
 - Added content changes. Changed 'Orcid' to 'ORCID', the inputs for data_product_doi, and the inputs for 'funding organization'
 - Added additional workflows to test both forms and to assign workflows.
