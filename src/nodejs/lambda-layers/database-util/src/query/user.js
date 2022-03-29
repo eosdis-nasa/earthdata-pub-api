@@ -219,21 +219,31 @@ const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
   ...(page ? { offset: page } : {})
 });
 
-const findAll = (params) => sql.select({
-  fields: fields(allFields),
-  from: {
-    base: table,
-    joins: [
-      refs.group,
-      refs.role,
-      refs.user_permission_submission,
-      refs.user_subscription_action,
-      refs.user_subscription_form,
-      refs.user_subscription_service,
-      refs.user_subscription_submission,
-      refs.user_subscription_workflow
-    ]
-  }
+const findAll = ({name, email, sort, order, per_page, page}) => sql.select({
+    fields: fields(allFields),
+    from: {
+      base: table,
+      joins: [
+        refs.group,
+        refs.role,
+        refs.user_permission_submission,
+        refs.user_subscription_action,
+        refs.user_subscription_form,
+        refs.user_subscription_service,
+        refs.user_subscription_submission,
+        refs.user_subscription_workflow
+      ]
+    },
+    where: {
+      filters: [
+          ...(name ? [{ field: 'edpuser.name', like: 'name' }] : []),
+          ...(email ? [{ field: 'edpuser.email', like: 'email'}] : [])
+      ]
+    },
+    ...(sort ? { sort } : {}),
+    ...(order ? { order } : {}),
+    ...(per_page ? { limit: per_page } : {}),
+    ...(page ? { offset: page } : {})
 });
 
 const findById = (params) => find(params);

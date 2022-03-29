@@ -3263,6 +3263,22 @@
         "operationId": "userFindAll",
         "parameters": [
           {
+            "name": "name",
+            "in": "query",
+            "description": "Search names using postgres ilike",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Search emails using postgres ilike",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "sort",
             "in": "query",
             "description": "What field to sort results on.",

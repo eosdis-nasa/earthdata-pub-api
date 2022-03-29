@@ -384,12 +384,12 @@ module.exports.userFindAll = function userFindAll(req, res, next) {
     resource: 'user',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+          name: params.name.value,
+          email: params.email.value,
+          sort: params.sort.value,
+          order: params.order.value,
+          per_page: params.per_page.value,
+          page: params.page.value
     },
     context: { user_id: req.user_id }
   };
