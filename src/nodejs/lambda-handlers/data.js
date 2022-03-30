@@ -25,12 +25,8 @@ async function update({ resource, params }) {
   return db[resource].update(params);
 }
 
-async function updateInput({ resource, params }) {
-  return db[resource].updateInput(params);
-}
-
-async function updateSection({ resource, params }) {
-  return db[resource].updateSection(params);
+async function add({ resource, params }) {
+  return db[resource].add(params);
 }
 
 const operations = {
@@ -38,8 +34,7 @@ const operations = {
   findAll,
   seed,
   update,
-  updateInput,
-  updateSection
+  add
 };
 
 async function handler(event) {

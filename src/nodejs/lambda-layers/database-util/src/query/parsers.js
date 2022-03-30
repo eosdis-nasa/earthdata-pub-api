@@ -52,3 +52,4 @@ module.exports.addUserToConversation = one;
 module.exports.reassignWorkflow = one;
 module.exports.withdrawSubmission = one;
 module.exports.restoreSubmission = one;
+module.exports.add = one;

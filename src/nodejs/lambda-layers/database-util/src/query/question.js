@@ -107,7 +107,6 @@ const findAllEx = () => `
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
 const findById = () => `${findAllEx()} WHERE question.id = {{id}}`;
 const findByName = () => `${findAllEx()} WHERE question.short_name = {{short_name}}`;
-
 const update = () => `
   INSERT INTO question (id, short_name, version, long_name, text, help, required, created_at)
   VALUES ({{payload.id}}, {{payload.short_name}}, {{payload.version}}, {{payload.long_name}}, {{payload.text}},
@@ -116,7 +115,7 @@ const update = () => `
   long_name = EXCLUDED.long_name, text = EXCLUDED.text, help = EXCLUDED.help,
   required = EXCLUDED.required, created_at = EXCLUDED.created_at
   RETURNING *`;
-const updateSection = () => `
+const add = () => `
   WITH new_question AS (${update()}),
   new_section_question AS (INSERT INTO section_question (section_id, question_id, list_order, required_if, show_if)
   VALUES ({{payload.section_question.section_id}}, {{payload.section_question.question_id}}, 
@@ -126,15 +125,6 @@ const updateSection = () => `
   required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if
   RETURNING *)
   SELECT * FROM new_question`;
-const updateInput = () => `
-  INSERT INTO input (question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required)
-  VALUES ({{questionId}}, {{input.control_id}}, {{input.list_order}}, {{input.label}}, {{input.type}},
-  {{input.enums}}, {{input.attributes}}, {{input.required_if}}, {{input.show_if}}, {{input.required}})
-  ON CONFLICT(question_id, control_id) WHERE ((question_id)::text = {{input.question_id}}::text) DO UPDATE SET
-  list_order = EXCLUDED.list_order, label = EXCLUDED.label, type = EXCLUDED.type, enums = EXCLUDED.enums, 
-  attributes = EXCLUDED.attributes,  required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if, 
-  required = EXCLUDED.required
-  RETURNING *`;
 
 module.exports.sectionJoin = sectionJoin;
 
@@ -143,5 +133,4 @@ module.exports.findAllEx = findAllEx;
 module.exports.findByName = findByName;
 module.exports.findById = findById;
 module.exports.update = update;
-module.exports.updateInput = updateInput;
-module.exports.updateSection = updateSection;
+module.exports.add = add;

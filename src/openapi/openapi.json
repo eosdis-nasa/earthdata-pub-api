@@ -2164,6 +2164,78 @@
         },
         "x-router-controller": "proxy"
       },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Update a question",
+        "description": "Updates an existing question.",
+        "operationId": "questionUpdate",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Question"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"update\",\"params\":{\"payload\": \"$req.path.get('payload')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
       "options": {
         "tags": [
           "cors"
@@ -2327,9 +2399,9 @@
         "tags": [
           "data"
         ],
-        "summary": "Create or update an question",
-        "description": "Create a new question or update an existing question",
-        "operationId": "questionPut",
+        "summary": "Creates a question",
+        "description": "Creates a new question.",
+        "operationId": "questionAdd",
         "requestBody": {
           "x-name": "payload",
           "content": {
@@ -2379,6 +2451,9 @@
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"add\",\"params\":{\"payload\": \"$req.path.get('payload')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
           "responses": {
             "default": {
               "statusCode": "200",
