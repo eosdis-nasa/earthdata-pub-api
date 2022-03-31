@@ -33,10 +33,10 @@
   },
   {
     "id": "ef229725-1cad-485e-a72b-a276d2ca3175",
-    "long_name": "Global Hydrology Resource Center (GHRC) Distributed Active Archive Center (DAAC)",
+    "long_name": "Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC)",
     "url": "https://ghrc.nsstc.nasa.gov/home/",
     "short_name": "GHRC DAAC",
-    "description": "NASA's Global Hydrology Resource Center (GHRC) Distributed Active Archive Center (DAAC) is a joint venture of NASA's Marshall Space Flight Center and the Information Technology and Systems Center (ITSC) located within the University of Alabama in Huntsville. GHRC DAAC was established in 1991 and is located at the National Space Science and Technology Center on the UAH campus.\nGHRC DAAC provides a comprehensive active archive of both data and knowledge augmentation services, with a focus on hazardous weather, its governing dynamical and physical processes, and associated applications.\nWith this broad mandate, GHRC DAAC focuses on lightning, tropical cyclones and storm-induced hazards through integrated collections of satellite, airborne, and in-situ data sets.",
+    "description": "NASA's Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC) is a joint venture of NASA's Marshall Space Flight Center and the Information Technology and Systems Center (ITSC) located within the University of Alabama in Huntsville. GHRC DAAC was established in 1991 and is located at the National Space Science and Technology Center on the UAH campus. GHRC DAAC provides a comprehensive active archive of both data and knowledge augmentation services, with a focus on hazardous weather, its governing dynamical and physical processes, and associated applications.\nWith this broad mandate, GHRC DAAC focuses on lightning, tropical cyclones and storm-induced hazards through integrated collections of satellite, airborne, and in-situ data sets.",
     "discipline": "Lightning, Severe Weather Interactions, Atmospheric Convection, Hurricanes, Storm-induced Hazards"
   },
   {
