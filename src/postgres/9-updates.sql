@@ -175,3 +175,16 @@ UPDATE question SET text = 'Is there any additional information about the spatia
 UPDATE question SET text = 'What is the NASA Data Processing Level of this data product?', help = 'For description of the processing levels, please refer to the Earthdata Data Processing Levels page. <https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy/data-levels>' WHERE id = '0a2fd2eb-62de-40e1-8143-3e8087a4062d';
 UPDATE input SET enums = '["Level 0","Level 1A","Level 1B","Level 1C","Level 2","Level 2A","Level 3","Level 3A","Level 4","Other/Unsure"]' WHERE control_id = 'data_processing_level';
 UPDATE question SET long_name = 'Number of Data Files', help = 'If the final data product is not complete, please provide your best estimate of the total number of data files.' WHERE id = '40672516-2220-4edc-8c1b-fd9f7e0b979e';
+
+
+UPDATE question SET help = 'For a description of the open data policy, please refer to the <a href="https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy" target=_blank>NASA Earthdata Data and Information Policy web page <i class="fas fa-external-link-alt"></i></a>.' WHERE id = '2dd6c8b1-22a8-4866-91c3-da9b4ce849dc';
+
+UPDATE question SET help = 'For a list of NASA-approved data formats, please refer to the <a href="https://earthdata.nasa.gov/esdis/eso/standards-and-references#data-formats" target=_blank>NASA Earthdata Standards and Practices web page <i class="fas fa-external-link-alt"></i></a>' WHERE id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27';
+
+UPDATE question SET text = 'What is the NASA Data Processing Level of this data product?' WHERE id = '0a2fd2eb-62de-40e1-8143-3e8087a4062d';
+
+UPDATE question SET help = 'For description of the processing levels, please refer to the <a href="https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy/data-levels" target=_blank>Earthdata Data Processing Levels page <i class="fas fa-external-link-alt"></i></a>' WHERE id = '0a2fd2eb-62de-40e1-8143-3e8087a4062d';
+
+UPDATE question SET help = 'For a list of NASA-approved data formats, please refer to the <a href="https://earthdata.nasa.gov/esdis/eso/standards-and-references#data-formats" target=_blank>NASA Earthdata Standards and Practices web page <i class="fas fa-external-link-alt"></i></a>.' WHERE id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27';
+
+UPDATE question SET help = 'The DAAC will use this information to construct a data product citation, which is a reference to data for the purpose of credit attribution and facilitation of data access.  <br><br>Example data product citations: <br>McGill, Matthew , Dennis L Hlavka, John E. Yorks and Patrick A. Selmer. 2019. GOES-R PLT Cloud Physics LiDAR (CPL). Dataset available online from the NASA Global Hydrology Resource Center DAAC, Huntsville, Alabama, U.S.A. DOI: http://dx.doi.org/10.5067/GOESRPLT/CPL/DATA101<br><br>CARVE Science Team. 2017. CARVE: In-flight Photos from the CARVE Aircraft, Alaska, 2013-2015. ORNL DAAC, Oak Ridge, Tennessee, USA. https://doi.org/10.3334/ORNLDAAC/1435' WHERE id = '8a364184-42ac-48fe-b831-acb2eb08c729';

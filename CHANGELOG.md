@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+## 1.0.0 - 2022-03-29
+
+- EDPub MVP release
+
+## 0.1.0
+
+- Updated content to display links in forms properly.
 - Updated Review Method not to use step type in condition.
 - Added content changes. Changed 'Orcid' to 'ORCID', the inputs for data_product_doi, and the inputs for 'funding organization'
 - Added additional workflows to test both forms and to assign workflows.
@@ -23,6 +30,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added method for adding users to conversation
 - Terraform cleanups and metrics report fix
 
-## 1.0.0 - 2021-08-01
+## 0.0.0 - 2021-08-01
 
 - Changelog initiated
