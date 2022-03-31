@@ -173,7 +173,7 @@ function reseed(req, res) {
 
 function favico(req, res) {
   res.status(200);
-  res.sendFile(`${__dirname}/static/favicon.ico`);
+  res.sendFile(`${__dirname}/static/favicon.svg`);
 }
 
 function handleWorkflow(req, res) {

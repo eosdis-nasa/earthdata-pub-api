@@ -232,7 +232,7 @@ module.exports.questionPut = function questionPut(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'question',
-    operation: params.payload.value.section_question ? 'updateSection' : 'update',
+    operation: Object.keys(params.payload.value.section_question).length ? 'updateSection' : 'update',
     params: {
       payload: params.payload.value,
       requiredBool: params.payload.value.required ? 'true' : 'false',
