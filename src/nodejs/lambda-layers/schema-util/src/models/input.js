@@ -1,4 +1,4 @@
-module.exports.model = (path) => ({
+module.exports.model = () => ({
     description: 'A grouping of inputs related to a form question.',
     type: 'object',
     properties: {
