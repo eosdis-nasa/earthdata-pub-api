@@ -29,13 +29,13 @@ async function add({ resource, params }) {
   return db[resource].add(params);
 }
 
-async function updateInputs({resource, params}) {
-  const promises = params.inputs.map(async (inputElem) => {
-    return await db[resource].updateInput({
+async function updateInputs({ resource, params }) {
+  const promises = params.inputs.map(async (inputElem) => db[resource].updateInput(
+    {
       input: inputElem,
       questionId: params.questionId
-    });
-  });
+    }
+  ));
   return Promise.all(promises);
 }
 
