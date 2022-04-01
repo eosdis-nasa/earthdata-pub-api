@@ -2357,7 +2357,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "{\"resource\":\"question\",\"operation\":\"update\",\"params\":{\"payload\": $input.json(\"$\")},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"updateInputs\",\"params\":{\"inputs\": $input.json(\"$\"), \"questionId\": \"$req.path.get(\"id\")\"}}"
           },
           "responses": {
             "default": {
