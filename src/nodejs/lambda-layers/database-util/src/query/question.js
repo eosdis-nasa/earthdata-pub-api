@@ -125,6 +125,15 @@ const add = () => `
   required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if
   RETURNING *)
   SELECT * FROM new_question`;
+const updateInput = () => `
+  INSERT INTO input (question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required)
+  VALUES ({{questionId}}, {{input.control_id}}, {{input.list_order}}, {{input.label}}, {{input.type}},
+  {{input.enums}}, {{input.attributes}}, {{input.required_if}}, {{input.show_if}}, {{input.required}})
+  ON CONFLICT(question_id, control_id) WHERE ((question_id)::text = {{input.question_id}}::text) DO UPDATE SET
+  list_order = EXCLUDED.list_order, label = EXCLUDED.label, type = EXCLUDED.type, enums = EXCLUDED.enums, 
+  attributes = EXCLUDED.attributes,  required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if, 
+  required = EXCLUDED.required
+  RETURNING *`;
 
 module.exports.sectionJoin = sectionJoin;
 
@@ -134,3 +143,4 @@ module.exports.findByName = findByName;
 module.exports.findById = findById;
 module.exports.update = update;
 module.exports.add = add;
+module.exports.updateInput = updateInput;
