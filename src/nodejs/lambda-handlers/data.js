@@ -25,12 +25,18 @@ async function update({ resource, params }) {
   return db[resource].update(params);
 }
 
-async function updateInput({ resource, params }) {
-  return db[resource].updateInput(params);
+async function add({ resource, params }) {
+  return db[resource].add(params);
 }
 
-async function updateSection({ resource, params }) {
-  return db[resource].updateSection(params);
+async function updateInputs({ resource, params }) {
+  const promises = params.inputs.map(async (inputElem) => db[resource].updateInput(
+    {
+      input: inputElem,
+      questionId: params.questionId
+    }
+  ));
+  return Promise.all(promises);
 }
 
 const operations = {
@@ -38,8 +44,8 @@ const operations = {
   findAll,
   seed,
   update,
-  updateInput,
-  updateSection
+  add,
+  updateInputs
 };
 
 async function handler(event) {
