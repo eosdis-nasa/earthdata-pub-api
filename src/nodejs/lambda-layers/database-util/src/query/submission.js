@@ -181,37 +181,64 @@ const getUsersSubmissions = (params) => sql.select({
 });
 
 const getDaacSubmissions = (params) => sql.select({
-  fields: fields(allFields),
+  fields: ['*'],
   from: {
+      base: `(${sql.select({
+        fields: fields(allFields),
+    from: {
     base: table,
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
-  },
-  where: {
-    filters: [
-      ...([{
-      field: 'submission.daac_id',
-      any: {
-        values: {
-          type: 'select',
-          fields: ['daac.id'],
-          from: {
-            base: 'daac',
-            joins: [{
-              type: 'left_join',
-              src: 'edpuser_edpgroup',
-              on: { left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id' }
-            }]
-          },
-          where: {
-            filters: [{ field: 'edpuser_edpgroup.edpuser_id', param: 'user_id' }]
-          }
+    },
+        where: {
+          filters: [
+            { field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true' }
+          ]
         }
-      }
-    }]),
-    ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
-    ]
+      })}) new_query`
+      },
+  where: {
+      conjunction: 'OR',
+      filters: [
+        ...(params.user_id ? [{cmd: `initiator ->> 'id' = {{user_id}}`}] : []),
+        ...(params.daac ? [{
+          field: 'conversation_id',
+          any: {
+          values: {
+            type: 'select',
+            fields: ['submission.conversation_id'],
+            from : {
+              base: 'submission'
+            },
+            where: {
+              filters: [
+              ...([{
+                field: 'submission.daac_id',
+                any: {
+                values: {
+                  type: 'select',
+                  fields: ['daac.id'],
+                  from: {
+                  base: 'daac',
+                  joins: [{
+                  type: 'left_join',
+                  src: 'edpuser_edpgroup',
+                  on: { left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id' }
+                  }]
+                  },
+                  where: {
+                  filters: [{ field: 'edpuser_edpgroup.edpuser_id', param: 'user_id' }]
+                  }
+                }
+                }
+              }])
+              ]
+            }
+          }
+          }
+        }] : [])
+      ]
   },
-  sort: fieldMap.last_change,
+  sort: 'last_change',
   order: 'DESC'
 });
 
