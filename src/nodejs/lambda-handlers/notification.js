@@ -45,16 +45,39 @@ async function addUserMethod(params) {
 }
 
 async function conversationsMethod(params) {
-  const note = await db.note.getConversationList({ user_id: params.context.user_id });
-  return note;
+  const userInfo = await db.user.findById({id: params.context.user_id});
+  if (userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
+    return await db.note.getConversationList();
+  }
+  if (userInfo.user_privileges.includes('REQUEST_DAACREAD')) {
+    return await db.note.getConversationList({
+      user_id: params.context.user_id,
+      daac: true
+    });
+  }
+  return await db.note.getConversationList({
+    user_id: params.context.user_id
+  });
 }
 
 async function conversationMethod(params) {
-  const conversation = await db.note.readConversation({
+  const userInfo = await db.user.findById({id: params.context.user_id});
+  if (userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
+    return await db.note.readConversation({
+      conversation_id: params.conversation_id
+    });
+  }
+  if (userInfo.user_privileges.includes('REQUEST_DAACREAD')) {
+    return await db.note.readConversation({
+      user_id: params.context.user_id,
+      daac: true,
+      conversation_id: params.conversation_id
+    });
+  }
+  return await db.note.readConversation({
     user_id: params.context.user_id,
     conversation_id: params.conversation_id
   });
-  return conversation;
 }
 
 const operations = {
