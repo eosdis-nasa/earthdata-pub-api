@@ -1,6 +1,6 @@
 FROM amazon/aws-cli:latest as aws
 
-FROM node:12.16.1
+FROM node:14.19.1
 
 RUN \
 apt-get update -y && \
