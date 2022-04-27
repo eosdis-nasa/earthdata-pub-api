@@ -367,55 +367,33 @@ INSERT INTO workflow VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_produ
 INSERT INTO workflow VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 1, 'Assign a Workflow', 'This is the default initial workflow.');
 INSERT INTO workflow VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'idealized_workflow', 1, 'Idealized Workflow', 'This is an idealize, yet realistic workflow for the purposes of testing and demonstration.');
 
--- Step(workflow_id, step_name, type, action_id, form_id, service_id, data)
-INSERT INTO step(workflow_id, step_name, type) VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'init');
-INSERT INTO step(workflow_id, step_name, type) VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'close', 'close');
-INSERT INTO step(workflow_id, step_name, type) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'init');
-INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_accession_request_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
-INSERT INTO step(workflow_id, step_name, type) VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'close', 'close');
-
-INSERT INTO step(workflow_id, step_name, type) VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'init', 'init');
-INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_accession_request_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
-INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_product_information_form', 'form', '19025579-99ca-4344-8610-704dae626343');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_product_information_form_review', 'review', '{"rollback":"data_product_information_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
-INSERT INTO step(workflow_id, step_name, type) VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'close', 'close');
-
-INSERT INTO step(workflow_id, step_name, type) VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'init', 'init');
-INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_product_information_form', 'form', '19025579-99ca-4344-8610-704dae626343');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_product_information_form_review', 'review', '{"rollback":"data_product_information_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
-INSERT INTO step(workflow_id, step_name, type) VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'close', 'close');
-
-INSERT INTO step(workflow_id, step_name, type) VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'init', 'init');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 'action', '{"rollback":"init","type": "init"}');
-INSERT INTO step(workflow_id, step_name, type) VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'close', 'close');
-
-INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'init', 'init');
-INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
-INSERT INTO step(workflow_id, step_name, type, form_id) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_product_information_form', 'form', '19025579-99ca-4344-8610-704dae626343');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_product_information_form_review', 'review', '{"rollback":"data_product_information_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
-INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'close', 'close');
+-- Step(step_name, type, action_id, form_id, service_id, data)
+INSERT INTO step(step_name, type) VALUES ('init', 'init');
+INSERT INTO step(step_name, type) VALUES ('close', 'close');
+INSERT INTO step(step_name, type, form_id) VALUES ('data_accession_request_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
+INSERT INTO step(step_name, type, data) VALUES ('data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
+INSERT INTO step(step_name, type, form_id) VALUES ('data_product_information_form', 'form', '19025579-99ca-4344-8610-704dae626343');
+INSERT INTO step(step_name, type, data) VALUES ('data_product_information_form_review', 'review', '{"rollback":"data_product_information_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(step_name, type, data) VALUES ('assign_a_workflow', 'action', '{"rollback":"init","type": "init"}');
 -- The following should be uncommented and the lines after should be removed once actions/services are working properly in EDPub
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_qa', 'action');
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_qa', 'action');
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_to_meditor', 'service');
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'send_to_meditor', 'service');
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_meditor_editing', 'action');
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_meditor_editing', 'action');
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'get_from_meditor', 'service');
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_from_meditor', 'service');
--- INSERT INTO step(workflow_id, step_name, type) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'publish_to_cmr', 'service');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_qa', 'action', '{"rollback":"data_product_information_form_review","type": "review"}');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_qa', 'action', '{"rollback":"start_qa","type": "action"}');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_to_meditor', 'action', '{"rollback":"complete_qa","type": "action"}');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'send_to_meditor', 'action', '{"rollback":"map_to_meditor","type": "action"}');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_meditor_editing', 'action', '{"rollback":"send_to_meditor","type": "action"}');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_meditor_editing', 'action', '{"rollback":"start_meditor_editing","type": "action"}');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'get_from_meditor', 'action', '{"rollback":"complete_meditor_editing","type": "action"}');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_from_meditor', 'action', '{"rollback":"get_from_meditor","type": "action"}');
-INSERT INTO step(workflow_id, step_name, type, data) VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'publish_to_cmr', 'action', '{"rollback":"map_from_meditor","type": "action"}');
+-- INSERT INTO step(step_name, type) VALUES ('start_qa', 'action');
+-- INSERT INTO step(step_name, type) VALUES ('complete_qa', 'action');
+-- INSERT INTO step(step_name, type) VALUES ('map_to_meditor', 'service');
+-- INSERT INTO step(step_name, type) VALUES ('send_to_meditor', 'service');
+-- INSERT INTO step(step_name, type) VALUES ('start_meditor_editing', 'action');
+-- INSERT INTO step(step_name, type) VALUES ('complete_meditor_editing', 'action');
+-- INSERT INTO step(step_name, type) VALUES ('get_from_meditor', 'service');
+-- INSERT INTO step(step_name, type) VALUES ('map_from_meditor', 'service');
+-- INSERT INTO step(step_name, type) VALUES ('publish_to_cmr', 'service');
+INSERT INTO step(step_name, type, data) VALUES ('start_qa', 'action', '{"rollback":"data_product_information_form_review","type": "review"}');
+INSERT INTO step(step_name, type, data) VALUES ('complete_qa', 'action', '{"rollback":"start_qa","type": "action"}');
+INSERT INTO step(step_name, type, data) VALUES ('map_to_meditor', 'action', '{"rollback":"complete_qa","type": "action"}');
+INSERT INTO step(step_name, type, data) VALUES ('send_to_meditor', 'action', '{"rollback":"map_to_meditor","type": "action"}');
+INSERT INTO step(step_name, type, data) VALUES ('start_meditor_editing', 'action', '{"rollback":"send_to_meditor","type": "action"}');
+INSERT INTO step(step_name, type, data) VALUES ('complete_meditor_editing', 'action', '{"rollback":"start_meditor_editing","type": "action"}');
+INSERT INTO step(step_name, type, data) VALUES ('get_from_meditor', 'action', '{"rollback":"complete_meditor_editing","type": "action"}');
+INSERT INTO step(step_name, type, data) VALUES ('map_from_meditor', 'action', '{"rollback":"get_from_meditor","type": "action"}');
+INSERT INTO step(step_name, type, data) VALUES ('publish_to_cmr', 'action', '{"rollback":"map_from_meditor","type": "action"}');
 
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'close');

@@ -111,7 +111,6 @@ const refs = {
     src: {
       type: 'select',
       fields: [
-        'step.workflow_id',
         'step.step_name',
         'step.type',
         {
@@ -366,7 +365,6 @@ FROM submission_status
 NATURAL JOIN submission
 NATURAL JOIN (
   SELECT
-    step.workflow_id,
     step.step_name,
     JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
       'type', step.type,
