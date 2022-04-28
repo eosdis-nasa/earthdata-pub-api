@@ -298,14 +298,15 @@ CREATE TABLE IF NOT EXISTS workflow (
 );
 
 CREATE TABLE IF NOT EXISTS step (
-  workflow_id UUID NOT NULL,
+  step_id UUID DEFAULT UUID_GENERATE_V4(),
   step_name VARCHAR NOT NULL,
   type VARCHAR NOT NULL,
   action_id UUID,
   form_id UUID,
   service_id UUID,
   data JSONB,
-  PRIMARY KEY (workflow_id, step_name),
+  PRIMARY KEY (step_id),
+  UNIQUE (step_name),
   FOREIGN KEY (action_id) REFERENCES action (id),
   FOREIGN KEY (form_id) REFERENCES form (id),
   FOREIGN KEY (service_id) REFERENCES service (id),
@@ -319,8 +320,8 @@ CREATE TABLE IF NOT EXISTS step_edge (
   next_step_name VARCHAR,
   PRIMARY KEY (workflow_id, step_name),
   UNIQUE (workflow_id, next_step_name),
-  FOREIGN KEY (workflow_id, step_name) REFERENCES step (workflow_id, step_name),
-  FOREIGN KEY (workflow_id, next_step_name) REFERENCES step (workflow_id, step_name)
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (next_step_name) REFERENCES step (step_name)
 );
 
 CREATE TABLE IF NOT EXISTS daac (
@@ -359,7 +360,7 @@ CREATE TABLE IF NOT EXISTS submission_status (
   last_change TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES submission (id),
-  FOREIGN KEY (workflow_id, step_name) REFERENCES step (workflow_id, step_name)
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
 );
 
 CREATE TABLE IF NOT EXISTS submission_workflow (

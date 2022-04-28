@@ -6,7 +6,7 @@ const findAll = () => `
   FROM workflow
   LEFT JOIN (
     SELECT
-      step.workflow_id,
+      back_edge.workflow_id,
       JSONB_OBJECT_AGG(step.step_name,
       JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
       'type', step.type,
@@ -21,7 +21,7 @@ const findAll = () => `
     NATURAL LEFT JOIN (
       SELECT step_edge.workflow_id, step_edge.next_step_name step_name, step_edge.step_name prev_step_name
       FROM step_edge) back_edge
-    GROUP BY step.workflow_id) step_json
+    GROUP BY back_edge.workflow_id) step_json
     ON step_json.workflow_id = workflow.id`;
 const findById = () => `${findAll()} WHERE workflow.id = {{id}}`;
 
