@@ -397,6 +397,7 @@ INSERT INTO step(step_name, type, data) VALUES ('publish_to_cmr', 'action', '{"r
 
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'close');
+
 INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_accession_request_form', 'data_accession_request_form_review');
 INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_accession_request_form_review', 'close');
