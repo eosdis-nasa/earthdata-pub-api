@@ -17,7 +17,7 @@ async function statusMethod(event, user) {
     return db.submission.getAdminSubmissions({ hidden });
   }
   if (user.user_privileges.includes('REQUEST_DAACREAD')) {
-    return db.submission.getDaacSubmissions({ user_id: user.id, hidden });
+    return db.submission.getDaacSubmissions({ user_id: user.id, hidden, daac: true });
   }
   if (user.user_privileges.includes('REQUEST_READ')) {
     return db.submission.getUsersSubmissions({ user_id: user.id, hidden });

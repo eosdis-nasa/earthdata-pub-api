@@ -269,6 +269,21 @@ module.exports.questionFindAll = function questionFindAll(req, res, next) {
   });
 };
 
+module.exports.questionInputUpdate = function questionInputUpdate(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'updateInputs',
+    params: {
+      questionId: params.id.value,
+      inputs: params.payload.value
+    }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
 module.exports.serviceFindById = function serviceFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
