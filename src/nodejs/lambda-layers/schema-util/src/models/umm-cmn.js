@@ -38,13 +38,11 @@ module.exports.model = (path) => ({
         Roles: {
           description: 'This is the roles of the data center.',
           type: 'array',
-          items: {
-            $ref: `#${path}DataCenterRoleEnum`
-          },
+          items: { $ref: `#${path}DataCenterRoleEnum` },
           minItems: 1
         },
         ShortName: {
-          description: 'This is the short name of the data center.',
+          description: 'This is the short name of the data center. The controlled vocabulary for data center short names is maintained in the Keyword Management System (KMS).',
           $ref: `#${path}DataCenterShortNameType`
         },
         LongName: {
@@ -58,16 +56,12 @@ module.exports.model = (path) => ({
         ContactGroups: {
           description: 'This is the contact groups of the data center.',
           type: 'array',
-          items: {
-            $ref: `#${path}ContactGroupType`
-          }
+          items: { $ref: `#${path}ContactGroupType` }
         },
         ContactPersons: {
           description: 'This is the contact persons of the data center.',
           type: 'array',
-          items: {
-            $ref: `#${path}ContactPersonType`
-          }
+          items: { $ref: `#${path}ContactPersonType` }
         },
         ContactInformation: {
           description: 'This is the contact information of the data center.',
@@ -83,9 +77,7 @@ module.exports.model = (path) => ({
         Roles: {
           description: 'This is the roles of the data contact.',
           type: 'array',
-          items: {
-            $ref: `#${path}DataContactRoleEnum`
-          },
+          items: { $ref: `#${path}DataContactRoleEnum` },
           minItems: 1
         },
         Uuid: {
@@ -117,9 +109,7 @@ module.exports.model = (path) => ({
         Roles: {
           description: 'This is the roles of the data contact.',
           type: 'array',
-          items: {
-            $ref: `#${path}DataContactRoleEnum`
-          },
+          items: { $ref: `#${path}DataContactRoleEnum` },
           minItems: 1
         },
         Uuid: {
@@ -165,9 +155,7 @@ module.exports.model = (path) => ({
         RelatedUrls: {
           description: 'A URL associated with the contact, e.g., the home page for the DAAC which is responsible for the collection.',
           type: 'array',
-          items: {
-            $ref: `#${path}RelatedUrlType`
-          },
+          items: { $ref: `#${path}RelatedUrlType` },
           minItems: 0
         },
         ServiceHours: {
@@ -185,16 +173,12 @@ module.exports.model = (path) => ({
         ContactMechanisms: {
           description: 'Mechanisms of contacting.',
           type: 'array',
-          items: {
-            $ref: `#${path}ContactMechanismType`
-          }
+          items: { $ref: `#${path}ContactMechanismType` }
         },
         Addresses: {
           description: 'Contact addresses.',
           type: 'array',
-          items: {
-            $ref: `#${path}AddressType`
-          }
+          items: { $ref: `#${path}AddressType` }
         }
       }
     },
@@ -224,11 +208,7 @@ module.exports.model = (path) => ({
         StreetAddresses: {
           description: 'An address line for the street address, used for mailing or physical addresses of organizations or individuals who serve as contacts for the collection.',
           type: 'array',
-          items: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 1024
-          },
+          items: { type: 'string', minLength: 1, maxLength: 1024 },
           minItems: 0
         },
         City: {
@@ -269,16 +249,22 @@ module.exports.model = (path) => ({
           maxLength: 4000
         },
         URLContentType: {
-          description: "A keyword describing the distinct content type of the online resource to this resource. (e.g., 'DATACENTER URL', 'DATA CONTACT URL', 'DISTRIBUTION URL').",
-          $ref: `#${path}RelatedURLContentTypeEnum`
+          description: "A keyword describing the distinct content type of the online resource to this resource. (e.g., 'DATACENTER URL', 'DATA CONTACT URL', 'DISTRIBUTION URL'). The valid values are contained in the KMS System: https://gcmd.earthdata.nasa.gov/KeywordViewer/scheme/all/8759ab63-ac04-4136-bc25-0c00eece1096?gtm_keyword=Related%20URL%20Content%20Types&gtm_scheme=rucontenttype.",
+          type: 'string',
+          minLength: 1,
+          maxLength: 80
         },
         Type: {
-          description: "A keyword describing the type of the online resource to this resource. This helps the GUI to know what to do with this resource. (e.g., 'GET DATA', 'GET SERVICE', 'GET VISUALIZATION').",
-          $ref: `#${path}RelatedUrlTypeEnum`
+          description: "A keyword describing the type of the online resource to this resource. This helps the GUI to know what to do with this resource. (e.g., 'GET DATA', 'GET SERVICE', 'GET VISUALIZATION'). The valid values are contained in the KMS System: https://gcmd.earthdata.nasa.gov/KeywordViewer/scheme/all/8759ab63-ac04-4136-bc25-0c00eece1096?gtm_keyword=Related%20URL%20Content%20Types&gtm_scheme=rucontenttype.",
+          type: 'string',
+          minLength: 1,
+          maxLength: 80
         },
         Subtype: {
-          description: "A keyword describing the subtype of the online resource to this resource. This further helps the GUI to know what to do with this resource. (e.g., 'MEDIA', 'BROWSE', 'OPENDAP', 'OPENSEARCH', 'WEB COVERAGE SERVICES', 'WEB FEATURE SERVICES', 'WEB MAPPING SERVICES', 'SSW', 'ESI').",
-          $ref: `#${path}RelatedURLSubTypeEnum`
+          description: "A keyword describing the subtype of the online resource to this resource. This further helps the GUI to know what to do with this resource. (e.g., 'MEDIA', 'BROWSE', 'OPENDAP', 'OPENSEARCH', 'WEB COVERAGE SERVICES', 'WEB FEATURE SERVICES', 'WEB MAPPING SERVICES', 'SSW', 'ESI'). The valid values are contained in the KMS System: https://gcmd.earthdata.nasa.gov/KeywordViewer/scheme/all/8759ab63-ac04-4136-bc25-0c00eece1096?gtm_keyword=Related%20URL%20Content%20Types&gtm_scheme=rucontenttype.",
+          type: 'string',
+          minLength: 1,
+          maxLength: 80
         },
         URL: {
           description: "The URL for the relevant web page (e.g., the URL of the responsible organization's home page, the URL of the collection landing page, the URL of the download site for the collection).",
@@ -303,17 +289,16 @@ module.exports.model = (path) => ({
       additionalProperties: false,
       properties: {
         Format: {
-          description: 'The format of the data.',
-          $ref: `#${path}GetDataTypeFormatEnum`
+          description: 'The format of the data.  The controlled vocabulary for formats is maintained in the Keyword Management System (KMS)',
+          type: 'string',
+          minLength: 1,
+          maxLength: 80
         },
         MimeType: {
           description: 'The mime type of the service.',
           $ref: `#${path}URLMimeTypeEnum`
         },
-        Size: {
-          description: 'The size of the data.',
-          type: 'number'
-        },
+        Size: { description: 'The size of the data.', type: 'number' },
         Unit: {
           description: 'Unit of information, together with Size determines total size in bytes of the data.',
           type: 'string',
@@ -341,7 +326,7 @@ module.exports.model = (path) => ({
       properties: {
         Format: {
           description: 'The format of the data.',
-          $ref: `#${path}GetDataTypeFormatEnum`
+          $ref: `#${path}GetServiceTypeFormatEnum`
         },
         MimeType: {
           description: 'The mime type of the service.',
@@ -373,11 +358,7 @@ module.exports.model = (path) => ({
         URI: {
           description: 'The URI of the data provided by the service.',
           type: 'array',
-          items: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 1024
-          },
+          items: { type: 'string', minLength: 1, maxLength: 1024 },
           minItems: 1
         }
       },
@@ -504,42 +485,63 @@ module.exports.model = (path) => ({
       }
     },
     DoiType: {
-      oneOf: [{
-        type: 'object',
-        additionalProperties: false,
-        description: "This element stores the DOI (Digital Object Identifier) that identifies the collection. Note: The values should start with the directory indicator which in ESDIS' case is 10.  If the DOI was registered through ESDIS, the beginning of the string should be 10.5067. The DOI URL is not stored here; it should be stored as a RelatedURL. The DOI organization that is responsible for creating the DOI is described in the Authority element. For ESDIS records the value of https://doi.org/ should be used. While this element is not required, NASA metadata providers are strongly encouraged to include DOI and DOI Authority for their collections. For those that want to specify that a DOI is not applicable for their record use the second option.",
-        properties: {
-          Authority: {
-            description: 'The DOI organization that is responsible for creating the DOI is described in the Authority element. For ESDIS records the value of https://doi.org/ should be used.',
-            $ref: `#${path}AuthorityType`
+      oneOf: [
+        {
+          type: 'object',
+          additionalProperties: false,
+          description: "This element stores the DOI (Digital Object Identifier) that identifies the collection. Note: The values should start with the directory indicator which in ESDIS' case is 10.  If the DOI was registered through ESDIS, the beginning of the string should be 10.5067. The DOI URL is not stored here; it should be stored as a RelatedURL. The DOI organization that is responsible for creating the DOI is described in the Authority element. For ESDIS records the value of https://doi.org/ should be used. For those that want to specify that a DOI is not applicable or unknown for their record, use the second option.",
+          properties: {
+            DOI: {
+              description: "This element stores the DOI (Digital Object Identifier) that identifies the collection.  Note: The values should start with the directory indicator which in ESDIS' case is 10.  If the DOI was registered through ESDIS, the beginning of the string should be 10.5067. The DOI URL is not stored here; it should be stored as a RelatedURL.",
+              type: 'string',
+              minLength: 1,
+              maxLength: 1024
+            },
+            Authority: {
+              description: 'The DOI organization that is responsible for creating the DOI is described in the Authority element. For ESDIS records the value of https://doi.org/ should be used.',
+              $ref: `#${path}AuthorityType`
+            }
           },
-          DOI: {
-            description: "This element stores the DOI (Digital Object Identifier) that identifies the collection.  Note: The values should start with the directory indicator which in ESDIS' case is 10.  If the DOI was registered through ESDIS, the beginning of the string should be 10.5067. The DOI URL is not stored here; it should be stored as a RelatedURL.",
-            type: 'string',
-            minLength: 1,
-            maxLength: 1024
-          }
+          required: ['DOI']
         },
-        required: ['DOI']
-      }, {
-        type: 'object',
-        additionalProperties: false,
-        description: 'This element stores the fact that the DOI (Digital Object Identifier) is not applicable.',
-        properties: {
-          MissingReason: {
-            description: 'This element stores the fact that a DOI (Digital Object Identifier) is not applicable for this record.',
-            type: 'string',
-            enum: ['Not Applicable']
+        {
+          type: 'object',
+          additionalProperties: false,
+          description: 'This element stores the fact that the DOI (Digital Object Identifier) is not applicable or is unknown.',
+          properties: {
+            MissingReason: {
+              description: 'This element stores the fact that a DOI (Digital Object Identifier) is not applicable or is unknown for this record.',
+              type: 'string',
+              enum: ['Not Applicable', 'Unknown']
+            },
+            Explanation: {
+              description: 'This element describes the reason the DOI is not applicable or unknown.',
+              type: 'string',
+              minLength: 1,
+              maxLength: 1024
+            }
           },
-          Explanation: {
-            description: 'This element describes the reason the DOI is not applicable.',
-            type: 'string',
-            minLength: 1,
-            maxLength: 1024
-          }
+          required: ['MissingReason']
+        }
+      ]
+    },
+    DoiDoiType: {
+      type: 'object',
+      additionalProperties: false,
+      description: "This element stores the DOI (Digital Object Identifier) that identifies the collection. Note: The values should start with the directory indicator which in ESDIS' case is 10.  If the DOI was registered through ESDIS, the beginning of the string should be 10.5067. The DOI URL is not stored here; it should be stored as a RelatedURL. The DOI organization that is responsible for creating the DOI is described in the Authority element. For ESDIS records the value of https://doi.org/ should be used. NASA metadata providers are strongly encouraged to include DOI and DOI Authority for their collections using CollectionDOI property.",
+      properties: {
+        DOI: {
+          description: "This element stores the DOI (Digital Object Identifier) that identifies the collection.  Note: The values should start with the directory indicator which in ESDIS' case is 10.  If the DOI was registered through ESDIS, the beginning of the string should be 10.5067. The DOI URL is not stored here; it should be stored as a RelatedURL.",
+          type: 'string',
+          minLength: 1,
+          maxLength: 1024
         },
-        required: ['MissingReason']
-      }]
+        Authority: {
+          description: 'The DOI organization that is responsible for creating the DOI is described in the Authority element. For ESDIS records the value of https://doi.org/ should be used.',
+          $ref: `#${path}AuthorityType`
+        }
+      },
+      required: ['DOI']
     },
     AccessConstraintsType: {
       type: 'object',
@@ -562,7 +564,7 @@ module.exports.model = (path) => ({
     MetadataAssociationType: {
       type: 'object',
       additionalProperties: false,
-      description: 'Used to identify other services, collections, visualizations, granules, and other metadata types and resources that are associated with or dependent on the this collection, including parent-child relationships.',
+      description: 'Used to identify other services, collections, visualizations, granules, and other metadata types and resources that are associated with or dependent on this collection, including parent-child relationships.',
       properties: {
         Type: {
           description: 'The type of association between this collection metadata record and the target metadata record.   Choose type from the drop-down list.',
@@ -575,7 +577,7 @@ module.exports.model = (path) => ({
           maxLength: 4000
         },
         EntryId: {
-          description: 'Shortname of the target metadata record that is associated with this collection record.',
+          description: 'ShortName of the target metadata record that is associated with this collection record.',
           $ref: `#${path}EntryIdType`
         },
         Version: {
@@ -606,7 +608,7 @@ module.exports.model = (path) => ({
         },
         DOI: {
           description: 'The Digital Object Identifier (DOI) of the publication.',
-          $ref: `#${path}DoiType`
+          $ref: `#${path}DoiDoiType`
         },
         Author: {
           description: 'The author of the publication.',
@@ -650,7 +652,7 @@ module.exports.model = (path) => ({
           maxLength: 80
         },
         PublicationPlace: {
-          description: 'The pubication place of the publication.',
+          description: 'The publication place of the publication.',
           type: 'string',
           minLength: 1,
           maxLength: 1024
@@ -678,29 +680,15 @@ module.exports.model = (path) => ({
     ScienceKeywordType: {
       type: 'object',
       additionalProperties: false,
-      description: 'Enables specification of Earth science keywords related to the collection.  The Earth Science keywords are chosen from a controlled keyword hierarchy maintained in the Keyword Management System (KMS).',
+      description: 'Enables specification of Earth science keywords related to the collection.  The controlled vocabulary for Science Keywords is maintained in the Keyword Management System (KMS).',
       properties: {
-        Category: {
-          $ref: `#${path}KeywordStringType`
-        },
-        Topic: {
-          $ref: `#${path}KeywordStringType`
-        },
-        Term: {
-          $ref: `#${path}KeywordStringType`
-        },
-        VariableLevel1: {
-          $ref: `#${path}KeywordStringType`
-        },
-        VariableLevel2: {
-          $ref: `#${path}KeywordStringType`
-        },
-        VariableLevel3: {
-          $ref: `#${path}KeywordStringType`
-        },
-        DetailedVariable: {
-          $ref: `#${path}KeywordStringType`
-        }
+        Category: { $ref: `#${path}KeywordStringType` },
+        Topic: { $ref: `#${path}KeywordStringType` },
+        Term: { $ref: `#${path}KeywordStringType` },
+        VariableLevel1: { $ref: `#${path}KeywordStringType` },
+        VariableLevel2: { $ref: `#${path}KeywordStringType` },
+        VariableLevel3: { $ref: `#${path}KeywordStringType` },
+        DetailedVariable: { $ref: `#${path}KeywordStringType` }
       },
       required: ['Category', 'Topic', 'Term']
     },
@@ -784,7 +772,7 @@ module.exports.model = (path) => ({
     PlatformType: {
       type: 'object',
       additionalProperties: false,
-      description: 'Describes the relevant platforms used to acquire the data in the collection. Platform type vocabulary is controlled and includes Spacecraft, Aircraft, Vessel, Buoy, Platform, Station, Network, Human, etc.',
+      description: 'Describes the relevant platforms used to acquire the data in the collection. The controlled vocabularies for platform types and names are maintained in the Keyword Management System (KMS).',
       properties: {
         Type: {
           description: 'The most relevant platform type.',
@@ -792,25 +780,17 @@ module.exports.model = (path) => ({
           minLength: 1,
           maxLength: 80
         },
-        ShortName: {
-          $ref: `#${path}PlatformShortNameType`
-        },
-        LongName: {
-          $ref: `#${path}PlatformLongNameType`
-        },
+        ShortName: { $ref: `#${path}PlatformShortNameType` },
+        LongName: { $ref: `#${path}PlatformLongNameType` },
         Characteristics: {
           description: 'Platform-specific characteristics, e.g., Equator Crossing Time, Inclination Angle, Orbital Period. The characteristic names must be unique on this platform; however the names do not have to be unique across platforms.',
           type: 'array',
-          items: {
-            $ref: `#${path}CharacteristicType`
-          },
+          items: { $ref: `#${path}CharacteristicType` },
           minItems: 0
         },
         Instruments: {
           type: 'array',
-          items: {
-            $ref: `#${path}InstrumentType`
-          },
+          items: { $ref: `#${path}InstrumentType` },
           minItems: 1
         }
       },
@@ -855,20 +835,14 @@ module.exports.model = (path) => ({
     InstrumentType: {
       type: 'object',
       additionalProperties: false,
-      description: 'Information about the device used to measure or record data in this collection, including direct human observation. In cases where instruments have a single child instrument or the instrument and child instrument are used synonymously (e.g. AVHRR), both Instrument and ComposedOf should be recorded. The child instrument information is represented in a separate section.',
+      description: 'Information about the device used to measure or record data in this collection, including direct human observation. In cases where instruments have a single child instrument or the instrument and child instrument are used synonymously (e.g. AVHRR), both Instrument and ComposedOf should be recorded. The child instrument information is represented in a separate section. The controlled vocabulary for instrument names is maintained in the Keyword Management System (KMS).',
       properties: {
-        ShortName: {
-          $ref: `#${path}PlatformShortNameType`
-        },
-        LongName: {
-          $ref: `#${path}PlatformLongNameType`
-        },
+        ShortName: { $ref: `#${path}PlatformShortNameType` },
+        LongName: { $ref: `#${path}PlatformLongNameType` },
         Characteristics: {
           description: 'Instrument-specific characteristics, e.g., Wavelength, SwathWidth, Field of View. The characteristic names must be unique on this instrument; however the names do not have to be unique across instruments.',
           type: 'array',
-          items: {
-            $ref: `#${path}CharacteristicType`
-          },
+          items: { $ref: `#${path}CharacteristicType` },
           minItems: 0
         },
         Technique: {
@@ -883,19 +857,13 @@ module.exports.model = (path) => ({
         },
         ComposedOf: {
           type: 'array',
-          items: {
-            $ref: `#${path}InstrumentChildType`
-          },
+          items: { $ref: `#${path}InstrumentChildType` },
           minItems: 0
         },
         OperationalModes: {
           description: 'The operation mode applied on the instrument when acquiring the granule data.',
           type: 'array',
-          items: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 20
-          },
+          items: { type: 'string', minLength: 1, maxLength: 20 },
           minItems: 0
         }
       },
@@ -906,18 +874,12 @@ module.exports.model = (path) => ({
       additionalProperties: false,
       description: 'Child object on an instrument. Has all the same fields as instrument, minus the list of child instruments.',
       properties: {
-        ShortName: {
-          $ref: `#${path}PlatformShortNameType`
-        },
-        LongName: {
-          $ref: `#${path}PlatformLongNameType`
-        },
+        ShortName: { $ref: `#${path}PlatformShortNameType` },
+        LongName: { $ref: `#${path}PlatformLongNameType` },
         Characteristics: {
           description: 'Instrument-specific characteristics, e.g., Wavelength, SwathWidth, Field of View. The characteristic names must be unique on this instrument; however the names do not have to be unique across instruments.',
           type: 'array',
-          items: {
-            $ref: `#${path}CharacteristicType`
-          },
+          items: { $ref: `#${path}CharacteristicType` },
           minItems: 0
         },
         Technique: {
@@ -932,10 +894,10 @@ module.exports.model = (path) => ({
     ProjectType: {
       type: 'object',
       additionalProperties: false,
-      description: 'Information describing the scientific endeavor(s) with which the collection is associated. Scientific endeavors include campaigns, projects, interdisciplinary science investigations, missions, field experiments, etc.',
+      description: 'Information describing the scientific endeavor(s) with which the collection is associated. Scientific endeavors include campaigns, projects, interdisciplinary science investigations, missions, field experiments, etc. The controlled vocabularies for project names are maintained in the Keyword Management System (KMS)',
       properties: {
         ShortName: {
-          description: 'The unique identifier by which a project or campaign/experiment is known. The campain/project is the scientific endeavor associated with the acquisition of the collection. Collections may be associated with multiple campaigns.',
+          description: 'The unique identifier by which a project or campaign/experiment is known. The campaign/project is the scientific endeavor associated with the acquisition of the collection. Collections may be associated with multiple campaigns.',
           type: 'string',
           minLength: 1,
           maxLength: 40
@@ -949,11 +911,7 @@ module.exports.model = (path) => ({
         Campaigns: {
           description: 'The name of the campaign/experiment (e.g. Global climate observing system).',
           type: 'array',
-          items: {
-            type: 'string',
-            minLength: 1,
-            maxLength: 80
-          },
+          items: { type: 'string', minLength: 1, maxLength: 80 },
           minItems: 0
         },
         StartDate: {
@@ -985,35 +943,26 @@ module.exports.model = (path) => ({
         RangeDateTimes: {
           description: 'Stores the start and end date/time of a collection.',
           type: 'array',
-          items: {
-            $ref: `#${path}RangeDateTimeType`
-          },
+          items: { $ref: `#${path}RangeDateTimeType` },
           minItems: 1
         },
         SingleDateTimes: {
           type: 'array',
-          items: {
-            format: 'date-time',
-            type: 'string'
-          },
+          items: { format: 'date-time', type: 'string' },
           minItems: 1
         },
         PeriodicDateTimes: {
           description: 'Temporal information about a collection having granules collected at a regularly occurring period.   Information includes the start and end dates of the period, duration unit and value, and cycle duration unit and value.',
           type: 'array',
-          items: {
-            $ref: `#${path}PeriodicDateTimeType`
-          },
+          items: { $ref: `#${path}PeriodicDateTimeType` },
           minItems: 1
         }
       },
-      oneOf: [{
-        required: ['RangeDateTimes']
-      }, {
-        required: ['SingleDateTimes']
-      }, {
-        required: ['PeriodicDateTimes']
-      }]
+      oneOf: [
+        { required: ['RangeDateTimes'] },
+        { required: ['SingleDateTimes'] },
+        { required: ['PeriodicDateTimes'] }
+      ]
     },
     RangeDateTimeType: {
       type: 'object',
@@ -1066,11 +1015,17 @@ module.exports.model = (path) => ({
           description: 'The unit specification of the period cycle duration.',
           $ref: `#${path}DurationUnitEnum`
         },
-        PeriodCycleDurationValue: {
-          type: 'integer'
-        }
+        PeriodCycleDurationValue: { type: 'integer' }
       },
-      required: ['Name', 'StartDate', 'EndDate', 'DurationUnit', 'DurationValue', 'PeriodCycleDurationUnit', 'PeriodCycleDurationValue']
+      required: [
+        'Name',
+        'StartDate',
+        'EndDate',
+        'DurationUnit',
+        'DurationValue',
+        'PeriodCycleDurationUnit',
+        'PeriodCycleDurationValue'
+      ]
     },
     UuidType: {
       description: 'A Level 3 UUID, see wiki link http://en.wikipedia.org/wiki/Universally_unique_identifier#Version_4_.28random.29',
@@ -1130,12 +1085,27 @@ module.exports.model = (path) => ({
     DataContactRoleEnum: {
       description: 'Defines the possible values of a data contact role.',
       type: 'string',
-      enum: ['Data Center Contact', 'Technical Contact', 'Science Contact', 'Investigator', 'Metadata Author', 'User Services', 'Science Software Development']
+      enum: [
+        'Data Center Contact',
+        'Technical Contact',
+        'Science Contact',
+        'Investigator',
+        'Metadata Author',
+        'User Services',
+        'Science Software Development'
+      ]
     },
     ContactMechanismTypeEnum: {
       description: 'Defines the possible contact mechanism types.',
       type: 'string',
-      enum: ['Direct Line', 'Email', 'Facebook', 'Fax', 'Mobile', 'Modem', 'Primary', 'TDD/TTY Phone', 'Telephone', 'Twitter', 'U.S. toll free', 'Other']
+      enum: [
+        'Direct Line', 'Email',
+        'Facebook', 'Fax',
+        'Mobile', 'Modem',
+        'Primary', 'TDD/TTY Phone',
+        'Telephone', 'Twitter',
+        'U.S. toll free', 'Other'
+      ]
     },
     ShortNameType: {
       description: 'The unique name.',
@@ -1148,14 +1118,14 @@ module.exports.model = (path) => ({
       type: 'string',
       minLength: 1,
       maxLength: 85,
-      pattern: "[\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=,][\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=, ]{1,84}"
+      pattern: `[\\w\\-&'()\\[\\]/."#$%\\^@!*+=,][\\w\\-&'()\\[\\]/."#$%\\^@!*+=, ]{1,84}`
     },
     PlatformShortNameType: {
       description: 'The unique name of the platform.',
       type: 'string',
       minLength: 1,
       maxLength: 80,
-      pattern: "[\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=,][\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=, ]{1,79}"
+      pattern: `[\\w\\-&'()\\[\\]/."#$%\\^@!*+=,][\\w\\-&'()\\[\\]/."#$%\\^@!*+=, ]{1,79}`
     },
     LongNameType: {
       description: 'The expanded or long name related to the short name.',
@@ -1168,7 +1138,7 @@ module.exports.model = (path) => ({
       type: 'string',
       minLength: 1,
       maxLength: 1024,
-      pattern: "[\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=,][\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=, ]{0,1023}"
+      pattern: `[\\w\\-&'()\\[\\]/."#$%\\^@!*+=,][\\w\\-&'()\\[\\]/."#$%\\^@!*+=, ]{0,1023}`
     },
     QualityType: {
       description: 'Free-text information about the quality of the data in the collection or any quality assurance procedures followed in producing the data described in the metadata. Suggestions for information to include in the Quality field: Description should be succinct. Include indicators of data quality or quality flags. Include recognized or potential problems with quality. Established quality control mechanisms should be included. Established quantitative quality measurements should be included.',
@@ -1179,63 +1149,83 @@ module.exports.model = (path) => ({
     MetadataAssociateTypeEnum: {
       description: 'The set of supported values for MetadataAssociationType.Type.',
       type: 'string',
-      enum: ['SCIENCE ASSOCIATED', 'DEPENDENT', 'INPUT', 'PARENT', 'CHILD', 'RELATED', 'LARGER CITATION WORKS']
+      enum: [
+        'SCIENCE ASSOCIATED',
+        'DEPENDENT',
+        'INPUT',
+        'PARENT',
+        'CHILD',
+        'RELATED',
+        'LARGER CITATION WORKS'
+      ]
     },
     KeywordStringType: {
       type: 'string',
       minLength: 1,
       maxLength: 80,
-      pattern: "[\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=,][\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=, ]{1,79}"
+      pattern: `[\\w\\-&'()\\[\\]/."#$%\\^@!*+=,][\\w\\-&'()\\[\\]/."#$%\\^@!*+=, ]{1,79}`
     },
     AncillaryKeywordStringType: {
       type: 'string',
       minLength: 1,
       maxLength: 255,
-      pattern: "[\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=,][\\w\\-&'()\\[\\]/.\"#$%\\^@!*+=, ]{1,254}"
+      pattern: `[\\w\\-&'()\\[\\]/."#$%\\^@!*+=,][\\w\\-&'()\\[\\]/."#$%\\^@!*+=, ]{1,254}`
     },
     DataTypeEnum: {
       description: 'This entity contains the additional attribute data types.',
       type: 'string',
-      enum: ['STRING', 'FLOAT', 'INT', 'BOOLEAN', 'DATE', 'TIME', 'DATETIME', 'DATE_STRING', 'TIME_STRING', 'DATETIME_STRING']
+      enum: [
+        'STRING',
+        'FLOAT',
+        'INT',
+        'BOOLEAN',
+        'DATE',
+        'TIME',
+        'DATETIME',
+        'DATE_STRING',
+        'TIME_STRING',
+        'DATETIME_STRING'
+      ]
     },
-    DurationUnitEnum: {
-      type: 'string',
-      enum: ['DAY', 'MONTH', 'YEAR']
-    },
-    RelatedURLContentTypeEnum: {
-      type: 'string',
-      enum: ['CollectionURL', 'PublicationURL', 'DataCenterURL', 'DistributionURL', 'DataContactURL', 'VisualizationURL']
-    },
-    RelatedUrlTypeEnum: {
-      type: 'string',
-      enum: ['DATA SET LANDING PAGE', 'DOWNLOAD SOFTWARE', 'EXTENDED METADATA', 'GET DATA', 'GET RELATED VISUALIZATION',
-        'GOTO WEB TOOL', 'PROFESSIONAL HOME PAGE', 'PROJECT HOME PAGE', 'USE SERVICE API', 'VIEW RELATED INFORMATION', 'HOME PAGE']
-    },
-    RelatedURLSubTypeEnum: {
-      type: 'string',
-      enum: ['MOBILE APP', 'APPEEARS', 'DATA COLLECTION BUNDLE', 'DATA TREE', 'DATACAST URL', 'DIRECT DOWNLOAD', 'EOSDIS DATA POOL',
-        'Earthdata Search', 'GIOVANNI', 'GoLIVE Portal', 'IceBridge Portal', 'LAADS', 'LANCE', 'MIRADOR', 'MODAPS', 'NOAA CLASS', 'NOMADS',
-        'Order', 'PORTAL', 'Subscribe', 'USGS EARTH EXPLORER', 'VERTEX', 'VIRTUAL COLLECTION', 'MAP', 'WORLDVIEW', 'LIVE ACCESS SERVER (LAS)',
-        'MAP VIEWER', 'SIMPLE SUBSET WIZARD (SSW)', 'SUBSETTER', 'GRADS DATA SERVER (GDS)', 'MAP SERVICE', 'OPENDAP DATA', 'OpenSearch',
-        'SERVICE CHAINING', 'TABULAR DATA STREAM (TDS)', 'THREDDS DATA', 'WEB COVERAGE SERVICE (WCS)', 'WEB FEATURE SERVICE (WFS)',
-        'WEB MAP SERVICE (WMS)', 'WEB MAP TILE SERVICE (WMTS)', 'ALGORITHM DOCUMENTATION', 'ALGORITHM THEORETICAL BASIS DOCUMENT (ATBD)',
-        'ANOMALIES', 'CASE STUDY', 'DATA CITATION POLICY', 'DATA QUALITY', 'DATA RECIPE', 'DELIVERABLES CHECKLIST', 'GENERAL DOCUMENTATION',
-        'HOW-TO', 'IMPORTANT NOTICE', 'INSTRUMENT/SENSOR CALIBRATION DOCUMENTATION', 'MICRO ARTICLE', 'PI DOCUMENTATION',
-        'PROCESSING HISTORY', 'PRODUCT HISTORY', 'PRODUCT QUALITY ASSESSMENT', 'PRODUCT USAGE', 'PRODUCTION HISTORY', 'PUBLICATIONS',
-        'READ-ME', 'REQUIREMENTS AND DESIGN', 'SCIENCE DATA PRODUCT SOFTWARE DOCUMENTATION', 'SCIENCE DATA PRODUCT VALIDATION',
-        'USER FEEDBACK PAGE', "USER'S GUIDE"]
-    },
+    DurationUnitEnum: { type: 'string', enum: ['DAY', 'MONTH', 'YEAR'] },
     URLMimeTypeEnum: {
       type: 'string',
-      enum: ['application/json', 'application/xml', 'application/x-netcdf', 'application/gml+xml',
-        'application/vnd.google-earth.kml+xml', 'image/gif', 'image/tiff', 'image/bmp', 'text/csv',
-        'text/xml', 'application/pdf', 'application/x-hdf', 'application/xhdf5',
-        'application/octet-stream', 'application/vnd.google-earth.kmz', 'image/jpeg', 'image/png',
-        'image/vnd.collada+xml', 'text/html', 'text/plain', 'Not provided']
+      enum: [
+        'application/json',
+        'application/xml',
+        'application/x-netcdf',
+        'application/gml+xml',
+        'application/opensearchdescription+xml',
+        'application/vnd.google-earth.kml+xml',
+        'image/gif',
+        'image/tiff',
+        'image/bmp',
+        'text/csv',
+        'text/xml',
+        'application/pdf',
+        'application/x-hdf',
+        'application/xhdf5',
+        'application/octet-stream',
+        'application/vnd.google-earth.kmz',
+        'image/jpeg',
+        'image/png',
+        'image/vnd.collada+xml',
+        'text/html',
+        'text/plain',
+        'Not provided'
+      ]
     },
-    GetDataTypeFormatEnum: {
+    GetServiceTypeFormatEnum: {
       type: 'string',
-      enum: ['ascii', 'binary', 'GRIB', 'BUFR', 'HDF4', 'HDF5', 'HDF-EOS4', 'HDF-EOS5', 'jpeg', 'png', 'tiff', 'geotiff', 'kml', 'Not provided']
+      enum: [
+        'ascii', 'binary',
+        'GRIB', 'BUFR',
+        'HDF4', 'HDF5',
+        'HDF-EOS4', 'HDF-EOS5',
+        'jpeg', 'png',
+        'tiff', 'geotiff',
+        'kml', 'Not provided'
+      ]
     }
   }
 });
