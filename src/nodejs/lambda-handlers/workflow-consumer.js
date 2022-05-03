@@ -22,7 +22,8 @@ async function actionMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  Object.keys(eventMessage).forEach(key => eventMessage[key] === undefined && delete eventMessage[key]);
+  Object.keys(eventMessage).forEach((key) => (
+    eventMessage[key] === undefined && delete eventMessage[key]));
   await msg.sendEvent(eventMessage);
 }
 
