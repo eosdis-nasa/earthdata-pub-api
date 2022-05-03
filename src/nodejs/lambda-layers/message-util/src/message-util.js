@@ -35,6 +35,7 @@ function sendEvent(eventMessage) {
     Message: JSON.stringify(eventMessage),
     MessageAttributes: marshalAttributes(eventMessage),
     MessageGroupId: eventGroupId,
+    MessageDeduplicationId: Date.now().toString(),
     TopicArn: eventSns
   };
   const response = sns.publish(params).promise().catch((e) => { console.error(e); });
