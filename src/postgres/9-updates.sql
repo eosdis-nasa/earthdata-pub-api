@@ -58,7 +58,7 @@ UPDATE input SET label='' WHERE control_id='science_value_description';
 UPDATE input SET label='' WHERE control_id='data_submission_reason_description';
 UPDATE input SET label='' WHERE control_id='data_submission_approval_dependencies_radios';
 UPDATE input SET label='If Yes, please provide a brief explanation' WHERE control_id='data_submission_approval_dependencies_explanation';
-UPDATE input SET label='', show_if='[{"field": "data_product_restrictions_public","value": "No","message": "Please provide an explanation of the data product''s restrictions."},{"field": "data_product_restrictions_public","value": "Not sure","message": "Please provide an explanation of the data product''s restrictions."}]','[]' WHERE control_id='data_product_restrictions_public';
+UPDATE input SET label='', show_if='[{"field": "data_product_restrictions_public","value": "No","message": "Please provide an explanation of the data product''s restrictions."},{"field": "data_product_restrictions_public","value": "Not sure","message": "Please provide an explanation of the data product''s restrictions."}]' WHERE control_id='data_product_restrictions_public';
 UPDATE input SET label='If No or Not sure, please provide a brief explanation' WHERE control_id='data_product_restrictions_explanation';
 UPDATE input SET label='' WHERE control_id='data_product_documentation_url';
 
