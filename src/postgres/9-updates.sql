@@ -45,39 +45,57 @@
 -------------------------------------------------------------------------------
 
 
--- 4/27/22 (Adding step id)
--- Drop workflow_id dependent foreign constraints
-ALTER TABLE step_edge DROP CONSTRAINT step_edge_workflow_id_fkey;
-ALTER TABLE step_edge DROP CONSTRAINT step_edge_workflow_id_fkey1;
-ALTER TABLE submission_status DROP CONSTRAINT submission_status_workflow_id_fkey;
--- Drop primary key of step
-ALTER TABLE step DROP CONSTRAINT step_pkey;
--- Drop workflow_id column from step
-ALTER TABLE step DROP COLUMN workflow_id;
--- Add step_id column to step
-ALTER TABLE step ADD step_id UUID DEFAULT UUID_GENERATE_V4();
--- Add primary key of step
-ALTER TABLE step ADD PRIMARY KEY (step_id);
--- Remove duplicate steps
-DELETE FROM
-  step a USING (
-    SELECT
-      MIN(ctid) as ctid,
-      step_name
-    FROM
-      step
-    GROUP BY
-      step_name
-    HAVING
-      COUNT(*) > 1
-  ) b
-WHERE
-  a.step_name = b.step_name
-  AND a.ctid <> b.ctid;
--- Add unique constraint for step_name to step
-ALTER TABLE step ADD UNIQUE (step_name);
--- Change foreign key constraints of step_edge
-ALTER TABLE step_edge ADD CONSTRAINT step_edge_step_name_fkey FOREIGN KEY (step_name) REFERENCES step (step_name);
-ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey FOREIGN KEY (next_step_name) REFERENCES step (step_name);
--- Change foreign key constraints of submission_status
-ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey FOREIGN KEY (step_name) REFERENCES step (step_name);
+-- 5/10/22 Label Content Updates
+UPDATE question SET text='Do you have any dependencies related to this data product being approved to be published at the DAAC?' WHERE id='f40956c3-9af8-400e-8dd8-c5e2965dcb8a';
+UPDATE question SET text='Can this data product be publicly released in compliance with NASA''s Open Data Policy?' WHERE id='2dd6c8b1-22a8-4866-91c3-da9b4ce849dc';
+
+UPDATE input SET label='' WHERE control_id='funding_program_name';
+UPDATE input SET label='' WHERE control_id='data_product_name_value';
+UPDATE input SET label='' WHERE control_id='data_product_description';
+
+UPDATE input SET label='' WHERE control_id='data_product_doi_value';
+UPDATE input SET label='' WHERE control_id='science_value_description';
+UPDATE input SET label='' WHERE control_id='data_submission_reason_description';
+UPDATE input SET label='' WHERE control_id='data_submission_approval_dependencies_radios';
+UPDATE input SET label='If Yes, please provide a brief explanation' WHERE control_id='data_submission_approval_dependencies_explanation';
+UPDATE input SET label='', show_if='[{"field": "data_product_restrictions_public","value": "No","message": "Please provide an explanation of the data product''s restrictions."},{"field": "data_product_restrictions_public","value": "Not sure","message": "Please provide an explanation of the data product''s restrictions."}]','[]' WHERE control_id='data_product_restrictions_public';
+UPDATE input SET label='If No or Not sure, please provide a brief explanation' WHERE control_id='data_product_restrictions_explanation';
+UPDATE input SET label='' WHERE control_id='data_product_documentation_url';
+
+UPDATE input SET label='If Other, please provide the data format(s)' WHERE control_id='data_format_other_info';
+UPDATE input SET label='' WHERE control_id='spatial_general_region';
+
+UPDATE input SET label='' WHERE control_id='data_product_status';
+UPDATE input SET label='' WHERE control_id='data_delivery_frequency';
+UPDATE input SET label='' WHERE control_id='data_product_volume_amount';
+UPDATE input SET label='' WHERE control_id='data_product_volume_units';
+UPDATE input SET label='' WHERE control_id='example_file_url';
+
+UPDATE input SET label='' WHERE control_id='funding_grant_number';
+
+UPDATE input SET label='' WHERE control_id='data_production_latency_units';
+UPDATE input SET label='' WHERE control_id='file_temporal_coverage_answer';
+UPDATE input SET label='' WHERE control_id='file_temporal_coverage_units';
+UPDATE input SET label='' WHERE control_id='value_temporal_resolution_answer';
+UPDATE input SET label='' WHERE control_id='value_temporal_resolution_units';
+UPDATE input SET label='' WHERE control_id='temporal_coverage_notes_textarea';
+
+UPDATE input SET label='' WHERE control_id='spatial_vertical_answer';
+
+UPDATE input SET label='' WHERE control_id='spatial_vertical_details_upper_units';
+
+UPDATE input SET label='' WHERE control_id='spatial_vertical_details_lower_units';
+UPDATE input SET label='' WHERE control_id='spatial_data_file';
+
+UPDATE input SET label='' WHERE control_id='spatial_notes_textarea';
+UPDATE input SET label='' WHERE control_id='data_processing_level';
+
+UPDATE input SET label='' WHERE control_id='variables_text';
+
+UPDATE input SET label='' WHERE control_id='platform_instrument';
+UPDATE input SET label='' WHERE control_id='model_data_product';
+UPDATE input SET label='' WHERE control_id='data_file_compression_answer';
+UPDATE input SET label='' WHERE control_id='data_product_number_of_files';
+UPDATE input SET label='' WHERE control_id='browse_images_provided';
+
+UPDATE daac SET long_name='Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC)' WHERE id='ef229725-1cad-485e-a72b-a276d2ca3175';
