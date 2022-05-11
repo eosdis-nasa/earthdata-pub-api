@@ -104,3 +104,5 @@ UPDATE daac SET long_name='Global Hydrometeorology Resource Center (GHRC) Distri
 UPDATE input SET label='If Yes, please provide a brief explanation.', required_if='[{"field": "data_submission_approval_dependencies_radios","value": "Yes"}]' WHERE control_id='data_submission_approval_dependencies_explanation';
 UPDATE input SET required_if='[]' WHERE control_id='data_product_restrictions_public';
 UPDATE input SET label='If No or Not sure, please provide a brief explanation.', required_if='[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]' WHERE control_id='data_product_restrictions_explanation';
+
+UPDATE input SET show_if='[]' WHERE control_id='data_product_restrictions_public'
