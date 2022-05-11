@@ -100,3 +100,7 @@ UPDATE input SET label='' WHERE control_id='data_product_number_of_files';
 UPDATE input SET label='' WHERE control_id='browse_images_provided';
 
 UPDATE daac SET long_name='Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC)' WHERE id='ef229725-1cad-485e-a72b-a276d2ca3175';
+
+UPDATE input SET label='If Yes, please provide a brief explanation.', required_if='[{"field": "data_submission_approval_dependencies_radios","value": "Yes"}]' WHERE control_id='data_submission_approval_dependencies_explanation';
+UPDATE input SET required_if='[]' WHERE control_id='data_product_restrictions_public';
+UPDATE input SET label='If No or Not sure, please provide a brief explanation.', required_if='[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]' WHERE control_id='data_product_restrictions_explanation';
