@@ -59,7 +59,7 @@ UPDATE input SET label='' WHERE control_id='science_value_description';
 UPDATE input SET label='' WHERE control_id='data_submission_reason_description';
 UPDATE input SET label='' WHERE control_id='data_submission_approval_dependencies_radios';
 UPDATE input SET label='If Yes, please provide a brief explanation' WHERE control_id='data_submission_approval_dependencies_explanation';
-UPDATE input SET label='If No or Not sure, please provide a brief explanation.' WHERE control_id='data_product_restrictions_explanation';
+UPDATE input SET label='If No or Not sure, please provide a brief explanation' WHERE control_id='data_product_restrictions_explanation';
 UPDATE input SET required_if='[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]' WHERE control_id='data_product_restrictions_explanation';
 UPDATE input SET label='' WHERE control_id='data_product_documentation_url';
 
