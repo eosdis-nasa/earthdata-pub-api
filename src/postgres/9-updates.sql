@@ -105,4 +105,4 @@ UPDATE input SET label='If Yes, please provide a brief explanation.', required_i
 UPDATE input SET required_if='[]' WHERE control_id='data_product_restrictions_public';
 UPDATE input SET label='If No or Not sure, please provide a brief explanation.', required_if='[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]' WHERE control_id='data_product_restrictions_explanation';
 
-UPDATE input SET show_if='[]' WHERE control_id='data
+UPDATE input SET show_if='[]' WHERE control_id='data_product_restrictions_public'
