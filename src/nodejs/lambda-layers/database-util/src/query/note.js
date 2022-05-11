@@ -101,38 +101,123 @@ const getConversationList = (params) => sql.select({
   fields: ['conversation.*', 'conversation_edpuser.unread'],
   from: { base: 'conversation', joins: [refs.conversation_user] },
   where: {
-    filters: [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id' }]
+    conjunction: 'OR',
+    filters: [
+        ...(params.user_id ? [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id' }] : []),
+        ...(params.daac ? [{
+          field: 'conversation_id',
+          any: {
+            values: {
+              type: 'select',
+              fields: ['submission.conversation_id'],
+              from : {
+                base: 'submission'
+              },
+              where: {
+                filters: [
+                ...([{
+                  field: 'submission.daac_id',
+                  any: {
+                    values: {
+                      type: 'select',
+                      fields: ['daac.id'],
+                      from: {
+                        base: 'daac',
+                        joins: [{
+                        type: 'left_join',
+                        src: 'edpuser_edpgroup',
+                        on: { left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id' }
+                        }]
+                      },
+                      where: {
+                        filters: [{ field: 'edpuser_edpgroup.edpuser_id', param: 'user_id' }]
+                      }
+                    }
+                  }
+                }])
+                ]
+              }
+            }
+          }}] : [])
+    ]
   },
-  sort: 'conversation.last_change',
+  sort: 'last_change',
   order: 'DESC'
 });
 
 const readConversation = (params) => `
-WITH user_update AS (UPDATE conversation_edpuser SET
+${params.user_id && !params.daac ?
+`WITH user_update AS (UPDATE conversation_edpuser SET
  unread = FALSE
  WHERE conversation_edpuser.conversation_id = {{conversation_id}}
- AND conversation_edpuser.edpuser_id = {{user_id}})
-${sql.select({
-  fields: ['conversation.id', 'conversation.subject', 'participants',
-    {
-      type: 'coalesce',
-      src: 'notes',
-      fallback: '\'[]\'::JSONB',
-      alias: 'notes'
-    }
-  ],
-  from: {
-    base: 'conversation',
-    joins: [refs.conversation_user, refs.participant_agg, refs.note_agg] },
-  where: {
-    filters: [
-      { field: 'conversation.id', param: 'conversation_id' },
-      { field: 'conversation_edpuser.edpuser_id', param: 'user_id' }
-    ]
-  },
-  sort: 'created_at',
-  order: 'DESC'
-})}`;
+ AND conversation_edpuser.edpuser_id = {{user_id}})` : ''}
+ ${sql.select({
+    fields: ['*'],
+    from: {
+        base: `(${sql.select({
+          fields: ['conversation.id', 'conversation.subject', 'participants', 'edpuser_id', 'created_at', {
+            type: 'coalesce',
+            src: 'notes',
+            fallback: '\'[]\'::JSONB',
+            alias: 'notes'
+          }],
+          from: {
+            base: 'conversation',
+            joins: [refs.conversation_user, refs.participant_agg, refs.note_agg]
+          },
+          where: {
+            filters: [
+              { field: 'conversation.id', param: 'conversation_id' }
+            ]
+          }
+        })}) new_query`
+        },
+    where: {
+        conjunction: 'OR',
+        filters: [
+          ...(params.user_id ? [{field: 'edpuser_id', param: 'user_id'}] : []),
+          ...(params.daac ? [{
+            field: 'id',
+            any: {
+            values: {
+              type: 'select',
+              fields: ['submission.conversation_id'],
+              from : {
+                base: 'submission'
+              },
+              where: {
+                filters: [
+                ...([{
+                  field: 'submission.daac_id',
+                  any: {
+                  values: {
+                    type: 'select',
+                    fields: ['daac.id'],
+                    from: {
+                    base: 'daac',
+                    joins: [{
+                    type: 'left_join',
+                    src: 'edpuser_edpgroup',
+                    on: { left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id' }
+                    }]
+                    },
+                    where: {
+                    filters: [{ field: 'edpuser_edpgroup.edpuser_id', param: 'user_id' }]
+                    }
+                  }
+                  }
+                }])
+                ]
+              }
+            }
+            }
+          }] : [])
+        ]
+    },
+    sort: 'created_at',
+    order: 'DESC'
+})}
+`;
 
 const reply = () => `
 WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text) VALUES

@@ -62,7 +62,7 @@ const param = ({ param }) => `{{${param}}}`;
 
 const fromClause = ({ base, joins }) => ` FROM ${base}${joins ? joins.map(complexParse).join(' ') : ''}`;
 
-const whereClause = ({ filters }) => (filters.length > 0 ? ` WHERE ${filters.map(filter).join(' AND ')}` : '');
+const whereClause = ({ filters, conjunction }) => (filters.length > 0 ? ` WHERE ${filters.map(filter).join(` ${conjunction ? conjunction : 'AND'} `)}` : '');
 
 const caseClause = ({ when, alias }) => `${alias ? '(' : ''}CASE ${when.map(whenClause).join('')} END${alias
   ? `) ${alias}` : ''}`;
