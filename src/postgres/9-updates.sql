@@ -48,6 +48,7 @@
 -- 5/10/22 Label Content Updates
 UPDATE question SET text='Do you have any dependencies related to this data product being approved to be published at the DAAC?' WHERE id='f40956c3-9af8-400e-8dd8-c5e2965dcb8a';
 UPDATE question SET text='Can this data product be publicly released in compliance with NASA''s Open Data Policy?' WHERE id='2dd6c8b1-22a8-4866-91c3-da9b4ce849dc';
+UPDATE question SET required='true' WHERE id='50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27';
 
 UPDATE input SET label='' WHERE control_id='funding_program_name';
 UPDATE input SET label='' WHERE control_id='data_product_name_value';
@@ -58,8 +59,8 @@ UPDATE input SET label='' WHERE control_id='science_value_description';
 UPDATE input SET label='' WHERE control_id='data_submission_reason_description';
 UPDATE input SET label='' WHERE control_id='data_submission_approval_dependencies_radios';
 UPDATE input SET label='If Yes, please provide a brief explanation' WHERE control_id='data_submission_approval_dependencies_explanation';
-UPDATE input SET label='', show_if='[{"field": "data_product_restrictions_public","value": "No","message": "Please provide an explanation of the data product''s restrictions."},{"field": "data_product_restrictions_public","value": "Not sure","message": "Please provide an explanation of the data product''s restrictions."}]' WHERE control_id='data_product_restrictions_public';
 UPDATE input SET label='If No or Not sure, please provide a brief explanation' WHERE control_id='data_product_restrictions_explanation';
+UPDATE input SET required_if='[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]' WHERE control_id='data_product_restrictions_explanation';
 UPDATE input SET label='' WHERE control_id='data_product_documentation_url';
 
 UPDATE input SET label='If Other, please provide the data format(s)' WHERE control_id='data_format_other_info';
@@ -99,3 +100,7 @@ UPDATE input SET label='' WHERE control_id='data_product_number_of_files';
 UPDATE input SET label='' WHERE control_id='browse_images_provided';
 
 UPDATE daac SET long_name='Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC)' WHERE id='ef229725-1cad-485e-a72b-a276d2ca3175';
+
+UPDATE input SET label='If Yes, please provide a brief explanation.', required_if='[{"field": "data_submission_approval_dependencies_radios","value": "Yes"}]' WHERE control_id='data_submission_approval_dependencies_explanation';
+UPDATE input SET required_if='[]' WHERE control_id='data_product_restrictions_public';
+UPDATE input SET label='If No or Not sure, please provide a brief explanation.', required_if='[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]' WHERE control_id='data_product_restrictions_explanation';

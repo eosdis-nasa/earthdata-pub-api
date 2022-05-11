@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+## 1.0.2 - 2022-05-11
+
+- Updated required if content and some other content tweaks
+
 ## 1.0.1 - 2022-04-13
 
 - Updated to Node v14.19.1
