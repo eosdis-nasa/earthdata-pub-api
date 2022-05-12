@@ -1,7 +1,7 @@
 
 -- Form(id, short_name, version, long_name, description, text)
 INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_accession_request', 1, 'Data Accession Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
-INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_product_information', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
+INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_publication_request', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 
 -- Section(id, form_id, heading, list_order, daac_id)
 INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 0, '[]', '[]', NULL);
@@ -41,15 +41,15 @@ INSERT INTO section VALUES ('e9675ba5-e494-4275-8778-cd3fa68371e3', '19025579-99
 
 -- Question(id, short_name, version, long_name, text, help, required, created_at)
 INSERT INTO question VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info', 1, 'Primary Data Producer', 'Who is the primary person responsible for the collection or creation of this data product?', 'The Primary Data Producer is often the Principal Investigator, Project Scientist, or Project Manager.');
-INSERT INTO question VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'publication_point_of_contact', 1, 'Data Accession Point of Contact', 'Who should the DAAC contact with questions regarding this Data Accession request?', 'This person should have in-depth knowledge of this data product, allowing them to provide additional information as needed.');
+INSERT INTO question VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'point_of_contact', 1, 'Data Accession Point of Contact', 'Who should the DAAC contact with questions regarding this Data Accession request?', 'This person should have in-depth knowledge of this data product, allowing them to provide additional information as needed.');
 INSERT INTO question VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organization', 1, 'Funding Organization', 'What organization(s) funded the creation of this data product?', '');
 INSERT INTO question VALUES ('4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 'funding_program', 1, 'Funding Program/Element', 'Under what program or program element within the funding organization was this data product created?', 'Examples include NASA programs such as MEaSUREs, Terrestrial Hydrology, Earth Venture, ACCESS, or AIST.');
 INSERT INTO question VALUES ('f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 'data_product_name', 1, 'Data Product Name', 'How do you refer to this data product?', 'This is how the DAAC will refer to this data product during the data publication process. The DAAC will work with you to develop an official data product title in compliance with DAAC/ESDIS standards.');
 INSERT INTO question VALUES ('39701413-ac96-4b66-9c2f-2d9c08a18ed9', 'data_product_description', 1, 'Data Product Description', 'Please provide a brief description of this data product.', 'The description should mimic a journal abstract and should provide a reader with the information needed to quickly understand the relevance and usefulness of the data.');
 INSERT INTO question VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi', 1, 'Data Product DOI', 'If a Digital Object Identifier (DOI) already exists for this data product, please provide it.', 'This would be the DOI for the actual data product and not for a publication related to this data product.');
 INSERT INTO question VALUES ('7fd7bccf-5065-4033-9956-9e80bc99c205', 'science_value', 1, 'Science Value of Data Product', 'What is the science value of this data product?', 'For example, describe the benefits to the science community, the strengths compared to similar data products, and/or other data products that it compliments.');
-INSERT INTO question VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_submission_reason', 1, 'Reason for Data Accession Request', 'Why are you requesting to have this data product archived and distributed at the DAAC?', 'For example, you are publishing a paper and the publisher requires data to be archived in a trusted repository, you have been instructed by a NASA program manager to archive your data at a DAAC, or you want this data product to be distributed with related data products.');
-INSERT INTO question VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_submission_approval_dependencies', 1, 'Dependencies for Data Accession Approval', 'Do you have any dependencies related to this data product being approved to be published at the DAAC?', 'For example, you are publishing a paper, you are presenting at a conference, or your project has a requirement to publish data by a certain time.');
+INSERT INTO question VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_accession_reason', 1, 'Reason for Data Accession Request', 'Why are you requesting to have this data product archived and distributed at the DAAC?', 'For example, you are publishing a paper and the publisher requires data to be archived in a trusted repository, you have been instructed by a NASA program manager to archive your data at a DAAC, or you want this data product to be distributed with related data products.');
+INSERT INTO question VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_accession_approval_dependencies', 1, 'Dependencies for Data Accession Approval', 'Do you have any dependencies related to this data product being approved to be published at the DAAC?', 'For example, you are publishing a paper, you are presenting at a conference, or your project has a requirement to publish data by a certain time.');
 INSERT INTO question VALUES ('2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 'data_product_restrictions', 1, 'Data Product Restrictions', 'Can this data product be publicly released in compliance with NASA''s Open Data Policy?', 'For a description of the open data policy, please refer to the <a href="https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy" target=_blank>NASA Earthdata Data and Information Policy web page <i class="fas fa-external-link-alt"></i></a>.');
 INSERT INTO question VALUES ('ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 'data_product_documentation', 1, 'Data Product Documentation', 'Are there any existing documents that you would like to have included in the review of your data product? If "Yes", please provide URLs to the documents.', 'For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality.');
 INSERT INTO question VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 'data_format', 1, 'Data Format', 'What is the format(s) of the files in this data product?', 'For a list of NASA-approved data formats, please refer to the <a href="https://earthdata.nasa.gov/esdis/eso/standards-and-references#data-formats" target=_blank>NASA Earthdata Standards and Practices web page <i class="fas fa-external-link-alt"></i></a>.', True);
@@ -146,10 +146,10 @@ INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'publication_poc_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'publication_poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'publication_poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'publication_poc_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_nasa', 0, 'NASA', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_noaa', 1, 'NOAA', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_nsf', 2, 'NSF', 'checkbox', '{}', '{}', '[]','[]',  False);
@@ -163,9 +163,9 @@ INSERT INTO input VALUES ('39701413-ac96-4b66-9c2f-2d9c08a18ed9', 'data_product_
 INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi_exists', 0, 'Has DOI', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi_value', 1, '', 'text', '{}', '{}', '[{"field":"data_product_doi_exists","value":"true","message":"You checked that this data product has a DOI."}]','[]',  False);
 INSERT INTO input VALUES ('7fd7bccf-5065-4033-9956-9e80bc99c205', 'science_value_description', 0, '', 'textarea', '{}', '{"rows":3,"cols":20}', '[]','[]',  True);
-INSERT INTO input VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_submission_reason_description', 0, '', 'textarea', '{}', '{"rows":5,"cols":20,"maxlength":1000,"placeholder":""}', '[]','[]',  True);
-INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_submission_approval_dependencies_radios', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_submission_approval_dependencies_explanation', 1, 'If Yes, please provide a brief explanation.', 'text', '{}', '{}', '[{"field": "data_submission_approval_dependencies_radios","value": "Yes"}]','[]',  False);
+INSERT INTO input VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_accession_reason_description', 0, '', 'textarea', '{}', '{"rows":5,"cols":20,"maxlength":1000,"placeholder":""}', '[]','[]',  True);
+INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_accession_approval_dependencies_radios', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_accession_approval_dependencies_explanation', 1, 'If Yes, please provide a brief explanation.', 'text', '{}', '{}', '[{"field": "data_accession_approval_dependencies_radios","value": "Yes"}]','[]',  False);
 INSERT INTO input VALUES ('2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 'data_product_restrictions_public', 0, '', 'radio', '["Yes","No","Not sure"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 'data_product_restrictions_explanation', 1, 'If No or Not sure, please provide a brief explanation.', 'text', '{}', '{}', '[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]','[]',  False);
 INSERT INTO input VALUES ('ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 'data_product_documentation_url', 0, '', 'text', '{}', '{}', '[]','[]',  False);
@@ -363,7 +363,7 @@ INSERT INTO edpuser_edprole VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', '756
 INSERT INTO workflow VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init_workflow', 1, 'Initialization Workflow', 'This workflow performs no actions and is used for initializing submissions.');
 INSERT INTO workflow VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_accession_request_workflow', 1, 'Data Accession Request Workflow', 'This is the default initial workflow for a new data accession request.');
 INSERT INTO workflow VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'request_forms_workflow', 1, 'Request Forms Workflow', 'This is the default workflow for a new request that covers both forms.');
-INSERT INTO workflow VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_product_information_workflow', 1, 'Data Product Information Workflow', 'This is the default initial workflow for a new data product information request.');
+INSERT INTO workflow VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_publication_request_workflow', 1, 'Data Publication Request Workflow', 'This is the default initial workflow for a new data publication request.');
 INSERT INTO workflow VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 1, 'Assign a Workflow', 'This is the default initial workflow.');
 INSERT INTO workflow VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'idealized_workflow', 1, 'Idealized Workflow', 'This is an idealize, yet realistic workflow for the purposes of testing and demonstration.');
 
@@ -372,8 +372,8 @@ INSERT INTO step(step_name, type) VALUES ('init', 'init');
 INSERT INTO step(step_name, type) VALUES ('close', 'close');
 INSERT INTO step(step_name, type, form_id) VALUES ('data_accession_request_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
 INSERT INTO step(step_name, type, data) VALUES ('data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
-INSERT INTO step(step_name, type, form_id) VALUES ('data_product_information_form', 'form', '19025579-99ca-4344-8610-704dae626343');
-INSERT INTO step(step_name, type, data) VALUES ('data_product_information_form_review', 'review', '{"rollback":"data_product_information_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(step_name, type, form_id) VALUES ('data_publication_request_form', 'form', '19025579-99ca-4344-8610-704dae626343');
+INSERT INTO step(step_name, type, data) VALUES ('data_publication_request_form_review', 'review', '{"rollback":"data_publication_request_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 INSERT INTO step(step_name, type, data) VALUES ('assign_a_workflow', 'action', '{"rollback":"init","type": "init"}');
 -- The following should be uncommented and the lines after should be removed once actions/services are working properly in EDPub
 -- INSERT INTO step(step_name, type) VALUES ('start_qa', 'action');
@@ -385,7 +385,7 @@ INSERT INTO step(step_name, type, data) VALUES ('assign_a_workflow', 'action', '
 -- INSERT INTO step(step_name, type) VALUES ('get_from_meditor', 'service');
 -- INSERT INTO step(step_name, type) VALUES ('map_from_meditor', 'service');
 -- INSERT INTO step(step_name, type) VALUES ('publish_to_cmr', 'service');
-INSERT INTO step(step_name, type, data) VALUES ('start_qa', 'action', '{"rollback":"data_product_information_form_review","type": "review"}');
+INSERT INTO step(step_name, type, data) VALUES ('start_qa', 'action', '{"rollback":"data_publication_request_form_review","type": "review"}');
 INSERT INTO step(step_name, type, data) VALUES ('complete_qa', 'action', '{"rollback":"start_qa","type": "action"}');
 INSERT INTO step(step_name, type, data) VALUES ('map_to_meditor', 'action', '{"rollback":"complete_qa","type": "action"}');
 INSERT INTO step(step_name, type, data) VALUES ('send_to_meditor', 'action', '{"rollback":"map_to_meditor","type": "action"}');
@@ -404,22 +404,22 @@ INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_acce
 
 INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_accession_request_form_review', 'data_product_information_form');
-INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_product_information_form', 'data_product_information_form_review');
-INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_product_information_form_review', 'close');
+INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_publication_request_form_review', 'close');
 
-INSERT INTO step_edge VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'init', 'data_product_information_form');
-INSERT INTO step_edge VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_product_information_form', 'data_product_information_form_review');
-INSERT INTO step_edge VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_product_information_form_review', 'close');
+INSERT INTO step_edge VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'init', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_publication_request_form_review', 'close');
 
 INSERT INTO step_edge VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'init', 'assign_a_workflow');
 INSERT INTO step_edge VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 'close');
 
 INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form_review', 'data_product_information_form');
-INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_product_information_form', 'data_product_information_form_review');
-INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_product_information_form_review', 'start_qa');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_publication_request_form_review', 'start_qa');
 INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_qa', 'complete_qa');
 INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'complete_qa', 'map_to_meditor');
 INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'map_to_meditor', 'send_to_meditor');
