@@ -70,15 +70,15 @@ async function findMethod(params, privileges) {
   return { error: 'No privilege' };
 }
 
-async function groupConditional(id, user_privileges, group_id, privilege) {
-  if (user_privileges.includes('ADMIN')) { return true; }
-  const { user_groups } = await db.user.findById(id);
-  const groupIds = user_groups.map((group) => group.id);
-  return user_privileges.includes(privilege) && groupIds.includes(group_id)
+async function groupConditional(id, userPrivileges, groupId, privilege) {
+  if (userPrivileges.includes('ADMIN')) { return true; }
+  const { user_groups: userGroups } = await db.user.findById(id);
+  const groupIds = userGroups.map((group) => group.id);
+  return userPrivileges.includes(privilege) && groupIds.includes(groupId);
 }
 
 async function addGroupMethod(params, privileges) {
-  if (await groupConditional(params.id, privileges, params.group_id, 'USER_ADDGROUP')) {
+  if (await groupConditional(params.context.user_id, privileges, params.group_id, 'USER_ADDGROUP')) {
     const response = await db.user.addGroup(params);
     return response;
   }
@@ -86,17 +86,17 @@ async function addGroupMethod(params, privileges) {
 }
 
 async function removeGroupMethod(params, privileges) {
-  if (await groupConditional(params.id, privileges, params.group_id, 'USER_REMOVEGROUP')) {
+  if (await groupConditional(params.context.user_id, privileges, params.group_id, 'USER_REMOVEGROUP')) {
     const response = await db.user.removeGroup(params);
     return response;
   }
   return { error: 'No privilege' };
 }
 
-async function roleConditional(user_privileges, role_id, privilege) {
-  if (user_privileges.includes('ADMIN')) { return true; }
-  const { id } = await db.role.findByName({short_name: 'admin'});
-  return user_privileges.includes(privilege) && role_id != id;
+async function roleConditional(userPrivileges, roleId, privilege) {
+  if (userPrivileges.includes('ADMIN')) { return true; }
+  const { id } = await db.role.findByName({ short_name: 'admin' });
+  return userPrivileges.includes(privilege) && roleId !== id;
 }
 
 async function addRoleMethod(params, privileges) {

@@ -173,7 +173,7 @@ async function withdrawMethod(event, user) {
 async function restoreMethod(event, user) {
   const { id } = event;
   const approvedUserRoles = ['admin', 'coordinator'];
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name)))  {
+  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
     return db.submission.restoreSubmission({ id });
   }
   return db.submission.findById({ id });
