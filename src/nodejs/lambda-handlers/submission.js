@@ -61,13 +61,10 @@ async function initializeMethod(event, user) {
 }
 
 async function applyMethod(event, user) {
-  const approvedRoles = ['coordinator'];
+  const approvedUserRoles = ['admin', 'coordinator'];
   const { id, workflow_id: workflowId } = event;
   let status = await db.submission.getState({ id });
-  // Only allow reassigning a workflow if role is admin or role is coordinator and workflow has
-  // not been reassigned yet
-  if (user.user_roles.some((role) => role.short_name === 'admin'
-      || (approvedRoles.includes(role.short_name) && Object.keys(status.workflows).length < 2))) {
+  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
     await db.submission.reassignWorkflow({ id, workflowId });
     await db.submission.promoteStep({ id });
     status = await db.submission.getState({ id });
@@ -175,8 +172,8 @@ async function withdrawMethod(event, user) {
 
 async function restoreMethod(event, user) {
   const { id } = event;
-  const approvedUserPrivileges = ['ADMIN'];
-  if (approvedUserPrivileges.some((privilege) => user.user_privileges.includes(privilege))) {
+  const approvedUserRoles = ['admin', 'coordinator'];
+  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name)))  {
     return db.submission.restoreSubmission({ id });
   }
   return db.submission.findById({ id });
