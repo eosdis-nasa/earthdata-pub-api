@@ -106,3 +106,37 @@ UPDATE input SET required_if='[]' WHERE control_id='data_product_restrictions_pu
 UPDATE input SET label='If No or Not sure, please provide a brief explanation.', required_if='[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]' WHERE control_id='data_product_restrictions_explanation';
 
 UPDATE input SET show_if='[]' WHERE control_id='data_product_restrictions_public'
+
+--RolePrivilege(edprole_id, privilege) Data Coordinator
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_DAACREAD');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_LOCK');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_UNLOCK');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REASSIGN');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'DAAC_READ');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_READ');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_ADDGROUP');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_REMOVEGROUP');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_ADDROLE');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_REMOVEROLE');
+
+
+-- 5/16/22
+ALTER TABLE daac ADD hidden BOOLEAN DEFAULT FALSE;
+
+UPDATE question SET help='' WHERE id='4c42796a-8ff1-444e-8fc5-82ccad82e5fb';
+UPDATE question SET long_name='' WHERE id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
+
+UPDATE daac SET hidden=TRUE WHERE id='40397fe8-4841-4e4c-b84a-6ece359ff5ff';
+UPDATE daac SET hidden=TRUE WHERE id='c606afba-725b-4ae4-9557-1fd33260ae12';
+UPDATE daac SET hidden=TRUE WHERE id='d551380f-8813-40e4-9763-2a5bb6007cd0';
+UPDATE daac SET hidden=TRUE WHERE id='1ea1da68-cb95-431f-8dd8-a2cf16d7ef98';
+UPDATE daac SET hidden=TRUE WHERE id='9e0628f1-0dde-4ed2-b1e3-690c70326f25';
+UPDATE daac SET hidden=TRUE WHERE id='de6d5ec9-4728-4f2b-9d43-ae2f0fdac96a';
+UPDATE daac SET hidden=TRUE WHERE id='aec3724f-b30b-4b3f-9b9a-e0907d9d14b3';
+UPDATE daac SET hidden=TRUE WHERE id='fe75c306-ac04-4689-a702-073d9cb071fe';
+UPDATE daac SET hidden=TRUE WHERE id='6b3ea184-57c5-4fc5-a91b-e49708f91b67';
+UPDATE daac SET hidden=TRUE WHERE id='00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1';
+
+UPDATE daac SET long_name='Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC)' WHERE id='ef229725-1cad-485e-a72b-a276d2ca3175';
+UPDATE daac SET description='NASA''s Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC) is a joint venture of NASA''s Marshall Space Flight Center and the Information Technology and Systems Center (ITSC) located within the University of Alabama in Huntsville. GHRC DAAC was established in 1991 and is located at the National Space Science and Technology Center on the UAH campus. GHRC DAAC provides a comprehensive active archive of both data and knowledge augmentation services, with a focus on hazardous weather, its governing dynamical and physical processes, and associated applications. With this broad mandate, GHRC DAAC focuses on lightning, tropical cyclones and storm-induced hazards through integrated collections of satellite, airborne, and in-situ data sets.' WHERE id='ef229725-1cad-485e-a72b-a276d2ca3175';
+

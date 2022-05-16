@@ -70,9 +70,15 @@ async function findMethod(params, privileges) {
   return { error: 'No privilege' };
 }
 
+async function groupConditional(id, userPrivileges, groupId, privilege) {
+  if (userPrivileges.includes('ADMIN')) { return true; }
+  const { user_groups: userGroups } = await db.user.findById(id);
+  const groupIds = userGroups.map((group) => group.id);
+  return userPrivileges.includes(privilege) && groupIds.includes(groupId);
+}
+
 async function addGroupMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_ADDGROUP')) {
+  if (await groupConditional(params.context.user_id, privileges, params.group_id, 'USER_ADDGROUP')) {
     const response = await db.user.addGroup(params);
     return response;
   }
@@ -80,17 +86,21 @@ async function addGroupMethod(params, privileges) {
 }
 
 async function removeGroupMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_REMOVEGROUP')) {
+  if (await groupConditional(params.context.user_id, privileges, params.group_id, 'USER_REMOVEGROUP')) {
     const response = await db.user.removeGroup(params);
     return response;
   }
   return { error: 'No privilege' };
 }
 
+async function roleConditional(userPrivileges, roleId, privilege) {
+  if (userPrivileges.includes('ADMIN')) { return true; }
+  const { id } = await db.role.findByName({ short_name: 'admin' });
+  return userPrivileges.includes(privilege) && roleId !== id;
+}
+
 async function addRoleMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_ADDROLE')) {
+  if (await roleConditional(privileges, params.role_id, 'USER_ADDROLE')) {
     const response = await db.user.addRole(params);
     return response;
   }
@@ -98,8 +108,7 @@ async function addRoleMethod(params, privileges) {
 }
 
 async function removeRoleMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_REMOVEROLE')) {
+  if (await roleConditional(privileges, params.role_id, 'USER_REMOVEROLE')) {
     const response = await db.user.removeRole(params);
     return response;
   }

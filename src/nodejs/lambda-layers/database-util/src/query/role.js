@@ -110,8 +110,8 @@ const findByName = (params) => sql.select({
   from: { base: table, joins: [refs.role_privilege] },
   where: {
     filters: [
-      ...(short_name ? [{ field: 'edprole.short_name', like: 'short_name' }] : []),
-      ...(long_name ? [{ field: 'edprole.long_name', like: 'long_name' }] : []),
+      ...(params.short_name ? [{ field: 'edprole.short_name', like: 'short_name' }] : []),
+      ...(params.long_name ? [{ field: 'edprole.long_name', like: 'long_name' }] : []),
     ]
   }
 });
