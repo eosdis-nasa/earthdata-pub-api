@@ -47,35 +47,35 @@
           "version": 1
         },
         {
-          "short_name": "publication_point_of_contact",
+          "short_name": "point_of_contact",
           "long_name": "Data Accession Point of Contact",
           "text": "Who should the DAAC contact with questions regarding this Data Accession request?",
           "help": "This person should have in-depth knowledge of this data product, allowing them to provide additional information as needed.",
           "inputs": [
             {
               "type": "text",
-              "control_id": "publication_poc_name",
+              "control_id": "poc_name",
               "label": "First and Last Name",
               "validation_error_msg": "Please enter a name for the point of contact.",
               "required": true
             },
             {
               "type": "text",
-              "control_id": "publication_poc_organization",
+              "control_id": "poc_organization",
               "label": "Organization",
               "validation_error_msg": "Please enter an organization.",
               "required":true
             },
             {
               "type": "email",
-              "control_id": "publication_poc_email",
+              "control_id": "poc_email",
               "label": "Email",
               "validation_error_msg": "Please enter an email.",
               "required": true
             },
             {
               "type": "text",
-              "control_id": "publication_poc_orcid",
+              "control_id": "poc_orcid",
               "label": "ORCID",
               "validation_error_msg": "An Open Researcher and Contributor Identifier (ORCID) provides a persistent digital identifier to distinguish researchers and properly attribute their research outputs. For more information, see the ORCID web site (https://support.orcid.org)."
             }
@@ -255,14 +255,14 @@
           "version": 1
         },
         {
-          "short_name": "data_submission_reason",
+          "short_name": "data_accession_reason",
           "long_name": "Reason for Data Accession Request",
           "text": "Please briefly explain your reasons for requesting to have this data product archived and distributed at the DAAC.",
           "help": "For example, are you attempting to publish a paper which requires data to be archived in a trusted repository? Have you been instructed by a NASA program manager to archive your data at a DAAC? Do you want this data product distributed with related data?",
           "inputs": [
             {
               "type": "textarea",
-              "control_id": "data_submission_reason_description",
+              "control_id": "data_accession_reason_description",
               "label": "Description",
               "validation_error_msg": "Please enter a description.",
               "attributes": {
@@ -278,14 +278,14 @@
           "version": 1
         },
         {
-          "short_name": "data_submission_approval_dependencies",
+          "short_name": "data_accession_approval_dependencies",
           "long_name": "Dependencies for Data Accession Approval",
           "text": "Do you have any dependencies related to this data product being approved to be published at the DAAC? If Yes, please provide a brief explanation.",
           "help": "For example, are you hoping to have this data product approved to be published at the DAAC prior publishing a paper or presenting at a conference? Does your project have a defined timeline in which this data product needs to be published?",
           "inputs": [
             {
               "type": "radio",
-              "control_id": "data_submission_approval_dependencies_radios",
+              "control_id": "data_accession_approval_dependencies_radios",
               "label": "Has Dependencies",
               "enums": [
                 "Yes",
@@ -295,11 +295,11 @@
             },
             {
               "type": "text",
-              "control_id": "data_submission_approval_dependencies_explanation",
+              "control_id": "data_accession_approval_dependencies_explanation",
               "label": "If Yes, provide explanation",
               "required_if": [
                 {
-                  "field": "data_submission_approval_dependencies_radios",
+                  "field": "data_accession_approval_dependencies_radios",
                   "value": "Yes",
                   "message":"Please provide an explanation of the data product's dependencies."
                 }
