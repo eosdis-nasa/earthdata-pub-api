@@ -140,3 +140,40 @@ UPDATE daac SET hidden=TRUE WHERE id='00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1';
 UPDATE daac SET long_name='Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC)' WHERE id='ef229725-1cad-485e-a72b-a276d2ca3175';
 UPDATE daac SET description='NASA''s Global Hydrometeorology Resource Center (GHRC) Distributed Active Archive Center (DAAC) is a joint venture of NASA''s Marshall Space Flight Center and the Information Technology and Systems Center (ITSC) located within the University of Alabama in Huntsville. GHRC DAAC was established in 1991 and is located at the National Space Science and Technology Center on the UAH campus. GHRC DAAC provides a comprehensive active archive of both data and knowledge augmentation services, with a focus on hazardous weather, its governing dynamical and physical processes, and associated applications. With this broad mandate, GHRC DAAC focuses on lightning, tropical cyclones and storm-induced hazards through integrated collections of satellite, airborne, and in-situ data sets.' WHERE id='ef229725-1cad-485e-a72b-a276d2ca3175';
 
+-- fix/update_old_form_name_remnants_to_current
+UPDATE form SET short_name='data_publication_request' WHERE id='19025579-99ca-4344-8610-704dae626343';
+
+
+UPDATE question SET short_name='point_of_contact' WHERE id='f3e2eab9-6375-4e53-9cc2-3d16f318d333';
+
+UPDATE question SET short_name='data_accession_reason' WHERE id='bd00dbb7-1d3c-46fa-82a4-734236f4e06c';
+UPDATE question SET short_name='data_accession_approval_dependencies' WHERE id='f40956c3-9af8-400e-8dd8-c5e2965dcb8a';
+
+UPDATE input SET control_id='poc_name' WHERE question_id='f3e2eab9-6375-4e53-9cc2-3d16f318d333' AND list_order=0;
+UPDATE input SET control_id='poc_organization' WHERE question_id='f3e2eab9-6375-4e53-9cc2-3d16f318d333' AND list_order=1;
+UPDATE input SET control_id='poc_email' WHERE question_id='f3e2eab9-6375-4e53-9cc2-3d16f318d333' AND list_order=2;
+UPDATE input SET control_id='poc_orcid' WHERE question_id='f3e2eab9-6375-4e53-9cc2-3d16f318d333' AND list_order=3;
+
+UPDATE input SET control_id='data_accession_reason_description' WHERE question_id='bd00dbb7-1d3c-46fa-82a4-734236f4e06c' AND list_order=0;
+UPDATE input SET control_id='data_accession_approval_dependencies_radios' WHERE question_id='f40956c3-9af8-400e-8dd8-c5e2965dcb8a' AND list_order=0;
+UPDATE input SET control_id='data_accession_approval_dependencies_explanation', required_if='[{"field": "data_accession_approval_dependencies_radios","value": "Yes"}]' WHERE question_id='f40956c3-9af8-400e-8dd8-c5e2965dcb8a' AND list_order=1;
+
+UPDATE workflow SET short_name='data_publication_request_workflow', long_name='Data Publication Request Workflow', description='This is the default initial workflow for a new data publication request.' WHERE id='0e81909a-f780-40db-9242-a0c3274b6e95';
+
+UPDATE step SET step_name='data_publication_request_form' WHERE step_name='data_product_information_form';
+UPDATE step SET step_name='data_publication_request_form_review', data='{"rollback":"data_publication_request_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_name='data_product_information_form_review';
+
+UPDATE step SET data='{"rollback":"data_publication_request_form_review","type": "review"}' WHERE step_name='start_qa';
+
+UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='c0b4294f-3713-43ea-89af-83eba9eacff1' AND step_name='data_accession_request_form_review';
+UPDATE step_edge SET step_name='data_publication_request_form', next_step_name='data_publication_request_form_review' WHERE workflow_id='c0b4294f-3713-43ea-89af-83eba9eacff1' AND step_name='data_product_information_form';
+UPDATE step_edge SET step_name='data_publication_request_form_review' WHERE workflow_id='c0b4294f-3713-43ea-89af-83eba9eacff1' AND step_name='data_product_information_form_review';
+
+UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='0e81909a-f780-40db-9242-a0c3274b6e95' AND step_name='init';
+UPDATE step_edge SET step_name='data_publication_request_form', next_step_name='data_publication_request_form_review' WHERE workflow_id='0e81909a-f780-40db-9242-a0c3274b6e95' AND step_name='data_product_information_form';
+UPDATE step_edge SET step_name='data_publication_request_form_review' WHERE workflow_id='0e81909a-f780-40db-9242-a0c3274b6e95' AND step_name='data_product_information_form_review';
+
+UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND step_name='data_accession_request_form_review';
+UPDATE step_edge SET step_name='data_publication_request_form', next_step_name='data_publication_request_form_review' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND step_name='data_product_information_form';
+UPDATE step_edge SET step_name='data_publication_request_form_review' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND step_name='data_product_information_form_review';
+
