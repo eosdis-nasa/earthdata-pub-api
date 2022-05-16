@@ -106,3 +106,15 @@ UPDATE input SET required_if='[]' WHERE control_id='data_product_restrictions_pu
 UPDATE input SET label='If No or Not sure, please provide a brief explanation.', required_if='[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]' WHERE control_id='data_product_restrictions_explanation';
 
 UPDATE input SET show_if='[]' WHERE control_id='data_product_restrictions_public'
+
+--RolePrivilege(edprole_id, privilege) Data Coordinator
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_DAACREAD');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_LOCK');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_UNLOCK');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REASSIGN');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'DAAC_READ');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_READ');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_ADDGROUP');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_REMOVEGROUP');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_ADDROLE');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'USER_REMOVEROLE');
