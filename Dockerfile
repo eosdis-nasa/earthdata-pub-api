@@ -1,3 +1,7 @@
+# This is the Dockerfile used to created the EDPub base docker image
+# for bamboo deployments. First build this locally, push to the sit
+# ecr, then run the EDPUB DockerPush bamboo plan.
+
 FROM amazon/aws-cli:latest as aws
 
 FROM node:14.19.1
