@@ -160,6 +160,10 @@ UPDATE input SET control_id='data_accession_approval_dependencies_explanation', 
 
 UPDATE workflow SET short_name='data_publication_request_workflow', long_name='Data Publication Request Workflow', description='This is the default initial workflow for a new data publication request.' WHERE id='0e81909a-f780-40db-9242-a0c3274b6e95';
 
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_step_name_fkey;
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_next_step_name_fkey;
+ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
+
 UPDATE step SET step_name='data_publication_request_form' WHERE step_name='data_product_information_form';
 UPDATE step SET step_name='data_publication_request_form_review', data='{"rollback":"data_publication_request_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_name='data_product_information_form_review';
 
@@ -177,3 +181,9 @@ UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workfl
 UPDATE step_edge SET step_name='data_publication_request_form', next_step_name='data_publication_request_form_review' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND step_name='data_product_information_form';
 UPDATE step_edge SET step_name='data_publication_request_form_review' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND step_name='data_product_information_form_review';
 
+UPDATE submission_status SET step_name='data_publication_request_form_review' WHERE step_name='data_product_information_form_review';
+UPDATE submission_status SET step_name='data_publication_request_form' WHERE step_name='data_product_information_form';
+
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_step_name_fkey FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey FOREIGN KEY (next_step_name) REFERENCES step (step_name);
+ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey FOREIGN KEY (step_name) REFERENCES step (step_name);
