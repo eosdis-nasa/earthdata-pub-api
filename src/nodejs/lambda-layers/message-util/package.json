@@ -13,9 +13,10 @@
   "author": "Brian Ellingson",
   "license": "ISC",
   "dependencies": {
-    "uuid": "3.3.2",
-    "aws-sdk": "^2.825.0"
+    "uuid": "3.3.2"
   },
-  "bundledDependencies": [],
-  "devDependencies": {}
+  "bundledDependencies": {},
+  "devDependencies": {
+    "aws-sdk": "^2.825.0"
+  }
 }
