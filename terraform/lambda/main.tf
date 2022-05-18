@@ -48,7 +48,7 @@ resource "aws_lambda_function" "action_consumer" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/action-consumer-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -95,7 +95,7 @@ resource "aws_lambda_function" "data" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/data-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -135,7 +135,7 @@ resource "aws_lambda_function" "inbound_consumer" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/inbound-consumer-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -180,7 +180,7 @@ resource "aws_lambda_function" "invoke" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/invoke-lambda.zip")
-  timeout       = 10
+   timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -221,7 +221,7 @@ resource "aws_lambda_function" "metrics" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/metrics-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -263,7 +263,7 @@ resource "aws_lambda_function" "metrics_consumer" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/metrics-consumer-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -309,7 +309,7 @@ resource "aws_lambda_function" "model" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/model-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -347,7 +347,7 @@ resource "aws_lambda_function" "module" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/module-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -386,7 +386,7 @@ resource "aws_lambda_function" "notification" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/notification-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -426,7 +426,7 @@ resource "aws_lambda_function" "notification_consumer" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/notification-consumer-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -471,7 +471,7 @@ resource "aws_lambda_function" "register" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/register-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -510,7 +510,7 @@ resource "aws_lambda_function" "service_authorizer" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/service-authorizer-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -550,7 +550,7 @@ resource "aws_lambda_function" "submission" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/submission-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -591,7 +591,7 @@ resource "aws_lambda_function" "subscribe" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/subscribe-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -631,7 +631,7 @@ resource "aws_lambda_function" "user" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/user-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -672,7 +672,7 @@ resource "aws_lambda_function" "workflow_consumer" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/workflow-consumer-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION    = var.region
@@ -716,7 +716,7 @@ resource "aws_lambda_function" "auth" {
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/auth-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION              = var.region
@@ -760,7 +760,7 @@ resource "aws_lambda_function" "version" {
   handler       = "version.handler"
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/version-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       API_VERSION = var.api_version
@@ -790,7 +790,7 @@ resource "aws_lambda_function" "remap_statics" {
   layers        = []
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/remap-statics-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION              = var.region
@@ -817,7 +817,7 @@ resource "aws_lambda_function" "api_proxy" {
   layers        = []
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/api-proxy-lambda.zip")
-  timeout       = 10
+  timeout       = 180
   environment {
     variables = {
       REGION              = var.region
