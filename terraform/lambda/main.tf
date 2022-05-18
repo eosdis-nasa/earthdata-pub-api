@@ -499,9 +499,9 @@ resource "aws_lambda_permission" "register" {
 
 # Service Authorizer Lambda
 
-resource "aws_lambda_function" "service-authorizer" {
+resource "aws_lambda_function" "service_authorizer" {
   filename      = "../artifacts/service-authorizer-lambda.zip"
-  function_name = "service-authorizer"
+  function_name = "service_authorizer"
   role          = var.edpub_lambda_role_arn
   handler       = "service-authorizer.handler"
   layers = [
