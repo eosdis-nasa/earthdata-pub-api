@@ -497,6 +497,45 @@ resource "aws_lambda_permission" "register" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/action/register"
 }
 
+# Service Authorizer Lambda
+
+resource "aws_lambda_function" "service-authorizer" {
+  filename      = "../artifacts/service-authorizer-lambda.zip"
+  function_name = "service-authorizer"
+  role          = var.edpub_lambda_role_arn
+  handler       = "service-authorizer.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn
+  ]
+  runtime       = "nodejs14.x"
+  source_code_hash    = filesha256("../artifacts/service-authorizer-lambda.zip")
+  timeout       = 10
+  environment {
+    variables = {
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "service-authorizer" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.service-authorizer.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/service-authorizer/*"
+}
+
 # Submission Lambda
 
 resource "aws_lambda_function" "submission" {

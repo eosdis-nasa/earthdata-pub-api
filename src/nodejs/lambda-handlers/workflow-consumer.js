@@ -134,13 +134,19 @@ async function reviewRejectedMethod(eventMessage) {
   await promoteStepMethod(eventMessage);
 }
 
+async function workflowResumeMethod(eventMessage) {
+  const { submission_id: id } = eventMessage;
+  await db.service.deleteSecret(id);
+}
+
 const eventMethods = {
   workflow_promote_step: promoteStepMethod,
   workflow_started: workflowStartedMethod,
   request_initialized: requestInitializedMethod,
   form_submitted: formSubmittedMethod,
   review_approved: reviewApprovedMethod,
-  review_rejected: reviewRejectedMethod
+  review_rejected: reviewRejectedMethod,
+  workflow_resume: workflowResumeMethod
 };
 
 async function processRecord(record) {
