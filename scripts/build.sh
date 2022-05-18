@@ -40,6 +40,7 @@ install_lambda notification
 install_lambda notification-consumer
 install_lambda register
 install_lambda remap-statics
+install_lambda service-authorizer
 install_lambda submission
 install_lambda subscribe
 install_lambda user
