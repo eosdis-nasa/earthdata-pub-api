@@ -528,12 +528,12 @@ resource "aws_lambda_function" "service_authorizer" {
   }
 }
 
-resource "aws_lambda_permission" "service-authorizer" {
+resource "aws_lambda_permission" "service_authorizer" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.service-authorizer.function_name
+  function_name = aws_lambda_function.service_authorizer.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/service-authorizer/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/service_authorizer/*"
 }
 
 # Submission Lambda
@@ -575,6 +575,7 @@ resource "aws_lambda_permission" "submission" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/submission/*"
 }
+
 
 # Subscribe Lambda
 
