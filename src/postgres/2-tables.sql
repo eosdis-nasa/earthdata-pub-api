@@ -199,8 +199,10 @@ CREATE TABLE IF NOT EXISTS service (
 CREATE TABLE IF NOT EXISTS service_secret (
   id UUID NOT NULL,
   secret UUID NOT NULL,
+  submission_id UUID NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES service (id)
+  FOREIGN KEY (id) REFERENCES service (id),
+  FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
 
 CREATE TABLE IF NOT EXISTS edpuser (

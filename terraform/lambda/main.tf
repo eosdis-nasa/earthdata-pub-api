@@ -505,7 +505,8 @@ resource "aws_lambda_function" "service-authorizer" {
   role          = var.edpub_lambda_role_arn
   handler       = "service-authorizer.handler"
   layers = [
-    aws_lambda_layer_version.database_util.arn
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn
   ]
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/service-authorizer-lambda.zip")
