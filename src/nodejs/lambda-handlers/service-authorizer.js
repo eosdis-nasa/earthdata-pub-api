@@ -32,18 +32,18 @@ const generateAllow = (principalId, resource) => generatePolicy(principalId, 'Al
 const validateAuthentication = async (id, secret, submissionId) => {
   if (!uuid.validate(id)) { return false; }
   const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id });
-  return (dbSecret === secret && (dbSubmissionId ? dbSubmissionId === submissionId : true));
+  return (dbSecret === secret && dbSubmissionId === submissionId);
 };
 
-exports.handler = (event, context, callback) => {
+exports.handler = async (event, context, callback) => {
   console.info('Received event:', JSON.stringify(event, null, 2));
 
   const { headers } = event;
-  const serviceId = headers.serviceId || headers.serviceid || '';
-  const serviceSecret = headers.serviceSecret || headers.servicesecret || '';
-  const submissionId = headers.submissionId || headers.submissionid || '';
+  const serviceId = headers.serviceid || '';
+  const serviceSecret = headers.servicesecret || '';
+  const submissionId = headers.submissionid || '';
 
-  if (validateAuthentication(serviceId, serviceSecret, submissionId)) {
+  if (await validateAuthentication(serviceId, serviceSecret, submissionId)) {
     callback(null, generateAllow('me', event.methodArn));
   } else {
     callback('Unauthorized');
