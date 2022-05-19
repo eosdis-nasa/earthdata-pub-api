@@ -3335,7 +3335,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/{operation}": {
+    "/api/data/submission/operation/{operation}": {
       "parameters": [
         {
           "name": "operation",
