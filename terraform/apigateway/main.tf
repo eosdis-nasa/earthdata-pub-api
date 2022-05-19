@@ -33,6 +33,8 @@ data "template_file" "edpub_oas" {
     edpub_metrics_s3_bucket      = var.edpub_metrics_s3_bucket
     edpub_apigateway_s3_role_arn = var.edpub_apigateway_s3_role_arn
     cognito_user_pool_arn        = var.cognito_user_pool_arn
+    region                       = var.region
+    account_id                   = var.account_id
   }
 }
 

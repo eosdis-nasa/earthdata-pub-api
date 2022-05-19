@@ -85,6 +85,8 @@ module "apigateway_endpoints" {
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
   edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   vpc_endpoint_id = var.vpc_endpoint_id
+  region = var.region
+  account_id = var.account_id
 }
 
 module "rds" {

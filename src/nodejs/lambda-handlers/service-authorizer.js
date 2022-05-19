@@ -39,8 +39,8 @@ exports.handler = async (event, context, callback) => {
   console.info('Received event:', JSON.stringify(event, null, 2));
 
   const { headers } = event;
-  const serviceId = headers.serviceid || '';
-  const serviceSecret = headers.servicesecret || '';
+  const auth = (headers.authorization || '').split(' ')[1] || '';
+  const [serviceId, serviceSecret] = Buffer.from(auth, 'base64').toString().split(':');
   const submissionId = headers.submissionid || '';
 
   if (await validateAuthentication(serviceId, serviceSecret, submissionId)) {
