@@ -7077,7 +7077,7 @@
         "scheme": "Basic",
         "x-amazon-apigateway-authorizer" : {
           "type" : "request",
-          "authorizerUri" : "arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${region}:${acount_id}:function:service_authorizer/invocations",
+          "authorizerUri" : "arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${region}:${account_id}:function:service_authorizer/invocations",
           "authorizerPayloadFormatVersion" : "1.0",
           "identitySource" : "method.request.header.authorization, method.request.header.submissionid",
           "authorizerResultTtlInSeconds" : 300
