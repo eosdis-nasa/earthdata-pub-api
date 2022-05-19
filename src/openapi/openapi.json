@@ -7074,7 +7074,7 @@
       "Service_Authorizer": {
         "type": "http",
         "description": "Custom authorizer used for service enabled endpoints.",
-        "scheme": "Basic",
+        "scheme": "basic",
         "x-amazon-apigateway-authorizer" : {
           "type" : "request",
           "authorizerUri" : "arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${region}:${account_id}:function:service_authorizer/invocations",
