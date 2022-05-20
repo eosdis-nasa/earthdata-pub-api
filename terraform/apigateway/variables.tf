@@ -85,7 +85,3 @@ variable "region" {
 variable "service_authorizer_lambda_arn" {
   type = string
 }
-
-variable "edpub_lambda_role_arn" {
-  type = string
-}
