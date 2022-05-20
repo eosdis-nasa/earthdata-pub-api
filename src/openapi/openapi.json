@@ -7200,8 +7200,9 @@
         }
       },
       "Service_Authorizer": {
-        "type": "http",
-        "scheme": "basic",
+        "type": "apiKey",
+        "name": "Service_Authorizer",
+        "in": "header",
         "x-amazon-apigateway-authtype" : "custom",
         "x-amazon-apigateway-authorizer" : {
           "type" : "request",
