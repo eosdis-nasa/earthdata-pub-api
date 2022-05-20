@@ -7189,9 +7189,9 @@
   },
   "components": {
     "securitySchemes": {
-      "Authorizer": {
+      "Cognito_Authorizer": {
         "type": "apiKey",
-        "name": "Cognito_Authorizer",
+        "name": "Authorization",
         "in": "header",
         "x-amazon-apigateway-authtype": "cognito_user_pools",
         "x-amazon-apigateway-authorizer": {
