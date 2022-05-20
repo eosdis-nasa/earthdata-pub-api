@@ -7207,7 +7207,7 @@
           "type" : "request",
           "authorizerUri" : "${service_authorizer_lambda_arn}",
           "authorizerPayloadFormatVersion" : "1.0",
-          "identitySource" : "$request.header.authorization, $request.header.submissionid",
+          "identitySource" : "method.request.header.authorization, method.request.header.submissionid",
           "authorizerResultTtlInSeconds" : "300"
         }
       }
