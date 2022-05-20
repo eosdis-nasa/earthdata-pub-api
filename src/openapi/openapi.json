@@ -3351,9 +3351,9 @@
       ],
       "post": {
         "tags": [
-          "submission"
+          "data"
         ],
-        "summary": "Perform an operation on a Submission",
+        "summary": "Perform an operation on a Submission.",
         "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
         "operationId": "submissionOperation",
         "requestBody": {
@@ -5777,12 +5777,21 @@
         {
           "name": "operation",
           "in": "path",
-          "description": "Which submission operation to perform.",
+          "description": "Which submission operation to perform using the Service Authorizer authentication.",
           "required": true,
           "schema": {
             "type": "string",
             "enum": ["initialize", "active", "inactive", "apply", "metadata", "submit", "save", "review", "resume", "lock",
               "unlock", "withdraw", "restore"]
+          }
+        },
+        {
+          "name": "submissionid",
+          "in": "header",
+          "description": "Describes the submission id of the request which granted the service temporary API Authentication.",
+          "required": true,
+          "schema": {
+            "type": "string"
           }
         }
       ],
@@ -5790,8 +5799,8 @@
         "tags": [
           "submission"
         ],
-        "summary": "Perform an operation on a Submission",
-        "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
+        "summary": "Service endpoint- Perform an operation on a Submission",
+        "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review using the service authorizer.",
         "operationId": "submissionOperation",
         "requestBody": {
           "x-name": "payload",
@@ -7193,6 +7202,7 @@
         "type": "apiKey",
         "name": "Authorization",
         "in": "header",
+        "description": "This authorizer is used for most requests to the EDPub API with the exception of service endpoints.",
         "x-amazon-apigateway-authtype": "cognito_user_pools",
         "x-amazon-apigateway-authorizer": {
           "type": "cognito_user_pools",
@@ -7200,9 +7210,8 @@
         }
       },
       "Service_Authorizer": {
-        "type": "apiKey",
-        "name": "Service_Authorizer",
-        "in": "header",
+        "type": "basic",
+        "description": "For AWS deployment purpose only, this authorizer will not work for local deployments.",
         "x-amazon-apigateway-authtype" : "custom",
         "x-amazon-apigateway-authorizer" : {
           "type" : "request",
