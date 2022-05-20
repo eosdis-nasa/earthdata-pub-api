@@ -7189,15 +7189,16 @@
   },
   "components": {
     "securitySchemes": {
-      "Service_Authorizer": {
-        "type": "http",
-        "description": "Custom authorizer used for service enabled endpoints.",
-        "scheme": "basic",
-        "x-amazon-apigateway-authtype" : "custom",
-        "x-amazon-apigateway-authorizer" : {
-          "type" : "request"
+      "Cognito_Authorizer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "x-amazon-apigateway-authtype": "cognito_user_pools",
+        "x-amazon-apigateway-authorizer": {
+          "type": "cognito_user_pools",
+          "providerARNs": [ "${cognito_user_pool_arn}" ]
         }
-      }
+      },
     },
     "schemas": {}
   },
