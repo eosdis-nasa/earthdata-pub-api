@@ -87,6 +87,7 @@ module "apigateway_endpoints" {
   vpc_endpoint_id = var.vpc_endpoint_id
   region = var.region
   service_authorizer_lambda_arn = module.lambda_functions.service_authorizer_lambda_arn
+  edpub_lambda_role_arn = module.iam_roles.edpub_lambda_role_arn
 }
 
 module "rds" {

@@ -39,7 +39,7 @@ exports.handler = async (event, context, callback) => {
   console.info('Received event:', JSON.stringify(event, null, 2));
 
   const { headers } = event;
-  const auth = (headers.authorization || '').split(' ')[1] || '';
+  const auth = (headers.Authorization || headers.authorization || '').split(' ')[1] || '';
   const authStr = Buffer.from(auth, 'base64').toString();
   const splitIndex = authStr.indexOf(':');
   const serviceId = authStr.substring(0, splitIndex);
