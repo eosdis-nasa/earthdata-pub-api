@@ -82,10 +82,6 @@ variable "region" {
   type = string
 }
 
-variable "account_id" {
-  type = string
-}
-
 variable "service_authorizer_lambda_arn" {
   type = string
 }
