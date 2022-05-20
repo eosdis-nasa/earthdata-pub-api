@@ -141,7 +141,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -300,7 +300,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -429,7 +429,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -588,7 +588,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -725,7 +725,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -924,7 +924,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -996,7 +996,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -1122,7 +1122,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -1297,7 +1297,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -1426,7 +1426,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -1601,7 +1601,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -1730,7 +1730,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -1889,7 +1889,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2014,7 +2014,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2140,7 +2140,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2212,7 +2212,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2348,7 +2348,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2507,7 +2507,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2579,7 +2579,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2708,7 +2708,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2867,7 +2867,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -2996,7 +2996,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -3259,7 +3259,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -3390,7 +3390,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -3519,7 +3519,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -3694,7 +3694,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -3823,7 +3823,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -3982,7 +3982,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4054,7 +4054,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4180,7 +4180,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4298,7 +4298,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4416,7 +4416,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4534,7 +4534,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4642,7 +4642,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4761,7 +4761,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4879,7 +4879,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -4997,7 +4997,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -5131,7 +5131,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -5200,7 +5200,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -5318,7 +5318,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -5436,7 +5436,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -5631,7 +5631,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -5696,7 +5696,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -5976,7 +5976,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -6048,7 +6048,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -6281,7 +6281,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -6518,7 +6518,7 @@
         },
         "security": [
           {
-            "Authorizer": ["openid"]
+            "Cognito_Authorizer": ["openid"]
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -7189,16 +7189,6 @@
   },
   "components": {
     "securitySchemes": {
-      "Cognito_Authorizer": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header",
-        "x-amazon-apigateway-authtype": "cognito_user_pools",
-        "x-amazon-apigateway-authorizer": {
-          "type": "cognito_user_pools",
-          "providerARNs": [ "${cognito_user_pool_arn}" ]
-        }
-      },
       "Service_Authorizer": {
         "type": "http",
         "description": "Custom authorizer used for service enabled endpoints.",
