@@ -7209,7 +7209,8 @@
           "authorizerUri" : "${service_authorizer_lambda_arn}",
           "authorizerPayloadFormatVersion" : "1.0",
           "identitySource" : "method.request.header.authorization, method.request.header.submissionid",
-          "authorizerResultTtlInSeconds" : "300"
+          "authorizerResultTtlInSeconds" : "300",
+          "authorizerCredentials" : "${edpub_lambda_role_arn}"
         }
       }
     },
