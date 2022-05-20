@@ -86,7 +86,7 @@ module "apigateway_endpoints" {
   edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   vpc_endpoint_id = var.vpc_endpoint_id
   region = var.region
-  account_id = var.account_id
+  service_authorizer_lambda_arn = module.lambda_functions.service_authorizer_lambda_arn
 }
 
 module "rds" {
