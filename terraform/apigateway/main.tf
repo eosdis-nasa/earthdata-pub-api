@@ -35,7 +35,6 @@ data "template_file" "edpub_oas" {
     cognito_user_pool_arn         = var.cognito_user_pool_arn
     region                        = var.region
     service_authorizer_lambda_arn = var.service_authorizer_lambda_arn
-    edpub_lambda_role_arn         = var.edpub_lambda_role_arn
   }
 }
 
