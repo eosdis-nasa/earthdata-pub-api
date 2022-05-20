@@ -7205,7 +7205,7 @@
         "x-amazon-apigateway-authtype" : "custom",
         "x-amazon-apigateway-authorizer" : {
           "type" : "request",
-          "authorizerUri" : "arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/${service_authorizer_lambda_arn}/invocations",
+          "authorizerUri" : "${service_authorizer_lambda_arn}",
           "authorizerPayloadFormatVersion" : "1.0",
           "identitySource" : "$request.header.authorization, $request.header.submissionid",
           "authorizerResultTtlInSeconds" : "300"
