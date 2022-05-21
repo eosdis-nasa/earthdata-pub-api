@@ -164,6 +164,18 @@ function check(req, secDef, token, next) {
   }
 }
 
+async function checkService(req, secDef, token, next) {
+  const auth = token.split(' ')[1] || '';
+  const authStr = Buffer.from(auth, 'base64').toString();
+  const splitIndex = authStr.indexOf(':');
+  const serviceId = authStr.substring(0, splitIndex);
+  const serviceSecret = authStr.substring(splitIndex + 1);
+  if (!uuid.validate(serviceId)) { return next(req.res.sendStatus(403)); }
+  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id: serviceId });
+  if (dbSecret === serviceSecret && dbSubmissionId === req.headers.submissionid) { return next(); }
+  return next(req.res.sendStatus(403));
+}
+
 function reseed(req, res) {
   db.seed().then((response) => {
     res.status(200);
@@ -232,5 +244,6 @@ module.exports = {
   handleMetrics,
   handleNotification,
   dbTest,
-  favico
+  favico,
+  checkService
 };

@@ -43,3 +43,8 @@
 --       a.column_name = b.column_name
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
+
+-- 5/20/22 Add Service Authentication
+ALTER TABLE service_secret ALTER COLUMN secret TYPE VARCHAR;
+ALTER TABLE service_secret ADD submission_id UUID NOT NULL;
+ALTER TABLE service_secret ADD CONSTRAINT service_secret_submission_id_fkey FOREIGN KEY (submission_id) REFERENCES submission (id);
