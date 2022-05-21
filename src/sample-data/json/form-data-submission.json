@@ -2,7 +2,7 @@
   "id": "19025579-99ca-4344-8610-704dae626343",
   "version": 1,
   "long_name": "Data Publication Request",
-  "short_name": "data_product_information",
+  "short_name": "data_publication_request",
   "description": "This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.",
   "text": "To express interest in submitting a data product, please fill out the following form.",
   "sections": [
@@ -47,35 +47,35 @@
           "version": 1
         },
         {
-          "short_name": "publication_point_of_contact",
+          "short_name": "point_of_contact",
           "long_name": "Data Accession Point of Contact",
           "text": "Who should the DAAC contact with questions regarding this Data Accession request?",
           "help": "This person should have in-depth knowledge of this data product, allowing them to provide additional information as needed.",
           "inputs": [
             {
               "type": "text",
-              "control_id": "publication_poc_name",
+              "control_id": "poc_name",
               "label": "First and Last Name",
               "validation_error_msg": "Please enter a name for the point of contact.",
               "required": true
             },
             {
               "type": "text",
-              "control_id": "publication_poc_organization",
+              "control_id": "poc_organization",
               "label": "Organization",
               "validation_error_msg": "Please enter an organization.",
               "required": true
             },
             {
               "type": "email",
-              "control_id": "publication_poc_email",
+              "control_id": "poc_email",
               "label": "Email",
               "validation_error_msg": "Please enter an email.",
               "required": true
             },
             {
               "type": "text",
-              "control_id": "publication_poc_orcid",
+              "control_id": "poc_orcid",
               "label": "ORCID",
               "validation_error_msg": "An Open Researcher and Contributor Identifier (ORCID) provides a persistent digital identifier to distinguish researchers and properly attribute their research outputs. For more information, see the ORCID web site (https://support.orcid.org)."
             }

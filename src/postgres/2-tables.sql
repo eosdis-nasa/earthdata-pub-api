@@ -326,6 +326,7 @@ CREATE TABLE IF NOT EXISTS daac (
   discipline VARCHAR NOT NULL,
   workflow_id UUID NOT NULL,
   edpgroup_id UUID NOT NULL,
+  hidden BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (id),
   UNIQUE (short_name),
   UNIQUE (long_name),
