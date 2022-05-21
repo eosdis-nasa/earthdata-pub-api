@@ -2014,7 +2014,7 @@
         },
         "security": [
           {
-            "Cognito_Authorizer": ["openid"]
+            "Service_Authorizer": []
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -7202,7 +7202,7 @@
         "type": "apiKey",
         "name": "Authorization",
         "in": "header",
-        "description": "This authorizer is used for most requests to the EDPub API with the exception of service endpoints.",
+        "description": "This authorizer is used for most requests to the EDPub API with the exception of service endpoints. The authorization value follows the format: 'Bearer \\<JWT token value\\>'",
         "x-amazon-apigateway-authtype": "cognito_user_pools",
         "x-amazon-apigateway-authorizer": {
           "type": "cognito_user_pools",
@@ -7210,8 +7210,10 @@
         }
       },
       "Service_Authorizer": {
-        "type": "basic",
-        "description": "For AWS deployment purpose only, this authorizer will not work for local deployments.",
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "This authorizer is used for authentication for service enabled endpoints. The authorization value format is: 'Basic \\<value of encoding serviceId:serviceSecret using base64\\>'",
         "x-amazon-apigateway-authtype" : "custom",
         "x-amazon-apigateway-authorizer" : {
           "type" : "request",

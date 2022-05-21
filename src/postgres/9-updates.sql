@@ -44,40 +44,7 @@
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
 
-
--- 4/27/22 (Adding step id)
--- Drop workflow_id dependent foreign constraints
-ALTER TABLE step_edge DROP CONSTRAINT step_edge_workflow_id_fkey;
-ALTER TABLE step_edge DROP CONSTRAINT step_edge_workflow_id_fkey1;
-ALTER TABLE submission_status DROP CONSTRAINT submission_status_workflow_id_fkey;
--- Drop primary key of step
-ALTER TABLE step DROP CONSTRAINT step_pkey;
--- Drop workflow_id column from step
-ALTER TABLE step DROP COLUMN workflow_id;
--- Add step_id column to step
-ALTER TABLE step ADD step_id UUID DEFAULT UUID_GENERATE_V4();
--- Add primary key of step
-ALTER TABLE step ADD PRIMARY KEY (step_id);
--- Remove duplicate steps
-DELETE FROM
-  step a USING (
-    SELECT
-      MIN(ctid) as ctid,
-      step_name
-    FROM
-      step
-    GROUP BY
-      step_name
-    HAVING
-      COUNT(*) > 1
-  ) b
-WHERE
-  a.step_name = b.step_name
-  AND a.ctid <> b.ctid;
--- Add unique constraint for step_name to step
-ALTER TABLE step ADD UNIQUE (step_name);
--- Change foreign key constraints of step_edge
-ALTER TABLE step_edge ADD CONSTRAINT step_edge_step_name_fkey FOREIGN KEY (step_name) REFERENCES step (step_name);
-ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey FOREIGN KEY (next_step_name) REFERENCES step (step_name);
--- Change foreign key constraints of submission_status
-ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey FOREIGN KEY (step_name) REFERENCES step (step_name);
+-- 5/20/22 Add Service Authentication
+ALTER TABLE service_secret ALTER COLUMN secret TYPE VARCHAR;
+ALTER TABLE service_secret ADD submission_id UUID NOT NULL;
+ALTER TABLE service_secret ADD CONSTRAINT service_secret_submission_id_fkey FOREIGN KEY (submission_id) REFERENCES submission (id);
