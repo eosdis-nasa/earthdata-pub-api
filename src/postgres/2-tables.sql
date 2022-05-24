@@ -406,7 +406,7 @@ CREATE TABLE IF NOT EXISTS submission_lock (
 CREATE TABLE IF NOT EXISTS service_secret (
   id UUID NOT NULL,
   secret VARCHAR NOT NULL,
-  submission_id UUID NOT NULL,
+  submission_id UUID,
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES service (id),
   FOREIGN KEY (submission_id) REFERENCES submission (id)
