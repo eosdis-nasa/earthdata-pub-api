@@ -19,7 +19,7 @@ the EDPub project. Be sure to read that before submitting pull requests.
 
 ### Prerequisites
 
-The following are required for  following the packaging and deploying steps:
+The following are required for following the packaging and deploying steps:
 
 - [Amazon AWS](https://aws.amazon.com/) An AWS account is required for live deployment.
 - [Terraform](https://github.com/hashicorp/terraform) AWS components are
