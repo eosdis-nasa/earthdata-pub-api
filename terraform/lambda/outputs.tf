@@ -34,6 +34,10 @@ output "subscribe_lambda_arn" {
   value = aws_lambda_function.subscribe.invoke_arn
 }
 
+output "service_authorizer_lambda_arn" {
+  value = aws_lambda_function.service_authorizer.invoke_arn
+}
+
 output "submission_lambda_arn" {
   value = aws_lambda_function.submission.invoke_arn
 }

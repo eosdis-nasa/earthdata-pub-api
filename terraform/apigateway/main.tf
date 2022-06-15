@@ -15,24 +15,26 @@ resource "aws_api_gateway_rest_api" "EarthdataPub" {
 data "template_file" "edpub_oas" {
   template = file("./apigateway/openapi.json")
   vars = {
-    auth_lambda_arn              = var.auth_lambda_arn
-    data_lambda_arn              = var.data_lambda_arn
-    invoke_lambda_arn            = var.invoke_lambda_arn
-    notification_lambda_arn      = var.notification_lambda_arn
-    metrics_lambda_arn           = var.metrics_lambda_arn
-    module_lambda_arn            = var.module_lambda_arn
-    model_lambda_arn             = var.model_lambda_arn
-    subscribe_lambda_arn         = var.subscribe_lambda_arn
-    submission_lambda_arn        = var.submission_lambda_arn
-    user_lambda_arn              = var.user_lambda_arn
-    register_lambda_arn          = var.register_lambda_arn
-    version_lambda_arn           = var.version_lambda_arn
-    edpub_dashboard_s3_bucket    = var.edpub_dashboard_s3_bucket
-    edpub_forms_s3_bucket        = var.edpub_forms_s3_bucket
-    edpub_overview_s3_bucket     = var.edpub_overview_s3_bucket
-    edpub_metrics_s3_bucket      = var.edpub_metrics_s3_bucket
-    edpub_apigateway_s3_role_arn = var.edpub_apigateway_s3_role_arn
-    cognito_user_pool_arn        = var.cognito_user_pool_arn
+    auth_lambda_arn               = var.auth_lambda_arn
+    data_lambda_arn               = var.data_lambda_arn
+    invoke_lambda_arn             = var.invoke_lambda_arn
+    notification_lambda_arn       = var.notification_lambda_arn
+    metrics_lambda_arn            = var.metrics_lambda_arn
+    module_lambda_arn             = var.module_lambda_arn
+    model_lambda_arn              = var.model_lambda_arn
+    subscribe_lambda_arn          = var.subscribe_lambda_arn
+    submission_lambda_arn         = var.submission_lambda_arn
+    user_lambda_arn               = var.user_lambda_arn
+    register_lambda_arn           = var.register_lambda_arn
+    version_lambda_arn            = var.version_lambda_arn
+    edpub_dashboard_s3_bucket     = var.edpub_dashboard_s3_bucket
+    edpub_forms_s3_bucket         = var.edpub_forms_s3_bucket
+    edpub_overview_s3_bucket      = var.edpub_overview_s3_bucket
+    edpub_metrics_s3_bucket       = var.edpub_metrics_s3_bucket
+    edpub_apigateway_s3_role_arn  = var.edpub_apigateway_s3_role_arn
+    cognito_user_pool_arn         = var.cognito_user_pool_arn
+    region                        = var.region
+    service_authorizer_lambda_arn = var.service_authorizer_lambda_arn
   }
 }
 

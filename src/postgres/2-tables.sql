@@ -196,13 +196,6 @@ CREATE TABLE IF NOT EXISTS service (
   UNIQUE (short_name)
 );
 
-CREATE TABLE IF NOT EXISTS service_secret (
-  id UUID NOT NULL,
-  secret UUID NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES service (id)
-);
-
 CREATE TABLE IF NOT EXISTS edpuser (
   id UUID DEFAULT UUID_GENERATE_V4(),
   name VARCHAR NOT NULL,
@@ -408,6 +401,15 @@ CREATE TABLE IF NOT EXISTS submission_lock (
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
+);
+
+CREATE TABLE IF NOT EXISTS service_secret (
+  id UUID NOT NULL,
+  secret VARCHAR NOT NULL,
+  submission_id UUID,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES service (id),
+  FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
 
 CREATE TABLE IF NOT EXISTS edpuser_permission_submission (

@@ -77,3 +77,11 @@ variable "cognito_user_pool_arn" {
 variable "vpc_endpoint_id" {
   type = string
 }
+
+variable "region" {
+  type = string
+}
+
+variable "service_authorizer_lambda_arn" {
+  type = string
+}
