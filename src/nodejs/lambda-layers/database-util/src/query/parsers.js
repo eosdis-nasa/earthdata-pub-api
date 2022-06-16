@@ -54,3 +54,5 @@ module.exports.withdrawSubmission = one;
 module.exports.restoreSubmission = one;
 module.exports.add = one;
 module.exports.updateInput = one;
+module.exports.findSecret = one;
+module.exports.deleteSecret = one;
