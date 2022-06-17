@@ -51,15 +51,16 @@ resource "aws_lambda_function" "action_consumer" {
   timeout       = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      EMAIL_SNS = var.edpub_email_sns_arn
-      METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION          = var.region
+      EVENT_SNS       = var.edpub_event_sns_arn
+      EMAIL_SNS       = var.edpub_email_sns_arn
+      METRICS_SNS     = var.edpub_metrics_sns_arn
+      PG_USER         = var.db_user
+      PG_HOST         = var.db_host
+      PG_DB           = var.db_database
+      PG_PASS         = var.db_password
+      PG_PORT         = var.db_port
+      ACTIONS_BUCKET  = var.edpub_actions_s3_bucket
     }
   }
   vpc_config {

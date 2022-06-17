@@ -14,7 +14,7 @@ const msg = require('message-util');
 
 async function actionMethod(status) {
   const eventMessage = {
-    event_type: 'action_request',
+    event_type: status.step.action_id ? 'action_request' : 'action_request_no_id',
     action_id: status.step.action_id,
     submission_id: status.id,
     conversation_id: status.conversation_id,

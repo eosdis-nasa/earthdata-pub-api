@@ -86,6 +86,10 @@ variable "edpub_metrics_s3_bucket" {
   type = string
 }
 
+variable "edpub_actions_s3_bucket" {
+  type = string
+}
+
 variable "db_user" {
   type = string
 }
