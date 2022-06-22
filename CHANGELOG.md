@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+## 1.0.5 - 2022-06-22
+
+- Changed DOI content and added attributes for numbers to enforce positive number validation.
+
 ## 1.0.4 - 2022-05-12
 
 - Updated old form name fragments to current form names
