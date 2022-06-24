@@ -43,3 +43,16 @@
 --       a.column_name = b.column_name
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
+
+-- 6/24/22
+--UPDATE table_name SET column_name='' WHERE column_name='';
+UPDATE input SET control_id='data_product_doi', type='table', enums='[{"key": "data_product_doi_value","label": "DOI","type": "text","editable": true}]', required_if='[{"field":"data_product_doi_exists","value":"true","message":"Please add DOIs."}]' WHERE question_id='c9c73e88-837a-42d2-aa1a-50874a333607' AND list_order=1;
+
+UPDATE input SET attributes='{"rows":5,"cols":20,"maxlength":1000,"placeholder":""}' WHERE control_id='data_accession_reason_description';
+
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='data_product_volume_amount';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='file_temporal_coverage_answer';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='value_temporal_resolution_answer';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='spatial_vertical_details_upper';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='spatial_vertical_details_lower';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='data_product_number_of_files';
