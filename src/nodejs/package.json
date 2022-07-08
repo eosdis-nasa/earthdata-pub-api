@@ -18,6 +18,7 @@
     "express": "^4.17.1",
     "js-yaml": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
+    "node-fetch": "3.2.6",
     "oas-tools": "2.1.8",
     "pg": "^8.5.1",
     "sqs-consumer": "^5.5.0",
