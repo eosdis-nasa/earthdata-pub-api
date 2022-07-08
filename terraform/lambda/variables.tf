@@ -161,3 +161,11 @@ variable "auth_client_secret" {
 variable "auth_client_path" {
   type = string
 }
+
+variable "meditor_service_username" {
+  type = string
+}
+
+variable "meditor_service_password" {
+  type = string
+}
