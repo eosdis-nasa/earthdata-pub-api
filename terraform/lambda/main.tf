@@ -61,6 +61,8 @@ resource "aws_lambda_function" "action_consumer" {
       PG_PASS         = var.db_password
       PG_PORT         = var.db_port
       ACTIONS_BUCKET  = var.edpub_actions_s3_bucket
+      MEDITOR_USER    = var.meditor_service_username
+      MEDITOR_PASS    = var.meditor_service_password
     }
   }
   vpc_config {

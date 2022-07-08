@@ -61,6 +61,8 @@ module "lambda_functions" {
   auth_client_id = var.auth_client_id
   auth_client_secret = var.auth_client_secret
   auth_client_path = var.auth_client_path
+  meditor_service_username = var.meditor_service_username
+  meditor_service_password = var.meditor_service_password
 }
 
 module "apigateway_endpoints" {
