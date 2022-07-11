@@ -270,15 +270,21 @@
               "label": "Has DOI"
             },
             {
-              "type": "text",
-              "control_id": "data_product_doi_value",
-              "label": "If yes, provide DOI",
-              "validation_error_msg": "Please enter Digital Object Identifiers.",
+              "type": "table",
+              "control_id": "data_product_doi",
+              "enums": [
+                {
+                  "key": "data_product_doi_value",
+                  "label": "DOI",
+                  "type": "text",
+                  "editable": true
+                }
+              ],
               "required_if":[
                 {
                   "field":"data_product_doi_exists",
                   "value":"true",
-                  "message":"You checked that this data product has a DOI."
+                  "message":"Please add DOIs."
                 }
               ]
             }
@@ -435,7 +441,9 @@
               "type": "number",
               "control_id": "data_production_latency_amount",
               "label": "Amount",
-              "validation_error_msg": "Must be a positive value"
+              "attributes": {
+                "min": "1"
+              }
             },
             {
               "type": "radio",
@@ -468,7 +476,9 @@
               "control_id": "file_temporal_coverage_answer",
               "label": "Time",
               "required": true,
-              "validation_error_msg": "Must be a positive value"
+              "attributes": {
+                "min": "1"
+              }
             },
             {
               "type": "radio",
@@ -500,7 +510,9 @@
               "control_id": "value_temporal_resolution_answer",
               "label": "Value",
               "required": true,
-              "validation_error_msg": "Must be a positive value"
+              "attributes": {
+                "min": "1"
+              }
             },
             {
               "type": "radio",
@@ -619,7 +631,9 @@
               "type": "number",
               "control_id": "spatial_vertical_details_upper",
               "label": "Upper Amount",
-              "validation_error_msg": "Must be a positive value"
+              "attributes": {
+                "min": "1"
+              }
             },
             {
               "type": "radio",
@@ -631,7 +645,9 @@
               "type": "number",
               "control_id": "spatial_vertical_details_lower",
               "label": "Lower Amount",
-              "validation_error_msg": "Must be a positive value"
+              "attributes": {
+                "min": "1"
+              }
             },
             {
               "type": "radio",
@@ -886,7 +902,9 @@
               "control_id": "data_product_volume_amount",
               "label": "Amount",
               "required": true,
-              "validation_error_msg": "Volume must be positive."
+              "attributes": {
+                "min": "1"
+              }
             },
             {
               "type": "radio",
@@ -927,7 +945,9 @@
               "control_id": "data_product_number_of_files",
               "label": "Files",
               "required": true,
-              "validation_error_msg": "Must be a positive value"
+              "attributes": {
+                "min": "1"
+              }
             }
           ],
           "id": "40672516-2220-4edc-8c1b-fd9f7e0b979e",

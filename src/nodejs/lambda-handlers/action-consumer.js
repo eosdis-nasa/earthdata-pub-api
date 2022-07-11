@@ -16,15 +16,19 @@ const DatabaseUtil = require('database-util');
 
 const fs = require('fs');
 
-// function fetchAction(key, local) {
-//   return new Promise((resolve) => {
-//     const params = { Bucket: BUCKET, Key: key };
-//     const file = fs.createWriteStream(local);
-//     const stream = s3.getObject(params).createReadStream();
-//     stream.on('end', resolve);
-//     stream.pipe(file);
-//   });
-// }
+function fetchAction(key, local) {
+  return new Promise((resolve) => {
+    const params = {
+      Bucket: process.env.ACTIONS_BUCKET,
+      Key: key
+    };
+    const file = fs.createWriteStream(local);
+    const s3 = new AWS.S3();
+    const stream = s3.getObject(params).createReadStream();
+    stream.on('end', resolve);
+    stream.pipe(file);
+  });
+}
 
 async function processRecord(record) {
   const { eventMessage } = MessageUtil.parseRecord(record);
@@ -34,8 +38,8 @@ async function processRecord(record) {
   const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'findById' },
     { submission: { id: submissionId } });
   const local = `/tmp/${Schema.generateId()}`;
-  fs.writeFileSync(local, action.source);
-  // await fetchAction(action.file_key, local);
+  // fs.writeFileSync(local, action.source);
+  await fetchAction(action.source, local);
   // eslint-disable-next-line
   const { execute } = require(local);
   const output = await execute({
@@ -53,6 +57,7 @@ async function processRecord(record) {
     step_name: status.step_name
   };
   await MessageUtil.sendEvent(newEventMessage);
+  fs.unlinkSync(local);
   return output;
 }
 
