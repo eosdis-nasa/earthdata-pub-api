@@ -63,6 +63,7 @@ resource "aws_lambda_function" "action_consumer" {
       ACTIONS_BUCKET  = var.edpub_actions_s3_bucket
       MEDITOR_USER    = var.meditor_service_username
       MEDITOR_PASS    = var.meditor_service_password
+      ROOT_URL        = var.client_root_url
     }
   }
   vpc_config {
