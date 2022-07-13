@@ -56,3 +56,7 @@ UPDATE input SET attributes='{"min": "1"}' WHERE control_id='value_temporal_reso
 UPDATE input SET attributes='{"min": "1"}' WHERE control_id='spatial_vertical_details_upper';
 UPDATE input SET attributes='{"min": "1"}' WHERE control_id='spatial_vertical_details_lower';
 UPDATE input SET attributes='{"min": "1"}' WHERE control_id='data_product_number_of_files';
+
+-- 7/13/22
+INSERT INTO action VALUES ('3fe93672-cd91-45d4-863b-c6d0d63f8c8c', 'send_to_meditor', 1, 'Send To mEditor Action', 'This action is used to send collection metadata from EDPub to mEditor.', 'ea8028411c961a69fe308164ba12dfeb6e8672da6593981ca4f4f5fce87cd3ef');
+UPDATE step SET action_id='3fe93672-cd91-45d4-863b-c6d0d63f8c8c' WHERE step_name='send_to_meditor';
