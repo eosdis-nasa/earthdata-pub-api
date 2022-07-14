@@ -161,9 +161,9 @@ INSERT INTO input VALUES ('4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 'funding_progr
 INSERT INTO input VALUES ('f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 'data_product_name_value', 0, '', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('39701413-ac96-4b66-9c2f-2d9c08a18ed9', 'data_product_description', 0, '', 'textarea', '{}', '{"rows":3,"cols":20}', '[]','[]',  True);
 INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi_exists', 0, 'Has DOI', 'checkbox', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi_value', 1, '', 'text', '{}', '{}', '[{"field":"data_product_doi_exists","value":"true","message":"You checked that this data product has a DOI."}]','[]',  False);
+INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi', 1, '', 'table', '[{"key": "data_product_doi_value","label": "DOI","type": "text","editable": true}]', '{}', '[{"field":"data_product_doi_exists","value":"true","message":"Please add DOIs."}]','[]',  False);
 INSERT INTO input VALUES ('7fd7bccf-5065-4033-9956-9e80bc99c205', 'science_value_description', 0, '', 'textarea', '{}', '{"rows":3,"cols":20}', '[]','[]',  True);
-INSERT INTO input VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_accession_reason_description', 0, '', 'textarea', '{}', '{"rows":5,"cols":20,"maxlength":1000,"placeholder":""}', '[]','[]',  True);
+INSERT INTO input VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_accession_reason_description', 0, '', 'textarea', '{}', '{"rows":5,"cols":20,"maxlength":1000}', '[]','[]',  True);
 INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_accession_approval_dependencies_radios', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_accession_approval_dependencies_explanation', 1, 'If Yes, please provide a brief explanation.', 'text', '{}', '{}', '[{"field": "data_accession_approval_dependencies_radios","value": "Yes"}]','[]',  False);
 INSERT INTO input VALUES ('2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 'data_product_restrictions_public', 0, '', 'radio', '["Yes","No","Not sure"]', '{}', '[]','[]',  True);
@@ -183,7 +183,7 @@ INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f129f', 'product_tempo
 INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f129f', 'product_temporal_coverage_end', 1, 'End', 'date', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('dbf70495-433a-439e-8173-0cb20f972c16', 'data_product_status', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 'data_delivery_frequency', 0, '', 'radio', '["Daily","Weekly","Monthly","Quarterly","Yearly","Varies"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_amount', 0, '', 'number', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_amount', 0, '', 'number', '{}', '{"min": "1"}', '[]','[]',  True);
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_units', 1, '', 'radio', '["KB","MB","GB","TB","PB"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_file_url', 0, '', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
@@ -193,18 +193,18 @@ INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_sup
 INSERT INTO input VALUES ('d2bc7af7-211e-494a-a0bd-11b44f112eaa', 'funding_grant_number', 0, '', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'data_producers_table', 0, 'undefined', 'table', '[{"key":"producer_first_name","label":"First Name","type":"text","editable":true},{"key":"producer_last_name_or_organization","label":"Last Name or Group","type":"text","editable":true}]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f625108f-7203-4045-9d1c-b1312b585584', 'data_production_latency_units', 1, '', 'radio', '["3 hours or less","24 hours or less","48 hours or less","2 to 7 days","1 week to 1 month","1 to 3 months","3 to 6 months","6 months to 1 year","more than 1 year"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('91c123bf-702e-458c-90a1-b26f6498937e', 'file_temporal_coverage_answer', 0, '', 'number', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('91c123bf-702e-458c-90a1-b26f6498937e', 'file_temporal_coverage_answer', 0, '', 'number', '{}', '{"min": "1"}', '[]','[]',  True);
 INSERT INTO input VALUES ('91c123bf-702e-458c-90a1-b26f6498937e', 'file_temporal_coverage_units', 1, '', 'radio', '["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Varies"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f139f', 'value_temporal_resolution_answer', 0, '', 'number', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f139f', 'value_temporal_resolution_answer', 0, '', 'number', '{}', '{"min": "1"}', '[]','[]',  True);
 INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f139f', 'value_temporal_resolution_units', 1, '', 'radio', '["Millisecond(s)","Second(s)","Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Varies"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f128f', 'temporal_coverage_notes_textarea', 0, '', 'textarea', '{}', '{"rows":10,"cols":80}', '[]','[]',  False);
 INSERT INTO input VALUES ('15a012d0-9b4b-4979-9fa9-81fac1600b09', 'spatial_horizontal_1', 0, 'undefined', 'bbox', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('15a012d0-9b4b-4979-9fa9-81fac1600b09', 'spatial_horizontal_2', 1, 'undefined', 'bbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('15a012d0-9b4b-4979-9fa9-81fac1600b09', 'spatial_horizontal_3', 2, 'undefined', 'bbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('0f640f21-37ec-4d04-af2c-da955ae98e12', 'spatial_vertical_answer', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_upper', 0, 'Upper Amount', 'number', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_upper', 0, 'Upper Amount', 'number', '{}', '{"min": "1"}', '[]','[]',  False);
 INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_upper_units', 1, '', 'radio', '["km","m","feet","miles","mb","Pa","hPa","Varies"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_lower', 2, 'Lower Amount', 'number', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_lower', 2, 'Lower Amount', 'number', '{}', '{"min": "1"}', '[]','[]',  False);
 INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_lower_units', 3, '', 'radio', '["km","m","feet","miles","mb","Pa","hPa","Varies"]', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('91577abc-a59c-40f7-b0e6-f954542e6b19', 'spatial_data_file', 0, '', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('a12ccd39-1d94-46a5-8aad-3587fd50c4ad', 'spatial_resolution', 0, 'Spatial Resolution', 'text', '{}', '{}', '[]','[]',  True);
@@ -217,7 +217,7 @@ INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_
 INSERT INTO input VALUES ('9767336b-a9a9-41d2-8d2d-4fc2858c9b6f', 'platform_instrument', 0, '', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('ab57f5e8-9ec5-46c9-978e-d06125346d36', 'model_data_product', 0, '', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('f1d8ab9d-0959-41b8-8449-430986ddfe84', 'data_file_compression_answer', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b979e', 'data_product_number_of_files', 0, '', 'number', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b979e', 'data_product_number_of_files', 0, '', 'number', '{}', '{"min": "1"}', '[]','[]',  True);
 INSERT INTO input VALUES ('f2d8ab9d-0959-41b8-8449-430986ddfe84', 'browse_images_provided', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('f2d8ab9d-0959-41b8-8449-430986ddfe84', 'browse_images_other', 1, 'Additional information about browse images', 'text', '{}', '{}', '[]','[]',  False);
 

@@ -44,7 +44,19 @@
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
 
--- 5/20/22 Add Service Authentication
-ALTER TABLE service_secret ALTER COLUMN secret TYPE VARCHAR;
-ALTER TABLE service_secret ADD submission_id UUID;
-ALTER TABLE service_secret ADD CONSTRAINT service_secret_submission_id_fkey FOREIGN KEY (submission_id) REFERENCES submission (id);
+-- 6/24/22
+--UPDATE table_name SET column_name='' WHERE column_name='';
+UPDATE input SET control_id='data_product_doi', type='table', enums='[{"key": "data_product_doi_value","label": "DOI","type": "text","editable": true}]', required_if='[{"field":"data_product_doi_exists","value":"true","message":"Please add DOIs."}]' WHERE question_id='c9c73e88-837a-42d2-aa1a-50874a333607' AND list_order=1;
+
+UPDATE input SET attributes='{"rows":5,"cols":20,"maxlength":1000,"placeholder":""}' WHERE control_id='data_accession_reason_description';
+
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='data_product_volume_amount';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='file_temporal_coverage_answer';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='value_temporal_resolution_answer';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='spatial_vertical_details_upper';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='spatial_vertical_details_lower';
+UPDATE input SET attributes='{"min": "1"}' WHERE control_id='data_product_number_of_files';
+
+-- 7/13/22
+INSERT INTO action VALUES ('3fe93672-cd91-45d4-863b-c6d0d63f8c8c', 'send_to_meditor', 1, 'Send To mEditor Action', 'This action is used to send collection metadata from EDPub to mEditor.', 'ea8028411c961a69fe308164ba12dfeb6e8672da6593981ca4f4f5fce87cd3ef');
+UPDATE step SET action_id='3fe93672-cd91-45d4-863b-c6d0d63f8c8c' WHERE step_name='send_to_meditor';

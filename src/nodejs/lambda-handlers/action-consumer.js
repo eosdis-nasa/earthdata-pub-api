@@ -16,26 +16,31 @@ const DatabaseUtil = require('database-util');
 
 const fs = require('fs');
 
-// function fetchAction(key, local) {
-//   return new Promise((resolve) => {
-//     const params = { Bucket: BUCKET, Key: key };
-//     const file = fs.createWriteStream(local);
-//     const stream = s3.getObject(params).createReadStream();
-//     stream.on('end', resolve);
-//     stream.pipe(file);
-//   });
-// }
+function fetchAction(key, local) {
+  return new Promise((resolve) => {
+    const params = {
+      Bucket: process.env.ACTIONS_BUCKET,
+      Key: key
+    };
+    const file = fs.createWriteStream(local);
+    const s3 = new AWS.S3();
+    const stream = s3.getObject(params).createReadStream();
+    stream.on('end', resolve);
+    stream.pipe(file);
+  });
+}
 
 async function processRecord(record) {
   const { eventMessage } = MessageUtil.parseRecord(record);
   const { action_id: actionId, submission_id: submissionId, data } = eventMessage;
   const action = await DatabaseUtil.execute({ resource: 'action', operation: 'findById' },
-    { action: { id: actionId } });
+    { id: actionId });
   const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'findById' },
-    { submission: { id: submissionId } });
+    { id: submissionId });
   const local = `/tmp/${Schema.generateId()}`;
-  fs.writeFileSync(local, action.source);
-  // await fetchAction(action.file_key, local);
+  // fs.writeFileSync(local, action.source);
+  // eslint-disable-next-line
+  await fetchAction(new Buffer.from(action.source).toString(), local);
   // eslint-disable-next-line
   const { execute } = require(local);
   const output = await execute({
@@ -53,10 +58,13 @@ async function processRecord(record) {
     step_name: status.step_name
   };
   await MessageUtil.sendEvent(newEventMessage);
+  fs.unlinkSync(local);
   return output;
 }
 
 async function handler(event) {
+  // eslint-disable-next-line
+  console.log(event);
   const promises = event.Records.map((record) => processRecord(record));
   await Promise.all(promises);
   return {

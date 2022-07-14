@@ -45,6 +45,7 @@ module "lambda_functions" {
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
   edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
+  edpub_actions_s3_bucket = var.edpub_actions_s3_bucket
   db_host = module.rds.db_host
   db_port = module.rds.db_port
   db_database = module.rds.db_database
@@ -60,6 +61,8 @@ module "lambda_functions" {
   auth_client_id = var.auth_client_id
   auth_client_secret = var.auth_client_secret
   auth_client_path = var.auth_client_path
+  meditor_service_username = var.meditor_service_username
+  meditor_service_password = var.meditor_service_password
 }
 
 module "apigateway_endpoints" {
