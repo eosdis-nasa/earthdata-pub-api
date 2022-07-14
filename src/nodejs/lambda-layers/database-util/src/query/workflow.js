@@ -9,12 +9,14 @@ const findAll = () => `
     step_edge_details.workflow_id,
       JSONB_OBJECT_AGG( step.step_name,
         JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
+          'step_id', step.step_id,
           'type', step.type,
           'action_id', step.action_id,
           'form_id', step.form_id,
           'service_id', step.service_id,
           'next_step_name', step_edge_details.next_step_name,
-          'prev_step_name', step_edge_details.prev_step_name
+          'prev_step_name', step_edge_details.prev_step_name,
+          'prev_step', step.data
       ))) steps
     FROM step
     NATURAL LEFT JOIN (
