@@ -39,6 +39,7 @@ async function processRecord(record) {
     { id: submissionId });
   const local = `/tmp/${Schema.generateId()}`;
   // fs.writeFileSync(local, action.source);
+  // eslint-disable-next-line
   await fetchAction(new Buffer.from(action.source).toString(), local);
   // eslint-disable-next-line
   const { execute } = require(local);
@@ -62,6 +63,7 @@ async function processRecord(record) {
 }
 
 async function handler(event) {
+  // eslint-disable-next-line
   console.log(event);
   const promises = event.Records.map((record) => processRecord(record));
   await Promise.all(promises);
