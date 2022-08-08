@@ -33,9 +33,9 @@ async function backupWeekly() {
 }
 
 async function expireDaily(expiredSnapshots) {
-  expiredSnapshots.forEach((snapshot) => rds.deleteDBClusterSnapshot({
+  expiredSnapshots.map((snapshot) => await rds.deleteDBClusterSnapshot({
     DBClusterSnapshotIdentifier: snapshot
-  }));
+  }).promise());
 }
 
 async function backupOnPrem() {
@@ -56,7 +56,7 @@ async function handler(event) {
 
   await backupWeekly();
 
-  // Get array of "expired" snapshots i.e. if create time > EXPIRATION_IN_DAYS in past
+  // Get array of "expired" snapshots i.e. if create time < EXPIRATION_IN_DAYS in past
   const expiredSnapshotsArr = snapshotsResponse.DBClusterSnapshots.reduce((filtered, snapshot) => {
     if (new Date(snapshot.SnapshotCreateTime) < date.setDate(date.getDate() - EXPIRATION_IN_DAYS)) {
       filtered.push(snapshot.DBClusterSnapshotIdentifier);
