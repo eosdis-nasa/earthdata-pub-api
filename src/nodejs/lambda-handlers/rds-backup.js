@@ -1,5 +1,5 @@
 /**
- * Lambda used to automatically backup the rds database. This 
+ * Lambda used to automatically backup the rds database. This
  * lambda is triggered via a CloudWatch event each day at 8AM UTC
  * (approximately 1 hour after the automated backup windows). This
  * lambda will handle a few different backup functions such as
@@ -10,18 +10,18 @@
  * @module Backup
  */
 
-const AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 
-const EXPIRATION_IN_DAYS = 7
+const EXPIRATION_IN_DAYS = 7;
 const rds = new AWS.RDS();
 
 async function describeDBSnapshots() {
-  return await rds.describeDBClusterSnapshots({}).promise();
+  return rds.describeDBClusterSnapshots({}).promise();
 }
 
 async function backupDaily(identifier) {
-  return await rds.copyDBClusterSnapshot({
-    SourceDBClusterSnapshotIdentifier: identifier, 
+  return rds.copyDBClusterSnapshot({
+    SourceDBClusterSnapshotIdentifier: identifier,
     TargetDBClusterSnapshotIdentifier: identifier.replace('rds:', '')
   }).promise();
 }
@@ -29,44 +29,48 @@ async function backupDaily(identifier) {
 async function backupWeekly() {
   // TODO- Need to revisit because AWS doesn't support built in export to s3
   // for aurora postgresql db engine types.
+  return {};
 }
 
 async function expireDaily(expiredSnapshots) {
-  expiredSnapshots.forEach(snapshot =>
-    await rds.deleteDBClusterSnapshot({
-      DBClusterSnapshotIdentifier: snapshot
-    }).promise());
+  expiredSnapshots.forEach((snapshot) => rds.deleteDBClusterSnapshot({
+    DBClusterSnapshotIdentifier: snapshot
+  }));
 }
 
 async function backupOnPrem() {
-    // TODO- Implement for future
+  // TODO- Implement for future
+  return {};
 }
 
 async function handler(event) {
-    console.info(`[EVENT]\n${JSON.stringify(event)}`);
-    const snapshotsResponse = await describeDBSnapshots();
-    let date = new Date()
+  console.info(`[EVENT]\n${JSON.stringify(event)}`);
+  const snapshotsResponse = await describeDBSnapshots();
+  const date = new Date();
 
-    const todaySnapshotIdentifier = snapshotsResponse.DBClusterSnapshots.find(snapshot => JSON.stringify(snapshot.SnapshotCreateTime).includes(date.toISOString().slice(0,10))).DBClusterSnapshotIdentifier;
-    const dailyBackupResp = backupDaily(todaySnapshotIdentifier);
-    
-    //TODO- Uncomment weekly backup when code added
-    //const weeklyBackupResp = backupWeekly()
-    
-    // Get array of "expired" snapshots i.e. if create time > EXPIRATION_IN_DAYS in past
-    const expiredSnapshotsArr = snapshotsResponse.DBClusterSnapshots.reduce((filtered, snapshot) => {
-      if (new Date(snapshot.SnapshotCreateTime) < date.setDate(date.getDate() - EXPIRATION_IN_DAYS)) {
-        filtered.push(snapshot.DBClusterSnapshotIdentifier)
-      }
-      return filtered;
-    }, []);
-    expireDaily(expiredSnapshotsArr);
+  // eslint-disable-next-line
+  const todaySnapshotIdentifier = snapshotsResponse.DBClusterSnapshots.find((snapshot) => {
+    return JSON.stringify(snapshot.SnapshotCreateTime).includes(date.toISOString().slice(0, 10));
+  }).DBClusterSnapshotIdentifier;
+  backupDaily(todaySnapshotIdentifier);
 
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify('Backup Complete!'),
-    };
-    return response;
-  }
-  
-  exports.handler = handler;
+  backupWeekly();
+
+  // Get array of "expired" snapshots i.e. if create time > EXPIRATION_IN_DAYS in past
+  const expiredSnapshotsArr = snapshotsResponse.DBClusterSnapshots.reduce((filtered, snapshot) => {
+    if (new Date(snapshot.SnapshotCreateTime) < date.setDate(date.getDate() - EXPIRATION_IN_DAYS)) {
+      filtered.push(snapshot.DBClusterSnapshotIdentifier);
+    }
+    return filtered;
+  }, []);
+  expireDaily(expiredSnapshotsArr);
+  backupOnPrem();
+
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify('Backup Complete!')
+  };
+  return response;
+}
+
+exports.handler = handler;
