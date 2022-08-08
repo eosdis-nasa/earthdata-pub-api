@@ -461,6 +461,48 @@ resource "aws_lambda_event_source_mapping" "notification_consumer_sqs_event" {
   function_name    = aws_lambda_function.notification_consumer.function_name
 }
 
+# RDS Backup Lambda
+
+resource "aws_lambda_function" "rds_backup" {
+  filename      = "../artifacts/rds-backup-lambda.zip"
+  function_name = "rds_backup"
+  role          = var.edpub_lambda_role_arn
+  handler       = "rds-backup.handler"
+  runtime       = "nodejs14.x"
+  source_code_hash    = filesha256("../artifacts/rds-backup-lambda.zip")
+  timeout       = 180
+  environment {
+    variables = {
+      REGION    = var.region
+    }
+  }
+  vpc_config {
+     subnet_ids         = var.subnet_ids
+     security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_cloudwatch_event_rule" "rds_backup_daily_cron" {
+  name                = "rds-backup-daily-cron"
+  description         = "Cloudwatch event to trigger rds_backup lambda to initiate rds backup process daily at 8AM UTC"
+  schedule_expression = "cron(0 8 * * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "check_rds_trigger_daily" {
+  rule      = "${aws_cloudwatch_event_rule.rds_backup_daily_cron.name}"
+  target_id = "lambda"
+  arn       = "${aws_lambda_function.rds_backup.arn}"
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_rds_backup" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.rds_backup.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.rds_backup_daily_cron.arn}"
+}
+
+
 # Register Lambda
 
 resource "aws_lambda_function" "register" {
