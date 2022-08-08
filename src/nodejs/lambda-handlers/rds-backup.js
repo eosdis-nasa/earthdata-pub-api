@@ -33,9 +33,9 @@ async function backupWeekly() {
 }
 
 async function expireDaily(expiredSnapshots) {
-  expiredSnapshots.map((snapshot) => await rds.deleteDBClusterSnapshot({
+  await Promise.all(expiredSnapshots.map(async (snapshot) => rds.deleteDBClusterSnapshot({
     DBClusterSnapshotIdentifier: snapshot
-  }).promise());
+  }).promise()));
 }
 
 async function backupOnPrem() {
