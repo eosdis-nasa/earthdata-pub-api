@@ -4,9 +4,9 @@
      {
         "Effect": "Allow",
         "Action": [
-           "rds:DescribeDBClusterSnapshots",
-           "rds:CreateDBClusterSnapshots",
-           "rds:DeleteDBClusterSnapshots"
+            "rds:DescribeDBClusterSnapshots",
+            "rds:CopyDBClusterSnapshot",
+            "rds:DeleteDBClusterSnapshots"
         ],
         "Resource": "*"
      }

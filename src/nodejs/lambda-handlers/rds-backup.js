@@ -52,9 +52,9 @@ async function handler(event) {
   const todaySnapshotIdentifier = snapshotsResponse.DBClusterSnapshots.find((snapshot) => {
     return JSON.stringify(snapshot.SnapshotCreateTime).includes(date.toISOString().slice(0, 10));
   }).DBClusterSnapshotIdentifier;
-  backupDaily(todaySnapshotIdentifier);
+  await backupDaily(todaySnapshotIdentifier);
 
-  backupWeekly();
+  await backupWeekly();
 
   // Get array of "expired" snapshots i.e. if create time > EXPIRATION_IN_DAYS in past
   const expiredSnapshotsArr = snapshotsResponse.DBClusterSnapshots.reduce((filtered, snapshot) => {
@@ -63,8 +63,8 @@ async function handler(event) {
     }
     return filtered;
   }, []);
-  expireDaily(expiredSnapshotsArr);
-  backupOnPrem();
+  await expireDaily(expiredSnapshotsArr);
+  await backupOnPrem();
 
   const response = {
     statusCode: 200,
