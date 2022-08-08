@@ -38,3 +38,8 @@ data "template_file" "edpub_apigateway_s3_policy" {
     account_id = var.account_id
   }
 }
+
+data "template_file" "edpub_rds_backup_lambda_policy" {
+  template = file("./iam/edpub_rds_backup_lambda_policy.json")
+  
+}
