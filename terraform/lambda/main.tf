@@ -466,7 +466,7 @@ resource "aws_lambda_event_source_mapping" "notification_consumer_sqs_event" {
 resource "aws_lambda_function" "rds_backup" {
   filename      = "../artifacts/rds-backup-lambda.zip"
   function_name = "rds_backup"
-  role          = var.edpub_lambda_role_arn
+  role          = var.edpub_rds_backup_lambda_role_arn
   handler       = "rds-backup.handler"
   runtime       = "nodejs14.x"
   source_code_hash    = filesha256("../artifacts/rds-backup-lambda.zip")
