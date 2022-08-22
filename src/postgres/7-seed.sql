@@ -247,9 +247,9 @@ INSERT INTO edpuser_edpgroup VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', '4d
 -- Role(id, short_name, long_name, description)
 INSERT INTO edprole VALUES ('804b335c-f191-4d26-9b98-1ec1cb62b97d', 'data_producer', 'Data Producer', 'The person who is primarily responsible for the data themselves. Often the PI of the project that generated the data. This role will be able to create a Submission and edit their created or assigned Submissions.');
 INSERT INTO edprole VALUES ('29ccab4b-65e2-4764-83ec-77375d29af39', 'data_poc', 'Data Point of Contact', 'The person who is filling out the Earthdata Pub Forms and expected to answer questions about the Submission. Can be the same as the DP and has the same permissions as a DP.');
-INSERT INTO edprole VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'manager', 'DAAC Data Manager', 'The DAAC staff member who guides the Submission through Earthdata Pub workflows and iterates with the PoC on questions. This role will be able to add and edit submissions.');
-INSERT INTO edprole VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'coordinator', 'DAAC Data Coordinator', 'The DAAC staff member who coordinates all DAAC Submissions. Coordinators assign a Submission to Managers. There may be multiple DAAC Data Coordinators per DAAC. Some DAACs may choose to combine the Coordinator and Manager roles by assigning staff to both.');
-INSERT INTO edprole VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'observer', 'DAAC Observer', 'A DAAC or ESDIS staff member who is interested in monitoring progress in Earthdata Pub but does not need edit or write permission. This can be a DAAC Manager or similar.');
+INSERT INTO edprole VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'staff', 'DAAC Staff', 'The DAAC staff member who guides the Submission through Earthdata Pub workflows and iterates with the PoC on questions. This role will be able to add and edit submissions.');
+INSERT INTO edprole VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'manager', 'DAAC Data Manager', 'The DAAC staff member who manages all DAAC Submissions. Managers assign a Submission to Staff. There may be multiple DAAC Data Managers per DAAC. Some DAACs may choose to combine the Manager and Staff roles by assigning staff to both.');
+INSERT INTO edprole VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'observer', 'DAAC Observer', 'A DAAC or ESDIS staff member who is interested in monitoring progress in Earthdata Pub but does not need edit or write permission. This can be a DAAC Data Staff or similar.');
 INSERT INTO edprole VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'admin', 'Administrator', 'An Earthdata Pub admin can see and edit most aspects of Earthdata Pub.');
 
 --Privilege(privilege)
@@ -339,7 +339,7 @@ INSERT INTO edprole_privilege VALUES ('29ccab4b-65e2-4764-83ec-77375d29af39', 'F
 INSERT INTO edprole_privilege VALUES ('29ccab4b-65e2-4764-83ec-77375d29af39', 'FORM_UPDATE');
 INSERT INTO edprole_privilege VALUES ('29ccab4b-65e2-4764-83ec-77375d29af39', 'FORM_DELETE');
 
---RolePrivilege(edprole_id, privilege) Data Manager
+--RolePrivilege(edprole_id, privilege) Staff
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_INITIALIZE');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_DAACREAD');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REVIEW');
@@ -356,7 +356,7 @@ INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'F
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'FORM_UPDATE');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'FORM_DELETE');
 
---RolePrivilege(edprole_id, privilege) Data Coordinator
+--RolePrivilege(edprole_id, privilege) Data Manager
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_DAACREAD');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_LOCK');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_UNLOCK');
