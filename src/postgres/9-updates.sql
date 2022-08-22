@@ -82,3 +82,10 @@ UPDATE step SET data='{"rollback":"data_publication_request_form_review","type":
 
 --New Send To Meditor Step Action Association
 UPDATE step SET action_id='3fe93672-cd91-45d4-863b-c6d0d63f8c8c' WHERE step_id='c628d63b-93b9-45ae-8e7b-a903554b6726';
+
+
+--8/22/2022
+--Update role names
+UPDATE edprole SET short_name='staff', long_name='DAAC Staff', description='The DAAC staff member who guides the Submission through Earthdata Pub workflows and iterates with the PoC on questions. This role will be able to add and edit submissions.' WHERE id='a5b4947a-67d2-434e-9889-59c2fad39676';
+UPDATE edprole SET short_name='manager', long_name='DAAC Data Manager', description='The DAAC staff member who manages all DAAC Submissions. Managers assign a Submission to Staff. There may be multiple DAAC Data Managers per DAAC. Some DAACs may choose to combine the Manager and Staff roles by assigning staff to both.' WHERE id='2aa89c57-85f1-4611-812d-b6760bb6295c';
+UPDATE edprole SET description='A DAAC or ESDIS staff member who is interested in monitoring progress in Earthdata Pub but does not need edit or write permission. This can be a DAAC Data Staff or similar.' WHERE id='4be6ca4d-6362-478b-8478-487a668314b1';
