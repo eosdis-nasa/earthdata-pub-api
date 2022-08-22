@@ -25,6 +25,7 @@ async function actionMethod(status) {
   Object.keys(eventMessage).forEach((key) => (
     eventMessage[key] === undefined && delete eventMessage[key]));
   await msg.sendEvent(eventMessage);
+  if (status.step.action_id) await msg.sendEvent({ ...eventMessage, ...{ event_type: 'workflow_promote_step' } });
 }
 
 async function formMethod(status) {
