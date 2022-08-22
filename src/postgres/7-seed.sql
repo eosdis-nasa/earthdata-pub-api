@@ -402,7 +402,7 @@ INSERT INTO step(step_name, type, data) VALUES ('assign_a_workflow', 'action', '
 -- INSERT INTO step(step_name, type) VALUES ('map_from_meditor', 'service');
 -- INSERT INTO step(step_name, type) VALUES ('publish_to_cmr', 'service');
 
-INSERT INTO step(step_name, type, data) VALUES ('start_qa', 'action', '{"rollback":"data_publication_request_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(step_name, type, data) VALUES ('start_qa', 'action', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 INSERT INTO step(step_name, type, data) VALUES ('complete_qa', 'action', '{"rollback":"start_qa","type": "action"}');
 INSERT INTO step(step_name, type, data) VALUES ('map_to_meditor', 'action', '{"rollback":"complete_qa","type": "action"}');
 INSERT INTO step(step_name, type, data) VALUES ('send_to_meditor', 'action', '{"rollback":"map_to_meditor","type": "action"}');
