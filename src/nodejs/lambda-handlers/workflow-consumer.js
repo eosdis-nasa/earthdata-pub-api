@@ -25,6 +25,7 @@ async function actionMethod(status) {
   Object.keys(eventMessage).forEach((key) => (
     eventMessage[key] === undefined && delete eventMessage[key]));
   await msg.sendEvent(eventMessage);
+  await promoteStepMethod(eventMessage);
 }
 
 async function formMethod(status) {
