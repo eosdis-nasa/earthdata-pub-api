@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+## 1.0.6 - 2022-08-15
+
+- Added ORNL and GHRC workflows.
+
 ## 1.0.5 - 2022-06-22
 
 - Changed DOI content and added attributes for numbers to enforce positive number validation.

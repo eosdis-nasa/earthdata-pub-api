@@ -38,6 +38,7 @@ install_lambda model
 install_lambda module
 install_lambda notification
 install_lambda notification-consumer
+install_lambda rds-backup
 install_lambda register
 install_lambda remap-statics
 install_lambda service-authorizer
