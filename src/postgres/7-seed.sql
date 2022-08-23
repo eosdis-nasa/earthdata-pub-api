@@ -381,7 +381,7 @@ INSERT INTO workflow VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'idealized_
 
 INSERT INTO workflow VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'ghrc_default_workflow', 1, 'GHRC Default Workflow', 'This is the default workflow for GHRC.');
 INSERT INTO workflow VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'ornl_default_workflow', 1, 'ORNL Default Workflow', 'This is the default workflow for ORNL.');
-INSERT INTO workflow VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'ornl_referred_workflow', 1, 'ORNL Referrer Close', 'Use this to close after referring the Data Producer to another DAAC.');
+INSERT INTO workflow VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'referred_workflow', 1, 'Referrer Close', 'Use this to close after referring the Data Producer to another DAAC.');
 
 -- Step(step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_name, type) VALUES ('init', 'init');
