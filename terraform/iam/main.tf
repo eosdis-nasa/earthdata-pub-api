@@ -28,3 +28,20 @@ resource "aws_iam_role" "edpub_apigateway_s3_role" {
   assume_role_policy = data.template_file.edpub_apigateway_s3_assume_role.rendered
   permissions_boundary = var.permissions_boundary_arn
 }
+
+resource "aws_iam_role_policy" "edpub_rds_backup_lambda_policy" {
+  name   = "EDPUBRDSBackupLambdaPolicy"
+  role   = aws_iam_role.edpub_rds_backup_lambda_role.id
+  policy = data.template_file.edpub_rds_backup_lambda_policy.rendered
+}
+
+resource "aws_iam_role" "edpub_rds_backup_lambda_role" {
+  name                 = "EDPUBRDSBackupLambdaRole"
+  assume_role_policy   = data.template_file.edpub_lambda_assume_role.rendered
+  permissions_boundary = var.permissions_boundary_arn
+}
+
+resource "aws_iam_role_policy_attachment" "edpub_rds_backup_lambda_execution_role_attach" {
+  role       = aws_iam_role.edpub_rds_backup_lambda_role.id
+  policy_arn = var.lambda_execution_policy_arn
+}

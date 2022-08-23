@@ -14,6 +14,10 @@ variable "edpub_lambda_role_arn" {
   type = string
 }
 
+variable "edpub_rds_backup_lambda_role_arn" {
+  type = string
+}
+
 variable "api_id" {
   type = string
 }

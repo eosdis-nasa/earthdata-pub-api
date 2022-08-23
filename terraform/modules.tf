@@ -27,6 +27,7 @@ module "lambda_functions" {
   subnet_ids = var.subnet_ids
   security_group_ids = var.security_group_ids
   edpub_lambda_role_arn = module.iam_roles.edpub_lambda_role_arn
+  edpub_rds_backup_lambda_role_arn = module.iam_roles.edpub_rds_backup_lambda_role_arn
   api_id = module.apigateway_endpoints.api_id
   edpub_action_sqs_arn = module.sqs_queues.edpub_action_sqs_arn
   edpub_action_sqs_url = module.sqs_queues.edpub_action_sqs_url
