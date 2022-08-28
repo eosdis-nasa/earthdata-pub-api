@@ -33,6 +33,7 @@ async function createCognitoUser({
     ]
   };
   try {
+    // eslint-disable-next-line
     console.log(params);
     const { User: userData } = await idp.adminCreateUser(params).promise();
     const user = userData.Attributes.reduce((acc, attribute) => {
@@ -47,6 +48,7 @@ async function createCognitoUser({
 }
 
 async function createMethod(params, privileges) {
+  // eslint-disable-next-line
   console.log(params);
   // TODO - Consider reading id and privileges directly from db
   if (privileges.includes('ADMIN')
