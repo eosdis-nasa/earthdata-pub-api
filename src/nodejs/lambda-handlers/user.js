@@ -33,6 +33,7 @@ async function createCognitoUser({
     ]
   };
   try {
+    console.log(params);
     const { User: userData } = await idp.adminCreateUser(params).promise();
     const user = userData.Attributes.reduce((acc, attribute) => {
       const key = { [attribute.Name]: attribute.Value };
@@ -46,6 +47,8 @@ async function createCognitoUser({
 }
 
 async function createMethod(params, privileges) {
+  console.log(params);
+  // TODO - Consider reading id and privileges directly from db
   if (privileges.includes('ADMIN')
     || privileges.includes('USER_CREATE')) {
     const newUser = await createCognitoUser(params);
