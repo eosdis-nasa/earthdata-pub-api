@@ -43,3 +43,6 @@
 --       a.column_name = b.column_name
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
+
+-- 9/7/22 Add middle initial
+UPDATE input SET enums='[{"key":"producer_first_name","label":"First Name","type":"text","editable":true},{"key": "producer_middle_initial","label": "Middle Initial","type": "text","editable": true},{"key":"producer_last_name_or_organization","label":"Last Name or Group","type":"text","editable":true}]' WHERE control_id='data_producers_table';
