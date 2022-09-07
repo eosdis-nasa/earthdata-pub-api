@@ -309,6 +309,12 @@
                   "editable": true
                 },
                 {
+                  "key": "producer_middle_initial",
+                  "label": "Middle Initial",
+                  "type": "text",
+                  "editable": true
+                },
+                {
                   "key": "producer_last_name_or_organization",
                   "label": "Last Name or Group",
                   "type": "text",
