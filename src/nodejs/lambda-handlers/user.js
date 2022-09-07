@@ -50,11 +50,11 @@ async function createMethod(params, privileges) {
     || privileges.includes('USER_CREATE')) {
     const newUser = await createCognitoUser(params);
     const user = await db.user.loginUser(newUser);
-    if (params.user_roles && params.user_roles.length > 0) {
-      await db.user.addRoles({ ...user, user_roles: params.user_roles });
+    if (params.role_id) {
+      await db.user.addRole({ ...user, role_id: params.role_id });
     }
-    if (params.user_groups && params.user_groups.length > 0) {
-      await db.user.addGroups({ ...user, user_groups: params.user_groups });
+    if (params.group_id) {
+      await db.user.addGroup({ ...user, group_id: params.group_id });
     }
     return user;
   }
