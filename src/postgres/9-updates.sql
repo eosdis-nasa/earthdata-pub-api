@@ -46,3 +46,14 @@
 
 -- 9/7/22 Add middle initial
 UPDATE input SET enums='[{"key":"producer_first_name","label":"First Name","type":"text","editable":true},{"key": "producer_middle_initial","label": "Middle Initial","type": "text","editable": true},{"key":"producer_last_name_or_organization","label":"Last Name or Group","type":"text","editable":true}]' WHERE control_id='data_producers_table';
+
+--9/7/22 Add ASDC Workflow
+INSERT INTO workflow VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'asdc_darkhorse_workflow', 1, 'ASDC Default Workflow (Darkhorse)', 'This is the darkhorse workflow for ASDC.');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('88d12552-d2e3-4737-9c6a-8bd86b5df3c7', 'email_asdc_staff', 'action', '{"rollback":"data_publication_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_publication_request_form_review', 'email_asdc_staff');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'email_asdc_staff', 'close');
+UPDATE daac SET workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7', hidden='false' WHERE id='40397fe8-4841-4e4c-b84a-6ece359ff5ff';
