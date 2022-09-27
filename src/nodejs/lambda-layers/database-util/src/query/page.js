@@ -3,20 +3,20 @@ const table = 'page';
 
 const findAll = () => sql.select({
   fields: ['page.*'],
-  from: { base: table }
+  from: { base: table },
 });
 
 const findById = () => sql.select({
-  fields: ['page.content'],
+  fields: ['page.*'],
   from: { base: table },
-  where: { filters: [{ field: 'page_key' }]}
+  where: { filters: [{ field: 'id' }]}
 });
 
 const update = () => `
 INSERT INTO page VALUES
-({{payload.page_key}}, {{payload.content}}::JSONB)
-ON CONFLICT(page_key) DO UPDATE SET
-content = EXCLUDED.content
+({{payload.id}}, {{payload.description}}, {{payload.location}}::JSONB)
+ON CONFLICT(id) DO UPDATE SET
+description = EXCLUDED.description
 RETURNING *`;
 
 module.exports.findAll = findAll;
