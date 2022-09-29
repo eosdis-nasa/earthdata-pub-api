@@ -21,24 +21,24 @@ async function findAllMethod({ params, context }) {
   return await hasPerms(context.user_id, readPerms) ? db.question.findAll(params) : {};
 }
 
-async function findByNameMethod({ params }) {
+async function findByNameMethod({ params, context }) {
   return await hasPerms(context.user_id, readPerms) ? db.question.findByName(params) : {};
 }
 
-async function findByIdMethod({ params }) {
+async function findByIdMethod({ params, context }) {
   return await hasPerms(context.user_id, readPerms) ? db.question.findById(params) : {};
 }
 
-async function updateMethod({ params }) {
+async function updateMethod({ params, context }) {
   return await hasPerms(context.user_id, editPerms) ? db.question.update(params) : {};
 }
 
-async function addMethod({ params }) {
+async function addMethod({ params, context }) {
   return await hasPerms(context.user_id, editPerms) ? db.question.add(params) : {};
 }
 
-async function updateInputsMethod({ params }) {
-  if (await hasPerms(params.context.user_id, editPerms)) {
+async function updateInputsMethod({ params, context }) {
+  if (await hasPerms(context.user_id, editPerms)) {
     const promises = params.inputs.map(async (inputElem) => db.question.updateInput(
       {
         input: inputElem,
