@@ -57,3 +57,7 @@ output "notification_consumer_lambda_arn" {
 output "version_lambda_arn" {
   value = aws_lambda_function.version.invoke_arn
 }
+
+output "questions_lambda_arn" {
+  value = aws_lambda_function.questions.invoke_arn
+}
