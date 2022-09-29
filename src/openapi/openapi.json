@@ -2427,237 +2427,6 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/questions": {
-      "get": {
-        "tags": [
-          "data"
-        ],
-        "summary": "Get questions",
-        "description": "Returns list of questions",
-        "operationId": "questionFindAll",
-        "parameters": [
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "What field to sort results on.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "description": "Order of results, 'asc' for ascending, 'desc' for descending.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
-            }
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "description": "Number of results per page for pagination.",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number to start at for pagination.",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Question"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Bad Request"
-          }
-        },
-        "security": [
-          {
-            "Cognito_Authorizer": ["openid"]
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "post": {
-        "tags": [
-          "data"
-        ],
-        "summary": "Creates a question",
-        "description": "Creates a new question.",
-        "operationId": "questionAdd",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Question"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Cognito_Authorizer": ["openid"]
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "{\"resource\":\"question\",\"operation\":\"add\",\"params\":{\"payload\": $input.json(\"$\")},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsDataQuestions",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
     "/api/data/service/{id}": {
       "parameters": [
         {
@@ -7112,7 +6881,7 @@
         "x-router-controller": "proxy"
       }
     },
-    "/api/questions/{id}": {
+    "/api/data/questions/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -7313,7 +7082,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/questions/{id}/inputs": {
+    "/api/data/questions/{id}/inputs": {
       "parameters": [
         {
           "name": "id",
@@ -7449,7 +7218,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/questions": {
+    "/api/data/questions": {
       "get": {
         "tags": [
           "data"
