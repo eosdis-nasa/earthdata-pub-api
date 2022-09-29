@@ -83,14 +83,6 @@
       }
     },
     {
-      "name": "questions",
-      "description": "fetches and updates questions bassed on permissions.",
-      "externalDocs":{
-        "description": "Read the docs",
-        "url": "http://database.docs/#TODO"
-      }
-    },
-    {
       "name": "cors",
       "description": "CORS"
     }
