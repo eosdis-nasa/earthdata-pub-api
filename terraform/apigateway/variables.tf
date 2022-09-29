@@ -10,6 +10,10 @@ variable "data_lambda_arn" {
   type = string
 }
 
+variable "questions_lambda_arn"{
+  type = string
+}
+
 variable "invoke_lambda_arn" {
   type = string
 }
