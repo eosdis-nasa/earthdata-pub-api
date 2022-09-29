@@ -2360,7 +2360,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"updateInputs\",\"params\":{\"inputs\": $input.json(\"$\"), \"questionId\": \"$req.path.get(\"id\")\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"updateInputs\",\"params\":{\"inputs\": $input.json(\"$\"), \"questionId\": \"$req.path.get(\"id\")\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -7151,7 +7151,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"updateInputs\",\"params\":{\"inputs\": $input.json(\"$\"), \"questionId\": \"$req.path.get(\"id\")\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"updateInputs\",\"params\":{\"inputs\": $input.json(\"$\"), \"questionId\": \"$req.path.get(\"id\")\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
