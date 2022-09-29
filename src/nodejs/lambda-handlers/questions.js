@@ -18,38 +18,23 @@ async function hasPerms(uid, perms) {
 }
 
 async function findAllMethod({ params, context }) {
-  if (await hasPerms(context.user_id, readPerms)) {
-    return db.question.findAll(params);
-  }
-  return {};
+  return await hasPerms(context.user_id, readPerms) ? db.question.findAll(params) : {};
 }
 
 async function findByNameMethod({ params }) {
-  if (await hasPerms(params.context.user_id, readPerms)) {
-    return db.question.findByName(params);
-  }
-  return {};
+  return await hasPerms(context.user_id, readPerms) ? db.question.findByName(params) : {};
 }
 
 async function findByIdMethod({ params }) {
-  if (await hasPerms(params.context.user_id, readPerms)) {
-    return db.question.findById(params);
-  }
-  return {};
+  return await hasPerms(context.user_id, readPerms) ? db.question.findById(params) : {};
 }
 
 async function updateMethod({ params }) {
-  if (await hasPerms(params.context.user_id, editPerms)) {
-    return db.question.update(params);
-  }
-  return {};
+  return await hasPerms(context.user_id, editPerms) ? db.question.update(params) : {};
 }
 
 async function addMethod({ params }) {
-  if (await hasPerms(params.context.user_id, editPerms)) {
-    return db.question.add(params);
-  }
-  return {};
+  return await hasPerms(context.user_id, editPerms) ? db.question.add(params) : {};
 }
 
 async function updateInputsMethod({ params }) {
