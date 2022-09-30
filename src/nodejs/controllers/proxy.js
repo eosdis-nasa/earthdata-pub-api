@@ -679,49 +679,12 @@ module.exports.getVersion = function getVersion(req, res, next) {
   });
 };
 
-module.exports.paragraphFindById = function paragraphFindById(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'paragraph',
-    operation: 'findById',
-    params: { paragraph_key: params.paragraph_key.value }
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.paragraphFindAll = function paragraphFindAll(req, res, next) {
-  const lambdaEvent = {
-    resource: 'paragraph',
-    operation: 'findAll'
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.paragraphPut = function paragraphPut(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'paragraph',
-    operation: 'update',
-    params: {
-      payload: params.payload.value,
-    },
-    context: { user_id: req.user_id }
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.pageFindById = function pageFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'page',
     operation: 'findById',
-    params: { id: params.id.value }
+    params: { page_key: params.page_key.value }
   };
   handlers.data(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);

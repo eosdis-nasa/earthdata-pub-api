@@ -533,15 +533,10 @@ CREATE TABLE IF NOT EXISTS metrics (
 );
 
 CREATE TABLE IF NOT EXISTS page (
-  id UUID DEFAULT UUID_GENERATE_V4(),
-  description VARCHAR NOT NULL,
+  page_key VARCHAR NOT NULL,
+  page_id UUID DEFAULT UUID_GENERATE_V4(),
+  page VARCHAR NOT NULL,
   location VARCHAR NOT NULL,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS paragraph (
-  paragraph_key VARCHAR NOT NULL,
-  page_id VARCHAR NOT NULL,
   content JSONB NOT NULL,
-  PRIMARY KEY (paragraph_key)
+  PRIMARY KEY (page_key)
 );
