@@ -21,8 +21,9 @@ async function deleteInput(params){
   const question = await db.question.findById({id: params.questionId})
   const curInput = question.inputs.map(input => input.control_id)
   const toDelete = curInput.filter(cid => !params.inputs.some(testInput => testInput.control_id === cid))
+  console.log(params.inputs.length)
   console.log(toDelete)
-  return await db.question.deleteInput(toDelete)
+  return await db.question.deleteInput({toDelete})
 }
 
 async function findAllMethod({ params, context }) {
@@ -46,15 +47,16 @@ async function addMethod({ params, context }) {
 }
 
 async function updateInputsMethod({ params, context }) {
-  console.log(await deleteInput(params))
   if (await hasPerms(context.user_id, editPerms)) {
+    const deletes = await deleteInput(params)
+    console.log('did enter')
     const promises = params.inputs.map(async (inputElem) => db.question.updateInput(
       {
         input: inputElem,
         questionId: params.questionId
       }
     ));
-    return Promise.all(promises);
+    const updates =  Promise.all(promises);
   }
   return {};
 }

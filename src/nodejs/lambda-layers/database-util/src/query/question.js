@@ -134,9 +134,9 @@ const updateInput = () => `
   attributes = EXCLUDED.attributes,  required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if, 
   required = EXCLUDED.required
   RETURNING *`;
-const deleteInput = () => `
+const deleteInput = (params) => `
   DELETE FROM input
-    WHERE control_id IN ({{toDelete}})
+    WHERE control_id IN ('${params.toDelete.join("','")}')
     RETURNING *`;
 
 module.exports.sectionJoin = sectionJoin;
