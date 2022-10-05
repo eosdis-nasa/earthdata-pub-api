@@ -17,6 +17,14 @@ async function hasPerms(uid, perms) {
   return false;
 }
 
+async function deleteInput(params){
+  const question = await db.question.findById({id: params.questionId})
+  const curInput = question.inputs.map(input => input.control_id)
+  const toDelete = curInput.filter(cid => !params.inputs.some(testInput => testInput.control_id === cid))
+  console.log(toDelete)
+  return await db.question.deleteInput(toDelete)
+}
+
 async function findAllMethod({ params, context }) {
   return await hasPerms(context.user_id, readPerms) ? db.question.findAll(params) : {};
 }
@@ -38,6 +46,7 @@ async function addMethod({ params, context }) {
 }
 
 async function updateInputsMethod({ params, context }) {
+  console.log(await deleteInput(params))
   if (await hasPerms(context.user_id, editPerms)) {
     const promises = params.inputs.map(async (inputElem) => db.question.updateInput(
       {
