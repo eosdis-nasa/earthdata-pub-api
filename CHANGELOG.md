@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 - Added support for roll based viewing and editing of questions
+- Added support for deleting an input for a question
 
 ## 1.0.8 - 2022-09-02
 
