@@ -134,6 +134,10 @@ const updateInput = () => `
   attributes = EXCLUDED.attributes,  required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if, 
   required = EXCLUDED.required
   RETURNING *`;
+const deleteInput = (params) => `
+  DELETE FROM input
+    WHERE control_id IN ('${params.toDelete.join("','")}')
+    RETURNING *`;
 
 module.exports.sectionJoin = sectionJoin;
 
@@ -144,3 +148,4 @@ module.exports.findById = findById;
 module.exports.update = update;
 module.exports.add = add;
 module.exports.updateInput = updateInput;
+module.exports.deleteInput = deleteInput;

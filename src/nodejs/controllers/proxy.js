@@ -277,7 +277,8 @@ module.exports.questionInputUpdate = function questionInputUpdate(req, res, next
     params: {
       questionId: params.id.value,
       inputs: params.payload.value
-    }
+    },
+    context: { user_id: req.user_id }
   };
   handlers.questions(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency)
