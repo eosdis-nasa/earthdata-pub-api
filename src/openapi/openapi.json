@@ -6493,7 +6493,7 @@
         "tags": [
           "pages"
         ],
-        "summary": "Get page content for the overview app main page",
+        "summary": "Get page for the overview app",
         "description": "Returns the frontpage content",
         "operationId": "pageFindAll",
         "responses": {
@@ -6566,8 +6566,8 @@
         "tags": [
           "pages"
         ],
-        "summary": "Get page content for the overview app",
-        "description": "Returns content for a requested page",
+        "summary": "Get page for the overview app",
+        "description": "Returns page for the overview app",
         "operationId": "pageFindById",
         "responses": {
           "200": {

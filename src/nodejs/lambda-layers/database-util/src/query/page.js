@@ -7,14 +7,14 @@ const findAll = () => sql.select({
 });
 
 const findById = () => sql.select({
-  fields: ['page.content'],
+  fields: ['page.*'],
   from: { base: table },
   where: { filters: [{ field: 'page_key' }]}
 });
 
 const update = () => `
 INSERT INTO page VALUES
-({{payload.page_key}}, {{payload.content}}::JSONB)
+({{payload.page_key}}, {{payload.page_id}}, {{payload.page}}, {{payload.location}}, {{payload.content}}::JSONB)
 ON CONFLICT(page_key) DO UPDATE SET
 content = EXCLUDED.content
 RETURNING *`;
