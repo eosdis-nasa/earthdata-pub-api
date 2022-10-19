@@ -24,7 +24,7 @@ const fieldMap = {
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
   lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
-  step_name: 'submission.step_name'
+  step_name: 'submission_status.step_name'
 };
 const refs = {
   initiator_ref: {
@@ -454,7 +454,7 @@ WHERE id={{id}}
 RETURNING *`;
 
 const getStepByName = () => `
-SELECT step_name FROM gran_dir WHERE gran_id LIKE '%{{step_name}}%'
+SELECT step_name FROM step WHERE step_name LIKE '%{{step_name}}%'
 RETURNING *`;
 
 module.exports.findAll = findAll;
