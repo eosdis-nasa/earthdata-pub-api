@@ -446,6 +446,16 @@ hidden='false'
 WHERE id={{id}}
 RETURNING *`;
 
+const setStep = () => `
+UPDATE submission_status SET
+step_name={{step_name}}
+WHERE id={{id}}
+RETURNING *`;
+
+const getStepByName = () => `
+SELECT step_name FROM gran_dir WHERE gran_id LIKE '%{{step_name}}%'
+RETURNING *`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -470,3 +480,5 @@ module.exports.rollback = rollback;
 module.exports.reassignWorkflow = reassignWorkflow;
 module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
+module.exports.setStep = setStep;
+module.exports.getStepByName = getStepByName;
