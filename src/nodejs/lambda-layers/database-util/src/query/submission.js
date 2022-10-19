@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'step_name'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -23,7 +23,8 @@ const fieldMap = {
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
-  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"'
+  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
+  step_name: 'submission.step_name'
 };
 const refs = {
   initiator_ref: {
