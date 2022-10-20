@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'step_name'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -23,8 +23,7 @@ const fieldMap = {
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
-  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
-  step_name: 'submission_status.step_name'
+  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"'
 };
 const refs = {
   initiator_ref: {
@@ -448,14 +447,15 @@ WHERE id={{id}}
 RETURNING *`;
 
 const setStep = () => `
-UPDATE submission_status SET
-step_name={{step_name}}
-WHERE id={{id}}
+UPDATE submission_status
+SET step_name = {{step_name}}
+WHERE id = {{id}}
 RETURNING *`;
 
-const getStepByName = () => `
-SELECT step_name FROM step WHERE step_name LIKE '%{{step_name}}%'
-RETURNING *`;
+const getWorkflowUsingStep = () => `
+SELECT step_edge.workflow_id
+FROM step_edge
+WHERE step_edge.step_name = {{step_name}}`;
 
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
@@ -482,4 +482,4 @@ module.exports.reassignWorkflow = reassignWorkflow;
 module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
 module.exports.setStep = setStep;
-module.exports.getStepByName = getStepByName;
+module.exports.getWorkflowUsingStep = getWorkflowUsingStep;
