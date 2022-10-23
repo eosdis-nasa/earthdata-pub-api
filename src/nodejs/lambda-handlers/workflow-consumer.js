@@ -97,20 +97,17 @@ async function promoteStepMethod(eventMessage) {
 async function workflowStartedMethod(eventMessage) {
   const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
   await msg.sendEvent(newEvent);
-  await promoteStepMethod(eventMessage);
 }
 
 async function requestInitializedMethod(eventMessage) {
   const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
   await msg.sendEvent(newEvent);
-  await promoteStepMethod(eventMessage);
 }
 
 async function formSubmittedMethod(eventMessage) {
   const { submission_id: id, form_id: formId, user_id: userId } = eventMessage;
   const status = await db.submission.getState({ id });
   if (status.step.type === 'form' && status.step.form_id === formId) {
-    await promoteStepMethod(eventMessage);
     const newEvent = {
       event_type: 'workflow_promote_step',
       submission_id: status.id,
@@ -126,7 +123,6 @@ async function formSubmittedMethod(eventMessage) {
 async function reviewApprovedMethod(eventMessage) {
   const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
   await msg.sendEvent(newEvent);
-  await promoteStepMethod(eventMessage);
 }
 
 async function reviewRejectedMethod(eventMessage) {
