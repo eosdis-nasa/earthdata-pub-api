@@ -77,3 +77,10 @@ INSERT INTO step(step_name, type, form_id) VALUES ('confirmation_form', 'form', 
 UPDATE step_edge SET next_step_name='confirmation_form' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_publication_request_form_review';
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'confirmation_form', 'send_to_meditor_after_publication_form_review');
 
+--10/23/22 Add actions
+INSERT INTO action VALUES ('3fe93672-cd91-45d4-863b-c6d0d63f8c8c', 'send_to_meditor', 1, 'Send To mEditor Action', 'This action is used to send collection metadata from EDPub to mEditor.', 'sendToMeditor.js');
+INSERT INTO action VALUES ('f812eb99-7c4a-46a8-8d8f-30ae509fe21c', 'map_edpub_to_ummc', 1, 'Map EDPub To UMMC Action', 'This action is map EDPub question reponses to a JSON UMMC format.', 'mapEDPubToUmmc.js');
+UPDATE step SET data='' WHERE step_name='send_to_meditor';
+INSERT INTO step(step_name, type, action_id) VALUES ('map_question_response_to_ummc', 'action', 'f812eb99-7c4a-46a8-8d8f-30ae509fe21c');
+UPDATE step_edge SET next_step_name='map_question_response_to_ummc' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='confirmation_form';
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'map_question_response_to_ummc', 'send_to_meditor_after_publication_form_review');
