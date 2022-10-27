@@ -84,3 +84,7 @@ UPDATE step SET data='' WHERE step_name='send_to_meditor';
 INSERT INTO step(step_name, type, action_id) VALUES ('map_question_response_to_ummc', 'action', 'f812eb99-7c4a-46a8-8d8f-30ae509fe21c');
 UPDATE step_edge SET next_step_name='map_question_response_to_ummc' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='confirmation_form';
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'map_question_response_to_ummc', 'send_to_meditor_after_publication_form_review');
+
+--10/25/22 Update ASF and ASDC disciplines
+UPDATE daac SET discipline='SAR Products, Change Detection, Sea Ice, Polar Processes' WHERE id='c606afba-725b-4ae4-9557-1fd33260ae12';
+UPDATE daac SET discipline='Radiation Budget, Clouds, Aerosols, Tropospheric Composition' WHERE id='40397fe8-4841-4e4c-b84a-6ece359ff5ff';
