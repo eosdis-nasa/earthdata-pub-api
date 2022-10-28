@@ -50,12 +50,16 @@ async function createMethod(params, privileges) {
     || privileges.includes('USER_CREATE')) {
     const newUser = await createCognitoUser(params);
     const user = await db.user.loginUser(newUser);
-    if (params.role_id) {
-      await db.user.addRole({ ...user, role_id: params.role_id });
-    }
-    if (params.group_id) {
-      await db.user.addGroup({ ...user, group_id: params.group_id });
-    }
+    if (Array.isArray(params.role_id)) {
+      params.role_id.forEach(async rid => {
+        await db.user.addRole({ ...user, role_id: rid });
+      });
+    }else if(params.role_id){await db.user.addRole({ ...user, role_id: params.role_id})}
+    if (Array.isArray(params.group_id)) {
+      params.group_id.forEach(async gid => {
+        await db.user.addGroup({ ...user, group_id: gid });
+      });
+    }else if(params.role_id)(await db.user.addGroup({ ...user, group_id: params.group_id }))
     return user;
   }
   return { error: 'No privilege' };
