@@ -59,7 +59,7 @@ async function createMethod(params, privileges) {
       params.group_id.forEach(async (gid) => {
         await db.user.addGroup({ ...user, group_id: gid });
       });
-    } else if (params.role_id)(await db.user.addGroup({ ...user, group_id: params.group_id }));
+    } else if (params.group_id)(await db.user.addGroup({ ...user, group_id: params.group_id }));
     return user;
   }
   return { error: 'No privilege' };
