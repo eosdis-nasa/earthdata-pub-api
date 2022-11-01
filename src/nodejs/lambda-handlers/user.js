@@ -51,12 +51,12 @@ async function createMethod(params, privileges) {
     const newUser = await createCognitoUser(params);
     const user = await db.user.loginUser(newUser);
 
-    params.role_ids.forEach(async (role_id) => {
-      await db.user.addRole({ ...user, role_id: role_id });
+    params.role_ids.forEach(async (roleId) => {
+      await db.user.addRole({ ...user, roleId });
     });
 
-    params.group_ids.forEach(async (group_id) => {
-      await db.user.addGroup({ ...user, group_id: group_id });
+    params.group_ids.forEach(async (groupId) => {
+      await db.user.addGroup({ ...user, groupId });
     });
     return user;
   }
