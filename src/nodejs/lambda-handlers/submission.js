@@ -184,7 +184,6 @@ async function changeStepMethod(event, user) {
   const { id, workflow_id, step_name } = event;
   const validStep = await db.submission.checkWorkflow({ step_name, workflow_id });
   const approvedUserRoles = ['admin', 'coordinator'];
-  console.log(validStep)
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))
    && await validStep.step_name) {
     return db.submission.setStep({ step_name, id });
