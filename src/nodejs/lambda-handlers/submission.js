@@ -10,13 +10,6 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
-function checkWorkflow(wrkFlowList, wrkFlow) {
-  for (let i = 0; i < wrkFlowList.length; i += 1) {
-    if (wrkFlow === wrkFlowList[i].workflow_id) { return true; }
-  }
-  return false;
-}
-
 async function statusMethod(event, user) {
   const hidden = event.operation === 'inactive';
   if (user.user_privileges.includes('REQUEST_ADMINREAD') || user.user_privileges.includes('ADMIN')
@@ -189,10 +182,11 @@ async function restoreMethod(event, user) {
 async function changeStepMethod(event, user) {
   // eslint-disable-next-line
   const { id, workflow_id, step_name } = event;
-  const validStep = db.submission.getWorkflowUsingStep({ step_name });
+  const validStep = await db.submission.checkWorkflow({ step_name, workflow_id });
   const approvedUserRoles = ['admin', 'coordinator'];
+  console.log(validStep)
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))
-   && checkWorkflow(await validStep, workflow_id)) {
+   && await validStep.step_name) {
     return db.submission.setStep({ step_name, id });
   }
   return db.submission.findById({ id });

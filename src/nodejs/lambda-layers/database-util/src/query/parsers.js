@@ -58,4 +58,4 @@ module.exports.findSecret = one;
 module.exports.deleteSecret = one;
 module.exports.deleteInput = one;
 module.exports.setStep = one;
-module.exports.getWorkflowUsingStep = many;
+module.exports.checkWorkflow = one;

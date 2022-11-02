@@ -452,10 +452,10 @@ SET step_name = {{step_name}}
 WHERE id = {{id}}
 RETURNING *`;
 
-const getWorkflowUsingStep = () => `
-SELECT step_edge.workflow_id
+const checkWorkflow = () => `
+SELECT step_edge.step_name
 FROM step_edge
-WHERE step_edge.step_name = {{step_name}}`;
+WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = {{workflow_id}}`;
 
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
@@ -482,4 +482,4 @@ module.exports.reassignWorkflow = reassignWorkflow;
 module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
 module.exports.setStep = setStep;
-module.exports.getWorkflowUsingStep = getWorkflowUsingStep;
+module.exports.checkWorkflow = checkWorkflow;
