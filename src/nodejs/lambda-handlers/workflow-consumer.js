@@ -25,7 +25,12 @@ async function actionMethod(status) {
   Object.keys(eventMessage).forEach((key) => (
     eventMessage[key] === undefined && delete eventMessage[key]));
   await msg.sendEvent(eventMessage);
-  if (status.step.action_id) await db.submission.promoteStep({ id: status.id });
+  if (status.step.action_id) {
+    await msg.sendEvent({
+      event_type: 'workflow_promote_step',
+      submission_id: status.id
+    });
+  }
 }
 
 async function formMethod(status) {
@@ -95,15 +100,15 @@ async function promoteStepMethod(eventMessage) {
 }
 
 async function workflowStartedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
-  await msg.sendEvent(newEvent);
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
   await promoteStepMethod(eventMessage);
+  await msg.sendEvent(newEvent);
 }
 
 async function requestInitializedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
-  await msg.sendEvent(newEvent);
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
   await promoteStepMethod(eventMessage);
+  await msg.sendEvent(newEvent);
 }
 
 async function formSubmittedMethod(eventMessage) {
@@ -112,7 +117,7 @@ async function formSubmittedMethod(eventMessage) {
   if (status.step.type === 'form' && status.step.form_id === formId) {
     await promoteStepMethod(eventMessage);
     const newEvent = {
-      event_type: 'workflow_promote_step',
+      event_type: 'workflow_promote_step_direct',
       submission_id: status.id,
       conversation_id: status.conversation_id,
       workflow_id: status.workflow_id,
@@ -124,9 +129,9 @@ async function formSubmittedMethod(eventMessage) {
 }
 
 async function reviewApprovedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
-  await msg.sendEvent(newEvent);
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
   await promoteStepMethod(eventMessage);
+  await msg.sendEvent(newEvent);
 }
 
 async function reviewRejectedMethod(eventMessage) {
