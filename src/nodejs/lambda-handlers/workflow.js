@@ -13,9 +13,13 @@ const userPoolId = process.env.CUP_ID;
 const dev = process.env.DEVELOPMENT || false;
 
 async function editWorkflowMethod(params, user){
+    const { workflow } = params
+    var activeStep = workflow.steps.init
     const approvedUserRoles = ['admin'];
     if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
-        
+        while (activeStep !== "close"){
+          
+        }
     }
 }
 

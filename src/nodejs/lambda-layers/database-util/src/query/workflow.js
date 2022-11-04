@@ -32,5 +32,9 @@ const findAll = () => `
 `;
 const findById = () => `${findAll()} WHERE workflow.id = {{id}}`;
 
+const setNextStep = () => `
+`;
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
+module.exports.setNextStep = setNextStep;
