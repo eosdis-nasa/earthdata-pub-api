@@ -182,15 +182,13 @@ async function restoreMethod(event, user) {
 async function changeStepMethod(event, user) {
   // eslint-disable-next-line
   const { id, step_name } = event;
-  const submission = await db.submission.findById({ id });
-  const { workflowId } = submission;
-  const validStep = await db.submission.checkWorkflow({ step_name, workflowId });
+  const validStep = await db.submission.checkWorkflow({ step_name, id });
   const approvedUserRoles = ['admin', 'coordinator'];
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))
    && await validStep.step_name) {
     return db.submission.setStep({ step_name, id });
   }
-  return submission;
+  return db.submission.findById({ id });
 }
 
 const operations = {
