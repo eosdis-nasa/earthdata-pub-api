@@ -717,6 +717,21 @@ module.exports.pagePut = function pagePut(req, res, next) {
   });
 };
 
+module.exports.editWorkflow = function editWorkflow(req, res, next){
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'workflow',
+    operation: 'update',
+    params: {
+      payload: params.payload.value,
+    },
+    context:  { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
+
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({
     message: 'Placeholder for overview app root endpoint.'

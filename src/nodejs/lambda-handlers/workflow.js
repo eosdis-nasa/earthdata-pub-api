@@ -14,12 +14,16 @@ const dev = process.env.DEVELOPMENT || false;
 
 async function editWorkflowMethod(params, user){
     const { workflow } = params
+    const { workflow_id } = workflow
     var activeStep = workflow.steps.init
     const approvedUserRoles = ['admin'];
     if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
-        while (activeStep !== "close"){
-          
+        await db.workflow.clearSteps({ id:workflow_id })
+        while (activeStep.next_step_name){
+            const { step_name, next_step_name } = activeStep
+            await db.workflow.addStep({ workflow_id, step_name, next_step_name })
         }
+        db.workflow.addClose({ workflow_id })
     }
 }
 
