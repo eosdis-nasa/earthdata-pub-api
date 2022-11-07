@@ -94,3 +94,8 @@ UPDATE daac SET discipline='Radiation Budget, Clouds, Aerosols, Tropospheric Com
 UPDATE step SET data='{"rollback":"confirmation_form","type": "action"}' WHERE step_name='map_question_response_to_ummc';
 UPDATE step SET data='{"rollback":"send_to_meditor_after_publication_form_review","type": "action"}' WHERE step_name='edit_metadata_in_meditor_after_publication_form_review';
 UPDATE step SET data='{"rollback":"map_question_response_to_ummc","type": "action"}' WHERE step_name='send_to_meditor_after_publication_form_review';
+
+--11/7/22 Update ASDC workflow to have export metadata capabilities
+UPDATE step_edge SET next_step_name='confirmation_form' WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='data_publication_request_form_review';
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'confirmation_form', 'map_question_response_to_ummc');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'map_question_response_to_ummc', 'email_asdc_staff');
