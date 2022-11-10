@@ -5477,7 +5477,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_ids'))\"group_ids\":\"$body.get('group_ids')\",#end #if($body.containsKey('role_ids'))\"role_ids\":\"$body.get('role_ids')\",#end #if ($body.containsKey('username'))\"username\":\"$body.get('username')\",#end #if ($body.containsKey('name'))\"name\":\"$body.get('name')\",#end #if ($body.containsKey('email'))\"email\":\"$body.get('email')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('role_id'))\"role_id\":\"$body.get('role_id')\",#end #if($body.containsKey('group_ids'))\"group_ids\":$inputRoot.group_ids,#end #if($body.containsKey('role_ids'))\"role_ids\":$inputRoot.role_ids,#end #if ($body.containsKey('username'))\"username\":\"$body.get('username')\",#end #if ($body.containsKey('name'))\"name\":\"$body.get('name')\",#end #if ($body.containsKey('email'))\"email\":\"$body.get('email')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
