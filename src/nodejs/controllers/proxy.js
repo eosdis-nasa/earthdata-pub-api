@@ -721,13 +721,13 @@ module.exports.editWorkflow = function editWorkflow(req, res, next){
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'workflow',
-    operation: 'update',
+    operation: 'editWorkflow',
     params: {
       payload: params.payload.value,
     },
     context:  { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.workflow(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 }
