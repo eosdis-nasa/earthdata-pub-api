@@ -100,12 +100,14 @@ async function promoteStepMethod(eventMessage) {
 }
 
 async function workflowStartedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
+  await promoteStepMethod(eventMessage);
   await msg.sendEvent(newEvent);
 }
 
 async function requestInitializedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
+  await promoteStepMethod(eventMessage);
   await msg.sendEvent(newEvent);
 }
 
@@ -113,8 +115,9 @@ async function formSubmittedMethod(eventMessage) {
   const { submission_id: id, form_id: formId, user_id: userId } = eventMessage;
   const status = await db.submission.getState({ id });
   if (status.step.type === 'form' && status.step.form_id === formId) {
+    await promoteStepMethod(eventMessage);
     const newEvent = {
-      event_type: 'workflow_promote_step',
+      event_type: 'workflow_promote_step_direct',
       submission_id: status.id,
       conversation_id: status.conversation_id,
       workflow_id: status.workflow_id,
@@ -126,7 +129,8 @@ async function formSubmittedMethod(eventMessage) {
 }
 
 async function reviewApprovedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step' };
+  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
+  await promoteStepMethod(eventMessage);
   await msg.sendEvent(newEvent);
 }
 
