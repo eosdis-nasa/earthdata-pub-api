@@ -191,6 +191,15 @@ async function changeStepMethod(event, user) {
   return db.submission.findById({ id });
 }
 
+async function addContributorMethod(event, user) {
+  const { id, contributor_id } = event;
+  const approvedUserRoles = [];
+  if(user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+    return db.submission.addContributor({ contributor_id, id })
+  }
+  return db.submission.findById({ id });
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -205,7 +214,8 @@ const operations = {
   unlock: unlockMethod,
   withdraw: withdrawMethod,
   restore: restoreMethod,
-  changeStep: changeStepMethod
+  changeStep: changeStepMethod,
+  addContributor: addContributorMethod,
 };
 
 async function handler(event) {

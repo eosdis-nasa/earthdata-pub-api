@@ -457,6 +457,12 @@ SELECT step_edge.step_name
 FROM step_edge
 WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}})`;
 
+const addContributor = () => `
+UPDATE submission
+SET contributor_ids = array_append(contributor_ids, '{{contributor_id}}')
+WHERE id = {{id}}
+RETURNING *`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -483,3 +489,4 @@ module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
 module.exports.setStep = setStep;
 module.exports.checkWorkflow = checkWorkflow;
+module.exports.addContributor = addContributor

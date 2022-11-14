@@ -340,10 +340,12 @@ CREATE TABLE IF NOT EXISTS submission (
   initiator_edpuser_id UUID NOT NULL,
   daac_id UUID,
   conversation_id UUID,
+  contributor_ids UUID[],
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   hidden BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (id),
   FOREIGN KEY (initiator_edpuser_id) REFERENCES edpuser (id),
+  FOREIGN KEY (contributor_ids) REFERENCES edpuser (id),
   FOREIGN KEY (daac_id) REFERENCES daac (id)
 );
 
