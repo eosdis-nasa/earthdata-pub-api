@@ -782,16 +782,11 @@ resource "aws_lambda_function" "workflow" {
 }
 
 resource "aws_lambda_permission" "workflow" {
-  statement_id  = "AllowExecutionFromSQS"
+  statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.workflow.function_name
-  principal     = "sqs.amazonaws.com"
-  source_arn    = var.edpub_workflow_sqs_arn
-}
-
-resource "aws_lambda_event_source_mapping" "workflow_sqs_event" {
-  event_source_arn = var.edpub_workflow_sqs_arn
-  function_name    = aws_lambda_function.workflow.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
 # Auth Lambda
