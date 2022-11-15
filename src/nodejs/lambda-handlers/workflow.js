@@ -7,11 +7,6 @@
 
 const db = require('database-util');
 
-async function findByIdMethod({ params }) {
-  const { id } = params;
-  return db.workflow.findById(id);
-}
-
 async function editWorkflowMethod(params, user) {
   const {
     id, version, description, steps
@@ -41,7 +36,6 @@ async function editWorkflowMethod(params, user) {
 }
 
 const operations = {
-  findById: findByIdMethod,
   editWorkflow: editWorkflowMethod
 };
 
