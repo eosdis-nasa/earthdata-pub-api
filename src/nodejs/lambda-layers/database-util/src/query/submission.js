@@ -463,6 +463,12 @@ SET contributor_ids = array_append(contributor_ids, '{{contributor_id}}')
 WHERE id = {{id}}
 RETURNING *`;
 
+const getContributors = () =>`
+SELECT submission.contributor_ids
+FROM submission
+WHERE id = {{id}}
+`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -490,3 +496,4 @@ module.exports.restoreSubmission = restoreSubmission;
 module.exports.setStep = setStep;
 module.exports.checkWorkflow = checkWorkflow;
 module.exports.addContributor = addContributor
+module.exports.getContributors = getContributors

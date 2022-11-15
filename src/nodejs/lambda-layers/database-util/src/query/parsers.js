@@ -59,3 +59,4 @@ module.exports.deleteSecret = one;
 module.exports.deleteInput = one;
 module.exports.setStep = one;
 module.exports.checkWorkflow = one;
+module.exports.getContributors = many;
