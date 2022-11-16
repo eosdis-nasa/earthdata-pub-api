@@ -786,7 +786,7 @@ resource "aws_lambda_permission" "workflow" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.workflow.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/api/data/workflow/*"
 }
 
 # Auth Lambda
