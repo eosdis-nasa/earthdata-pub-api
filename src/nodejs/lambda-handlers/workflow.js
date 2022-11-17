@@ -43,7 +43,7 @@ async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const user = await db.user.findById({ id: event.context.user_id });
   const operation = operations[event.operation];
-  const params = event.params.payload;
+  const { params } = event;
   const data = await operation(params, user);
   return data;
 }
