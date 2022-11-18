@@ -485,6 +485,9 @@ module.exports.notificationConversation = function notificationConversation(req,
   const lambdaEvent = {
     operation: 'conversation',
     conversation_id: params.id.value,
+    params: {
+        detailed: params.detailed.value || false
+    },
     context: { user_id: req.user_id }
   };
   handlers.notification(lambdaEvent).then((body) => {
