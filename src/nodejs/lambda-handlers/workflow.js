@@ -7,11 +7,6 @@
 
 const db = require('database-util');
 
-async function findByIdMethod({ params }) {
-  const { id } = params;
-  return db.workflow.findById(id);
-}
-
 async function editWorkflowMethod(params, user) {
   const {
     id, version, description, steps
@@ -41,7 +36,6 @@ async function editWorkflowMethod(params, user) {
 }
 
 const operations = {
-  findById: findByIdMethod,
   editWorkflow: editWorkflowMethod
 };
 
@@ -49,7 +43,7 @@ async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const user = await db.user.findById({ id: event.context.user_id });
   const operation = operations[event.operation];
-  const params = event.params.payload;
+  const { params } = event;
   const data = await operation(params, user);
   return data;
 }

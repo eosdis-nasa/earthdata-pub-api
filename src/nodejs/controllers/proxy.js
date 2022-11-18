@@ -722,9 +722,7 @@ module.exports.editWorkflow = function editWorkflow(req, res, next){
   const lambdaEvent = {
     resource: 'workflow',
     operation: 'editWorkflow',
-    params: {
-      payload: params.payload.value,
-    },
+    params: params.payload.value,
     context:  { user_id: req.user_id }
   };
   handlers.workflow(lambdaEvent).then((body) => {
