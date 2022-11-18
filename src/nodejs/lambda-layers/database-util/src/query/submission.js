@@ -446,6 +446,17 @@ hidden='false'
 WHERE id={{id}}
 RETURNING *`;
 
+const setStep = () => `
+UPDATE submission_status
+SET step_name = {{step_name}}
+WHERE id = {{id}}
+RETURNING *`;
+
+const checkWorkflow = () => `
+SELECT step_edge.step_name
+FROM step_edge
+WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}})`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -470,3 +481,5 @@ module.exports.rollback = rollback;
 module.exports.reassignWorkflow = reassignWorkflow;
 module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
+module.exports.setStep = setStep;
+module.exports.checkWorkflow = checkWorkflow;

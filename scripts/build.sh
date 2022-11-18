@@ -47,6 +47,8 @@ install_lambda subscribe
 install_lambda user
 install_lambda version
 install_lambda workflow-consumer
+install_lambda questions
+install_lambda workflow
 #Add more lambda functions here <--
 
 #Change back to root directory and remove temp folder

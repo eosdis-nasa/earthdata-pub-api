@@ -27,6 +27,8 @@ data "template_file" "edpub_oas" {
     user_lambda_arn               = var.user_lambda_arn
     register_lambda_arn           = var.register_lambda_arn
     version_lambda_arn            = var.version_lambda_arn
+    questions_lambda_arn          = var.questions_lambda_arn
+    workflow_lambda_arn           = var.workflow_lambda_arn
     edpub_dashboard_s3_bucket     = var.edpub_dashboard_s3_bucket
     edpub_forms_s3_bucket         = var.edpub_forms_s3_bucket
     edpub_overview_s3_bucket      = var.edpub_overview_s3_bucket

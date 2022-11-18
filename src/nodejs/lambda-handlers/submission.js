@@ -179,6 +179,18 @@ async function restoreMethod(event, user) {
   return db.submission.findById({ id });
 }
 
+async function changeStepMethod(event, user) {
+  // eslint-disable-next-line
+  const { id, step_name } = event;
+  const validStep = await db.submission.checkWorkflow({ step_name, id });
+  const approvedUserRoles = ['admin', 'coordinator'];
+  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))
+   && await validStep.step_name) {
+    return db.submission.setStep({ step_name, id });
+  }
+  return db.submission.findById({ id });
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -192,7 +204,8 @@ const operations = {
   lock: lockMethod,
   unlock: unlockMethod,
   withdraw: withdrawMethod,
-  restore: restoreMethod
+  restore: restoreMethod,
+  changeStep: changeStepMethod
 };
 
 async function handler(event) {

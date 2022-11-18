@@ -10,6 +10,10 @@ variable "data_lambda_arn" {
   type = string
 }
 
+variable "questions_lambda_arn"{
+  type = string
+}
+
 variable "invoke_lambda_arn" {
   type = string
 }
@@ -47,6 +51,10 @@ variable "user_lambda_arn" {
 }
 
 variable "version_lambda_arn" {
+  type = string
+}
+
+variable "workflow_lambda_arn" {
   type = string
 }
 

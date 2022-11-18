@@ -32,5 +32,27 @@ const findAll = () => `
 `;
 const findById = () => `${findAll()} WHERE workflow.id = {{id}}`;
 
+const clearSteps = () => `DELETE FROM step_edge WHERE step_edge.workflow_id = {{id}}`;
+
+const addStep = () => `
+  INSERT INTO step_edge (workflow_id, step_name, next_step_name)
+  VALUES ({{workflow_id}}, {{step_name}}, {{next_step_name}})
+`;
+
+const addClose = () => `
+  INSERT INTO step_edge (workflow_id, step_name)
+  VALUES ({{workflow_id}}, 'close')
+`;
+
+const updateWorkflowMetaData = () =>`
+  UPDATE workflow
+  SET version = {{version}}, description = {{description}}
+  WHERE id = {{id}}
+  RETURNING *`;
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
+module.exports.clearSteps = clearSteps;
+module.exports.addStep = addStep;
+module.exports.addClose = addClose;
+module.exports.updateWorkflowMetaData = updateWorkflowMetaData;

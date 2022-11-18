@@ -218,7 +218,7 @@ module.exports.questionFindById = function questionFindById(req, res, next) {
     params: { id: params.id.value },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.questions(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
@@ -231,7 +231,7 @@ module.exports.questionUpdate = function questionUpdate(req, res, next) {
     params: { payload: params.payload.value },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.questions(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
@@ -244,7 +244,7 @@ module.exports.questionAdd = function questionAdd(req, res, next) {
     params: { payload: params.payload.value },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.questions(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency)
   });
 };
@@ -264,7 +264,7 @@ module.exports.questionFindAll = function questionFindAll(req, res, next) {
     },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.questions(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
@@ -277,9 +277,10 @@ module.exports.questionInputUpdate = function questionInputUpdate(req, res, next
     params: {
       questionId: params.id.value,
       inputs: params.payload.value
-    }
+    },
+    context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.questions(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency)
   });
 };
@@ -715,6 +716,19 @@ module.exports.pagePut = function pagePut(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 };
+
+module.exports.editWorkflow = function editWorkflow(req, res, next){
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'workflow',
+    operation: 'editWorkflow',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
 
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({
