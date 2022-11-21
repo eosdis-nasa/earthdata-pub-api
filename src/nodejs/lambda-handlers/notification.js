@@ -83,7 +83,7 @@ async function conversationMethod(params) {
     });
   }
   // TODO - Consider updating js filter implementation to be within SQl query instead
-  if (!detailed) {
+  if (String(detailed).toLowerCase() !== 'true') {
     // Filter id of system user which sends automated logging notes
     response.notes = response.notes.filter((note) => note.from.id !== '1b10a09d-d342-4eee-a9eb-c99acd2dde17');
   }
