@@ -99,3 +99,7 @@ UPDATE step SET data='{"rollback":"map_question_response_to_ummc","type": "actio
 UPDATE step_edge SET next_step_name='confirmation_form' WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='data_publication_request_form_review';
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'confirmation_form', 'map_question_response_to_ummc');
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'map_question_response_to_ummc', 'email_asdc_staff');
+
+--11/28/22 Add contributor_id colum
+ALTER TABLE submission ADD COLUMN contributor_ids UUID[];
+UPDATE submission SET contributor_ids array_append(contributor_ids, (SELECT contributor_id FROM submission))

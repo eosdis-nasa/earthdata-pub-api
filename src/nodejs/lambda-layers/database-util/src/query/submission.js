@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_id', 'contributor_ids'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -23,7 +23,8 @@ const fieldMap = {
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
-  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"'
+  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
+  contributor_ids: 'submission.contributor_ids'
 };
 const refs = {
   initiator_ref: {
@@ -171,7 +172,7 @@ const getUsersSubmissions = (params) => sql.select({
   },
   where: {
     filters: [
-      ...([{ field: 'submission.initiator_edpuser_id', param: 'user_id' }]),
+      ...([{ field: 'submission.contributor_ids', param: 'contributor_ids' }]),
       ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
     ]
   },
@@ -257,11 +258,11 @@ const getAdminSubmissions = (params) => sql.select({
 });
 
 const findAll = ({
-  name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
+  name, contributor_id, daac_id, workflow_id, workflow_name, step_name, step_type,
   status, created_before, created_after, last_change_before, last_change_after, hidden, sort, order,
-  per_page, page
+  per_page, page, contributor_ids
 }) => sql.select({
-  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change, fieldMap.hidden],
+  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change, fieldMap.hidden, fieldMap.contributor_ids],
   from: {
     base: table,
     joins: [refs.submission_status, refs.step, refs.workflow]
@@ -269,7 +270,7 @@ const findAll = ({
   where: {
     filters: [
       ...(name ? [{ field: 'submission.name', param: 'name' }] : []),
-      ...(user_id ? [{ field: 'submission.initiator_edpuser_id', param: 'user_id' }] : []),
+      ...(contributor_id ? [{ field: 'submission.contributor_id', param: 'contributor_id' }] : []),
       ...(daac_id ? [{ field: 'submission.daac_id', param: 'daac_id' }] : []),
       ...(workflow_id ? [{ field: 'submission_status.workflow_id', param: 'workflow_id' }] : []),
       ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name' }] : []),
@@ -281,6 +282,7 @@ const findAll = ({
       ...(created_before ? [{ field: 'submission.created_at', op: 'lte', param: 'created_before' }] : []),
       ...(last_change_after ? [{ field: 'submission_status.last_change', op: 'gte', param: 'last_change_after' }] : []),
       ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before' }] : []),
+      ...(contributor_ids ? [{ field: 'submission.contributor_ids', param: 'contributor_ids' }] : []),
       ...(typeof(hidden)=='undefined' ? [] : (hidden==='false' || hidden===false) ? [{ cmd: 'NOT submission.hidden'}] : [{ cmd: 'submission.hidden'}]),
     ]
   },
@@ -296,8 +298,8 @@ FROM submission
 WHERE submission.id = {{id}}`;
 
 const initialize = (params) => `
-INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''})
-VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''})
+INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''}, contributor_ids)
+VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}])
 RETURNING *`;
 
 const updateName = () => `
@@ -317,6 +319,11 @@ UPDATE submission
 SET conversation_id = {{conversation_id}}
 WHERE id = {{id}}
 RETURNING *`;
+
+const getConversationId = () =>`
+SELECT submission.conversation_id
+WHERE id = {{id}}
+`
 
 const getMetadata = () => `
 SELECT submission_metadata.*
@@ -457,7 +464,7 @@ SELECT step_edge.step_name
 FROM step_edge
 WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}})`;
 
-const addContributor = () => `
+const addContributors = () => `
 UPDATE submission
 SET contributor_ids = array_append(contributor_ids, '{{contributor_id}}')
 WHERE id = {{id}}
@@ -481,6 +488,7 @@ module.exports.promoteStep = promoteStep;
 module.exports.updateName = updateName;
 module.exports.updateDaac = updateDaac;
 module.exports.updateConversation = updateConversation;
+module.exports.getConversationId = getConversationId;
 module.exports.getState = getState;
 module.exports.getMetadata = getMetadata;
 module.exports.updateMetadata = updateMetadata;
@@ -495,5 +503,5 @@ module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
 module.exports.setStep = setStep;
 module.exports.checkWorkflow = checkWorkflow;
-module.exports.addContributor = addContributor
+module.exports.addContributors = addContributors
 module.exports.getContributors = getContributors

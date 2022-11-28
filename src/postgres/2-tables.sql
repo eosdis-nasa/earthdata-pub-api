@@ -345,7 +345,6 @@ CREATE TABLE IF NOT EXISTS submission (
   hidden BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (id),
   FOREIGN KEY (initiator_edpuser_id) REFERENCES edpuser (id),
-  FOREIGN KEY (contributor_ids) REFERENCES edpuser (id),
   FOREIGN KEY (daac_id) REFERENCES daac (id)
 );
 
