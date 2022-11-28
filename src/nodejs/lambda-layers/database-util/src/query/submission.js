@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_id', 'contributor_ids'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -258,7 +258,7 @@ const getAdminSubmissions = (params) => sql.select({
 });
 
 const findAll = ({
-  name, contributor_id, daac_id, workflow_id, workflow_name, step_name, step_type,
+  name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
   status, created_before, created_after, last_change_before, last_change_after, hidden, sort, order,
   per_page, page, contributor_ids
 }) => sql.select({
@@ -270,7 +270,7 @@ const findAll = ({
   where: {
     filters: [
       ...(name ? [{ field: 'submission.name', param: 'name' }] : []),
-      ...(contributor_id ? [{ field: 'submission.contributor_id', param: 'contributor_id' }] : []),
+      ...(user_id ? [{ field: 'submission.initiator_edpuser_id', param: 'user_id' }] : []),
       ...(daac_id ? [{ field: 'submission.daac_id', param: 'daac_id' }] : []),
       ...(workflow_id ? [{ field: 'submission_status.workflow_id', param: 'workflow_id' }] : []),
       ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name' }] : []),
