@@ -299,7 +299,7 @@ WHERE submission.id = {{id}}`;
 
 const initialize = (params) => `
 INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''}, contributor_ids)
-VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}])
+VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}::UUID])
 RETURNING *`;
 
 const updateName = () => `
@@ -322,6 +322,7 @@ RETURNING *`;
 
 const getConversationId = () =>`
 SELECT submission.conversation_id
+FROM submission
 WHERE id = {{id}}
 `
 
@@ -466,7 +467,7 @@ WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT su
 
 const addContributors = () => `
 UPDATE submission
-SET contributor_ids = array_append(contributor_ids, '{{contributor_id}}')
+SET contributor_ids = array_cat(contributor_ids, ARRAY{{contributor_id}}::UUID[])
 WHERE id = {{id}}
 RETURNING *`;
 

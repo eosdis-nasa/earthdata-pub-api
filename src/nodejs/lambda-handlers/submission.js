@@ -193,10 +193,13 @@ async function changeStepMethod(event, user) {
 
 async function addContributorsMethod(event, user) {
   const { id, contributor_ids } = event;
+  console.log(event)
   const approvedUserRoles = ['admin', 'manager'];
   if(user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
-    const conversationId = await db.submission.getConversationId({ id })
-    db.note.addUsersToConversation({ conversation_id: conversationId, user_list: contributor_ids})
+    const { conversation_id } = await db.submission.getConversationId({ id })
+    console.log(conversation_id)
+    await db.note.addUsersToConversation({ conversation_id, user_list: contributor_ids})
+    console.log(contributor_ids)
     return db.submission.addContributors({ contributor_ids, id })
   }
   return db.submission.findById({ id });

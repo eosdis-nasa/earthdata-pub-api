@@ -60,3 +60,4 @@ module.exports.deleteInput = one;
 module.exports.setStep = one;
 module.exports.checkWorkflow = one;
 module.exports.getContributors = many;
+module.exports.getConversationId = one;
