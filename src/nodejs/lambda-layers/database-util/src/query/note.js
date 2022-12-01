@@ -283,6 +283,18 @@ const getEmails = (params) => sql.select({
   }
 });
 
+const getSubmissionByConversationId = (params) => sql.select({
+  fields: ['*'],
+  from: {
+    base: 'submission'
+  },
+  where: {
+    filters: [
+      ...([{field: 'conversation_id', param: 'conversationId'}])
+    ]
+  }
+});
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getConversationList = getConversationList;
@@ -292,3 +304,4 @@ module.exports.sendNote = sendNote;
 module.exports.addUsersToConversation = addUsersToConversation;
 module.exports.addUserToConversation = addUserToConversation;
 module.exports.getEmails = getEmails
+module.exports.getSubmissionByConversationId = getSubmissionByConversationId
