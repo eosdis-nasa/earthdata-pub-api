@@ -78,6 +78,9 @@ const naturalJoin = ({ src }) => ` NATURAL JOIN ${src.type ? complexParse(src) :
 
 const naturalLeftJoin = ({ src, on }) => ` NATURAL LEFT JOIN ${src.type ? complexParse(src) : src}`;
 
+const innerJoin = ({ src, on }) => ` INNER JOIN ${src.type ? complexParse(src) : src}${on
+  ? ` ON ${on.left} = ${on.right}` : ''}`;
+
 const filter = ({
   logOp, field, like, op, value, param, any, literal, cmd,
 }) => cmd ? `${cmd}` : like ? `${field} ILIKE '%' || {{${like}}} || '%'` :
@@ -122,6 +125,7 @@ const complexTypes = {
   left_join: leftJoin,
   natural_join: naturalJoin,
   natural_left_join: naturalLeftJoin,
+  inner_join: innerJoin,
   case: caseClause,
   coalesce,
   json_agg: jsonAgg,
