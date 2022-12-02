@@ -43,7 +43,7 @@ async function addSteps(steps, workflow_id) {
   let activeStep = steps[activeStepName];
   while (activeStep.next_step_name) {
     const nextStepName = activeStep.next_step_name;
-    if(nextStepName !== 'close'){await createStep(steps[nextStepName], nextStepName);}
+    if (nextStepName !== 'close') { await createStep(steps[nextStepName], nextStepName); }
     await db.workflow.addStep({
       workflow_id,
       step_name: activeStepName,
@@ -58,6 +58,7 @@ async function createWorkflowMethod(params, user) {
     // eslint-disable-next-line
     short_name, version, long_name, description, steps
   } = params;
+  const approvedUserRoles = ['admin'];
 
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
     if (!validateWorkflow(steps)) { return ({ status: 'Invalid Workflow' }); }
