@@ -43,7 +43,7 @@ async function processRecord(record) {
         message.subject = 'No Subject';
       }
       const note = await db.note[operation](message);
-      await sendEmailNotification({ note });
+      // await sendEmailNotification({ note });
     }
   }
 }
