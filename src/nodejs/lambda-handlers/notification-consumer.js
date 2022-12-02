@@ -12,6 +12,8 @@ const msg = require('message-util');
 
 const { getTemplate } = require('./notification-consumer/templates.js');
 
+// TODO- Remove disable once send email enabled
+// eslint-disable-next-line
 async function sendEmailNotification({ note }) {
   // TODO - Add additional filter for system user messages
   const users = await db.note.getEmails({
@@ -23,7 +25,7 @@ async function sendEmailNotification({ note }) {
   });
   await msg.sendEmail({
     submissionId: submission.id,
-    submissionName: submission.form_data.data_product_name,
+    submissionName: submission.form_data ? (submission.form_data.data_product_name || '') : '',
     emails: users.map((user) => user.email),
     body: note.text
   });
@@ -42,8 +44,10 @@ async function processRecord(record) {
       if (operation === 'sendNote' && !message.subject) {
         message.subject = 'No Subject';
       }
+      // TODO- Remove disable once send email enabled
+      // eslint-disable-next-line
       const note = await db.note[operation](message);
-      await sendEmailNotification({ note });
+      // await sendEmailNotification({ note });
     }
   }
 }
