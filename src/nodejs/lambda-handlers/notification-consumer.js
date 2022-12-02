@@ -20,9 +20,6 @@ async function sendEmailNotification({ note }) {
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
-  const submission = await db.note.getSubmissionByConversationId({
-    conversationId: note.conversation_id
-  });
   await msg.sendEmail({
     // TODO - Update the subject
     subject: 'RE: EDPub reply',
