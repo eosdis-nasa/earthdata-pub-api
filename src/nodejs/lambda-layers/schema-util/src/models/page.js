@@ -65,7 +65,8 @@ module.exports.model = (path) => ({
                     image: {type: "string"},
                     image_alt_text: {type: "string"},
                     accordian_header: {type: "string"},
-                    accordian_body: {type: "string"}
+                    accordian_body: {type: "string"},
+                    paragraph: {type: "string"}
                   }
                 }
               },
