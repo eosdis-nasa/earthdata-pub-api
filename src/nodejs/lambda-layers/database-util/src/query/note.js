@@ -263,6 +263,38 @@ VALUES ({{conversation_id}}, {{user_id}})
 ON CONFLICT DO NOTHING
 RETURNING *`;
 
+const getEmails = (params) => sql.select({
+  fields: ['email'],
+  from: {
+    base: 'edpuser',
+    joins: [{
+      type: 'inner_join', src: 'conversation_edpuser',
+      on: {
+        left: 'edpuser.id',
+        right: 'conversation_edpuser.edpuser_id'
+      }
+    }]
+   },
+  where: {
+    filters: [
+      ...([{field: 'conversation_edpuser.conversation_id', param: 'conversationId'}]),
+      ...(params.senderId ? [{field: 'conversation_edpuser.edpuser_id', op: 'ne', param: 'senderId'}] : [])
+    ]
+  }
+});
+
+const getSubmissionByConversationId = (params) => sql.select({
+  fields: ['*'],
+  from: {
+    base: 'submission'
+  },
+  where: {
+    filters: [
+      ...([{field: 'conversation_id', param: 'conversationId'}])
+    ]
+  }
+});
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getConversationList = getConversationList;
@@ -271,3 +303,5 @@ module.exports.reply = reply;
 module.exports.sendNote = sendNote;
 module.exports.addUsersToConversation = addUsersToConversation;
 module.exports.addUserToConversation = addUserToConversation;
+module.exports.getEmails = getEmails
+module.exports.getSubmissionByConversationId = getSubmissionByConversationId

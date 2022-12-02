@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
 
+const emailSns = process.env.EMAIL_SNS;
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
@@ -27,6 +28,24 @@ function marshalAttributes(eventMessage) {
     }
     return attributes;
   }, {});
+}
+
+function sendEmail(eventMessage) {
+  const {
+    emails,
+    submissionId,
+    submissionName,
+    body
+  } = eventMessage;
+  const params = {
+    Subject: `RE: ${submissionId} - ${submissionName}`,
+    Message: body,
+    MessageAttributes: marshalAttributes({ email: emails }),
+    MessageDeduplicationId: Date.now().toString(),
+    TopicArn: emailSns
+  };
+  const response = sns.publish(params).promise().catch((e) => { console.error(e); });
+  return response;
 }
 
 function sendEvent(eventMessage) {
@@ -99,6 +118,7 @@ function parseRecord(record) {
   return parseSqsMessage(record);
 }
 
+module.exports.sendEmail = sendEmail;
 module.exports.sendEvent = sendEvent;
 module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
