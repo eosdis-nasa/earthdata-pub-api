@@ -23,7 +23,7 @@ async function sendEmailNotification({ note }) {
   });
   await msg.sendEmail({
     submissionId: submission.id,
-    submissionName: submission.form_data.data_product_name,
+    submissionName: submission.form_data ? (submission.form_data.data_product_name || '') : '',
     emails: users.map((user) => user.email),
     body: note.text
   });
