@@ -8,16 +8,19 @@
 const db = require('database-util');
 
 function validateWorkflow(steps) {
+  const STEP_MAX = 100;
   let i = 0;
   let activeStep = steps.init;
   while (activeStep.next_step_name !== 'close') {
+    const nextStepName = activeStep.next_step_name;
+    const nextStep = steps[activeStep.next_step_name];
     if (
-      (i > 100)
-      || (!activeStep.next_step_name)
-      // eslint-disable-next-line
-      || (!(activeStep = steps[activeStep.next_step_name]))
+      (i > STEP_MAX)
+      || (!nextStepName)
+      || (!nextStep)
     ) { return false; }
     i += 1;
+    activeStep = nextStep;
   }
   return true;
 }
@@ -37,33 +40,33 @@ async function createStep(step, stepName) {
     data
   });
 }
-// eslint-disable-next-line
-async function addSteps(steps, workflow_id) {
+
+async function addSteps(steps, workflowId) {
   let activeStepName = 'init';
   let activeStep = steps[activeStepName];
   while (activeStep.next_step_name) {
     const nextStepName = activeStep.next_step_name;
     if (nextStepName !== 'close') { await createStep(steps[nextStepName], nextStepName); }
     await db.workflow.addStep({
-      workflow_id,
+      workflow_id: workflowId,
       step_name: activeStepName,
       next_step_name: nextStepName
     });
-    activeStep = steps[activeStepName = activeStep.next_step_name];
+    activeStepName = activeStep.next_step_name;
+    activeStep = steps[activeStepName];
   }
 }
 
 async function createWorkflowMethod(params, user) {
   const {
-    // eslint-disable-next-line
-    short_name, version, long_name, description, steps
+    short_name: shortName, version, long_name: longName, description, steps
   } = params;
   const approvedUserRoles = ['admin'];
 
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
     if (!validateWorkflow(steps)) { return ({ status: 'Invalid Workflow' }); }
     const { id } = await db.workflow.initialize({
-      short_name, version, long_name, description
+      short_name: shortName, version, long_name: longName, description
     });
     await addSteps(steps, id);
     await db.workflow.addClose({ workflow_id: id });
