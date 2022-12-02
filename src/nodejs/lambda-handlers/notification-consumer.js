@@ -24,8 +24,8 @@ async function sendEmailNotification({ note }) {
     conversationId: note.conversation_id
   });
   await msg.sendEmail({
-    submissionId: submission.id,
-    submissionName: submission.form_data ? (submission.form_data.data_product_name || '') : '',
+    // TODO - Update the subject
+    subject: 'RE: EDPub reply',
     emails: users.map((user) => user.email),
     body: note.text
   });
