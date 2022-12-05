@@ -408,9 +408,17 @@ module.exports.workflowFindById = function workflowFindById(req, res, next) {
   });
 };
 
-module.exports.workflowPut = function workflowPut(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
+module.exports.createWorkflow = function workflowPut(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'workflow',
+    operation: 'createWorkflow',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
 };
 
 module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
