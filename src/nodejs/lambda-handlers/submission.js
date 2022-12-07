@@ -199,8 +199,8 @@ async function addContributorsMethod(event, user) {
     const { conversation_id } = await db.submission.getConversationId({ id })
     console.log(conversation_id)
     await db.note.addUsersToConversation({ conversation_id, user_list: contributor_ids})
-    console.log(contributor_ids)
-    return db.submission.addContributors({ contributor_ids, id })
+    console.log(id)
+    return db.submission.addContributors({ id, contributor_ids })
   }
   return db.submission.findById({ id });
 }

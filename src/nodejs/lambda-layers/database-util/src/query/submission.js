@@ -164,21 +164,20 @@ const findById = (params) => sql.select({
   }
 });
 
-const getUsersSubmissions = (params) => sql.select({
+const getSubmissionsBase = () => {return (sql.select({
   fields: fields(allFields),
   from: {
     base: table,
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
-  where: {
-    filters: [
-      ...([{ field: 'submission.contributor_ids', param: 'contributor_ids' }]),
-      ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
-    ]
-  },
   sort: fieldMap.last_change,
   order: 'DESC'
-});
+}))}
+
+const getUsersSubmissions = () => `
+  ${getSubmissionsBase}
+  WHERE hidden = {{hidden}} AND {{user_id}} = ANY (contributor_ids)
+`;
 
 const getDaacSubmissions = (params) => sql.select({
   fields: ['*'],
@@ -465,9 +464,9 @@ SELECT step_edge.step_name
 FROM step_edge
 WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}})`;
 
-const addContributors = () => `
+const addContributors = ({ contributor_ids }) => `
 UPDATE submission
-SET contributor_ids = array_cat(contributor_ids, ARRAY{{contributor_id}}::UUID[])
+SET contributor_ids = array_cat(contributor_ids, ARRAY['${contributor_ids.join('\',\'')}']::UUID[])
 WHERE id = {{id}}
 RETURNING *`;
 
