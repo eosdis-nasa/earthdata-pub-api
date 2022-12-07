@@ -30,7 +30,45 @@ const findAll = () => `
     group by step_edge_details.workflow_id
   ) step_json ON step_json.workflow_id = workflow.id
 `;
+
+const initialize = () =>`
+  INSERT INTO workflow (short_name, version, long_name, description)
+  VALUES ({{short_name}}, {{version}}, {{long_name}}, {{description}})
+  RETURNING id
+`;
+
+const createStep = () =>`
+  INSERT INTO step (step_name, type, action_id, form_id, service_id, data)
+  VALUES ({{step_name}}, {{type}}, {{action_id}}, {{form_id}}, {{service_id}}, {{data}})
+  ON CONFLICT (step_name) DO UPDATE SET type = EXCLUDED.type, action_id = EXCLUDED.action_id, 
+    form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id, data = EXCLUDED.data
+`;
+
 const findById = () => `${findAll()} WHERE workflow.id = {{id}}`;
+
+const clearSteps = () => `DELETE FROM step_edge WHERE step_edge.workflow_id = {{id}}`;
+
+const addStep = () => `
+  INSERT INTO step_edge (workflow_id, step_name, next_step_name)
+  VALUES ({{workflow_id}}, {{step_name}}, {{next_step_name}})
+`;
+
+const addClose = () => `
+  INSERT INTO step_edge (workflow_id, step_name)
+  VALUES ({{workflow_id}}, 'close')
+`;
+
+const updateWorkflowMetaData = () =>`
+  UPDATE workflow
+  SET version = {{version}}, description = {{description}}
+  WHERE id = {{id}}
+  RETURNING *`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
+module.exports.clearSteps = clearSteps;
+module.exports.addStep = addStep;
+module.exports.addClose = addClose;
+module.exports.updateWorkflowMetaData = updateWorkflowMetaData;
+module.exports.initialize = initialize;
+module.exports.createStep = createStep;

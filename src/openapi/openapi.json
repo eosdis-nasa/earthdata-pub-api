@@ -3379,7 +3379,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Search names using postgres ilike",
+            "description": "Search names using postgres",
             "schema": {
               "type": "string"
             }
@@ -3619,6 +3619,78 @@
         },
         "x-router-controller": "proxy"
       },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Edit workflow",
+        "description": "Edit different aspects of a workflow",
+        "operationId": "editWorkflow",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Workflow"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${workflow_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"editWorkflow\",\"params\":{#if($body.containsKey('id'))\"id\":\"$body.get('id')\", #end #if($body.containsKey('version'))\"version\":\"$body.get('version')\", #end #if($body.containsKey('description'))\"description\":\"$body.get('description')\", #end #if($body.containsKey('steps'))\"steps\":$input.json('$.steps')#end}, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
       "options": {
         "tags": [
           "cors"
@@ -3782,9 +3854,9 @@
         "tags": [
           "data"
         ],
-        "summary": "Create or update an workflow",
-        "description": "Creates a new workflow or new version of existing workflow",
-        "operationId": "workflowPut",
+        "summary": "Creates a workflow",
+        "description": "Creates a new workflow",
+        "operationId": "createWorkflow",
         "requestBody": {
           "x-name": "payload",
           "content": {
@@ -3830,10 +3902,13 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${workflow_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
+          "requestTemplates":{
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"model\": \"$req.path.get('model')\", \"operation\":\"editWorkflow\",\"params\":{#if($body.containsKey('short_name'))\"short_name\":\"$body.get('short_name')\", #end #if($body.containsKey('version'))\"version\":\"$body.get('version')\", #end #if ($body.containsKey('long_name'))\"long_name\":\"$body.get('long_name')\", #end #if($body.containsKey('description'))\"description\":\"$body.get('description')\", #end #if($body.containsKey('steps'))\"steps\":$input.json('$.steps')#end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
           "responses": {
             "default": {
               "statusCode": "200",
@@ -4500,6 +4575,14 @@
           "schema": {
             "type": "string"
           }
+        },
+        {
+          "name": "detailed",
+          "in": "query",
+          "description": "Flag to define level of detail in notifications. Defaults to false (communication only).",
+          "schema": {
+            "type": "boolean"
+          }
         }
       ],
       "get": {
@@ -4542,7 +4625,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"operation\":\"conversation\", \"conversation_id\":\"$req.path.get('id')\", \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"operation\":\"conversation\", \"conversation_id\":\"$req.path.get('id')\", \"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5477,7 +5560,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_ids'))\"group_ids\":\"$body.get('group_ids')\",#end #if($body.containsKey('role_ids'))\"role_ids\":\"$body.get('role_ids')\",#end #if ($body.containsKey('username'))\"username\":\"$body.get('username')\",#end #if ($body.containsKey('name'))\"name\":\"$body.get('name')\",#end #if ($body.containsKey('email'))\"email\":\"$body.get('email')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('role_id'))\"role_id\":\"$body.get('role_id')\",#end #if($body.containsKey('group_ids'))\"group_ids\":$inputRoot.group_ids,#end #if($body.containsKey('role_ids'))\"role_ids\":$inputRoot.role_ids,#end #if ($body.containsKey('username'))\"username\":\"$body.get('username')\",#end #if ($body.containsKey('name'))\"name\":\"$body.get('name')\",#end #if ($body.containsKey('email'))\"email\":\"$body.get('email')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {

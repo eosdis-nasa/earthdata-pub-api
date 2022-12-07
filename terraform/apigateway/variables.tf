@@ -54,6 +54,10 @@ variable "version_lambda_arn" {
   type = string
 }
 
+variable "workflow_lambda_arn" {
+  type = string
+}
+
 variable "edpub_dashboard_s3_bucket" {
   type = string
 }

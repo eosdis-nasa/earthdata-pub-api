@@ -12,6 +12,22 @@ const msg = require('message-util');
 
 const { getTemplate } = require('./notification-consumer/templates.js');
 
+// TODO- Remove disable once send email enabled
+// eslint-disable-next-line
+async function sendEmailNotification({ note }) {
+  // TODO - Add additional filter for system user messages
+  const users = await db.note.getEmails({
+    conversationId: note.conversation_id,
+    senderId: note.sender_edpuser_id
+  });
+  await msg.sendEmail({
+    // TODO - Update the subject
+    subject: 'RE: EDPub reply',
+    emails: users.map((user) => user.email),
+    body: note.text
+  });
+}
+
 async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
   if (!(eventMessage.data && eventMessage.data.silent)) {
@@ -25,7 +41,10 @@ async function processRecord(record) {
       if (operation === 'sendNote' && !message.subject) {
         message.subject = 'No Subject';
       }
-      await db.note[operation](message);
+      // TODO- Remove disable once send email enabled
+      // eslint-disable-next-line
+      const note = await db.note[operation](message);
+      // await sendEmailNotification({ note });
     }
   }
 }

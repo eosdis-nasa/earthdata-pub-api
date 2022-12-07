@@ -20,10 +20,7 @@ async function statusMethod(event, user) {
     return db.submission.getDaacSubmissions({ user_id: user.id, hidden, daac: true });
   }
   if (user.user_privileges.includes('REQUEST_READ')) {
-    console.log(`HERE`)
-    const resp = await db.submission.getUsersSubmissions({ user_id: user.id, hidden });
-    console.log(resp)
-    return resp
+    return db.submission.getUsersSubmissions({ user_id: user.id, hidden });
   }
 
   return [];
@@ -195,15 +192,15 @@ async function changeStepMethod(event, user) {
 }
 
 async function addContributorsMethod(event, user) {
-  const { id, contributor_ids } = event;
-  console.log(event)
+  const { id, contributor_ids: contributorIds } = event;
   const approvedUserRoles = ['admin', 'manager'];
-  if(user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
-    const { conversation_id } = await db.submission.getConversationId({ id })
-    console.log(conversation_id)
-    await db.note.addUsersToConversation({ conversation_id, user_list: contributor_ids})
-    console.log(id)
-    return db.submission.addContributors({ id, contributor_ids })
+  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+    const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
+    await db.note.addUsersToConversation({
+      conversation_id: conversationId,
+      user_list: contributorIds
+    });
+    return db.submission.addContributors({ id, contributor_ids: contributorIds });
   }
   return db.submission.findById({ id });
 }
@@ -223,7 +220,7 @@ const operations = {
   withdraw: withdrawMethod,
   restore: restoreMethod,
   changeStep: changeStepMethod,
-  addContributors: addContributorsMethod,
+  addContributors: addContributorsMethod
 };
 
 async function handler(event) {

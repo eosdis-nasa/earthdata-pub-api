@@ -18,3 +18,4 @@ module.exports.notificationConsumer = require('../lambda-handlers/notification-c
 module.exports.workflowConsumer = require('../lambda-handlers/workflow-consumer.js').handler;
 module.exports.serviceAuthorizer = require('../lambda-handlers/service-authorizer.js').handler;
 module.exports.rdsBackup = require('../lambda-handlers/rds-backup').handler;
+module.exports.workflow = require('../lambda-handlers/workflow.js').handler;

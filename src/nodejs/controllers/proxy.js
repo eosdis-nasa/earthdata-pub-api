@@ -408,9 +408,17 @@ module.exports.workflowFindById = function workflowFindById(req, res, next) {
   });
 };
 
-module.exports.workflowPut = function workflowPut(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
+module.exports.createWorkflow = function workflowPut(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'workflow',
+    operation: 'createWorkflow',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
 };
 
 module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
@@ -485,6 +493,9 @@ module.exports.notificationConversation = function notificationConversation(req,
   const lambdaEvent = {
     operation: 'conversation',
     conversation_id: params.id.value,
+    params: {
+        detailed: params.detailed.value || false
+    },
     context: { user_id: req.user_id }
   };
   handlers.notification(lambdaEvent).then((body) => {
@@ -716,6 +727,19 @@ module.exports.pagePut = function pagePut(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 };
+
+module.exports.editWorkflow = function editWorkflow(req, res, next){
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'workflow',
+    operation: 'editWorkflow',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
 
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({

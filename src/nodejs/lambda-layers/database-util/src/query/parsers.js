@@ -57,6 +57,7 @@ module.exports.updateInput = one;
 module.exports.findSecret = one;
 module.exports.deleteSecret = one;
 module.exports.deleteInput = one;
+module.exports.updateWorkflowMetaData = one;
 module.exports.setStep = one;
 module.exports.checkWorkflow = one;
 module.exports.addContributors = one;

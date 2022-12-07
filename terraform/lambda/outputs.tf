@@ -61,3 +61,7 @@ output "version_lambda_arn" {
 output "questions_lambda_arn" {
   value = aws_lambda_function.questions.invoke_arn
 }
+
+output "workflow_lambda_arn" {
+  value = aws_lambda_function.workflow.invoke_arn
+}

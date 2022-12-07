@@ -46,29 +46,29 @@ resource "aws_lambda_function" "action_consumer" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/action-consumer-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/action-consumer-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION          = var.region
-      EVENT_SNS       = var.edpub_event_sns_arn
-      EMAIL_SNS       = var.edpub_email_sns_arn
-      METRICS_SNS     = var.edpub_metrics_sns_arn
-      PG_USER         = var.db_user
-      PG_HOST         = var.db_host
-      PG_DB           = var.db_database
-      PG_PASS         = var.db_password
-      PG_PORT         = var.db_port
-      ACTIONS_BUCKET  = var.edpub_actions_s3_bucket
-      MEDITOR_USER    = var.meditor_service_username
-      MEDITOR_PASS    = var.meditor_service_password
-      ROOT_URL        = var.client_root_url
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      EMAIL_SNS      = var.edpub_email_sns_arn
+      METRICS_SNS    = var.edpub_metrics_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      ACTIONS_BUCKET = var.edpub_actions_s3_bucket
+      MEDITOR_USER   = var.meditor_service_username
+      MEDITOR_PASS   = var.meditor_service_password
+      ROOT_URL       = var.client_root_url
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -97,24 +97,24 @@ resource "aws_lambda_function" "data" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/data-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/data-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
+      REGION      = var.region
+      EVENT_SNS   = var.edpub_event_sns_arn
       METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      PG_USER     = var.db_user
+      PG_HOST     = var.db_host
+      PG_DB       = var.db_database
+      PG_PASS     = var.db_password
+      PG_PORT     = var.db_port
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -137,9 +137,9 @@ resource "aws_lambda_function" "inbound_consumer" {
     aws_lambda_layer_version.database_util.arn,
     aws_lambda_layer_version.message_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/inbound-consumer-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/inbound-consumer-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -152,8 +152,8 @@ resource "aws_lambda_function" "inbound_consumer" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -182,24 +182,24 @@ resource "aws_lambda_function" "invoke" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/invoke-lambda.zip")
-   timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/invoke-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
+      REGION      = var.region
+      EVENT_SNS   = var.edpub_event_sns_arn
       METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      PG_USER     = var.db_user
+      PG_HOST     = var.db_host
+      PG_DB       = var.db_database
+      PG_PASS     = var.db_password
+      PG_PORT     = var.db_port
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -223,25 +223,25 @@ resource "aws_lambda_function" "metrics" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/metrics-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/metrics-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
+      REGION      = var.region
+      EVENT_SNS   = var.edpub_event_sns_arn
       METRICS_SNS = var.edpub_metrics_sns_arn
       METRICS_S3  = var.edpub_metrics_s3_bucket
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      PG_USER     = var.db_user
+      PG_HOST     = var.db_host
+      PG_DB       = var.db_database
+      PG_PASS     = var.db_password
+      PG_PORT     = var.db_port
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -265,24 +265,24 @@ resource "aws_lambda_function" "metrics_consumer" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/metrics-consumer-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/metrics-consumer-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
+      REGION      = var.region
+      EVENT_SNS   = var.edpub_event_sns_arn
       METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      PG_USER     = var.db_user
+      PG_HOST     = var.db_host
+      PG_DB       = var.db_database
+      PG_PASS     = var.db_password
+      PG_PORT     = var.db_port
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -311,9 +311,9 @@ resource "aws_lambda_function" "model" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/model-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/model-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -326,8 +326,8 @@ resource "aws_lambda_function" "model" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -349,22 +349,22 @@ resource "aws_lambda_function" "module" {
   layers = [
     aws_lambda_layer_version.database_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/module-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/module-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION  = var.region
+      PG_USER = var.db_user
+      PG_HOST = var.db_host
+      PG_DB   = var.db_database
+      PG_PASS = var.db_password
+      PG_PORT = var.db_port
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -388,9 +388,9 @@ resource "aws_lambda_function" "notification" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/notification-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/notification-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -403,8 +403,8 @@ resource "aws_lambda_function" "notification" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -428,23 +428,25 @@ resource "aws_lambda_function" "notification_consumer" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/notification-consumer-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/notification-consumer-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION      = var.region
+      EMAIL_SNS   = var.edpub_email_sns_arn
+      EVENT_SNS   = var.edpub_event_sns_arn
+      METRICS_SNS = var.edpub_metrics_sns_arn
+      PG_USER     = var.db_user
+      PG_HOST     = var.db_host
+      PG_DB       = var.db_database
+      PG_PASS     = var.db_password
+      PG_PORT     = var.db_port
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -464,21 +466,21 @@ resource "aws_lambda_event_source_mapping" "notification_consumer_sqs_event" {
 # RDS Backup Lambda
 
 resource "aws_lambda_function" "rds_backup" {
-  filename      = "../artifacts/rds-backup-lambda.zip"
-  function_name = "rds_backup"
-  role          = var.edpub_rds_backup_lambda_role_arn
-  handler       = "rds-backup.handler"
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/rds-backup-lambda.zip")
-  timeout       = 180
+  filename         = "../artifacts/rds-backup-lambda.zip"
+  function_name    = "rds_backup"
+  role             = var.edpub_rds_backup_lambda_role_arn
+  handler          = "rds-backup.handler"
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/rds-backup-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
+      REGION = var.region
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -515,9 +517,9 @@ resource "aws_lambda_function" "register" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/register-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/register-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -530,8 +532,8 @@ resource "aws_lambda_function" "register" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -554,9 +556,9 @@ resource "aws_lambda_function" "service_authorizer" {
     aws_lambda_layer_version.database_util.arn,
     aws_lambda_layer_version.message_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/service-authorizer-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/service-authorizer-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -569,8 +571,8 @@ resource "aws_lambda_function" "service_authorizer" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -594,9 +596,9 @@ resource "aws_lambda_function" "submission" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/submission-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/submission-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -609,8 +611,8 @@ resource "aws_lambda_function" "submission" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -635,9 +637,9 @@ resource "aws_lambda_function" "subscribe" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/subscribe-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/subscribe-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -650,8 +652,8 @@ resource "aws_lambda_function" "subscribe" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -675,9 +677,9 @@ resource "aws_lambda_function" "user" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/user-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/user-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -691,8 +693,8 @@ resource "aws_lambda_function" "user" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -716,9 +718,9 @@ resource "aws_lambda_function" "workflow_consumer" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/workflow-consumer-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/workflow-consumer-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       REGION    = var.region
@@ -731,8 +733,8 @@ resource "aws_lambda_function" "workflow_consumer" {
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -749,6 +751,46 @@ resource "aws_lambda_event_source_mapping" "workflow_consumer_sqs_event" {
   function_name    = aws_lambda_function.workflow_consumer.function_name
 }
 
+# Edit Workflow Lambda
+
+resource "aws_lambda_function" "workflow" {
+  filename      = "../artifacts/workflow-lambda.zip"
+  function_name = "workflow"
+  role          = var.edpub_lambda_role_arn
+  handler       = "workflow.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/workflow-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION    = var.region
+      EVENT_SNS = var.edpub_event_sns_arn
+      PG_USER   = var.db_user
+      PG_HOST   = var.db_host
+      PG_DB     = var.db_database
+      PG_PASS   = var.db_password
+      PG_PORT   = var.db_port
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "workflow" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.workflow.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/api/data/workflow/*"
+}
+
 # Auth Lambda
 
 resource "aws_lambda_function" "auth" {
@@ -756,36 +798,36 @@ resource "aws_lambda_function" "auth" {
   function_name = "auth"
   role          = var.edpub_lambda_role_arn
   handler       = "auth.handler"
-  layers        = [
+  layers = [
     aws_lambda_layer_version.auth_util.arn,
     aws_lambda_layer_version.database_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/auth-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/auth-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION              = var.region
-      EVENT_SNS           = var.edpub_event_sns_arn
-      PG_USER             = var.db_user
-      PG_HOST             = var.db_host
-      PG_DB               = var.db_database
-      PG_PASS             = var.db_password
-      PG_PORT             = var.db_port
-      CLIENT_ROOT_URL     = var.client_root_url
-      AUTH_PROVIDER_URL   = var.auth_provider_url
-      AUTH_LOGOUT_PATH    = var.auth_logout_path
-      AUTH_LOGIN_PATH     = var.auth_login_path
-      AUTH_TOKEN_PATH     = var.auth_token_path
-      AUTH_USER_PATH      = var.auth_user_path
-      AUTH_CLIENT_ID      = var.auth_client_id
-      AUTH_CLIENT_SECRET  = var.auth_client_secret
-      AUTH_CLIENT_PATH     = var.auth_client_path
+      REGION             = var.region
+      EVENT_SNS          = var.edpub_event_sns_arn
+      PG_USER            = var.db_user
+      PG_HOST            = var.db_host
+      PG_DB              = var.db_database
+      PG_PASS            = var.db_password
+      PG_PORT            = var.db_port
+      CLIENT_ROOT_URL    = var.client_root_url
+      AUTH_PROVIDER_URL  = var.auth_provider_url
+      AUTH_LOGOUT_PATH   = var.auth_logout_path
+      AUTH_LOGIN_PATH    = var.auth_login_path
+      AUTH_TOKEN_PATH    = var.auth_token_path
+      AUTH_USER_PATH     = var.auth_user_path
+      AUTH_CLIENT_ID     = var.auth_client_id
+      AUTH_CLIENT_SECRET = var.auth_client_secret
+      AUTH_CLIENT_PATH   = var.auth_client_path
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -800,21 +842,21 @@ resource "aws_lambda_permission" "auth" {
 # Version Lambda
 
 resource "aws_lambda_function" "version" {
-  filename      = "../artifacts/version-lambda.zip"
-  function_name = "version"
-  role          = var.edpub_lambda_role_arn
-  handler       = "version.handler"
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/version-lambda.zip")
-  timeout       = 180
+  filename         = "../artifacts/version-lambda.zip"
+  function_name    = "version"
+  role             = var.edpub_lambda_role_arn
+  handler          = "version.handler"
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/version-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
       API_VERSION = var.api_version
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -829,51 +871,51 @@ resource "aws_lambda_permission" "version" {
 # RemapStatics Lambda
 
 resource "aws_lambda_function" "remap_statics" {
-  filename      = "../artifacts/remap-statics-lambda.zip"
-  function_name = "remap_statics"
-  role          = var.edpub_lambda_role_arn
-  handler       = "remap-statics.handler"
-  layers        = []
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/remap-statics-lambda.zip")
-  timeout       = 180
+  filename         = "../artifacts/remap-statics-lambda.zip"
+  function_name    = "remap_statics"
+  role             = var.edpub_lambda_role_arn
+  handler          = "remap-statics.handler"
+  layers           = []
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/remap-statics-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION              = var.region
-      STAGE               = var.stage
-      DASHBOARD_BUCKET    = var.edpub_dashboard_s3_bucket
-      FORMS_BUCKET        = var.edpub_forms_s3_bucket
-      OVERVIEW_BUCKET     = var.edpub_overview_s3_bucket
-      API_ID              = var.api_id
+      REGION           = var.region
+      STAGE            = var.stage
+      DASHBOARD_BUCKET = var.edpub_dashboard_s3_bucket
+      FORMS_BUCKET     = var.edpub_forms_s3_bucket
+      OVERVIEW_BUCKET  = var.edpub_overview_s3_bucket
+      API_ID           = var.api_id
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
 # APIProxy Lambda
 
 resource "aws_lambda_function" "api_proxy" {
-  filename      = "../artifacts/api-proxy-lambda.zip"
-  function_name = "api_proxy"
-  role          = var.edpub_lambda_role_arn
-  handler       = "api-proxy.handler"
-  layers        = []
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/api-proxy-lambda.zip")
-  timeout       = 180
+  filename         = "../artifacts/api-proxy-lambda.zip"
+  function_name    = "api_proxy"
+  role             = var.edpub_lambda_role_arn
+  handler          = "api-proxy.handler"
+  layers           = []
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/api-proxy-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION              = var.region
-      STAGE               = var.stage
-      API_ID              = var.api_id
+      REGION = var.region
+      STAGE  = var.stage
+      API_ID = var.api_id
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
@@ -889,24 +931,24 @@ resource "aws_lambda_function" "questions" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime       = "nodejs14.x"
-  source_code_hash    = filesha256("../artifacts/questions-lambda.zip")
-  timeout       = 180
+  runtime          = "nodejs14.x"
+  source_code_hash = filesha256("../artifacts/questions-lambda.zip")
+  timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
+      REGION      = var.region
+      EVENT_SNS   = var.edpub_event_sns_arn
       METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      PG_USER     = var.db_user
+      PG_HOST     = var.db_host
+      PG_DB       = var.db_database
+      PG_PASS     = var.db_password
+      PG_PORT     = var.db_port
     }
   }
   vpc_config {
-     subnet_ids         = var.subnet_ids
-     security_group_ids = var.security_group_ids
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
 }
 
