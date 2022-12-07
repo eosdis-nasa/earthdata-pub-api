@@ -20,7 +20,10 @@ async function statusMethod(event, user) {
     return db.submission.getDaacSubmissions({ user_id: user.id, hidden, daac: true });
   }
   if (user.user_privileges.includes('REQUEST_READ')) {
-    return db.submission.getUsersSubmissions({ user_id: user.id, hidden });
+    console.log(`HERE`)
+    const resp = await db.submission.getUsersSubmissions({ user_id: user.id, hidden });
+    console.log(resp)
+    return resp
   }
 
   return [];

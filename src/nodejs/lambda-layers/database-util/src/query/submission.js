@@ -164,20 +164,21 @@ const findById = (params) => sql.select({
   }
 });
 
-const getSubmissionsBase = () => {return (sql.select({
+const getUsersSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
     joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
   },
+  where: {
+    filters: [
+      ...([{ cmd: `'${params.user_id}'=ANY(submission.contributor_ids)` }]),
+      ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
+    ]
+  },
   sort: fieldMap.last_change,
   order: 'DESC'
-}))}
-
-const getUsersSubmissions = () => `
-  ${getSubmissionsBase}
-  WHERE hidden = {{hidden}} AND {{user_id}} = ANY (contributor_ids)
-`;
+});
 
 const getDaacSubmissions = (params) => sql.select({
   fields: ['*'],
