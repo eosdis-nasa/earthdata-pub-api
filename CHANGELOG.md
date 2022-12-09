@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Added question privileges to admin role
 - Updated content based on kayako and jira tickets from info team and others
 - Updated content based on google doc feedback from info team
 - Updated ghrc hydrology to hydrometeorology
