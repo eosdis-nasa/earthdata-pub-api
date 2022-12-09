@@ -321,8 +321,17 @@ INSERT INTO privilege VALUES ('NOTE_REPLY');
 INSERT INTO privilege VALUES ('NOTE_ADDUSER');
 INSERT INTO privilege VALUES ('NOTE_ADDGROUP');
 
+INSERT INTO privilege VALUES ('QUESTION_CREATE');
+INSERT INTO privilege VALUES ('QUESTION_READ');
+INSERT INTO privilege VALUES ('QUESTION_UPDATE');
+INSERT INTO privilege VALUES ('QUESTION_DELETE');
+
 -- RolePrivilege(edprole_id, privilege) Administrator
 INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'ADMIN');
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_CREATE');
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_READ');
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_UPDATE');
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_DELETE');
 
 -- RolePrivilege(edprole_id, privilege) Data Producer
 INSERT INTO edprole_privilege VALUES ('804b335c-f191-4d26-9b98-1ec1cb62b97d', 'REQUEST_INITIALIZE');

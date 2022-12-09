@@ -44,3 +44,13 @@ RAISE;
 --       a.column_name = b.column_name
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
+INSERT INTO privilege VALUES ('QUESTION_CREATE');
+INSERT INTO privilege VALUES ('QUESTION_READ');
+INSERT INTO privilege VALUES ('QUESTION_UPDATE');
+INSERT INTO privilege VALUES ('QUESTION_DELETE');
+
+-- RolePrivilege(edprole_id, privilege) Administrator
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_CREATE');
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_READ');
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_UPDATE');
+INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_DELETE');
