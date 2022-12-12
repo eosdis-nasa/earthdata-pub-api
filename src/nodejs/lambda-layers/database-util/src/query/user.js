@@ -357,6 +357,10 @@ const getEmails = (params) => sql.select({
     filters: [{ field: 'edpuser.id', any: { values: { param: 'user_list' } } }]
   }
 });
+const findByEmail = () => `
+  SELECT * FROM edpuser
+  WHERE email = {{email}}
+`;
 
 module.exports.find = find;
 module.exports.findAll = findAll;
@@ -374,3 +378,4 @@ module.exports.addGroups = addGroups;
 module.exports.removeGroup = removeGroup;
 module.exports.findSystemUser = findSystemUser;
 module.exports.getEmails = getEmails;
+module.exports.findByEmail = findByEmail;

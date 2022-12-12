@@ -203,7 +203,8 @@ CREATE TABLE IF NOT EXISTS edpuser (
   refresh_token VARCHAR DEFAULT 'none',
   registered TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP DEFAULT NOW(),
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE (email)
 );
 
 CREATE TABLE IF NOT EXISTS edpgroup (
@@ -340,6 +341,7 @@ CREATE TABLE IF NOT EXISTS submission (
   initiator_edpuser_id UUID NOT NULL,
   daac_id UUID,
   conversation_id UUID,
+  contributor_ids UUID[],
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   hidden BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (id),
