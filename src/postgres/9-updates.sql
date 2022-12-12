@@ -44,3 +44,7 @@ RAISE;
 --       a.column_name = b.column_name
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
+
+--11/28/22 Add contributor_id colum
+ALTER TABLE submission ADD COLUMN contributor_ids UUID[];
+UPDATE submission SET contributor_ids array_append(contributor_ids, (SELECT contributor_id FROM submission))
