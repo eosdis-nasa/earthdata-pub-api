@@ -60,3 +60,5 @@ module.exports.deleteInput = one;
 module.exports.updateWorkflowMetaData = one;
 module.exports.setStep = one;
 module.exports.checkWorkflow = one;
+module.exports.addContributors = one;
+module.exports.getConversationId = one;
