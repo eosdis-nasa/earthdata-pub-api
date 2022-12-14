@@ -205,6 +205,19 @@ async function addContributorsMethod(event, user) {
   return db.submission.findById({ id });
 }
 
+async function removeContributorsMethod(event, user){
+  const { id, contributor_ids: contributorIds } = event;
+  const approvedUserRoles = ['admin', 'manager'];
+  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))){
+    const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
+    //remove from conversation function tbd
+    contributorIds.forEach(async contributor => {
+      await db.submission.removeContributors(id, contributor)
+    });
+    return db.submission.findById({ id });
+  }
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,

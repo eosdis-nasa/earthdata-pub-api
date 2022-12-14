@@ -477,6 +477,12 @@ FROM submission
 WHERE id = {{id}}
 `;
 
+const removeContributors = () =>`
+  UPDATE submission
+  SET contributor_ids = array_remove(contributor_ids, {{contributor}})
+  WHERE id = {{id}}
+`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -504,5 +510,6 @@ module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
 module.exports.setStep = setStep;
 module.exports.checkWorkflow = checkWorkflow;
-module.exports.addContributors = addContributors
-module.exports.getContributors = getContributors
+module.exports.addContributors = addContributors;
+module.exports.getContributors = getContributors;
+module.exports.removeContributors = removeContributors;
