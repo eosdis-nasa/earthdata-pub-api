@@ -48,11 +48,9 @@ async function createCognitoUser({
 async function createMethod(params, privileges) {
   if (privileges.includes('ADMIN')
     || privileges.includes('USER_CREATE')) {
-
-    const { email } = params
-    const { email:emailUsed } = await db.user.findByEmail({ email });
-    console.log(emailUsed)
-    if(emailUsed === email){return{error:'Duplicate email'};}
+    const { email } = params;
+    const { email: emailUsed } = await db.user.findByEmail({ email });
+    if (emailUsed === email) { return { error: 'Duplicate email' }; }
 
     const newUser = await createCognitoUser(params);
     const user = await db.user.loginUser(newUser);
