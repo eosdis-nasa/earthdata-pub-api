@@ -60,4 +60,9 @@ module.exports.deleteInput = one;
 module.exports.updateWorkflowMetaData = one;
 module.exports.setStep = one;
 module.exports.checkWorkflow = one;
+<<<<<<< HEAD
 module.exports.findByEmail = one;
+=======
+module.exports.addContributors = one;
+module.exports.getConversationId = one;
+>>>>>>> 5c73f400494b70d2245331460e87a16d0bd0227e

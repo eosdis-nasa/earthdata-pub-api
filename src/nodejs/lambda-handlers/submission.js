@@ -191,6 +191,20 @@ async function changeStepMethod(event, user) {
   return db.submission.findById({ id });
 }
 
+async function addContributorsMethod(event, user) {
+  const { id, contributor_ids: contributorIds } = event;
+  const approvedUserRoles = ['admin', 'manager'];
+  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+    const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
+    await db.note.addUsersToConversation({
+      conversation_id: conversationId,
+      user_list: contributorIds
+    });
+    return db.submission.addContributors({ id, contributor_ids: contributorIds });
+  }
+  return db.submission.findById({ id });
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -205,7 +219,8 @@ const operations = {
   unlock: unlockMethod,
   withdraw: withdrawMethod,
   restore: restoreMethod,
-  changeStep: changeStepMethod
+  changeStep: changeStepMethod,
+  addContributors: addContributorsMethod
 };
 
 async function handler(event) {
