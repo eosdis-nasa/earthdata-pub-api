@@ -358,7 +358,7 @@ const getEmails = (params) => sql.select({
   }
 });
 const findByEmail = () => `
-  SELECT * FROM edpuser
+  SELECT email FROM edpuser
   WHERE edpuser.email = {{email}}
 `;
 
