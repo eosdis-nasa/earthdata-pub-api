@@ -193,14 +193,28 @@ async function changeStepMethod(event, user) {
 
 async function addContributorsMethod(event, user) {
   const { id, contributor_ids: contributorIds } = event;
-  const approvedUserRoles = ['admin', 'manager'];
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
     await db.note.addUsersToConversation({
       conversation_id: conversationId,
       user_list: contributorIds
     });
     return db.submission.addContributors({ id, contributor_ids: contributorIds });
+  }
+  return db.submission.findById({ id });
+}
+
+async function removeContributorMethod(event, user) {
+  const { id, contributor_id: contributorId } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
+    await db.note.removeUserFromConversation({
+      conversation_id: conversationId,
+      user_id: contributorId
+    });
+    return db.submission.removeContributor({ id, contributor: contributorId });
   }
   return db.submission.findById({ id });
 }
@@ -220,7 +234,8 @@ const operations = {
   withdraw: withdrawMethod,
   restore: restoreMethod,
   changeStep: changeStepMethod,
-  addContributors: addContributorsMethod
+  addContributors: addContributorsMethod,
+  removeContributor: removeContributorMethod
 };
 
 async function handler(event) {

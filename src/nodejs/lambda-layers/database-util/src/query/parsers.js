@@ -62,4 +62,7 @@ module.exports.setStep = one;
 module.exports.checkWorkflow = one;
 module.exports.findByEmail = one;
 module.exports.addContributors = one;
+module.exports.getContributors = one;
+module.exports.getConversationId = one;
+module.exports.removeContributor = one;
 module.exports.getConversationId = one;
