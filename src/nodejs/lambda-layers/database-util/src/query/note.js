@@ -255,7 +255,7 @@ const addUsersToConversation = (params) => `
 INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
 SELECT {{conversation_id}} conversation_id, edpuser.id sender_edpuser_id
 FROM edpuser
-WHERE edpuser.id = ANY({{user_list}}::UUID[])
+WHERE edpuser.id = ANY({{user_list}}::UUID[]) ON CONFLICT DO NOTHING
 RETURNING *`;
 const addUserToConversation = (params) => `
 INSERT INTO conversation_edpuser(conversation_id, edpuser_id)
