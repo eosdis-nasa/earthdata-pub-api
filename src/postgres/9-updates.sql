@@ -52,4 +52,4 @@ UPDATE submission SET contributor_ids = array_append(submission.contributor_ids,
 --12/16/2022 adds requirement for each user to have a unique email
 --this should not be run untill after the db's have been cleaned of duplicat entries as document in the closing of EDPUB-785
 --ALTER TABLE edpuser
-A--ADD CONSTRAINT email_unique UNIQUE (email);
+--ADD CONSTRAINT email_unique UNIQUE (email);
