@@ -54,3 +54,8 @@ INSERT INTO privilege VALUES ('REQUEST_ADDUSER');
 INSERT INTO privilege VALUES ('REQUEST_REMOVEUSER');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_ADDUSER');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REMOVEUSER');
+
+--12/16/2022 adds requirement for each user to have a unique email
+--this should not be run untill after the db's have been cleaned of duplicat entries as document in the closing of EDPUB-785
+--ALTER TABLE edpuser
+--ADD CONSTRAINT email_unique UNIQUE (email);
