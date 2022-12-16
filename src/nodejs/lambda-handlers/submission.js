@@ -195,17 +195,12 @@ async function addContributorsMethod(event, user) {
   const { id, contributor_ids: contributorIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    const { contributor_ids: currentUsers } = await db.submission.getContributors({ id });
-    // eslint-disable-next-line
-    const filteredContributorIds = contributorIds.filter((contributor) => !currentUsers.includes(contributor));
-    if (!filteredContributorIds.length) { return ({ data: 'No new contributors' }); }
-
     const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
     await db.note.addUsersToConversation({
       conversation_id: conversationId,
-      user_list: filteredContributorIds
+      user_list: contributorIds
     });
-    return db.submission.addContributors({ id, contributor_ids: filteredContributorIds });
+    return db.submission.addContributors({ id, contributor_ids: contributorIds });
   }
   return db.submission.findById({ id });
 }

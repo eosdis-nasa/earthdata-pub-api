@@ -467,7 +467,9 @@ WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT su
 
 const addContributors = ({ contributor_ids }) => `
 UPDATE submission
-SET contributor_ids = array_cat(contributor_ids, ARRAY['${contributor_ids.join('\',\'')}']::UUID[])
+SET contributor_ids = ARRAY(
+  SELECT DISTINCT unnest(array_cat(contributor_ids, ARRAY['${contributor_ids.join('\',\'')}']::UUID[]))
+)
 WHERE id = {{id}}
 RETURNING *`;
 
