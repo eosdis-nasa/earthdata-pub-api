@@ -48,3 +48,8 @@ RAISE;
 --11/28/22 Add contributor_id colum
 ALTER TABLE submission ADD COLUMN contributor_ids UUID[];
 UPDATE submission SET contributor_ids = array_append(submission.contributor_ids, submission.initiator_edpuser_id);
+
+--12/16/2022 adds requirement for each user to have a unique email
+--this should not be run untill after the db's have been cleaned of duplicat entries as document in the closing of EDPUB-785
+--ALTER TABLE edpuser
+--ADD CONSTRAINT email_unique UNIQUE (email);
