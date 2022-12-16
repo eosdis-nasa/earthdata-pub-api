@@ -263,6 +263,11 @@ VALUES ({{conversation_id}}, {{user_id}})
 ON CONFLICT DO NOTHING
 RETURNING *`;
 
+const removeUserFromConversation = () =>`
+DELETE FROM conversation_edpuser
+WHERE conversation_id = {{conversation_id}} AND edpuser_id = {{user_id}}
+`;
+
 const getEmails = (params) => sql.select({
   fields: ['email'],
   from: {
@@ -292,3 +297,4 @@ module.exports.sendNote = sendNote;
 module.exports.addUsersToConversation = addUsersToConversation;
 module.exports.addUserToConversation = addUserToConversation;
 module.exports.getEmails = getEmails;
+module.exports.removeUserFromConversation = removeUserFromConversation;

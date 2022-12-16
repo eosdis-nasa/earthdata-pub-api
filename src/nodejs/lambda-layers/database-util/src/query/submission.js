@@ -472,16 +472,16 @@ WHERE id = {{id}}
 RETURNING *`;
 
 const getContributors = () =>`
-SELECT submission.contributor_ids
+SELECT contributor_ids
 FROM submission
 WHERE id = {{id}}
 `;
 
-const removeContributors = () =>`
-  UPDATE submission
-  SET contributor_ids = array_remove(contributor_ids, {{contributor}})
-  WHERE id = {{id}}
-`;
+const removeContributor = () =>`
+UPDATE submission
+SET contributor_ids = array_remove(contributor_ids, {{contributor}})
+WHERE id = {{id}}
+RETURNING *`;
 
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
@@ -512,4 +512,4 @@ module.exports.setStep = setStep;
 module.exports.checkWorkflow = checkWorkflow;
 module.exports.addContributors = addContributors;
 module.exports.getContributors = getContributors;
-module.exports.removeContributors = removeContributors;
+module.exports.removeContributor = removeContributor;

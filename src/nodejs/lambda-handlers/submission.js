@@ -193,29 +193,35 @@ async function changeStepMethod(event, user) {
 
 async function addContributorsMethod(event, user) {
   const { id, contributor_ids: contributorIds } = event;
-  const approvedUserRoles = ['admin', 'manager'];
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const { contributor_ids: currentUsers } = await db.submission.getContributors({ id });
+    // eslint-disable-next-line
+    const filteredContributorIds = contributorIds.filter((contributor) => !currentUsers.includes(contributor));
+    if (!filteredContributorIds.length) { return ({ data: 'No new contributors' }); }
+
     const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
     await db.note.addUsersToConversation({
       conversation_id: conversationId,
-      user_list: contributorIds
+      user_list: filteredContributorIds
     });
-    return db.submission.addContributors({ id, contributor_ids: contributorIds });
+    return db.submission.addContributors({ id, contributor_ids: filteredContributorIds });
   }
   return db.submission.findById({ id });
 }
 
-async function removeContributorsMethod(event, user){
-  const { id, contributor_ids: contributorIds } = event;
-  const approvedUserRoles = ['admin', 'manager'];
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))){
+async function removeContributorMethod(event, user) {
+  const { id, contributor_id: contributorId } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
-    //remove from conversation function tbd
-    contributorIds.forEach(async contributor => {
-      await db.submission.removeContributors(id, contributor)
+    await db.note.removeUserFromConversation({
+      conversation_id: conversationId,
+      user_id: contributorId
     });
-    return db.submission.findById({ id });
+    return db.submission.removeContributor({ id, contributor: contributorId });
   }
+  return db.submission.findById({ id });
 }
 
 const operations = {
@@ -233,7 +239,8 @@ const operations = {
   withdraw: withdrawMethod,
   restore: restoreMethod,
   changeStep: changeStepMethod,
-  addContributors: addContributorsMethod
+  addContributors: addContributorsMethod,
+  removeContributor: removeContributorMethod
 };
 
 async function handler(event) {
