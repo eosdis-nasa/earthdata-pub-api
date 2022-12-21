@@ -26,7 +26,7 @@ function validateWorkflow(steps) {
 }
 
 async function createStep(step, stepName) {
-  const output = await db.workflow.createStep({
+  await db.workflow.createStep({
     step_name: stepName,
     type: step.type,
     action_id: step.action_id,
@@ -34,7 +34,6 @@ async function createStep(step, stepName) {
     service_id: step.service_id,
     data: step.prev_step
   });
-  console.log(output)
 }
 
 async function addSteps(steps, workflowId) {
