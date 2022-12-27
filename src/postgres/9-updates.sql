@@ -49,12 +49,6 @@ INSERT INTO privilege VALUES ('QUESTION_READ');
 INSERT INTO privilege VALUES ('QUESTION_UPDATE');
 INSERT INTO privilege VALUES ('QUESTION_DELETE');
 
--- RolePrivilege(edprole_id, privilege) Administrator
-INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_CREATE');
-INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_READ');
-INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_UPDATE');
-INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'QUESTION_DELETE');
-
 --11/28/22 Add contributor_id colum
 ALTER TABLE submission ADD COLUMN contributor_ids UUID[];
 UPDATE submission SET contributor_ids array_append(contributor_ids, (SELECT contributor_id FROM submission))
