@@ -203,7 +203,8 @@ CREATE TABLE IF NOT EXISTS edpuser (
   refresh_token VARCHAR DEFAULT 'none',
   registered TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP DEFAULT NOW(),
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE (email)
 );
 
 CREATE TABLE IF NOT EXISTS edpgroup (

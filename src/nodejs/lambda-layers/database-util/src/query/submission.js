@@ -467,15 +467,23 @@ WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT su
 
 const addContributors = ({ contributor_ids }) => `
 UPDATE submission
-SET contributor_ids = array_cat(contributor_ids, ARRAY['${contributor_ids.join('\',\'')}']::UUID[])
+SET contributor_ids = ARRAY(
+  SELECT DISTINCT unnest(array_cat(contributor_ids, ARRAY['${contributor_ids.join('\',\'')}']::UUID[]))
+)
 WHERE id = {{id}}
 RETURNING *`;
 
 const getContributors = () =>`
-SELECT submission.contributor_ids
+SELECT contributor_ids
 FROM submission
 WHERE id = {{id}}
 `;
+
+const removeContributor = () =>`
+UPDATE submission
+SET contributor_ids = array_remove(contributor_ids, {{contributor}})
+WHERE id = {{id}}
+RETURNING *`;
 
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
@@ -504,5 +512,6 @@ module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
 module.exports.setStep = setStep;
 module.exports.checkWorkflow = checkWorkflow;
-module.exports.addContributors = addContributors
-module.exports.getContributors = getContributors
+module.exports.addContributors = addContributors;
+module.exports.getContributors = getContributors;
+module.exports.removeContributor = removeContributor;

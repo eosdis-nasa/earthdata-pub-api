@@ -26,18 +26,13 @@ function validateWorkflow(steps) {
 }
 
 async function createStep(step, stepName) {
-  const type = step.type ? step.type : null;
-  const actionId = step.actionId ? step.actionId : null;
-  const formId = step.formId ? step.formId : null;
-  const serviceId = step.service_id ? step.service_id : null;
-  const data = step.prev_step ? step.prev_step : null;
   await db.workflow.createStep({
     step_name: stepName,
-    type,
-    action_id: actionId,
-    form_id: formId,
-    service_id: serviceId,
-    data
+    type: step.type,
+    action_id: step.action_id,
+    form_id: step.form_id,
+    service_id: step.service_id,
+    data: step.prev_step
   });
 }
 
