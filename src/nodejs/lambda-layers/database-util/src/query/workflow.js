@@ -37,12 +37,26 @@ const initialize = () =>`
   RETURNING id
 `;
 
-const createStep = () =>`
-  INSERT INTO step (step_name, type, action_id, form_id, service_id, data)
-  VALUES ({{step_name}}, {{type}}, {{action_id}}, {{form_id}}, {{service_id}}, {{data}})
-  ON CONFLICT (step_name) DO UPDATE SET type = EXCLUDED.type, action_id = EXCLUDED.action_id, 
-    form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id, data = EXCLUDED.data
-`;
+const createStep = (params) => sql.insert({
+  table: 'step (step_name, type, action_id, form_id, service_id, data)',
+  values: {
+    type: 'values_list',
+    items: [
+      '{{step_name}}', '{{type}}', 
+      params.action_id? '{{action_id}}':'null',
+      params.form_id? '{{form_id}}':'null',
+      params.service_id? '{{service_id}}':'null',
+      params.data? '{{data}}':'null'
+    ]
+  },
+  conflict:{
+    constraints: ['step_name'],
+    update:{
+      type:'update',
+      set:[{cmd:'type = EXCLUDED.type, action_id = EXCLUDED.action_id, form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id, data = EXCLUDED.data'}]
+    }
+  }
+})
 
 const findById = () => `${findAll()} WHERE workflow.id = {{id}}`;
 
