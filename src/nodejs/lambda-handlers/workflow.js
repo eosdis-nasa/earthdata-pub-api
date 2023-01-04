@@ -42,19 +42,37 @@ async function createStep(step, stepName) {
 }
 
 async function addSteps(steps, workflowId) {
+  console.log(steps)
+
+  const STEP_MAX = 100;
   let activeStepName = 'init';
   let activeStep = steps[activeStepName];
+  let i = 0;
+
   while (activeStep.next_step_name) {
+
     const nextStepName = activeStep.next_step_name;
-    if (nextStepName !== 'close') { await createStep(steps[nextStepName], nextStepName); }
+    const nextStep = steps[nextStepName]
+
+    if (nextStepName !== 'close') { 
+      if (
+        (i > STEP_MAX)
+        || (!nextStepName)
+        || (!nextStep)
+      ) { return false; }
+      await createStep(steps[nextStepName], nextStepName); 
+      i +=1;
+    }
     await db.workflow.addStep({
       workflow_id: workflowId,
       step_name: activeStepName,
       next_step_name: nextStepName
     });
-    activeStepName = activeStep.next_step_name;
-    activeStep = steps[activeStepName];
+
+    activeStepName = nextStepName;
+    activeStep = nextStep;
   }
+  return true;
 }
 
 async function createWorkflowMethod(params, user) {
@@ -64,11 +82,15 @@ async function createWorkflowMethod(params, user) {
   const approvedUserRoles = ['admin'];
 
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
-    if (!validateWorkflow(steps)) { return ({ status: 'Invalid Workflow' }); }
+
     const { id } = await db.workflow.initialize({
       short_name: shortName, version, long_name: longName, description
     });
-    await addSteps(steps, id);
+    if (!await addSteps(steps, id)){
+      await addSteps(oldSteps, id);
+      await db.workflow.deleteWorkflow({ id });
+      return ({ status: 'Invalid Workflow' });
+    }
     await db.workflow.addClose({ workflow_id: id });
 
     return (db.workflow.findById({ id }));
@@ -84,10 +106,14 @@ async function editWorkflowMethod(params, user) {
 
   const approvedUserRoles = ['admin'];
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
-    if (!validateWorkflow(steps)) { return ({ status: 'Invalid Workflow' }); }
+    
+    const {steps:oldSteps} = await db.workflow.findById({ id });
 
     await db.workflow.clearSteps({ id });
-    await addSteps(steps, id);
+    if (!await addSteps(steps, id)){
+      await addSteps(oldSteps, id);
+      return (db.workflow.findById({ id }));
+    }
     await db.workflow.addClose({ workflow_id: id });
     return (db.workflow.updateWorkflowMetaData({
       version,

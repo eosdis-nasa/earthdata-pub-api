@@ -64,6 +64,10 @@ const updateWorkflowMetaData = () =>`
   WHERE id = {{id}}
   RETURNING *`;
 
+const deleteWorkflow = () =>`
+DELETE FROM workflow WHERE id = {{id}}
+`;
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.clearSteps = clearSteps;
@@ -72,3 +76,4 @@ module.exports.addClose = addClose;
 module.exports.updateWorkflowMetaData = updateWorkflowMetaData;
 module.exports.initialize = initialize;
 module.exports.createStep = createStep;
+module.exports.deleteWorkflow = deleteWorkflow;
