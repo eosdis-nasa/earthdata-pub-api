@@ -18,7 +18,7 @@
     "express": "^4.17.1",
     "js-yaml": "^4.0.0",
     "jsonwebtoken": "^9.0.0",
-    "oas-tools": "3.0.0",
+    "oas-tools": "2.2.2",
     "pg": "^8.5.1",
     "sqs-consumer": "^5.5.0",
     "uuid": "8.3.2",
