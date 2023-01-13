@@ -7,24 +7,6 @@
 
 const db = require('database-util');
 
-function validateWorkflow(steps) {
-  const STEP_MAX = 100;
-  let i = 0;
-  let activeStep = steps.init;
-  while (activeStep.next_step_name !== 'close') {
-    const nextStepName = activeStep.next_step_name;
-    const nextStep = steps[activeStep.next_step_name];
-    if (
-      (i > STEP_MAX)
-      || (!nextStepName)
-      || (!nextStep)
-    ) { return false; }
-    i += 1;
-    activeStep = nextStep;
-  }
-  return true;
-}
-
 async function createStep(step, stepName) {
   const type = step.type ? step.type : null;
   const actionId = step.actionId ? step.actionId : null;
@@ -42,7 +24,6 @@ async function createStep(step, stepName) {
 }
 
 async function addSteps(steps, workflowId) {
-  console.log(steps)
 
   const STEP_MAX = 100;
   let activeStepName = 'init';
@@ -50,18 +31,17 @@ async function addSteps(steps, workflowId) {
   let i = 0;
 
   while (activeStep.next_step_name) {
-
     const nextStepName = activeStep.next_step_name;
-    const nextStep = steps[nextStepName]
+    const nextStep = steps[nextStepName];
 
-    if (nextStepName !== 'close') { 
+    if (nextStepName !== 'close') {
       if (
         (i > STEP_MAX)
         || (!nextStepName)
         || (!nextStep)
       ) { return false; }
-      await createStep(steps[nextStepName], nextStepName); 
-      i +=1;
+      await createStep(steps[nextStepName], nextStepName);
+      i += 1;
     }
     await db.workflow.addStep({
       workflow_id: workflowId,
@@ -82,12 +62,11 @@ async function createWorkflowMethod(params, user) {
   const approvedUserRoles = ['admin'];
 
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
-
     const { id } = await db.workflow.initialize({
       short_name: shortName, version, long_name: longName, description
     });
-    if (!await addSteps(steps, id)){
-      await addSteps(oldSteps, id);
+    if (!await addSteps(steps, id)) {
+      await db.workflow.clearSteps({ id });
       await db.workflow.deleteWorkflow({ id });
       return ({ status: 'Invalid Workflow' });
     }
@@ -106,11 +85,11 @@ async function editWorkflowMethod(params, user) {
 
   const approvedUserRoles = ['admin'];
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
-    
-    const {steps:oldSteps} = await db.workflow.findById({ id });
+    const { steps: oldSteps } = await db.workflow.findById({ id });
 
     await db.workflow.clearSteps({ id });
-    if (!await addSteps(steps, id)){
+    if (!await addSteps(steps, id)) {
+      await db.workflow.clearSteps({ id });
       await addSteps(oldSteps, id);
       return (db.workflow.findById({ id }));
     }
