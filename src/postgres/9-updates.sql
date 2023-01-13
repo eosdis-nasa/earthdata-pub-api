@@ -59,3 +59,17 @@ INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'R
 --this should not be run untill after the db's have been cleaned of duplicat entries as document in the closing of EDPUB-785
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
+
+
+--1/12/2023 addes table to track copied submissions
+CREATE TABLE IF NOT EXISTS submission_copy (
+  id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
+  origin_id UUID NOT NULL,
+  context VARCHAR DEFAULT 'none',
+  created_at TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id),
+  FOREIGN KEY (origin_id) REFERENCES submission (id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
+);
