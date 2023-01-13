@@ -24,7 +24,6 @@ async function createStep(step, stepName) {
 }
 
 async function addSteps(steps, workflowId) {
-
   const STEP_MAX = 100;
   let activeStepName = 'init';
   let activeStep = steps[activeStepName];
