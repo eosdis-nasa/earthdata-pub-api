@@ -486,8 +486,8 @@ resource "aws_lambda_function" "rds_backup" {
 
 resource "aws_cloudwatch_event_rule" "rds_backup_daily_cron" {
   name                = "rds-backup-daily-cron"
-  description         = "Cloudwatch event to trigger rds_backup lambda to initiate rds backup process daily at 8AM UTC"
-  schedule_expression = "cron(0 8 * * ? *)"
+  description         = "Cloudwatch event to trigger rds_backup lambda to initiate rds backup process daily at 11PM UTC. (Must be after backup window for all environments)"
+  schedule_expression = "cron(0 23 * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "check_rds_trigger_daily" {
