@@ -56,6 +56,8 @@ DROP TABLE IF EXISTS submission_action_data CASCADE;
 
 DROP TABLE IF EXISTS submission_form_data CASCADE;
 
+DROP TABLE IF EXISTS submission_form_data_pool CASCADE;
+
 DROP TABLE IF EXISTS submission_lock CASCADE;
 
 DROP TABLE IF EXISTS edpuser_permission_submission CASCADE;
@@ -393,6 +395,13 @@ CREATE TABLE IF NOT EXISTS submission_form_data (
   PRIMARY KEY (id, form_id),
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (form_id) REFERENCES form (id)
+);
+
+CREATE TABLE IF NOT EXISTS submission_form_data_pool (
+  id UUID NOT NULL,
+  data JSONB DEFAULT '{}'::JSONB,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id)
 );
 
 CREATE TABLE IF NOT EXISTS submission_lock (

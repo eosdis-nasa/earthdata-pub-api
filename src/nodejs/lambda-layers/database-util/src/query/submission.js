@@ -19,7 +19,7 @@ const fieldMap = {
   status: 'step.status',
   forms: 'forms',
   action_data: 'COALESCE(submission_action_data.action_data, \'{}\'::JSONB) action_data',
-  form_data: 'COALESCE(submission_form_data.form_data, \'{}\'::JSONB) form_data',
+  form_data: 'submission_form_data_pool.data',
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
@@ -157,7 +157,7 @@ const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool]
   },
   where: {
     filters: [{ field: fieldMap.id, param: 'id' }]
@@ -168,7 +168,7 @@ const getUsersSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool]
   },
   where: {
     filters: [
@@ -187,7 +187,7 @@ const getDaacSubmissions = (params) => sql.select({
         fields: fields(allFields),
     from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool]
     },
         where: {
           filters: [
@@ -246,7 +246,7 @@ const getAdminSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool]
   },
   where: {
     filters: [
