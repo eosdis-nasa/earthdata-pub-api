@@ -107,6 +107,16 @@ const refs = {
       alias: 'submission_form_data'
     }
   },
+  submission_form_data_pool: {
+    type: 'natural_left_join',
+    src: {
+      type: 'select',
+      fields: ['submission_form_data_pool.data'],
+      from: {base: 'submission_form_data_pool'},
+      group: 'submission_form_data_pool.id',
+      alias: 'submission_form_data_pool'
+    }
+  },
   step: {
     type: 'natural_join',
     src: {
@@ -346,11 +356,15 @@ GROUP BY submission_form_data.id
 WHERE submission_form_data.id = {{id}}`;
 
 const updateFormData = () => `
+INSERT INTO submission_form_data_pool(id, data) VALUES
+({{id}}, {{data}}:JSONB)
+ON CONFLICT (id) DO UPDATE SET
+data = EXCLUDED.data;
+
 INSERT INTO submission_form_data(id, form_id, data) VALUES
-({{id}}, {{form_id}}, {{data}}::JSONB)
+({{id}}, {{form_id}}, {{id}})
 ON CONFLICT (id, form_id) DO UPDATE SET
-data = EXCLUDED.data
-RETURNING *`;
+data = EXCLUDED.data`;
 
 const getActionData = () => `
 SELECT

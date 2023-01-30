@@ -390,11 +390,12 @@ CREATE TABLE IF NOT EXISTS submission_action_data (
 CREATE TABLE IF NOT EXISTS submission_form_data (
   id UUID NOT NULL,
   form_id UUID NOT NULL,
-  data JSONB DEFAULT '{}'::JSONB,
+  data UUID NOT NULL,
   submitted_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id, form_id),
   FOREIGN KEY (id) REFERENCES submission (id),
-  FOREIGN KEY (form_id) REFERENCES form (id)
+  FOREIGN KEY (form_id) REFERENCES form (id),
+  FOREIGN KEY (data) REFERENCES submission_form_data_pool (id)
 );
 
 CREATE TABLE IF NOT EXISTS submission_form_data_pool (
