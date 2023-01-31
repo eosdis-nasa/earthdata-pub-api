@@ -387,6 +387,13 @@ CREATE TABLE IF NOT EXISTS submission_action_data (
   FOREIGN KEY (action_id) REFERENCES action (id)
 );
 
+CREATE TABLE IF NOT EXISTS submission_form_data_pool (
+  id UUID NOT NULL,
+  data JSONB DEFAULT '{}'::JSONB,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id)
+);
+
 CREATE TABLE IF NOT EXISTS submission_form_data (
   id UUID NOT NULL,
   form_id UUID NOT NULL,
@@ -396,13 +403,6 @@ CREATE TABLE IF NOT EXISTS submission_form_data (
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (form_id) REFERENCES form (id),
   FOREIGN KEY (data) REFERENCES submission_form_data_pool (id)
-);
-
-CREATE TABLE IF NOT EXISTS submission_form_data_pool (
-  id UUID NOT NULL,
-  data JSONB DEFAULT '{}'::JSONB,
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES submission (id)
 );
 
 CREATE TABLE IF NOT EXISTS submission_lock (

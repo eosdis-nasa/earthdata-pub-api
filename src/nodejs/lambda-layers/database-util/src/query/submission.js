@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -19,7 +19,7 @@ const fieldMap = {
   status: 'step.status',
   forms: 'forms',
   action_data: 'COALESCE(submission_action_data.action_data, \'{}\'::JSONB) action_data',
-  form_data: 'submission_form_data_pool.data',
+  form_data: 'submission_form_data_pool.data form_data',
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
@@ -73,16 +73,6 @@ const refs = {
       fields: [
         'submission_form_data.id',
         {
-          type: 'coalesce',
-          src: {
-            type: 'json_merge_agg',
-            src: 'submission_form_data.data',
-            sort: 'submitted_at'
-          },
-          fallback: '\'{}\'::JSONB',
-          alias: 'form_data'
-        },
-        {
           type: 'json_agg',
           src: {
             type: 'json_obj',
@@ -105,16 +95,6 @@ const refs = {
       },
       group: 'submission_form_data.id',
       alias: 'submission_form_data'
-    }
-  },
-  submission_form_data_pool: {
-    type: 'natural_left_join',
-    src: {
-      type: 'select',
-      fields: ['submission_form_data_pool.data'],
-      from: {base: 'submission_form_data_pool'},
-      group: 'submission_form_data_pool.id',
-      alias: 'submission_form_data_pool'
     }
   },
   step: {
@@ -158,6 +138,16 @@ const refs = {
     type: 'left_join',
     src: 'workflow',
     on: { left: 'workflow.id', right: 'submission_status.workflow_id' }
+  },
+  submission_form_data_pool: {
+    type: 'natural_left_join',
+    src: {
+      type: 'select',
+      fields: ['submission_form_data_pool.data'],
+      from: {base: 'submission_form_data_pool'},
+      group: 'submission_form_data_pool.id',
+      alias: 'submission_copy'
+    }
   }
 };
 
