@@ -19,7 +19,7 @@ const fieldMap = {
   status: 'step.status',
   forms: 'forms',
   action_data: 'COALESCE(submission_action_data.action_data, \'{}\'::JSONB) action_data',
-  form_data: 'submission_form_data_pool.data form_data',
+  form_data: 'COALESCE(submission_form_data_pool.data, \'{}\'::JSONB) form_data',
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
@@ -140,14 +140,9 @@ const refs = {
     on: { left: 'workflow.id', right: 'submission_status.workflow_id' }
   },
   submission_form_data_pool: {
-    type: 'natural_left_join',
-    src: {
-      type: 'select',
-      fields: ['submission_form_data_pool.data'],
-      from: {base: 'submission_form_data_pool'},
-      group: 'submission_form_data_pool.id',
-      alias: 'submission_copy'
-    }
+    type: 'left_join',
+    src: 'submission_form_data_pool',
+    on:{ left: 'submission_form_data_pool.id', right: 'submission.id'}
   }
 };
 
@@ -345,16 +340,19 @@ FROM submission_form_data
 GROUP BY submission_form_data.id
 WHERE submission_form_data.id = {{id}}`;
 
-const updateFormData = () => `
+const updateFormData = ({id, data, form_id}) => `
+DO $$
+BEGIN
 INSERT INTO submission_form_data_pool(id, data) VALUES
-({{id}}, {{data}}:JSONB)
+('${id}', '${data}'::JSONB)
 ON CONFLICT (id) DO UPDATE SET
 data = EXCLUDED.data;
 
 INSERT INTO submission_form_data(id, form_id, data) VALUES
-({{id}}, {{form_id}}, {{id}})
+('${id}', '${form_id}', '${id}')
 ON CONFLICT (id, form_id) DO UPDATE SET
-data = EXCLUDED.data`;
+data = EXCLUDED.data;
+END $$`;
 
 const getActionData = () => `
 SELECT

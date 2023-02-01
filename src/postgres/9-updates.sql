@@ -60,7 +60,8 @@ INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'R
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
 
---1/27/2023 
+--1/27/2023  replaces the existing form data storage with new data_pool table to make all forms
+--resopnoses of a given request update together.
 
 CREATE TABLE IF NOT EXISTS submission_form_data_pool (
   id UUID NOT NULL,
