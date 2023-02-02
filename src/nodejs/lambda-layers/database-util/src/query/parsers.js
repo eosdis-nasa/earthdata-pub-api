@@ -44,6 +44,7 @@ module.exports.subscribe = one;
 module.exports.unsubscribe = one;
 module.exports.putMetric = one;
 module.exports.getConversationList = many;
+module.exports.getPrivilegedConversationList = many;
 module.exports.readConversation = one;
 module.exports.reply = one;
 module.exports.sendNote = one;
