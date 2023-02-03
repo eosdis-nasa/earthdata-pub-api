@@ -19,7 +19,7 @@ const fieldMap = {
   status: 'step.status',
   forms: 'forms',
   action_data: 'COALESCE(submission_action_data.action_data, \'{}\'::JSONB) action_data',
-  form_data: 'COALESCE(submission_form_data.form_data, \'{}\'::JSONB) form_data',
+  form_data: 'COALESCE(submission_form_data_pool.data, \'{}\'::JSONB) form_data',
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
@@ -84,16 +84,6 @@ const refs = {
       type: 'select',
       fields: [
         'submission_form_data.id',
-        {
-          type: 'coalesce',
-          src: {
-            type: 'json_merge_agg',
-            src: 'submission_form_data.data',
-            sort: 'submitted_at'
-          },
-          fallback: '\'{}\'::JSONB',
-          alias: 'form_data'
-        },
         {
           type: 'json_agg',
           src: {
@@ -160,6 +150,11 @@ const refs = {
     type: 'left_join',
     src: 'workflow',
     on: { left: 'workflow.id', right: 'submission_status.workflow_id' }
+  },
+  submission_form_data_pool: {
+    type: 'left_join',
+    src: 'submission_form_data_pool',
+    on:{ left: 'submission_form_data_pool.id', right: 'submission.id'}
   }
 };
 
@@ -169,7 +164,7 @@ const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_copy]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [{ field: fieldMap.id, param: 'id' }]
@@ -180,7 +175,7 @@ const getUsersSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_copy]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [
@@ -199,7 +194,7 @@ const getDaacSubmissions = (params) => sql.select({
         fields: fields(allFields),
     from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_copy]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool, refs.submission_copy]
     },
         where: {
           filters: [
@@ -258,7 +253,7 @@ const getAdminSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_copy]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [
@@ -353,12 +348,19 @@ const getFormData = () => `
 SELECT data FROM submission_form_data
 WHERE id = {{id}} AND form_id = {{form_id}}`;
 
-const updateFormData = () => `
+const updateFormData = ({id, data, form_id}) => `
+DO $$
+BEGIN
+INSERT INTO submission_form_data_pool(id, data) VALUES
+('${id}', '${data}'::JSONB)
+ON CONFLICT (id) DO UPDATE SET
+data = EXCLUDED.data;
+
 INSERT INTO submission_form_data(id, form_id, data) VALUES
-({{id}}, {{form_id}}, {{data}}::JSONB)
+('${id}', '${form_id}', '${id}')
 ON CONFLICT (id, form_id) DO UPDATE SET
-data = EXCLUDED.data
-RETURNING *`;
+data = EXCLUDED.data;
+END $$`;
 
 const getActionData = () => `
 SELECT

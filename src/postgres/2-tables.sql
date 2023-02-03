@@ -56,6 +56,8 @@ DROP TABLE IF EXISTS submission_action_data CASCADE;
 
 DROP TABLE IF EXISTS submission_form_data CASCADE;
 
+DROP TABLE IF EXISTS submission_form_data_pool CASCADE;
+
 DROP TABLE IF EXISTS submission_lock CASCADE;
 
 DROP TABLE IF EXISTS submission_copy CASCADE;
@@ -387,14 +389,22 @@ CREATE TABLE IF NOT EXISTS submission_action_data (
   FOREIGN KEY (action_id) REFERENCES action (id)
 );
 
+CREATE TABLE IF NOT EXISTS submission_form_data_pool (
+  id UUID NOT NULL,
+  data JSONB DEFAULT '{}'::JSONB,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id)
+);
+
 CREATE TABLE IF NOT EXISTS submission_form_data (
   id UUID NOT NULL,
   form_id UUID NOT NULL,
-  data JSONB DEFAULT '{}'::JSONB,
+  data UUID NOT NULL,
   submitted_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id, form_id),
   FOREIGN KEY (id) REFERENCES submission (id),
-  FOREIGN KEY (form_id) REFERENCES form (id)
+  FOREIGN KEY (form_id) REFERENCES form (id),
+  FOREIGN KEY (data) REFERENCES submission_form_data_pool (id)
 );
 
 CREATE TABLE IF NOT EXISTS submission_lock (

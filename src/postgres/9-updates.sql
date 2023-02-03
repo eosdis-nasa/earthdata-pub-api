@@ -64,6 +64,41 @@ INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'R
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
 
+--1/27/2023  replaces the existing form data storage with new data_pool table to make all forms
+--resopnoses of a given request update together.
+
+CREATE TABLE IF NOT EXISTS submission_form_data_pool (
+  id UUID NOT NULL,
+  data JSONB DEFAULT '{}'::JSONB,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id)
+);
+
+DO $$
+DECLARE
+subId UUID;
+BEGIN
+    FOR subId IN
+        SELECT submission.id FROM submission
+    LOOP
+    IF 'de7e5c40-584a-493b-919d-8f7f3f1e9e3c'::UUID IN (SELECT form_id FROM submission_form_data WHERE id = subID) THEN 
+        INSERT INTO submission_form_data_pool(id, data)
+        VALUES (subId, (SELECT data FROM submission_form_data WHERE id = subId AND form_id = 'de7e5c40-584a-493b-919d-8f7f3f1e9e3c')::JSONB);
+    ELSIF '19025579-99ca-4344-8610-704dae626343'::UUID IN (SELECT form_id FROM submission_form_data WHERE id = subID) THEN
+        INSERT INTO submission_form_data_pool(id, data)
+        VALUES (subId, (SELECT data FROM submission_form_data WHERE id = subId AND form_id = '19025579-99ca-4344-8610-704dae626343')::JSONB);
+    ELSIF '6c544723-241c-4896-a38c-adbc0a364293'::UUID IN (SELECT form_id FROM submission_form_data WHERE id = subID) THEN
+        INSERT INTO submission_form_data_pool(id, data)
+        VALUES (subId, (SELECT data FROM submission_form_data WHERE id = subId AND form_id = '6c544723-241c-4896-a38c-adbc0a364293')::JSONB);
+    END IF;
+    END LOOP;
+END $$;
+
+ALTER TABLE submission_form_data DROP COLUMN data;
+ALTER TABLE submission_form_data ADD COLUMN data UUID;
+ALTER TABLE submission_form_data 
+    ADD CONSTRAINT submission_form_data_data_fkey FOREIGN KEY (data) REFERENCES submission_form_data_pool (id);
+UPDATE submission_form_data  SET data = submission_form_data.id;
 
 --1/12/2023 addes table to track copied submissions
 CREATE TABLE IF NOT EXISTS submission_copy (
