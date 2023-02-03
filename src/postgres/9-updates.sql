@@ -44,6 +44,10 @@ RAISE;
 --       a.column_name = b.column_name
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
+INSERT INTO privilege VALUES ('QUESTION_CREATE');
+INSERT INTO privilege VALUES ('QUESTION_READ');
+INSERT INTO privilege VALUES ('QUESTION_UPDATE');
+INSERT INTO privilege VALUES ('QUESTION_DELETE');
 
 --11/28/22 Add contributor_id colum
 ALTER TABLE submission ADD COLUMN contributor_ids UUID[];
