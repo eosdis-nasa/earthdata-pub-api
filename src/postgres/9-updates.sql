@@ -44,6 +44,10 @@ RAISE;
 --       a.column_name = b.column_name
 --       AND a.ctid <> b.ctid
 -------------------------------------------------------------------------------
+INSERT INTO privilege VALUES ('QUESTION_CREATE');
+INSERT INTO privilege VALUES ('QUESTION_READ');
+INSERT INTO privilege VALUES ('QUESTION_UPDATE');
+INSERT INTO privilege VALUES ('QUESTION_DELETE');
 
 --11/28/22 Add contributor_id colum
 ALTER TABLE submission ADD COLUMN contributor_ids UUID[];
@@ -60,6 +64,7 @@ INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'R
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
 
+<<<<<<< HEAD
 --1/27/2023  replaces the existing form data storage with new data_pool table to make all forms
 --resopnoses of a given request update together.
 
@@ -95,3 +100,18 @@ ALTER TABLE submission_form_data ADD COLUMN data UUID;
 ALTER TABLE submission_form_data 
     ADD CONSTRAINT submission_form_data_data_fkey FOREIGN KEY (data) REFERENCES submission_form_data_pool (id);
 UPDATE submission_form_data  SET data = submission_form_data.id;
+=======
+
+--1/12/2023 addes table to track copied submissions
+CREATE TABLE IF NOT EXISTS submission_copy (
+  id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
+  origin_id UUID NOT NULL,
+  context VARCHAR DEFAULT 'none',
+  created_at TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id),
+  FOREIGN KEY (origin_id) REFERENCES submission (id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
+);
+>>>>>>> 9b483ab156e0737b618985ff73629a5946871e7e

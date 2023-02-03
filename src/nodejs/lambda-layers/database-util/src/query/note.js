@@ -101,49 +101,74 @@ const getConversationList = (params) => sql.select({
   fields: ['conversation.*', 'conversation_edpuser.unread'],
   from: { base: 'conversation', joins: [refs.conversation_user] },
   where: {
-    conjunction: 'OR',
-    filters: [
-        ...(params.user_id ? [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id' }] : []),
-        ...(params.daac ? [{
-          field: 'conversation_id',
-          any: {
-            values: {
-              type: 'select',
-              fields: ['submission.conversation_id'],
-              from : {
-                base: 'submission'
-              },
-              where: {
-                filters: [
-                ...([{
-                  field: 'submission.daac_id',
-                  any: {
-                    values: {
-                      type: 'select',
-                      fields: ['daac.id'],
-                      from: {
-                        base: 'daac',
-                        joins: [{
-                        type: 'left_join',
-                        src: 'edpuser_edpgroup',
-                        on: { left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id' }
-                        }]
-                      },
-                      where: {
-                        filters: [{ field: 'edpuser_edpgroup.edpuser_id', param: 'user_id' }]
-                      }
-                    }
-                  }
-                }])
-                ]
-              }
-            }
-          }}] : [])
-    ]
+    filters: [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id' }]
   },
   sort: 'last_change',
   order: 'DESC'
 });
+
+const getPrivilegedConversationList = (params) => `
+SELECT * FROM (${getConversationList(params)}) userConversationList
+UNION
+SELECT *, FALSE as unread FROM (${sql.select({
+  fields: ['conversation.*'],
+  from: { base: 'conversation' },
+  where: {
+    filters: [
+    ...([{
+      field: 'id',
+      op: 'ne',
+      all: {
+        values: {
+          type: 'select',
+          fields: ['conversation.id'],
+          from : { base: 'conversation', joins: [refs.conversation_user] },
+          where: {
+            filters: [{ field: 'conversation_edpuser.edpuser_id', param: 'user_id' }]
+          }
+        }
+      }
+    }]),
+    ...(params.daac ? [{
+      field: 'id',
+      any: {
+      values: {
+        type: 'select',
+        fields: ['submission.conversation_id'],
+        from : {
+        base: 'submission'
+        },
+        where: {
+        filters: [
+        ...([{
+          field: 'submission.daac_id',
+          any: {
+          values: {
+            type: 'select',
+            fields: ['daac.id'],
+            from: {
+            base: 'daac',
+            joins: [{
+            type: 'left_join',
+            src: 'edpuser_edpgroup',
+            on: { left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id' }
+            }]
+            },
+            where: {
+            filters: [{ field: 'edpuser_edpgroup.edpuser_id', param: 'user_id' }]
+            }
+          }
+          }
+        }])
+        ]
+        }
+      }
+      }}] : [])
+    ]
+  },
+  sort: 'last_change',
+  order: 'DESC'
+})}) privilegedConversationList ORDER BY last_change DESC`;
 
 const readConversation = (params) => `
 ${params.user_id && !params.daac ?
@@ -291,6 +316,7 @@ const getEmails = (params) => sql.select({
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getConversationList = getConversationList;
+module.exports.getPrivilegedConversationList = getPrivilegedConversationList;
 module.exports.readConversation = readConversation;
 module.exports.reply = reply;
 module.exports.sendNote = sendNote;
