@@ -58,6 +58,8 @@ DROP TABLE IF EXISTS submission_form_data CASCADE;
 
 DROP TABLE IF EXISTS submission_lock CASCADE;
 
+DROP TABLE IF EXISTS submission_copy CASCADE;
+
 DROP TABLE IF EXISTS edpuser_permission_submission CASCADE;
 
 DROP TABLE IF EXISTS edpgroup_permission_submission CASCADE;
@@ -402,6 +404,18 @@ CREATE TABLE IF NOT EXISTS submission_lock (
   created_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES submission (id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
+);
+
+CREATE TABLE IF NOT EXISTS submission_copy (
+  id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
+  origin_id UUID NOT NULL,
+  context VARCHAR DEFAULT 'none',
+  created_at TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id),
+  FOREIGN KEY (origin_id) REFERENCES submission (id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
 );
 

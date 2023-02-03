@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -24,7 +24,9 @@ const fieldMap = {
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
   lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
-  contributor_ids: 'submission.contributor_ids'
+  contributor_ids: 'submission.contributor_ids',
+  copy: '(EXISTS(SELECT edpuser_id FROM submission_copy WHERE submission_copy.id = submission.id)) "copy"',
+  origin_id: 'submission_copy.origin_id'
 };
 const refs = {
   initiator_ref: {
@@ -55,6 +57,16 @@ const refs = {
   submission_metadata: {
     type: 'natural_join',
     src: 'submission_metadata'
+  },
+  submission_copy:{
+    type: 'natural_left_join',
+    src: {
+      type: 'select',
+      fields: ['submission_copy.origin_id'],
+      from: {base: 'submission_copy'},
+      group: 'submission_copy.id',
+      alias: 'submission_copy'
+    }
   },
   submission_action_data: {
     type: 'natural_left_join',
@@ -157,7 +169,7 @@ const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_copy]
   },
   where: {
     filters: [{ field: fieldMap.id, param: 'id' }]
@@ -168,7 +180,7 @@ const getUsersSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_copy]
   },
   where: {
     filters: [
@@ -187,7 +199,7 @@ const getDaacSubmissions = (params) => sql.select({
         fields: fields(allFields),
     from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_copy]
     },
         where: {
           filters: [
@@ -246,7 +258,7 @@ const getAdminSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_copy]
   },
   where: {
     filters: [
@@ -338,12 +350,8 @@ WHERE id = {{id}}
 RETURNING *`;
 
 const getFormData = () => `
-SELECT
-submission_form_data.id,
-COALESCE(JSONB_OBJECT_AGG(data ORDER BY submitted_at ASC), '{}'::JSONB) form_data
-FROM submission_form_data
-GROUP BY submission_form_data.id
-WHERE submission_form_data.id = {{id}}`;
+SELECT data FROM submission_form_data
+WHERE id = {{id}} AND form_id = {{form_id}}`;
 
 const updateFormData = () => `
 INSERT INTO submission_form_data(id, form_id, data) VALUES
@@ -485,6 +493,47 @@ SET contributor_ids = array_remove(contributor_ids, {{contributor}})
 WHERE id = {{id}}
 RETURNING *`;
 
+const copyActionData = (params) =>`
+DO $$
+DECLARE
+actionId UUID;
+BEGIN
+  FOR actionId IN 
+    SELECT action_id FROM submission_action_data WHERE id = '${params.origin_id}'
+  LOOP
+    INSERT INTO submission_action_data(id, action_id, data) VALUES(
+      '${params.id}',
+      actionId, 
+      (SELECT data FROM submission_action_data WHERE action_id = actionId and id = '${params.origin_id}')
+    );
+  END LOOP;
+END; $$
+`;
+
+const copyFormData = (params) =>`
+
+DO $$
+DECLARE
+formId UUID;
+BEGIN
+  FOR formId IN 
+    SELECT form_id FROM submission_form_data WHERE id = '${params.origin_id}' 
+  LOOP
+    INSERT INTO submission_form_data(id, form_id, data) VALUES(
+      '${params.id}',
+      formId, 
+      (SELECT data FROM submission_form_data WHERE form_id = formId and id = '${params.origin_id}')
+    );
+  END LOOP;
+END; $$
+`;
+
+const setSubmissionCopy = ({ context }) => `
+INSERT INTO submission_copy(id, edpuser_id, origin_id${context? ', context':''})
+VALUES({{id}}, {{edpuser_id}}, {{origin_id}}${context? `, '${context}'`:''})
+ON CONFLICT DO NOTHING
+`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -515,3 +564,6 @@ module.exports.checkWorkflow = checkWorkflow;
 module.exports.addContributors = addContributors;
 module.exports.getContributors = getContributors;
 module.exports.removeContributor = removeContributor;
+module.exports.copyActionData = copyActionData;
+module.exports.copyFormData = copyFormData;
+module.exports.setSubmissionCopy = setSubmissionCopy;
