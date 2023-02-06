@@ -221,10 +221,10 @@ async function removeContributorMethod(event, user) {
 
 async function copySubmissionMethod(event, user) {
   const { daac_id: daacId, id: originId, context } = event;
-  let { form_data:formData } = event;
+  const { form_data: formData } = event;
   const { id } = await initializeMethod({ daac_id: daacId }, user);
 
-  if (formData != {}){
+  if (formData !== {}) {
     formData.data_product_name_value = `Copy of ${formData.data_product_name_value}`;
     await db.submission.copyFormData({ id, data: JSON.stringify(formData), origin_id: originId });
   }
