@@ -509,25 +509,26 @@ BEGIN
       (SELECT data FROM submission_action_data WHERE action_id = actionId and id = '${params.origin_id}')
     );
   END LOOP;
-END; $$
+END $$
 `;
 
-const copyFormData = (params) =>`
+const copyFormData = ({ id, data, origin_id }) =>`
 
 DO $$
 DECLARE
 formId UUID;
 BEGIN
+
+  INSERT INTO submission_form_data_pool(id, data) VALUES
+  ('${id}', '${data}'::JSONB);
+
   FOR formId IN 
-    SELECT form_id FROM submission_form_data WHERE id = '${params.origin_id}' 
+    SELECT form_id FROM submission_form_data WHERE id = '${origin_id}'
   LOOP
-    INSERT INTO submission_form_data(id, form_id, data) VALUES(
-      '${params.id}',
-      formId, 
-      (SELECT data FROM submission_form_data WHERE form_id = formId and id = '${params.origin_id}')
-    );
+    INSERT INTO submission_form_data(id, form_id, data) VALUES
+    ('${id}', formId, '${id}');
   END LOOP;
-END; $$
+END $$
 `;
 
 const setSubmissionCopy = ({ context }) => `

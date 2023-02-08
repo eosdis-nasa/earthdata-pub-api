@@ -220,18 +220,13 @@ async function removeContributorMethod(event, user) {
 }
 
 async function copySubmissionMethod(event, user) {
-  const { daac_id: daacId, id: originId, context } = event;
-  const formId = ['6c544723-241c-4896-a38c-adbc0a364293', '19025579-99ca-4344-8610-704dae626343'];
+  const { id: originId, context } = event;
+  const { form_data: formData, daac_id: daacId } = await db.submission.findById({ id: originId });
   const { id } = await initializeMethod({ daac_id: daacId }, user);
 
-  await db.submission.copyFormData({ origin_id: originId, id });
-  await formId.forEach(async (form) => {
-    const { data } = await db.submission.getFormData({ id, form_id: form });
-    if (data.data_product_name_value) {
-      data.data_product_name_value = `copy of ${data.data_product_name_value}`;
-      db.submission.updateFormData({ id, form_id: form, data: JSON.stringify(data) });
-    }
-  });
+  formData.data_product_name_value = formData.data_product_name_value
+    ? `Copy of ${formData.data_product_name_value}` : '';
+  await db.submission.copyFormData({ id, data: JSON.stringify(formData), origin_id: originId });
 
   await db.submission.copyActionData({ origin_id: originId, id });
   await db.submission.setSubmissionCopy({
