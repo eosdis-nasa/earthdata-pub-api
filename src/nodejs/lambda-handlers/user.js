@@ -124,13 +124,20 @@ async function removeRoleMethod(params, privileges) {
   return { error: 'No privilege' };
 }
 
+async function getUsersMethod(params) {
+  const { ids } = params;
+  const resp = await db.user.getUsers({ ids });
+  return (resp);
+}
+
 const operations = {
   create: createMethod,
   find: findMethod,
   add_group: addGroupMethod,
   remove_group: removeGroupMethod,
   add_role: addRoleMethod,
-  remove_role: removeRoleMethod
+  remove_role: removeRoleMethod,
+  get_users: getUsersMethod
 };
 
 async function handler(event) {
