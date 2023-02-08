@@ -125,8 +125,8 @@ async function removeRoleMethod(params, privileges) {
 }
 
 async function getUsersMethod(params) {
-  const ids = params.ids.split(',');
-  const resp = await db.user.getUsers({ids});
+  const { ids } = params;
+  const resp = await db.user.getUsers({ ids });
   return (resp);
 }
 
@@ -137,7 +137,7 @@ const operations = {
   remove_group: removeGroupMethod,
   add_role: addRoleMethod,
   remove_role: removeRoleMethod,
-  get_users: getUsersMethod,
+  get_users: getUsersMethod
 };
 
 async function handler(event) {
