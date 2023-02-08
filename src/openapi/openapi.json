@@ -5376,7 +5376,7 @@
           "required": true,
           "schema": {
             "type": "string",
-            "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "add_permission", "create"]
+            "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "add_permission", "create", "get_users"]
           }
         }
       ],
@@ -5446,6 +5446,14 @@
             "description": "Email of user to search",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "ids",
+            "in":"header",
+            "description":"List of Users",
+            "schema":{
+              "type":"array"
             }
           }
         ],
