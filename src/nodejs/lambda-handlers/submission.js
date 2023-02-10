@@ -191,6 +191,51 @@ async function changeStepMethod(event, user) {
   return db.submission.findById({ id });
 }
 
+async function addContributorsMethod(event, user) {
+  const { id, contributor_ids: contributorIds } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
+    await db.note.addUsersToConversation({
+      conversation_id: conversationId,
+      user_list: contributorIds
+    });
+    return db.submission.addContributors({ id, contributor_ids: contributorIds });
+  }
+  return db.submission.findById({ id });
+}
+
+async function removeContributorMethod(event, user) {
+  const { id, contributor_id: contributorId } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
+    await db.note.removeUserFromConversation({
+      conversation_id: conversationId,
+      user_id: contributorId
+    });
+    return db.submission.removeContributor({ id, contributor: contributorId });
+  }
+  return db.submission.findById({ id });
+}
+
+async function copySubmissionMethod(event, user) {
+  const { id: originId, context } = event;
+  const { form_data: formData, daac_id: daacId } = await db.submission.findById({ id: originId });
+  const { id } = await initializeMethod({ daac_id: daacId }, user);
+
+  formData.data_product_name_value = formData.data_product_name_value
+    ? `Copy of ${formData.data_product_name_value}` : '';
+  await db.submission.copyFormData({ id, data: JSON.stringify(formData), origin_id: originId });
+
+  await db.submission.copyActionData({ origin_id: originId, id });
+  await db.submission.setSubmissionCopy({
+    id, edpuser_id: user.id, origin_id: originId, context
+  });
+
+  return db.submission.findById({ id });
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -205,7 +250,10 @@ const operations = {
   unlock: unlockMethod,
   withdraw: withdrawMethod,
   restore: restoreMethod,
-  changeStep: changeStepMethod
+  changeStep: changeStepMethod,
+  addContributors: addContributorsMethod,
+  removeContributor: removeContributorMethod,
+  copySubmission: copySubmissionMethod
 };
 
 async function handler(event) {

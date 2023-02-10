@@ -71,6 +71,8 @@ const whenClause = ({ field, value, result }) => ` WHEN ${field} = '${value}' TH
 
 const anyClause = ({ values }) => ` ANY(${typeCheck(values)})`;
 
+const allClause = ({ values }) => ` ALL(${typeCheck(values)})`;
+
 const leftJoin = ({ src, on }) => ` LEFT JOIN ${src.type ? complexParse(src) : src}${on
   ? ` ON ${on.left} = ${on.right}` : ''}`;
 
@@ -82,12 +84,13 @@ const innerJoin = ({ src, on }) => ` INNER JOIN ${src.type ? complexParse(src) :
   ? ` ON ${on.left} = ${on.right}` : ''}`;
 
 const filter = ({
-  logOp, field, like, op, value, param, any, literal, cmd,
+  logOp, field, like, op, value, param, any, all, literal, cmd,
 }) => cmd ? `${cmd}` : like ? `${field} ILIKE '%' || {{${like}}} || '%'` :
   `${logOp ? ` ${opTypes[logOp]}` : ''} ${field} ${opTypes[op] || '='} ${literal
     ? strWrapper(literal) : value
     ? typeCheck(value) : any
-    ? anyClause(any) : ` {{${param || field}}}`}`;
+    ? anyClause(any) : all
+    ? allClause(all) : ` {{${param || field}}}`}`;
 
 const sub = ({ query, alias }) => `(${query})${alias ? ` ${alias}` : ''}`;
 

@@ -33,15 +33,13 @@ function marshalAttributes(eventMessage) {
 function sendEmail(eventMessage) {
   const {
     emails,
-    submissionId,
-    submissionName,
+    subject,
     body
   } = eventMessage;
   const params = {
-    Subject: `RE: ${submissionId} - ${submissionName}`,
+    Subject: subject,
     Message: body,
     MessageAttributes: marshalAttributes({ email: emails }),
-    MessageDeduplicationId: Date.now().toString(),
     TopicArn: emailSns
   };
   const response = sns.publish(params).promise().catch((e) => { console.error(e); });

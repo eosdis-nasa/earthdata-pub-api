@@ -46,12 +46,15 @@ async function addUserMethod(params) {
 
 async function conversationsMethod(params) {
   const userInfo = await db.user.findById({ id: params.context.user_id });
-  if (userInfo.user_privileges.includes('REQUEST_ADMINREAD') || userInfo.user_privileges.includes('ADMIN')
-  || userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
-    return db.note.getConversationList();
+  if (userInfo.user_privileges.includes('ADMIN')
+  || (userInfo.user_groups.some((group) => group.short_name === 'root_group')
+  && userInfo.user_privileges.includes('REQUEST_DAACREAD'))) {
+    return db.note.getPrivilegedConversationList({
+      user_id: params.context.user_id
+    });
   }
   if (userInfo.user_privileges.includes('REQUEST_DAACREAD')) {
-    return db.note.getConversationList({
+    return db.note.getPrivilegedConversationList({
       user_id: params.context.user_id,
       daac: true
     });

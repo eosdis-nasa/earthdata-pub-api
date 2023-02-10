@@ -48,6 +48,10 @@ async function createCognitoUser({
 async function createMethod(params, privileges) {
   if (privileges.includes('ADMIN')
     || privileges.includes('USER_CREATE')) {
+    const { email } = params;
+    const { email: emailUsed } = await db.user.findByEmail({ email });
+    if (emailUsed === email) { return { error: 'Duplicate email' }; }
+
     const newUser = await createCognitoUser(params);
     const user = await db.user.loginUser(newUser);
     if (Array.isArray(params.role_ids)) {
@@ -120,13 +124,20 @@ async function removeRoleMethod(params, privileges) {
   return { error: 'No privilege' };
 }
 
+async function getUsersMethod(params) {
+  const { ids } = params;
+  const resp = await db.user.getUsers({ ids });
+  return (resp);
+}
+
 const operations = {
   create: createMethod,
   find: findMethod,
   add_group: addGroupMethod,
   remove_group: removeGroupMethod,
   add_role: addRoleMethod,
-  remove_role: removeRoleMethod
+  remove_role: removeRoleMethod,
+  get_users: getUsersMethod
 };
 
 async function handler(event) {
