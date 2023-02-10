@@ -3117,7 +3117,7 @@
           "schema": {
             "type": "string",
             "enum": ["initialize", "active", "inactive", "apply", "metadata", "submit", "save", "review", "resume", "lock",
-              "unlock", "withdraw", "restore", "changeStep"]
+              "unlock", "withdraw", "restore", "changeStep", "addContributors", "removeContributor", "copySubmission"]
           }
         }
       ],
@@ -3171,7 +3171,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('data'))\"data\":$input.json('$.data'),#end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'),#end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\",#end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids,#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -3854,9 +3854,9 @@
         "tags": [
           "data"
         ],
-        "summary": "Create or update an workflow",
-        "description": "Creates a new workflow or new version of existing workflow",
-        "operationId": "workflowPut",
+        "summary": "Creates a workflow",
+        "description": "Creates a new workflow",
+        "operationId": "createWorkflow",
         "requestBody": {
           "x-name": "payload",
           "content": {
@@ -3902,10 +3902,13 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${workflow_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
+          "requestTemplates":{
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"model\": \"$req.path.get('model')\", \"operation\":\"editWorkflow\",\"params\":{#if($body.containsKey('short_name'))\"short_name\":\"$body.get('short_name')\", #end #if($body.containsKey('version'))\"version\":\"$body.get('version')\", #end #if ($body.containsKey('long_name'))\"long_name\":\"$body.get('long_name')\", #end #if($body.containsKey('description'))\"description\":\"$body.get('description')\", #end #if($body.containsKey('steps'))\"steps\":$input.json('$.steps')#end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
           "responses": {
             "default": {
               "statusCode": "200",
@@ -5373,7 +5376,7 @@
           "required": true,
           "schema": {
             "type": "string",
-            "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "add_permission", "create"]
+            "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "add_permission", "create", "get_users"]
           }
         }
       ],
@@ -5557,7 +5560,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('role_id'))\"role_id\":\"$body.get('role_id')\",#end #if($body.containsKey('group_ids'))\"group_ids\":$inputRoot.group_ids,#end #if($body.containsKey('role_ids'))\"role_ids\":$inputRoot.role_ids,#end #if ($body.containsKey('username'))\"username\":\"$body.get('username')\",#end #if ($body.containsKey('name'))\"name\":\"$body.get('name')\",#end #if ($body.containsKey('email'))\"email\":\"$body.get('email')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('role_id'))\"role_id\":\"$body.get('role_id')\",#end #if($body.containsKey('ids'))\"ids\":$inputRoot.ids, #end #if($body.containsKey('group_ids'))\"group_ids\":$inputRoot.group_ids,#end #if($body.containsKey('role_ids'))\"role_ids\":$inputRoot.role_ids,#end #if ($body.containsKey('username'))\"username\":\"$body.get('username')\",#end #if ($body.containsKey('name'))\"name\":\"$body.get('name')\",#end #if ($body.containsKey('email'))\"email\":\"$body.get('email')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -5634,7 +5637,7 @@
           "schema": {
             "type": "string",
             "enum": ["initialize", "active", "inactive", "apply", "metadata", "submit", "save", "review", "resume", "lock",
-              "unlock", "withdraw", "restore", "changeStep"]
+              "unlock", "withdraw", "restore", "changeStep", "addContributors", "removeContributor", "copySubmission"]
           }
         },
         {
@@ -5697,7 +5700,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('data'))\"data\":$input.json('$.data'),#end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'),#end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\",#end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids,#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'),#end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {

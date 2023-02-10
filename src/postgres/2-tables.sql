@@ -56,7 +56,11 @@ DROP TABLE IF EXISTS submission_action_data CASCADE;
 
 DROP TABLE IF EXISTS submission_form_data CASCADE;
 
+DROP TABLE IF EXISTS submission_form_data_pool CASCADE;
+
 DROP TABLE IF EXISTS submission_lock CASCADE;
+
+DROP TABLE IF EXISTS submission_copy CASCADE;
 
 DROP TABLE IF EXISTS edpuser_permission_submission CASCADE;
 
@@ -203,7 +207,8 @@ CREATE TABLE IF NOT EXISTS edpuser (
   refresh_token VARCHAR DEFAULT 'none',
   registered TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP DEFAULT NOW(),
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE (email)
 );
 
 CREATE TABLE IF NOT EXISTS edpgroup (
@@ -340,6 +345,7 @@ CREATE TABLE IF NOT EXISTS submission (
   initiator_edpuser_id UUID NOT NULL,
   daac_id UUID,
   conversation_id UUID,
+  contributor_ids UUID[],
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   hidden BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (id),
@@ -383,14 +389,22 @@ CREATE TABLE IF NOT EXISTS submission_action_data (
   FOREIGN KEY (action_id) REFERENCES action (id)
 );
 
+CREATE TABLE IF NOT EXISTS submission_form_data_pool (
+  id UUID NOT NULL,
+  data JSONB DEFAULT '{}'::JSONB,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id)
+);
+
 CREATE TABLE IF NOT EXISTS submission_form_data (
   id UUID NOT NULL,
   form_id UUID NOT NULL,
-  data JSONB DEFAULT '{}'::JSONB,
+  data UUID NOT NULL,
   submitted_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id, form_id),
   FOREIGN KEY (id) REFERENCES submission (id),
-  FOREIGN KEY (form_id) REFERENCES form (id)
+  FOREIGN KEY (form_id) REFERENCES form (id),
+  FOREIGN KEY (data) REFERENCES submission_form_data_pool (id)
 );
 
 CREATE TABLE IF NOT EXISTS submission_lock (
@@ -400,6 +414,18 @@ CREATE TABLE IF NOT EXISTS submission_lock (
   created_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES submission (id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
+);
+
+CREATE TABLE IF NOT EXISTS submission_copy (
+  id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
+  origin_id UUID NOT NULL,
+  context VARCHAR DEFAULT 'none',
+  created_at TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id),
+  FOREIGN KEY (origin_id) REFERENCES submission (id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
 );
 

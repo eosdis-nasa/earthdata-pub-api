@@ -49,8 +49,8 @@ async function processRecord(record) {
   Object.assign(action, { output });
   await DatabaseUtil.execute({ resource: 'submission', operation: 'updateActionData' },
     { submission, action });
-  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'getStatus' },
-    { submission });
+  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'findById' },
+    { id: submissionId });
   const newEventMessage = {
     event_type: 'workflow_promote_step',
     submission_id: status.id,

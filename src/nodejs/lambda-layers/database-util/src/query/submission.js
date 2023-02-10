@@ -3,7 +3,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -19,11 +19,14 @@ const fieldMap = {
   status: 'step.status',
   forms: 'forms',
   action_data: 'COALESCE(submission_action_data.action_data, \'{}\'::JSONB) action_data',
-  form_data: 'COALESCE(submission_form_data.form_data, \'{}\'::JSONB) form_data',
+  form_data: 'COALESCE(submission_form_data_pool.data, \'{}\'::JSONB) form_data',
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
-  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"'
+  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
+  contributor_ids: 'submission.contributor_ids',
+  copy: '(EXISTS(SELECT edpuser_id FROM submission_copy WHERE submission_copy.id = submission.id)) "copy"',
+  origin_id: 'submission_copy.origin_id'
 };
 const refs = {
   initiator_ref: {
@@ -55,6 +58,16 @@ const refs = {
     type: 'natural_join',
     src: 'submission_metadata'
   },
+  submission_copy:{
+    type: 'natural_left_join',
+    src: {
+      type: 'select',
+      fields: ['submission_copy.origin_id'],
+      from: {base: 'submission_copy'},
+      group: 'submission_copy.id',
+      alias: 'submission_copy'
+    }
+  },
   submission_action_data: {
     type: 'natural_left_join',
     src: {
@@ -71,16 +84,6 @@ const refs = {
       type: 'select',
       fields: [
         'submission_form_data.id',
-        {
-          type: 'coalesce',
-          src: {
-            type: 'json_merge_agg',
-            src: 'submission_form_data.data',
-            sort: 'submitted_at'
-          },
-          fallback: '\'{}\'::JSONB',
-          alias: 'form_data'
-        },
         {
           type: 'json_agg',
           src: {
@@ -147,6 +150,11 @@ const refs = {
     type: 'left_join',
     src: 'workflow',
     on: { left: 'workflow.id', right: 'submission_status.workflow_id' }
+  },
+  submission_form_data_pool: {
+    type: 'left_join',
+    src: 'submission_form_data_pool',
+    on:{ left: 'submission_form_data_pool.id', right: 'submission.id'}
   }
 };
 
@@ -156,7 +164,7 @@ const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [{ field: fieldMap.id, param: 'id' }]
@@ -167,11 +175,11 @@ const getUsersSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [
-      ...([{ field: 'submission.initiator_edpuser_id', param: 'user_id' }]),
+      ...([{ cmd: `'${params.user_id}'=ANY(submission.contributor_ids)` }]),
       ...([{ field: 'submission.hidden', op: params.hidden ? 'is' : 'is_not', value: 'true'}])
     ]
   },
@@ -186,7 +194,7 @@ const getDaacSubmissions = (params) => sql.select({
         fields: fields(allFields),
     from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool, refs.submission_copy]
     },
         where: {
           filters: [
@@ -245,7 +253,7 @@ const getAdminSubmissions = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [
@@ -259,9 +267,9 @@ const getAdminSubmissions = (params) => sql.select({
 const findAll = ({
   name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
   status, created_before, created_after, last_change_before, last_change_after, hidden, sort, order,
-  per_page, page
+  per_page, page, contributor_ids
 }) => sql.select({
-  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change, fieldMap.hidden],
+  fields: [fieldMap.id, fieldMap.name, fieldMap.conversation_id, fieldMap.workflow_id, fieldMap.workflow_name, fieldMap.step_name, fieldMap.status, fieldMap.created_at, fieldMap.last_change, fieldMap.hidden, fieldMap.contributor_ids],
   from: {
     base: table,
     joins: [refs.submission_status, refs.step, refs.workflow]
@@ -281,6 +289,7 @@ const findAll = ({
       ...(created_before ? [{ field: 'submission.created_at', op: 'lte', param: 'created_before' }] : []),
       ...(last_change_after ? [{ field: 'submission_status.last_change', op: 'gte', param: 'last_change_after' }] : []),
       ...(last_change_before ? [{ field: 'submission_status.last_change', op: 'lte', param: 'last_change_before' }] : []),
+      ...(contributor_ids ? [{ field: 'submission.contributor_ids', param: 'contributor_ids' }] : []),
       ...(typeof(hidden)=='undefined' ? [] : (hidden==='false' || hidden===false) ? [{ cmd: 'NOT submission.hidden'}] : [{ cmd: 'submission.hidden'}]),
     ]
   },
@@ -296,8 +305,8 @@ FROM submission
 WHERE submission.id = {{id}}`;
 
 const initialize = (params) => `
-INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''})
-VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''})
+INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''}, contributor_ids)
+VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}::UUID])
 RETURNING *`;
 
 const updateName = () => `
@@ -318,6 +327,12 @@ SET conversation_id = {{conversation_id}}
 WHERE id = {{id}}
 RETURNING *`;
 
+const getConversationId = () =>`
+SELECT submission.conversation_id
+FROM submission
+WHERE id = {{id}}
+`
+
 const getMetadata = () => `
 SELECT submission_metadata.*
 FROM submission_metadata
@@ -330,19 +345,22 @@ WHERE id = {{id}}
 RETURNING *`;
 
 const getFormData = () => `
-SELECT
-submission_form_data.id,
-COALESCE(JSONB_OBJECT_AGG(data ORDER BY submitted_at ASC), '{}'::JSONB) form_data
-FROM submission_form_data
-GROUP BY submission_form_data.id
-WHERE submission_form_data.id = {{id}}`;
+SELECT data FROM submission_form_data
+WHERE id = {{id}} AND form_id = {{form_id}}`;
 
-const updateFormData = () => `
+const updateFormData = ({id, data, form_id}) => `
+DO $$
+BEGIN
+INSERT INTO submission_form_data_pool(id, data) VALUES
+('${id}', '${data}'::JSONB)
+ON CONFLICT (id) DO UPDATE SET
+data = EXCLUDED.data;
+
 INSERT INTO submission_form_data(id, form_id, data) VALUES
-({{id}}, {{form_id}}, {{data}}::JSONB)
+('${id}', '${form_id}', '${id}')
 ON CONFLICT (id, form_id) DO UPDATE SET
-data = EXCLUDED.data
-RETURNING *`;
+data = EXCLUDED.data;
+END $$`;
 
 const getActionData = () => `
 SELECT
@@ -457,6 +475,68 @@ SELECT step_edge.step_name
 FROM step_edge
 WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}})`;
 
+const addContributors = ({ contributor_ids }) => `
+UPDATE submission
+SET contributor_ids = ARRAY(
+  SELECT DISTINCT unnest(array_cat(contributor_ids, ARRAY['${contributor_ids.join('\',\'')}']::UUID[]))
+)
+WHERE id = {{id}}
+RETURNING *`;
+
+const getContributors = () =>`
+SELECT contributor_ids
+FROM submission
+WHERE id = {{id}}
+`;
+
+const removeContributor = () =>`
+UPDATE submission
+SET contributor_ids = array_remove(contributor_ids, {{contributor}})
+WHERE id = {{id}}
+RETURNING *`;
+
+const copyActionData = (params) =>`
+DO $$
+DECLARE
+actionId UUID;
+BEGIN
+  FOR actionId IN 
+    SELECT action_id FROM submission_action_data WHERE id = '${params.origin_id}'
+  LOOP
+    INSERT INTO submission_action_data(id, action_id, data) VALUES(
+      '${params.id}',
+      actionId, 
+      (SELECT data FROM submission_action_data WHERE action_id = actionId and id = '${params.origin_id}')
+    );
+  END LOOP;
+END $$
+`;
+
+const copyFormData = ({ id, data, origin_id }) =>`
+
+DO $$
+DECLARE
+formId UUID;
+BEGIN
+
+  INSERT INTO submission_form_data_pool(id, data) VALUES
+  ('${id}', '${data}'::JSONB);
+
+  FOR formId IN 
+    SELECT form_id FROM submission_form_data WHERE id = '${origin_id}'
+  LOOP
+    INSERT INTO submission_form_data(id, form_id, data) VALUES
+    ('${id}', formId, '${id}');
+  END LOOP;
+END $$
+`;
+
+const setSubmissionCopy = ({ context }) => `
+INSERT INTO submission_copy(id, edpuser_id, origin_id${context? ', context':''})
+VALUES({{id}}, {{edpuser_id}}, {{origin_id}}${context? `, '${context}'`:''})
+ON CONFLICT DO NOTHING
+`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -469,6 +549,7 @@ module.exports.promoteStep = promoteStep;
 module.exports.updateName = updateName;
 module.exports.updateDaac = updateDaac;
 module.exports.updateConversation = updateConversation;
+module.exports.getConversationId = getConversationId;
 module.exports.getState = getState;
 module.exports.getMetadata = getMetadata;
 module.exports.updateMetadata = updateMetadata;
@@ -483,3 +564,9 @@ module.exports.withdrawSubmission = withdrawSubmission;
 module.exports.restoreSubmission = restoreSubmission;
 module.exports.setStep = setStep;
 module.exports.checkWorkflow = checkWorkflow;
+module.exports.addContributors = addContributors;
+module.exports.getContributors = getContributors;
+module.exports.removeContributor = removeContributor;
+module.exports.copyActionData = copyActionData;
+module.exports.copyFormData = copyFormData;
+module.exports.setSubmissionCopy = setSubmissionCopy;
