@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+
+## 1.0.11 - 2023-02-10
+
 - Resolved snyk vulnerabilities
 - Added question privileges to admin role
 - Updated content based on kayako and jira tickets from info team and others
