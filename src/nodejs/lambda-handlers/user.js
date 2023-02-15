@@ -54,7 +54,7 @@ async function createMethod(params, privileges) {
     if (emailUsed === email) { return { error: 'Duplicate email' }; }
 
     const newUser = await createCognitoUser(params);
-    const user = await db.user.loginUser(newUser);
+    let user = await db.user.loginUser(newUser);
     if (Array.isArray(params.role_ids)) {
       params.role_ids.forEach(async (roleId) => {
         await db.user.addRole({ ...user, role_id: roleId });
@@ -68,7 +68,9 @@ async function createMethod(params, privileges) {
     }
 
     await msg.subscribeEmail(email);
-    if(detailed) await db.user.setDetail({ ...user, detailed });
+    if (detailed) {
+      user = await db.user.setDetail({ ...user, detailed });
+    }
 
     return user;
   }

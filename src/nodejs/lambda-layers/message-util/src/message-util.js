@@ -30,16 +30,15 @@ function marshalAttributes(eventMessage) {
   }, {});
 }
 
-function subscribeEmail(userEmail){
+function subscribeEmail(userEmail) {
   const params = {
-    Protocol: "email",
+    Protocol: 'email',
     TopicArn: emailSns,
     Endpoint: userEmail
   };
 
-  const response = sns.subscribe(params).promise.catch((e) => {console.error(e);});
+  const response = sns.subscribe(params).promise().catch((e) => { console.error(e); });
   return response;
-
 }
 
 function sendEmail(eventMessage) {

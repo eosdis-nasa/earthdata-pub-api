@@ -372,7 +372,7 @@ const setDetail = () => `
 UPDATE edpuser SET
 detailed = {{detailed}}
 WHERE edpuser.id = {{id}}
-`
+RETURNING *`;
 
 
 module.exports.find = find;
