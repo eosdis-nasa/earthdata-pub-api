@@ -49,3 +49,6 @@ RAISE;
 --this should not be run untill after the db's have been cleaned of duplicat entries as document in the closing of EDPUB-785
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
+
+--2/15/2022 adds entry for tracking level of detail
+    ALTER TABLE edpuser ADD detailed BOOLEAN DEFAULT 'false';
