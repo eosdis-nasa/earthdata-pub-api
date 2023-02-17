@@ -30,6 +30,20 @@ function marshalAttributes(eventMessage) {
   }, {});
 }
 
+function subscribeEmail(userEmail) {
+  const params = {
+    Protocol: 'email',
+    TopicArn: emailSns,
+    Endpoint: userEmail,
+    Attributes: {
+      FilterPolicy: { email: [userEmail] }
+    }
+  };
+
+  const response = sns.subscribe(params).promise().catch((e) => { console.error(e); });
+  return response;
+}
+
 function sendEmail(eventMessage) {
   const {
     emails,
@@ -121,3 +135,4 @@ module.exports.sendEvent = sendEvent;
 module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
 module.exports.parseAttributesFromParams = parseAttributesFromParams;
+module.exports.subscribeEmail = subscribeEmail;
