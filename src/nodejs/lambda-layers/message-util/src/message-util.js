@@ -34,7 +34,10 @@ function subscribeEmail(userEmail) {
   const params = {
     Protocol: 'email',
     TopicArn: emailSns,
-    Endpoint: userEmail
+    Endpoint: userEmail,
+    Attributes:{
+      FilterPolicy:{email:[userEmail]}
+    }
   };
 
   const response = sns.subscribe(params).promise().catch((e) => { console.error(e); });
