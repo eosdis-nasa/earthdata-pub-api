@@ -220,7 +220,7 @@ async function removeContributorMethod(event, user) {
 }
 
 async function copySubmissionMethod(event, user) {
-  const { id: originId, context } = event;
+  const { id: originId, copy_context: copyContext } = event;
   const { form_data: formData, daac_id: daacId } = await db.submission.findById({ id: originId });
   const { id } = await initializeMethod({ daac_id: daacId }, user);
 
@@ -230,7 +230,7 @@ async function copySubmissionMethod(event, user) {
 
   await db.submission.copyActionData({ origin_id: originId, id });
   await db.submission.setSubmissionCopy({
-    id, edpuser_id: user.id, origin_id: originId, context
+    id, edpuser_id: user.id, origin_id: originId, context: copyContext
   });
 
   return db.submission.findById({ id });
