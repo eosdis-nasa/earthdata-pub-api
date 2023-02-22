@@ -25,7 +25,7 @@ The following are required for following the packaging and deploying steps:
 - [Terraform](https://github.com/hashicorp/terraform) AWS components are
   provisioned using Terraform v1.0.0.
 - [Node.js](https://nodejs.org/en/download/) AWS Lambda functions and layers are
-  implemented in Node.js 14.19.1. The Node Package Manager is also required but included
+  implemented in Node.js 18.14.1. The Node Package Manager is also required but included
   with a standard Node.js installation.
 - [Docker](https://www.docker.com/) Docker is used to create the local test
   environment including the following services Postgresql, PgAdmin, GoAws for
