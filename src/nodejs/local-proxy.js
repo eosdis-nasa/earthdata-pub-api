@@ -1,5 +1,7 @@
 const http = require('http');
-const { Lambda } = require('aws-sdk');
+const {
+  Lambda
+} = require("@aws-sdk/client-lambda");
 
 const region = process.env.REGION;
 const lambda = new Lambda({ region });
@@ -10,8 +12,7 @@ function invoke(method, headers, url, payload) {
     InvocationType: 'RequestResponse',
     Payload: JSON.stringify({ method, headers, url, payload })
   })
-  .promise()
-  .then(({ Payload }) => JSON.parse(Payload));
+    .then(({ Payload }) => JSON.parse(Payload));
 }
 
 http.createServer((req, res) => {
@@ -21,13 +22,13 @@ http.createServer((req, res) => {
   });
   req.on('end', () => {
     const { method, url } = req;
-    const { host, ...headers} = req.headers;
+    const { host, ...headers } = req.headers;
     const payload = chunks.length > 0 ? chunks.join('') : null;
     invoke(method, headers, url, payload)
-    .then(({ statusCode, statusMessage, headers, body }) => {
-      res.writeHead(statusCode, statusMessage, headers);
-      res.write(body);
-      res.end();
-    });
+      .then(({ statusCode, statusMessage, headers, body }) => {
+        res.writeHead(statusCode, statusMessage, headers);
+        res.write(body);
+        res.end();
+      });
   });
 }).listen(8080);

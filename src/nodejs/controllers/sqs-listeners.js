@@ -1,4 +1,6 @@
-const { SQS } = require('aws-sdk');
+const {
+  SQS
+} = require("@aws-sdk/client-sqs");
 const { Consumer } = require('sqs-consumer');
 const { inboundConsumer } = require('./handlers.js');
 

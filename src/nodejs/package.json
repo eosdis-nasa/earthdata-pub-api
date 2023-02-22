@@ -13,7 +13,12 @@
   "license": "Unlicense",
   "private": true,
   "dependencies": {
-    "aws-sdk": "^2.825.0",
+    "@aws-sdk/client-lambda": "3.276.0",
+    "@aws-sdk/client-sqs": "3.276.0",
+    "@aws-sdk/client-s3": "3.276.0",
+    "@aws-sdk/client-rds": "3.276.0",
+    "@aws-sdk/client-api-gateway": "3.276.0",
+    "@aws-sdk/client-cognito-identity-provider": "3.276.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "js-yaml": "^4.0.0",
