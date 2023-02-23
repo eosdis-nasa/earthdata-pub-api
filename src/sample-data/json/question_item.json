@@ -398,7 +398,7 @@
   {
     "question_name": "data_format",
     "title": "Data Format",
-    "text": "What is the format(s) of the files within this data product? If selecting Other, please upload code to read the data or provide a URL to code to read the data.",
+    "text": "What file format(s) does this data product include?",
     "help": "NASA Open Data Policy https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy",
     "required": true,
     "inputs": [
