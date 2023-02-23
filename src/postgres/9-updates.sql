@@ -52,3 +52,5 @@ RAISE;
 
 --2/15/2022 adds entry for tracking level of detail
     ALTER TABLE edpuser ADD detailed BOOLEAN DEFAULT 'false';
+
+    UPDATE question SET text='What file format(s) does this data product include?' where id='50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27';
