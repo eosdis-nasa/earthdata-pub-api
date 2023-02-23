@@ -1,7 +1,5 @@
 const http = require('http');
-const {
-  Lambda
-} = require("@aws-sdk/client-lambda");
+const { Lambda } = require("@aws-sdk/client-lambda");
 
 const region = process.env.REGION;
 const lambda = new Lambda({ region });
