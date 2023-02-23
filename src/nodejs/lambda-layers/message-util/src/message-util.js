@@ -36,7 +36,7 @@ function subscribeEmail(userEmail) {
     TopicArn: emailSns,
     Endpoint: userEmail,
     Attributes: {
-      FilterPolicy: { email: [userEmail] }
+      FilterPolicy: `{"email": ["${userEmail}"]}`
     }
   };
 
