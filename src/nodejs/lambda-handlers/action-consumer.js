@@ -6,7 +6,7 @@
  * @see module:Actions
  */
 
-const AWS = require('aws-sdk');
+const { S3 } = require('@aws-sdk/client-s3');
 
 const Schema = require('schema-util');
 
@@ -23,7 +23,7 @@ function fetchAction(key, local) {
       Key: key
     };
     const file = fs.createWriteStream(local);
-    const s3 = new AWS.S3();
+    const s3 = new S3();
     const stream = s3.getObject(params).createReadStream();
     stream.on('end', resolve);
     stream.pipe(file);
@@ -44,7 +44,7 @@ async function processRecord(record) {
   // eslint-disable-next-line
   const { execute } = require(local);
   const output = await execute({
-    submission, data, AWS, DatabaseUtil, MessageUtil, Schema
+    submission, data, DatabaseUtil, MessageUtil, Schema
   });
   Object.assign(action, { output });
   await DatabaseUtil.execute({ resource: 'submission', operation: 'updateActionData' },

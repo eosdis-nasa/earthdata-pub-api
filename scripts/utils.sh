@@ -18,7 +18,7 @@ clear_artifacts() {
 
 install_layer() {
   cd ${DIR}/src/nodejs/lambda-layers/${1}
-  npm install --production --force
+  npm install --production --force  --lockfile-version=2
   npm pack
   cd ${DIR}/temp
   mkdir nodejs

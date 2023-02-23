@@ -14,6 +14,6 @@ mkdir -p ./src/nodejs/lambda-layers/database-util/src/db-setup
 cp ./src/postgres/*.sql ./src/nodejs/lambda-layers/database-util/src/db-setup
 
 cd ${DIR}/src/nodejs
-npm install
+npm install --lockfile-version=2
 
 cd ${DIR}

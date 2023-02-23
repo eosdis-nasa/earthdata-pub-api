@@ -8,7 +8,7 @@
 
 const db = require('database-util');
 const msg = require('message-util');
-const { CognitoIdentityServiceProvider } = require('aws-sdk');
+const { CognitoIdentityProvider: CognitoIdentityServiceProvider } = require('@aws-sdk/client-cognito-identity-provider');
 
 const idp = new CognitoIdentityServiceProvider({ region: process.env.REGION });
 const userPoolId = process.env.CUP_ID;
@@ -34,7 +34,7 @@ async function createCognitoUser({
     ]
   };
   try {
-    const { User: userData } = await idp.adminCreateUser(params).promise();
+    const { User: userData } = await idp.adminCreateUser(params);
     const user = userData.Attributes.reduce((acc, attribute) => {
       const key = { [attribute.Name]: attribute.Value };
       Object.assign(acc, key);
