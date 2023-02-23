@@ -685,6 +685,7 @@ resource "aws_lambda_function" "user" {
       REGION    = var.region
       CUP_ID    = var.cognito_user_pool_id
       EVENT_SNS = var.edpub_event_sns_arn
+      EMAIL_SNS = var.edpub_email_sns_arn
       PG_USER   = var.db_user
       PG_HOST   = var.db_host
       PG_DB     = var.db_database
