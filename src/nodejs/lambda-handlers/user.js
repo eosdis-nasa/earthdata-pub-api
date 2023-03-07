@@ -7,7 +7,7 @@
  */
 
 const db = require('database-util');
-const msg = require('message-util');
+// const msg = require('message-util');
 const { CognitoIdentityProvider: CognitoIdentityServiceProvider } = require('@aws-sdk/client-cognito-identity-provider');
 
 const idp = new CognitoIdentityServiceProvider({ region: process.env.REGION });
