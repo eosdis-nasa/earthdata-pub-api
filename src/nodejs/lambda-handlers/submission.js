@@ -61,7 +61,7 @@ async function initializeMethod(event, user) {
 }
 
 async function applyMethod(event, user) {
-  const approvedUserRoles = ['admin', 'coordinator'];
+  const approvedUserRoles = ['admin', 'manager', 'staff'];
   const { id, workflow_id: workflowId } = event;
   let status = await db.submission.getState({ id });
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
