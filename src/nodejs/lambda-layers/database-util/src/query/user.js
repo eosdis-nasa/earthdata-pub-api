@@ -3,7 +3,7 @@ const role = require('./role.js');
 const group = require('./group.js');
 
 const table = 'edpuser';
-const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'user_privileges', 'subscriptions'];
+const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'user_privileges', 'subscriptions', 'detailed'];
 const fieldMap = {
   id: 'edpuser.id',
   name: 'edpuser.name',
@@ -65,7 +65,8 @@ const fieldMap = {
       }]
     ],
     alias: 'subscriptions'
-  }
+  },
+  detailed: 'edpuser.detailed'
 };
 const fields = (list) => list.map((field) => fieldMap[field]);
 const refs = {
@@ -367,6 +368,12 @@ const getUsers = ({ids}) => `
   SELECT id, name FROM edpuser WHERE id = ANY (ARRAY['${ids.join('\',\'')}']::UUID[])
 `;
 
+const setDetail = () => `
+UPDATE edpuser SET
+detailed = {{detailed}}
+WHERE edpuser.id = {{id}}
+RETURNING *`;
+
 
 module.exports.find = find;
 module.exports.findAll = findAll;
@@ -386,3 +393,4 @@ module.exports.findSystemUser = findSystemUser;
 module.exports.getEmails = getEmails;
 module.exports.findByEmail = findByEmail;
 module.exports.getUsers = getUsers;
+module.exports.setDetail = setDetail;

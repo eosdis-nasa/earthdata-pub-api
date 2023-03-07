@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+const { SNS } = require('@aws-sdk/client-sns');
 const uuid = require('uuid');
 
 const emailSns = process.env.EMAIL_SNS;
@@ -6,7 +6,7 @@ const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
 
-const sns = new AWS.SNS({
+const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
 });
 
@@ -30,6 +30,20 @@ function marshalAttributes(eventMessage) {
   }, {});
 }
 
+function subscribeEmail(userEmail) {
+  const params = {
+    Protocol: 'email',
+    TopicArn: emailSns,
+    Endpoint: userEmail,
+    Attributes: {
+      FilterPolicy: `{"email": ["${userEmail}"]}`
+    }
+  };
+
+  const response = sns.subscribe(params).promise().catch((e) => { console.error(e); });
+  return response;
+}
+
 function sendEmail(eventMessage) {
   const {
     emails,
@@ -42,7 +56,7 @@ function sendEmail(eventMessage) {
     MessageAttributes: marshalAttributes({ email: emails }),
     TopicArn: emailSns
   };
-  const response = sns.publish(params).promise().catch((e) => { console.error(e); });
+  const response = sns.publish(params).catch((e) => { console.error(e); });
   return response;
 }
 
@@ -55,7 +69,7 @@ function sendEvent(eventMessage) {
     MessageDeduplicationId: Date.now().toString(),
     TopicArn: eventSns
   };
-  const response = sns.publish(params).promise().catch((e) => { console.error(e); });
+  const response = sns.publish(params).catch((e) => { console.error(e); });
   return response;
 }
 
@@ -67,7 +81,7 @@ function sendMetric(eventMessage) {
     Message: JSON.stringify(cleanedMessage),
     TopicArn: metricsSns
   };
-  const response = sns.publish(params).promise().catch((e) => { console.error(e); });
+  const response = sns.publish(params).catch((e) => { console.error(e); });
   return response;
 }
 
@@ -121,3 +135,4 @@ module.exports.sendEvent = sendEvent;
 module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
 module.exports.parseAttributesFromParams = parseAttributesFromParams;
+module.exports.subscribeEmail = subscribeEmail;

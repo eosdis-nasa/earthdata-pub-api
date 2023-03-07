@@ -32,5 +32,6 @@
   "repository": {
     "type": "git",
     "url": "https://git.earthdata.nasa.gov/scm/edpub/api.git"
-  }
+  },
+  "dependencies": {}
 }
