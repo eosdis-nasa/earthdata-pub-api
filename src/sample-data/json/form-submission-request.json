@@ -371,7 +371,7 @@
         {
           "short_name": "data_format",
           "long_name": "Data Format",
-          "text": "What is the format(s) of the files in this data product?",
+          "text": "What file format(s) does this data product include?",
           "help": "For a list of NASA-approved data formats, please refer to the NASA Earthdata Standards and Practices web page <https://earthdata.nasa.gov/esdis/eso/standards-and-references#data-formats>.",
           "required": true,
           "inputs": [

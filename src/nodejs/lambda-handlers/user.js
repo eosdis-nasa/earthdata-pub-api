@@ -7,7 +7,8 @@
  */
 
 const db = require('database-util');
-const { CognitoIdentityServiceProvider } = require('aws-sdk');
+// const msg = require('message-util');
+const { CognitoIdentityProvider: CognitoIdentityServiceProvider } = require('@aws-sdk/client-cognito-identity-provider');
 
 const idp = new CognitoIdentityServiceProvider({ region: process.env.REGION });
 const userPoolId = process.env.CUP_ID;
@@ -33,7 +34,7 @@ async function createCognitoUser({
     ]
   };
   try {
-    const { User: userData } = await idp.adminCreateUser(params).promise();
+    const { User: userData } = await idp.adminCreateUser(params);
     const user = userData.Attributes.reduce((acc, attribute) => {
       const key = { [attribute.Name]: attribute.Value };
       Object.assign(acc, key);
@@ -48,12 +49,12 @@ async function createCognitoUser({
 async function createMethod(params, privileges) {
   if (privileges.includes('ADMIN')
     || privileges.includes('USER_CREATE')) {
-    const { email } = params;
+    const { email, detailed } = params;
     const { email: emailUsed } = await db.user.findByEmail({ email });
     if (emailUsed === email) { return { error: 'Duplicate email' }; }
 
     const newUser = await createCognitoUser(params);
-    const user = await db.user.loginUser(newUser);
+    let user = await db.user.loginUser(newUser);
     if (Array.isArray(params.role_ids)) {
       params.role_ids.forEach(async (roleId) => {
         await db.user.addRole({ ...user, role_id: roleId });
@@ -65,6 +66,12 @@ async function createMethod(params, privileges) {
         await db.user.addGroup({ ...user, group_id: groupId });
       });
     }
+
+    // await msg.subscribeEmail(email);
+    if (detailed) {
+      user = await db.user.setDetail({ ...user, detailed });
+    }
+
     return user;
   }
   return { error: 'No privilege' };

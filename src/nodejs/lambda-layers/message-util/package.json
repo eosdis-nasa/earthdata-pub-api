@@ -16,9 +16,10 @@
     "uuid": "8.3.2",
     "node-fetch": "2.6.7",
     "form-data": "4.0.0",
-    "tmp": "0.2.1"
+    "tmp": "0.2.1",
+    "@aws-sdk/client-sns": "3.276.0"
   },
-  "bundledDependencies": {},
+  "bundledDependencies": [],
   "devDependencies": {
     "aws-sdk": "^2.825.0"
   }

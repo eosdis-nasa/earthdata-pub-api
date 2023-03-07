@@ -49,3 +49,12 @@ RAISE;
 --this should not be run untill after the db's have been cleaned of duplicat entries as document in the closing of EDPUB-785
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
+
+--2/15/2022 adds entry for tracking level of detail
+    ALTER TABLE edpuser ADD detailed BOOLEAN DEFAULT 'false';
+
+    UPDATE question SET text='What file format(s) does this data product include?' where id='50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27';
+
+--3/7/2023 Update reassign permissions
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REASSIGN');
+    

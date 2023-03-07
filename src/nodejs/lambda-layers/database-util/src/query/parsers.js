@@ -69,3 +69,4 @@ module.exports.removeContributor = one;
 module.exports.getConversationId = one;
 module.exports.getFormData = one;
 module.exports.getUsers = many;
+module.exports.setDetail = one;

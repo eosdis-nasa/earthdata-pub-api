@@ -5,7 +5,7 @@
 
 const path = require('path');
 
-const { S3 } = require('aws-sdk');
+const { S3 } = require('@aws-sdk/client-s3');
 
 const db = require('database-util');
 
@@ -19,12 +19,12 @@ const s3 = new S3({ region });
 
 async function getReport({ key }) {
   const params = { Bucket: bucket, Key: `${key}.png` };
-  const data = await s3.getObject(params).promise();
+  const data = await s3.getObject(params);
   return { image: `data:image/png;base64,${data.Body.toString('base64')}` };
 }
 
 async function listReports() {
-  const list = await s3.listObjectsV2({ Bucket: bucket }).promise();
+  const list = await s3.listObjectsV2({ Bucket: bucket });
   const keys = list.Contents.map((object) => path.parse(object.Key).name);
   return keys;
 }

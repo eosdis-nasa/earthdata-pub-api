@@ -8,7 +8,7 @@
 
 const db = require('database-util');
 
-const { Lambda } = require('aws-sdk');
+const { Lambda } = require('@aws-sdk/client-lambda');
 
 const lambda = new Lambda();
 
@@ -30,7 +30,7 @@ function invokeLambda(functionArn, payload) {
     InvocationType: 'RequestResponse',
     Payload: JSON.stringify(payload)
   };
-  return lambda.invoke(params).promise()
+  return lambda.invoke(params)
     .then(({ Payload }) => Payload || errors.in_module);
 }
 

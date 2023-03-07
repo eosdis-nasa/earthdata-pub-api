@@ -207,6 +207,7 @@ CREATE TABLE IF NOT EXISTS edpuser (
   refresh_token VARCHAR DEFAULT 'none',
   registered TIMESTAMP DEFAULT NOW(),
   last_login TIMESTAMP DEFAULT NOW(),
+  detailed BOOLEAN DEFAULT 'false',
   PRIMARY KEY (id),
   UNIQUE (email)
 );

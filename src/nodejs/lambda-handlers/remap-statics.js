@@ -4,7 +4,8 @@
  * @module RemapStatics
  */
 
-const { S3, APIGateway } = require('aws-sdk');
+const { APIGateway } = require('@aws-sdk/client-api-gateway');
+const { S3 } = require('@aws-sdk/client-s3');
 
 const region = process.env.REGION;
 const stage = process.env.STAGE;
@@ -81,7 +82,7 @@ function createTemplate(mappings) {
 
 async function deployChanges() {
   const params = { restApiId: apiId, stageName: stage };
-  await apigateway.createDeployment(params).promise();
+  await apigateway.createDeployment(params);
 }
 
 async function handler() {

@@ -10,20 +10,20 @@
  * @module Backup
  */
 
-const AWS = require('aws-sdk');
+const { RDS } = require('@aws-sdk/client-rds');
 
 const EXPIRATION_IN_DAYS = 7;
-const rds = new AWS.RDS();
+const rds = new RDS();
 
 async function describeDBSnapshots() {
-  return rds.describeDBClusterSnapshots({}).promise();
+  return rds.describeDBClusterSnapshots({});
 }
 
 async function backupDaily(identifier) {
   return rds.copyDBClusterSnapshot({
     SourceDBClusterSnapshotIdentifier: identifier,
     TargetDBClusterSnapshotIdentifier: identifier.replace('rds:', '')
-  }).promise();
+  });
 }
 
 async function backupWeekly() {
@@ -35,7 +35,7 @@ async function backupWeekly() {
 async function expireDaily(expiredSnapshots) {
   await Promise.all(expiredSnapshots.map(async (snapshot) => rds.deleteDBClusterSnapshot({
     DBClusterSnapshotIdentifier: snapshot
-  }).promise()));
+  })));
 }
 
 async function backupOnPrem() {
