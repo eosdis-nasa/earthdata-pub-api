@@ -67,7 +67,7 @@ async function createMethod(params, privileges) {
       });
     }
 
-    await msg.subscribeEmail(email);
+    // await msg.subscribeEmail(email);
     if (detailed) {
       user = await db.user.setDetail({ ...user, detailed });
     }
