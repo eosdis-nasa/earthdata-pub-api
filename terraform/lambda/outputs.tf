@@ -65,3 +65,7 @@ output "questions_lambda_arn" {
 output "workflow_lambda_arn" {
   value = aws_lambda_function.workflow.invoke_arn
 }
+
+output "file_upload_lambda_arn" {
+  value = aws_lambda_function.file_upload.invoke_arn
+}
