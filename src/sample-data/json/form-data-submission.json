@@ -261,36 +261,18 @@
         {
           "short_name": "data_product_doi",
           "long_name": "Data Product DOI",
-          "text": "If a Digital Object Identifier (DOI) already exists for this data product, please provide it.",
-          "help": "This would be the DOI for the actual data product and not for a publication related to this data product.",
+          "text": "If a Digital Object Identifier (DOI) already exists for this data product (not common), please provide it.",
+          "help": "This would be a DOI for the actual data and not for a paper related to this data product. The DAAC will create the data product DOI during data publication. Therefore, the DAAC needs to know if a data product DOI already exists.",
           "inputs": [
             {
-              "type": "checkbox",
-              "control_id": "data_product_doi_exists",
-              "label": "Has DOI"
-            },
-            {
-              "type": "table",
-              "control_id": "data_product_doi",
-              "enums": [
-                {
-                  "key": "data_product_doi_value",
-                  "label": "DOI",
-                  "type": "text",
-                  "editable": true
-                }
-              ],
-              "required_if":[
-                {
-                  "field":"data_product_doi_exists",
-                  "value":"true",
-                  "message":"Please add DOIs."
-                }
-              ]
+              "type": "text",
+              "control_id": "data_product_doi_value",
+              "label": "DOI",
+              "required": false
             }
           ],
-          "id": "c9c73e88-837a-42d2-aa1a-50874a333607",
-          "version": 1
+          "id": "c3af2edf-d912-40ce-990d-e8b4f86d1ad3",
+          "version": 2
         },
         {
           "short_name": "list_of_data_producers_and_groups",
