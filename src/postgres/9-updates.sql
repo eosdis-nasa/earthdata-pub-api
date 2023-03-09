@@ -55,3 +55,7 @@ RAISE;
 
     UPDATE question SET text='What file format(s) does this data product include?' where id='50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27';
     UPDATE question SET long_name='Science Value' where id='7fd7bccf-5065-4033-9956-9e80bc99c205';
+
+--3/7/2023 Update reassign permissions
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REASSIGN');
+    

@@ -7,7 +7,7 @@
  */
 
 const db = require('database-util');
-const msg = require('message-util');
+// const msg = require('message-util');
 const { CognitoIdentityProvider: CognitoIdentityServiceProvider } = require('@aws-sdk/client-cognito-identity-provider');
 
 const idp = new CognitoIdentityServiceProvider({ region: process.env.REGION });
@@ -67,7 +67,7 @@ async function createMethod(params, privileges) {
       });
     }
 
-    await msg.subscribeEmail(email);
+    // await msg.subscribeEmail(email);
     if (detailed) {
       user = await db.user.setDetail({ ...user, detailed });
     }

@@ -10,6 +10,16 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
+function filterObject(base, filter) {
+  const filtered = Object.keys(base)
+    .filter((key) => filter.includes(key))
+    .reduce((obj, key) => {
+      obj[key] = base[key];
+      return obj;
+    }, {});
+  return filtered;
+}
+
 async function statusMethod(event, user) {
   const hidden = event.operation === 'inactive';
   if (user.user_privileges.includes('REQUEST_ADMINREAD') || user.user_privileges.includes('ADMIN')
@@ -61,7 +71,7 @@ async function initializeMethod(event, user) {
 }
 
 async function applyMethod(event, user) {
-  const approvedUserRoles = ['admin', 'coordinator'];
+  const approvedUserRoles = ['admin', 'manager', 'staff'];
   const { id, workflow_id: workflowId } = event;
   let status = await db.submission.getState({ id });
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
@@ -220,15 +230,24 @@ async function removeContributorMethod(event, user) {
 }
 
 async function copySubmissionMethod(event, user) {
-  const { id: originId, copy_context: copyContext } = event;
+  const {
+    id: originId, copy_context: copyContext, copy_filter: copyFilter, action_copy: actionCopy
+  } = event;
   const { form_data: formData, daac_id: daacId } = await db.submission.findById({ id: originId });
   const { id } = await initializeMethod({ daac_id: daacId }, user);
 
-  formData.data_product_name_value = formData.data_product_name_value
-    ? `Copy of ${formData.data_product_name_value}` : '';
-  await db.submission.copyFormData({ id, data: JSON.stringify(formData), origin_id: originId });
+  const filteredFormData = !copyFilter ? formData
+    : filterObject(formData, copyFilter);
 
-  await db.submission.copyActionData({ origin_id: originId, id });
+  filteredFormData.data_product_name_value = filteredFormData.data_product_name_value
+    ? `Copy of ${filteredFormData.data_product_name_value}` : '';
+  await db.submission.copyFormData({
+    id,
+    data: JSON.stringify(filteredFormData),
+    origin_id: originId
+  });
+
+  if (actionCopy) await db.submission.copyActionData({ origin_id: originId, id });
   await db.submission.setSubmissionCopy({
     id, edpuser_id: user.id, origin_id: originId, context: copyContext
   });
