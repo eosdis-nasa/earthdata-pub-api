@@ -487,7 +487,7 @@
     "question_name": "sample_data_file",
     "title": "Sample Data File",
     "text": "Please upload a sample data file(s) or provide a URL to a location where a sample data file(s) can be accessed.",
-    "help": "Providing data files that are representative of the range of data within this data product will help the DAAC to better understand the data format, structure, and content.",
+    "help": "Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content.",
     "inputs": [
       {
         "type": "file",
