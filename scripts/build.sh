@@ -49,6 +49,7 @@ install_lambda version
 install_lambda workflow-consumer
 install_lambda questions
 install_lambda workflow
+install_lambda file-upload
 #Add more lambda functions here <--
 
 #Change back to root directory and remove temp folder
