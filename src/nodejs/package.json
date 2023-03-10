@@ -20,6 +20,7 @@
     "@aws-sdk/client-api-gateway": "3.276.0",
     "@aws-sdk/client-cognito-identity-provider": "3.276.0",
     "@aws-sdk/credential-providers": "3.276.0",
+    "@aws-sdk/s3-request-presigner": "3.276.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "js-yaml": "^4.0.0",

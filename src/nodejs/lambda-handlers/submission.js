@@ -11,7 +11,6 @@ const db = require('database-util');
 const msg = require('message-util');
 
 async function statusMethod(event, user) {
-  console.log(user)
   const hidden = event.operation === 'inactive';
   if (user.user_privileges.includes('REQUEST_ADMINREAD') || user.user_privileges.includes('ADMIN')
   || user.user_groups.some((group) => group.short_name === 'root_group')) {
