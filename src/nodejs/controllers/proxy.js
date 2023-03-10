@@ -741,6 +741,20 @@ module.exports.editWorkflow = function editWorkflow(req, res, next){
   });
 }
 
+module.exports.fileUpload = function fileUpload(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: params.operation.value,
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({
     message: 'Placeholder for overview app root endpoint.'

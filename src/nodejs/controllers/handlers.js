@@ -19,3 +19,4 @@ module.exports.workflowConsumer = require('../lambda-handlers/workflow-consumer.
 module.exports.serviceAuthorizer = require('../lambda-handlers/service-authorizer.js').handler;
 module.exports.rdsBackup = require('../lambda-handlers/rds-backup').handler;
 module.exports.workflow = require('../lambda-handlers/workflow.js').handler;
+module.exports.fileUpload = require('../lambda-handlers/file-upload.js').handler;

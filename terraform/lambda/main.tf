@@ -953,6 +953,26 @@ resource "aws_lambda_function" "questions" {
   }
 }
 
+resource "aws_lambda_function" "file_upload" {
+  filename      = "../artifacts/file-upload-lambda.zip"
+  function_name = "file_upload"
+  role          = var.edpub_lambda_role_arn
+  handler       = "file-upload.handler"
+  runtime          = "nodejs18.x"
+  source_code_hash = filesha256("../artifacts/file-upload-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION    = var.region
+      CUP_ID    = var.cognito_user_pool_id
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
 resource "aws_lambda_permission" "questions" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
