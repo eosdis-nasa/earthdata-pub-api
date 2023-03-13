@@ -953,6 +953,14 @@ resource "aws_lambda_function" "questions" {
   }
 }
 
+resource "aws_lambda_permission" "questions" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.questions.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
+}
+
 resource "aws_lambda_function" "file_upload" {
   filename      = "../artifacts/file-upload-lambda.zip"
   function_name = "file_upload"
@@ -976,15 +984,7 @@ resource "aws_lambda_function" "file_upload" {
 resource "aws_lambda_permission" "file_upload" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.submission.function_name
+  function_name = aws_lambda_function.file_upload.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/upload/*"
-}
-
-resource "aws_lambda_permission" "questions" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.questions.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
