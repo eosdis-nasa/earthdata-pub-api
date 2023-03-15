@@ -966,13 +966,22 @@ resource "aws_lambda_function" "file_upload" {
   function_name = "file_upload"
   role          = var.edpub_lambda_role_arn
   handler       = "file-upload.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn
+  ]
   runtime          = "nodejs18.x"
   source_code_hash = filesha256("../artifacts/file-upload-lambda.zip")
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      CUP_ID    = var.cognito_user_pool_id
+      REGION          = var.region
+      CUP_ID          = var.cognito_user_pool_id
+      PG_USER         = var.db_user
+      PG_HOST         = var.db_host
+      PG_DB           = var.db_database
+      PG_PASS         = var.db_password
+      PG_PORT         = var.db_port
+      INGEST_BUCKET   = var.edpub_upload_s3_bucket
     }
   }
   vpc_config {
