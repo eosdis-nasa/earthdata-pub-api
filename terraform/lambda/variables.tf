@@ -94,6 +94,10 @@ variable "edpub_actions_s3_bucket" {
   type = string
 }
 
+variable "edpub_upload_s3_bucket" {
+  type = string
+}
+
 variable "db_user" {
   type = string
 }
@@ -173,3 +177,4 @@ variable "meditor_service_username" {
 variable "meditor_service_password" {
   type = string
 }
+

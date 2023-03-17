@@ -47,6 +47,7 @@ module "lambda_functions" {
   edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
   edpub_actions_s3_bucket = var.edpub_actions_s3_bucket
+  edpub_upload_s3_bucket = var.edpub_upload_s3_bucket
   db_host = module.rds.db_host
   db_port = module.rds.db_port
   db_database = module.rds.db_database

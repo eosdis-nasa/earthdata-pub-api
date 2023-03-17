@@ -1,30 +1,34 @@
-const { fromCognitoIdentityPool } = require('@aws-sdk/credential-providers');
-const { PutObjectCommand, S3Client } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const db = require('database-util');
+// const { PutObjectCommand, S3Client } = require('@aws-sdk/client-s3');
+const AWS = require('@aws-sdk');
+// const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
-const userPoolId = process.env.CUP_ID;
 const ingestBucket = process.env.INGEST_BUCKET;
-const region = process.env.REGION;
+// const region = process.env.REGION;
 
 async function getPutUrlMethod(event, user) {
-  const approvedUserPrivileges = ['ADMIN'];
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    const { file_name: fileName, file_type: fileType/* , checksum_value: checksumValue */ } = event;
-    // const checksumAlgo = 'MD5';
-    if (!fileType) return ('invalid file type');
-    const s3Client = new S3Client({
-      region,
-      credentials: await fromCognitoIdentityPool({
-        identityPoolId: userPoolId,
-        userIdentifier: user.id,
-        region
-      })
-    });
-    const command = new PutObjectCommand({ Bucket: ingestBucket, Key: `${user.id}/${fileName}`, ContentType: fileType });
-    return ({ url: getSignedUrl(s3Client, command, { expiresIn: 60 }) });
-  }
-  return ({ error: 'error' });
+  const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
+  const checksumAlgo = 'sha256';
+  if (!fileType) return ('invalid file type');
+  const s3Client = new AWS.S3({
+    signatureVersion: 'v4'
+  });
+  const params = {
+    Bucket: ingestBucket,
+    Key: `${user.id}/${fileName}`,
+    ContentType: fileType,
+    Metadata: {
+      'file-id': fileName,
+      checksum: checksumValue,
+      'checksum-algorithm': checksumAlgo
+    },
+    ChecksumSHA256: checksumValue
+  };
+
+  const genUrl = s3Client.getSignedUrl('putOb', params, {
+    expiresIn: 60,
+    unhoistableHeaders: new Set(['x-amz-sdk-checksum-algorithm', 'x-amz-checksum-sha256'])
+  });
+  return ({ url: genUrl });
 }
 
 const operations = {
@@ -33,7 +37,7 @@ const operations = {
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  const user = await db.user.findById({ id: event.context.user_id });
+  const user = event.context.user_id;
   const operation = operations[event.operation];
   const data = await operation(event, user);
   return data;
