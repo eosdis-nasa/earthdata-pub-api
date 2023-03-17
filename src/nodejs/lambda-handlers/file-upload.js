@@ -1,5 +1,6 @@
-const { PutObjectCommand, S3Client } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+//const { PutObjectCommand, S3Client } = require('@aws-sdk/client-s3');
+const AWS = require('@aws-sdk')
+//const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const db = require('database-util');
 
 const ingestBucket = process.env.INGEST_BUCKET;
@@ -9,12 +10,12 @@ async function getPutUrlMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { file_name: fileName, file_type: fileType , checksum_value: checksumValue } = event;
-    const checksumAlgo = 'MD5';
+    const checksumAlgo = 'sha256';
     if (!fileType) return ('invalid file type');
-    const s3Client = new S3Client({
-      region
+    const s3Client = new AWS.S3({
+      signatureVersion: 'v4'
     });
-    const command = new PutObjectCommand({ 
+    const params = { 
       Bucket: ingestBucket, 
       Key: `${user.id}/${fileName}`, 
       ContentType: fileType ,
@@ -23,12 +24,12 @@ async function getPutUrlMethod(event, user) {
         checksum: checksumValue,
         'checksum-algorithm':checksumAlgo
       },
-      ContentMD5: checksumValue
-    });
+      'ChecksumSHA256':checksumValue
+    };
     
-    const genUrl = await getSignedUrl(s3Client, command, { 
+    const genUrl = s3Client.getSignedUrl('putOb', params, { 
       expiresIn: 60,
-      unhoistableHeaders: new Set(['content-md5'])
+      unhoistableHeaders: new Set(['x-amz-sdk-checksum-algorithm', 'x-amz-checksum-sha256'])
     })
     return ({ url: genUrl });
   }
