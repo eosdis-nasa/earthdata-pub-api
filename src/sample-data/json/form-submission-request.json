@@ -223,7 +223,7 @@
         },
         {
           "short_name": "science_value",
-          "long_name": "Science Value of Data Product",
+          "long_name": "Science Value",
           "text": "Please describe the science value of this data product.",
           "help": "For example, how will this data product benefit the science community? What are the strengths and the limitations of this data product? What other data products does it compliment?",
           "inputs": [
@@ -535,7 +535,7 @@
           "short_name": "sample_data_file",
           "long_name": "Sample Data File(s)",
           "text": "Please provide a URL to a sample file(s).",
-          "help": "Providing sample data files that are representative of the range of data within this data product will help the DAAC understand the data format, structure, and content.",
+          "help": "Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content.",
           "required": true,
           "inputs": [
             {
