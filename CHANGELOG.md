@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+ - Updated doi question verbage and help text (EDPUB-792)
  - Updated sample file help text (EDPUB-780)
  - Updated science value question (EDPUB-774)
  - Updated data format question text (EDPUB-778)
