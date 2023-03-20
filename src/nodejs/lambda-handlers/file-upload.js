@@ -5,26 +5,26 @@ const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
 async function getPutUrlMethod(event, user) {
-  const { file_name: fileName, file_type: fileType , checksum_value: checksumValue } = event;
+  const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
   const checksumAlgo = 'MD5';
   if (!fileType) return ('invalid file type');
   const s3Client = new S3Client({
     region
   });
-  const command = new PutObjectCommand({ 
-    Bucket: ingestBucket, 
-    Key: `${user}/${fileName}`, 
-    ContentType: fileType ,
+  const command = new PutObjectCommand({
+    Bucket: ingestBucket,
+    Key: `${user}/${fileName}`,
+    ContentType: fileType,
     Metadata: {
       'file-id': fileName,
       checksum: checksumValue,
-      'checksum-algorithm':checksumAlgo
+      'checksum-algorithm': checksumAlgo
     }
   });
-  
-  const genUrl = await getSignedUrl(s3Client, command, { 
+
+  const genUrl = await getSignedUrl(s3Client, command, {
     expiresIn: 60
-  })
+  });
   return ({ url: genUrl });
 }
 
