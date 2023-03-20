@@ -54,6 +54,10 @@ RAISE;
     ALTER TABLE edpuser ADD detailed BOOLEAN DEFAULT 'false';
 
     UPDATE question SET text='What file format(s) does this data product include?' where id='50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27';
+    UPDATE question SET help='Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content.' where id='53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3';
+
+--3/7/2023 Update reassign permissions
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REASSIGN');
     UPDATE question SET long_name='Science Value' where id='7fd7bccf-5065-4033-9956-9e80bc99c205';
 
 --3/7/2023 Update reassign permissions
