@@ -14,7 +14,7 @@ async function getPutUrlMethod(event, user) {
   });
   const params = {
     Bucket: ingestBucket,
-    Key: `${user.id}/${fileName}`,
+    Key: `${user}/${fileName}`,
     ContentType: fileType,
     Metadata: {
       'file-id': fileName,
