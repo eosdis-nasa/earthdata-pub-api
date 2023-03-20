@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+ - Updated science value question (EDPUB-774)
  - Updated data format question text (EDPUB-778)
  - Updated Node version to v18.14.1
 

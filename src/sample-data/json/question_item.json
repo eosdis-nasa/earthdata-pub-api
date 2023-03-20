@@ -196,7 +196,7 @@
   },
   {
     "question_name": "science_value",
-    "title": "Science Value of Data Product",
+    "title": "Science Value",
     "text": "Please describe the science value of this data product.",
     "help": "For example, how will this data product benefit the science community? What are the strengths and the limitations of this data product? What other data products does it compliment?",
     "inputs": [
