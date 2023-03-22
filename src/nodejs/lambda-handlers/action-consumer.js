@@ -6,7 +6,7 @@
  * @see module:Actions
  */
 
-const { S3 } = require('@aws-sdk/client-s3');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 const Schema = require('schema-util');
 
@@ -16,17 +16,22 @@ const DatabaseUtil = require('database-util');
 
 const fs = require('fs');
 
-function fetchAction(key, local) {
-  return new Promise((resolve) => {
-    const params = {
+async function fetchAction(key, local) {
+  const s3 = new S3Client();
+  const data = await s3.send(
+    new GetObjectCommand({
       Bucket: process.env.ACTIONS_BUCKET,
-      Key: key
-    };
-    const file = fs.createWriteStream(local);
-    const s3 = new S3();
-    const stream = s3.getObject(params).createReadStream();
-    stream.on('end', resolve);
-    stream.pipe(file);
+      Key: key })
+  );
+  return new Promise(async (resolve, reject) => {
+    const body = data.Body;
+    if (body instanceof Readable) {
+      const writeStream = fs.createWriteStream(local);
+      body
+        .pipe(writeStream)
+        .on("error", (err) => reject(err))
+        .on("close", () => resolve(null));
+    }
   });
 }
 
