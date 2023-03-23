@@ -47,6 +47,7 @@ module "lambda_functions" {
   edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
   edpub_actions_s3_bucket = var.edpub_actions_s3_bucket
+  edpub_upload_s3_bucket = var.edpub_upload_s3_bucket
   db_host = module.rds.db_host
   db_port = module.rds.db_port
   db_database = module.rds.db_database
@@ -84,6 +85,7 @@ module "apigateway_endpoints" {
   version_lambda_arn = module.lambda_functions.version_lambda_arn
   questions_lambda_arn = module.lambda_functions.questions_lambda_arn
   workflow_lambda_arn = module.lambda_functions.workflow_lambda_arn
+  file_upload_lambda_arn = module.lambda_functions.file_upload_lambda_arn
   cognito_user_pool_arn = "arn:aws:cognito-idp:${var.region}:${var.account_id}:userpool/${var.cognito_user_pool_id}"
   edpub_apigateway_s3_role_arn = module.iam_roles.edpub_apigateway_s3_role_arn
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
