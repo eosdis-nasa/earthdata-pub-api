@@ -960,3 +960,31 @@ resource "aws_lambda_permission" "questions" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
+
+resource "aws_lambda_function" "file_upload" {
+  filename      = "../artifacts/file-upload-lambda.zip"
+  function_name = "file_upload"
+  role          = var.edpub_lambda_role_arn
+  handler       = "file-upload.handler"
+  runtime          = "nodejs18.x"
+  source_code_hash = filesha256("../artifacts/file-upload-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION          = var.region
+      INGEST_BUCKET   = var.edpub_upload_s3_bucket
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "file_upload" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.file_upload.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/upload/*"
+}

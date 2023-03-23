@@ -43,3 +43,4 @@ module.exports.optionsMetricsListReports = optionsHeaders;
 module.exports.optionsModel = optionsHeaders;
 module.exports.optionsToken = optionsHeaders;
 module.exports.optionsVersion = optionsHeaders;
+module.exports.optionsFileUpload = optionsHeaders;
