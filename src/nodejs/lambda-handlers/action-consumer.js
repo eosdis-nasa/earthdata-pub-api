@@ -7,6 +7,7 @@
  */
 
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { Readable } = require('node:stream');
 
 const Schema = require('schema-util');
 
@@ -21,16 +22,17 @@ async function fetchAction(key, local) {
   const data = await s3.send(
     new GetObjectCommand({
       Bucket: process.env.ACTIONS_BUCKET,
-      Key: key })
+      Key: key
+    })
   );
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const body = data.Body;
     if (body instanceof Readable) {
       const writeStream = fs.createWriteStream(local);
       body
         .pipe(writeStream)
-        .on("error", (err) => reject(err))
-        .on("close", () => resolve(null));
+        .on('error', (err) => reject(err))
+        .on('close', () => resolve(null));
     }
   });
 }
