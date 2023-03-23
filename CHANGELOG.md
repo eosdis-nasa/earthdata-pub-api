@@ -8,11 +8,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
- - Updated doi question verbage and help text (EDPUB-792)
- - Updated sample file help text (EDPUB-780)
- - Updated science value question (EDPUB-774)
- - Updated data format question text (EDPUB-778)
- - Updated Node version to v18.14.1
+
+
+## 1.0.12 - 2023-03-23
+- Action consumer updated to aws sdk v3
+- Data file upload added but disabled
+- Updated doi question verbage and help text (EDPUB-792)
+- Updated sample file help text (EDPUB-780)
+- Updated science value question (EDPUB-774)
+- Updated data format question text (EDPUB-778)
+- Updated Node version to v18.14.1
 
 ## 1.0.11 - 2023-02-10
 
