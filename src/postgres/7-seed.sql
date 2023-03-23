@@ -417,17 +417,6 @@ INSERT INTO step(step_name, type, data) VALUES ('data_accession_request_form_rev
 INSERT INTO step(step_name, type, form_id) VALUES ('data_publication_request_form', 'form', '19025579-99ca-4344-8610-704dae626343');
 INSERT INTO step(step_name, type, data) VALUES ('data_publication_request_form_review', 'review', '{"rollback":"data_publication_request_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 INSERT INTO step(step_name, type, data) VALUES ('assign_a_workflow', 'action', '{"rollback":"init","type": "init"}');
--- The following should be uncommented and the lines after should be removed once actions/services are working properly in EDPub
--- INSERT INTO step(step_name, type) VALUES ('start_qa', 'action');
--- INSERT INTO step(step_name, type) VALUES ('complete_qa', 'action');
--- INSERT INTO step(step_name, type) VALUES ('map_to_meditor', 'service');
--- INSERT INTO step(step_name, type) VALUES ('send_to_meditor', 'service');
--- INSERT INTO step(step_name, type) VALUES ('start_meditor_editing', 'action');
--- INSERT INTO step(step_name, type) VALUES ('complete_meditor_editing', 'action');
--- INSERT INTO step(step_name, type) VALUES ('get_from_meditor', 'service');
--- INSERT INTO step(step_name, type) VALUES ('map_from_meditor', 'service');
--- INSERT INTO step(step_name, type) VALUES ('publish_to_cmr', 'service');
-
 INSERT INTO step(step_name, type, data) VALUES ('start_qa', 'action', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 INSERT INTO step(step_name, type, data) VALUES ('complete_qa', 'action', '{"rollback":"start_qa","type": "action"}');
 INSERT INTO step(step_name, type, data) VALUES ('map_to_meditor', 'action', '{"rollback":"complete_qa","type": "action"}');
@@ -439,22 +428,22 @@ INSERT INTO step(step_name, type, data) VALUES ('publish_to_cmr', 'action', '{"r
 INSERT INTO step(step_name, type, action_id) VALUES ('send_to_meditor', 'action', '3fe93672-cd91-45d4-863b-c6d0d63f8c8c');
 INSERT INTO step(step_name, type, form_id) VALUES ('confirmation_form', 'form', 'de7e5c40-584a-493b-919d-8f7f3f1e9e3c');
 INSERT INTO step(step_name, type, action_id, data) VALUES ('map_question_response_to_ummc', 'action', 'f812eb99-7c4a-46a8-8d8f-30ae509fe21c', '{"rollback":"confirmation_form","type": "action"}');
-
-
--- GHRC 
--- Step(step_id, step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_id, step_name, type, data) VALUES ('d1cbc4a8-ce4c-4734-8e71-a824d30c401a', 'edit_metadata_in_meditor_after_publication_form_review', 'action', '{"rollback":"send_to_meditor_after_publication_form_review","type": "action"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('c628d63b-93b9-45ae-8e7b-a903554b6726', 'send_to_meditor_after_publication_form_review', 'action', '{"rollback":"map_question_response_to_ummc","type": "action"}');
+
+-- GHRC
+-- Step(step_name, type, action_id, form_id, service_id, data)
+INSERT INTO step(step_id, step_name, type, data) VALUES ('d278f01e-1ef7-4677-a350-73ccadeddc22', 'create_skeleton_dataset_record_in_mmt', 'action', '{"rollback":"map_question_response_to_ummc","type": "action"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('9549666c-94ff-4ff5-accc-1df834fde963', 'push_collection_metadata_to_cmr_via_mmt', 'action', '{"rollback":"create_skeleton_dataset_record_in_mmt","type": "action"}');
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_accession_request_form', 'data_accession_request_form_review');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_accession_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_publication_request_form', 'data_publication_request_form_review');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_publication_request_form_review', 'confirmation_form');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'confirmation_form', 'map_question_response_to_ummc');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'map_question_response_to_ummc', 'send_to_meditor_after_publication_form_review');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'send_to_meditor_after_publication_form_review', 'edit_metadata_in_meditor_after_publication_form_review');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'edit_metadata_in_meditor_after_publication_form_review', 'close');
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_publication_request_form_review', 'map_question_response_to_ummc');
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'map_question_response_to_ummc', 'create_skeleton_dataset_record_in_mmt');
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'create_skeleton_dataset_record_in_mmt', 'push_collection_metadata_to_cmr_via_mmt');
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'push_collection_metadata_to_cmr_via_mmt', 'close');
 
 -- ORNL 
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)
