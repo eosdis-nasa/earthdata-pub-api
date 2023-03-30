@@ -9,6 +9,7 @@
 const db = require('database-util');
 
 const msg = require('message-util');
+const { sendNote } = require('../lambda-layers/database-util/src/query/note.js');
 
 const { getTemplate } = require('./notification-consumer/templates.js');
 
@@ -16,15 +17,21 @@ const { getTemplate } = require('./notification-consumer/templates.js');
 // eslint-disable-next-line
 async function sendEmailNotification({ note }) {
   // TODO - Add additional filter for system user messages
+  // logic to add DAAC content
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
+  const template = event_type === 'direct_message' ? 'direct_message' : 'default';
+  const templatePayload = {
+    body: note.text
+  }
   await msg.sendEmail({
     // TODO - Update the subject
     subject: 'RE: EDPub reply',
     emails: users.map((user) => user.email),
-    body: note.text
+    templatePayload,
+    template: template
   });
 }
 
@@ -44,7 +51,7 @@ async function processRecord(record) {
       // TODO- Remove disable once send email enabled
       // eslint-disable-next-line
       const note = await db.note[operation](message);
-      // await sendEmailNotification({ note });
+      // await sendEmailNotification({ note, event_type: eventMessage.event_type });
     }
   }
 }

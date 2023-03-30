@@ -390,7 +390,8 @@ NATURAL JOIN (
       'action_id', step.action_id,
       'form_id', step.form_id,
       'service_id', step.service_id,
-      'data', step.data
+      'data', step.data,
+      'daac_message', step.notification
     )) step
   FROM step) step_data
 NATURAL JOIN (

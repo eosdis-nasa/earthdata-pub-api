@@ -1,7 +1,8 @@
 const { SNS } = require('@aws-sdk/client-sns');
+const { SESClient, SendTemplatedEmailCommand } = require('@aws-sdk/client-ses');
 const uuid = require('uuid');
 
-const emailSns = process.env.EMAIL_SNS;
+const sourceEmail = process.env.SOURCE_EMAIL;
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
@@ -30,34 +31,23 @@ function marshalAttributes(eventMessage) {
   }, {});
 }
 
-function subscribeEmail(userEmail) {
+async function sendEmail(eventMessage) {
+  const { emails, templatePayload, template } = eventMessage
+
+  const ses = new SESClient()
+
   const params = {
-    Protocol: 'email',
-    TopicArn: emailSns,
-    Endpoint: userEmail,
-    Attributes: {
-      FilterPolicy: `{"email": ["${userEmail}"]}`
-    }
+    Destination: {
+      ToAddress: emails
+    },
+    Source: sourceEmail,
+    Template: template,
+    TemplateData: templatePayload
   };
 
-  const response = sns.subscribe(params).promise().catch((e) => { console.error(e); });
-  return response;
-}
-
-function sendEmail(eventMessage) {
-  const {
-    emails,
-    subject,
-    body
-  } = eventMessage;
-  const params = {
-    Subject: subject,
-    Message: body,
-    MessageAttributes: marshalAttributes({ email: emails }),
-    TopicArn: emailSns
-  };
-  const response = sns.publish(params).catch((e) => { console.error(e); });
-  return response;
+  const command = new SendTemplatedEmailCommand(params);
+  await ses.send(command);
+  
 }
 
 function sendEvent(eventMessage) {
@@ -135,4 +125,3 @@ module.exports.sendEvent = sendEvent;
 module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
 module.exports.parseAttributesFromParams = parseAttributesFromParams;
-module.exports.subscribeEmail = subscribeEmail;
