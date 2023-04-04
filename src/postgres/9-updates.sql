@@ -75,4 +75,7 @@ INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'R
 
 --3/7/2023 Update reassign permissions
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REASSIGN');
-    
+
+-- 4/4/2023 Updates idealized workflow to Example workflow and makes it the default workflow for DAAC's without a workflow
+UPDATE workflow SET short_name= 'example_workflow', long_name='Example Workflow' WHERE id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+UPDATE daac SET workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff' WHERE workflow_id = '056ca100-107e-4fe5-a54a-e5f2d902a27a' AND short_name != 'Unknown';
