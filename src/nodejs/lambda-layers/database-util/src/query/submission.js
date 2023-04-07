@@ -1,3 +1,4 @@
+const util = require('./utils.js');
 const sql = require('./sql-builder.js');
 const workflow = require('./workflow.js');
 
@@ -352,12 +353,12 @@ const updateFormData = ({id, data, form_id}) => `
 DO $$
 BEGIN
 INSERT INTO submission_form_data_pool(id, data) VALUES
-('${id}', '${data}'::JSONB)
+(E'${util.pubCleanString(id)}', E'${util.pubCleanJSON(data)}'::JSONB)
 ON CONFLICT (id) DO UPDATE SET
 data = EXCLUDED.data;
 
 INSERT INTO submission_form_data(id, form_id, data) VALUES
-('${id}', '${form_id}', '${id}')
+(E'${util.pubCleanString(id)}', E'${util.pubCleanString(form_id)}', E'${util.pubCleanString(id)}')
 ON CONFLICT (id, form_id) DO UPDATE SET
 data = EXCLUDED.data;
 END $$`;
@@ -501,12 +502,12 @@ DECLARE
 actionId UUID;
 BEGIN
   FOR actionId IN 
-    SELECT action_id FROM submission_action_data WHERE id = '${params.origin_id}'
+    SELECT action_id FROM submission_action_data WHERE id = E'${util.pubCleanString(params.origin_id)}'
   LOOP
     INSERT INTO submission_action_data(id, action_id, data) VALUES(
-      '${params.id}',
+      E'${util.pubCleanString(params.id)}',
       actionId, 
-      (SELECT data FROM submission_action_data WHERE action_id = actionId and id = '${params.origin_id}')
+      (SELECT data FROM submission_action_data WHERE action_id = actionId and id = E'${util.pubCleanString(params.origin_id)}')
     );
   END LOOP;
 END $$
@@ -520,13 +521,13 @@ formId UUID;
 BEGIN
 
   INSERT INTO submission_form_data_pool(id, data) VALUES
-  ('${id}', '${data}'::JSONB);
+(E'${util.pubCleanString(id)}', E'${util.pubCleanJSON(data)}'::JSONB);
 
   FOR formId IN 
-    SELECT form_id FROM submission_form_data WHERE id = '${origin_id}'
+    SELECT form_id FROM submission_form_data WHERE id = E'${util.pubCleanString(origin_id)}'
   LOOP
     INSERT INTO submission_form_data(id, form_id, data) VALUES
-    ('${id}', formId, '${id}');
+    (E'${util.pubCleanString(id)}', formId, E'${util.pubCleanString(id)}');
   END LOOP;
 END $$
 `;
