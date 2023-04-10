@@ -353,12 +353,12 @@ const updateFormData = ({id, data, form_id}) => `
 DO $$
 BEGIN
 INSERT INTO submission_form_data_pool(id, data) VALUES
-(E'${util.pubCleanString(id)}', E'${util.pubCleanJSON(data)}'::JSONB)
+('${util.pubCleanString(id)}', '${util.pubCleanString(data)}'::JSONB)
 ON CONFLICT (id) DO UPDATE SET
 data = EXCLUDED.data;
 
 INSERT INTO submission_form_data(id, form_id, data) VALUES
-(E'${util.pubCleanString(id)}', E'${util.pubCleanString(form_id)}', E'${util.pubCleanString(id)}')
+('${util.pubCleanString(id)}', '${util.pubCleanString(form_id)}', '${util.pubCleanString(id)}')
 ON CONFLICT (id, form_id) DO UPDATE SET
 data = EXCLUDED.data;
 END $$`;
@@ -502,12 +502,12 @@ DECLARE
 actionId UUID;
 BEGIN
   FOR actionId IN 
-    SELECT action_id FROM submission_action_data WHERE id = E'${util.pubCleanString(params.origin_id)}'
+    SELECT action_id FROM submission_action_data WHERE id = '${util.pubCleanString(params.origin_id)}'
   LOOP
     INSERT INTO submission_action_data(id, action_id, data) VALUES(
-      E'${util.pubCleanString(params.id)}',
+      '${util.pubCleanString(params.id)}',
       actionId, 
-      (SELECT data FROM submission_action_data WHERE action_id = actionId and id = E'${util.pubCleanString(params.origin_id)}')
+      (SELECT data FROM submission_action_data WHERE action_id = actionId and id = '${util.pubCleanString(params.origin_id)}')
     );
   END LOOP;
 END $$
@@ -521,13 +521,13 @@ formId UUID;
 BEGIN
 
   INSERT INTO submission_form_data_pool(id, data) VALUES
-(E'${util.pubCleanString(id)}', E'${util.pubCleanJSON(data)}'::JSONB);
+('${util.pubCleanString(id)}', '${util.pubCleanString(data)}'::JSONB);
 
   FOR formId IN 
-    SELECT form_id FROM submission_form_data WHERE id = E'${util.pubCleanString(origin_id)}'
+    SELECT form_id FROM submission_form_data WHERE id = '${util.pubCleanString(origin_id)}'
   LOOP
     INSERT INTO submission_form_data(id, form_id, data) VALUES
-    (E'${util.pubCleanString(id)}', formId, E'${util.pubCleanString(id)}');
+    ('${util.pubCleanString(id)}', formId, '${util.pubCleanString(id)}');
   END LOOP;
 END $$
 `;
