@@ -1,7 +1,7 @@
 
 const pubCleanString = (dirtyString) => {
-    const cleanString = dirtyString.replace(/'/g, "''");
-    return cleanString;
+    if (dirtyString) return dirtyString.replace(/'/g, "''");
+    return dirtyString;
 }
 
 module.exports.pubCleanString = pubCleanString;
