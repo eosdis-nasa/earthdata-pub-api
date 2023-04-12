@@ -20,12 +20,6 @@ function filterObject(base, filter) {
   return filtered;
 }
 
-async function generateFormData(payloadData , formId) {
-  const test = await db.form.getQuestionVersions({id: formId}) 
-  console.log(test)
-  //const questionVersions = await db.form.getQuestionVersions({ form_id: formId });
-}
-
 async function statusMethod(event, user) {
   const hidden = event.operation === 'inactive';
   if (user.user_privileges.includes('REQUEST_ADMINREAD') || user.user_privileges.includes('ADMIN')
@@ -115,8 +109,6 @@ async function metadataMethod(event, user) {
 
 async function saveMethod(event, user) {
   const { form_id: formId, daac_id: daacId, data } = event;
-  console.log('here')
-  const test = await generateFormData(data, formId);
   let { id } = event;
   if (!id) {
     const submission = await initializeMethod(event, user);
