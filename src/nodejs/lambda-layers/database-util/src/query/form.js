@@ -55,14 +55,6 @@ const findById = (params) => sql.select({
   }
 });
 
-const getQuestionVersions = ({id}) => `
-SELECT question.short_name, question.version FROM question WHERE question.id IN (
-  SELECT question_id FROM section_question WHERE section_id IN (
-    SELECT id FROM section WHERE form_id = '${id}'
-  )
-)
-`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
-module.exports.getQuestionVersions = getQuestionVersions;
