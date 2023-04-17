@@ -69,6 +69,10 @@ RAISE;
     UPDATE edprole SET description='The DAAC staff member who guides the Request through Earthdata Pub workflows and iterates with the PoC on questions. This role will be able to add and edit requests.' where id='a5b4947a-67d2-434e-9889-59c2fad39676';
     UPDATE edprole SET description='The DAAC staff member who manages all DAAC Requests. Managers assign a Request to Staff. There may be multiple DAAC Data Managers per DAAC. Some DAACs may choose to combine the Manager and Staff roles by assigning staff to both.' where id='2aa89c57-85f1-4611-812d-b6760bb6295c';
 
+--4/17/2023 EDPUB-869 - "Data Product Restrictions" to "Open Data Policy".
+    -- Question(id, short_name, version, long_name, text, help)
+    UPDATE question set long_name='Open Data Policy' where id='2dd6c8b1-22a8-4866-91c3-da9b4ce849dc';
+
 --3/7/2023 Update reassign permissions
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REASSIGN');
     UPDATE question SET long_name='Science Value' where id='7fd7bccf-5065-4033-9956-9e80bc99c205';
