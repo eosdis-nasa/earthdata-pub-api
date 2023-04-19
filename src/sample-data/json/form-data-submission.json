@@ -311,7 +311,7 @@
         },
         {
           "short_name": "data_product_restrictions",
-          "long_name": "Data Product Restrictions",
+          "long_name": "Open Data Policy",
           "text": "Can this data product be publicly released in compliance with NASA's Open Data Policy? If No or Not sure, please provide a brief explanation.",
           "help": "For a description of the open data policy, please refer to the NASA Earthdata Data and Information Policy web page <https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy>.",
           "inputs": [
