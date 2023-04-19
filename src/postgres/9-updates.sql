@@ -63,6 +63,11 @@ RAISE;
     -- INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 2, '[]', '[]');
     UPDATE question SET text='If a Digital Object Identifier (DOI) already exists for this data product (not common), please provide it.' where id='c9c73e88-837a-42d2-aa1a-50874a333607';
     UPDATE question SET help='This would be a DOI for the actual data and not for a paper related to this data product. The DAAC will create the data product DOI during data publication. Therefore, the DAAC needs to know if a data product DOI already exists.' where id='c9c73e88-837a-42d2-aa1a-50874a333607';
+    
+    UPDATE edprole SET description='The person who is primarily responsible for the data themselves. Often the PI of the project that generated the data. This role will be able to create a Request and edit their created or assigned Requests.' where id='804b335c-f191-4d26-9b98-1ec1cb62b97d';
+    UPDATE edprole SET description='The person who is filling out the Earthdata Pub Forms and expected to answer questions about the Request. Can be the same as the DP and has the same permissions as a DP.' where id='29ccab4b-65e2-4764-83ec-77375d29af39';
+    UPDATE edprole SET description='The DAAC staff member who guides the Request through Earthdata Pub workflows and iterates with the PoC on questions. This role will be able to add and edit requests.' where id='a5b4947a-67d2-434e-9889-59c2fad39676';
+    UPDATE edprole SET description='The DAAC staff member who manages all DAAC Requests. Managers assign a Request to Staff. There may be multiple DAAC Data Managers per DAAC. Some DAACs may choose to combine the Manager and Staff roles by assigning staff to both.' where id='2aa89c57-85f1-4611-812d-b6760bb6295c';
 
 --3/7/2023 Update reassign permissions
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REASSIGN');
@@ -77,3 +82,7 @@ INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'R
     INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 2, '[]', '[]');
     INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 2, '[]', '[]');
     DELETE FROM section_question WHERE question_id='c9c73e88-837a-42d2-aa1a-50874a333607';
+
+-- 4/4/2023 Updates idealized workflow to Example workflow and makes it the default workflow for DAAC's without a workflow
+UPDATE workflow SET short_name= 'example_workflow', long_name='Example Workflow' WHERE id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+UPDATE daac SET workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff' WHERE workflow_id = '056ca100-107e-4fe5-a54a-e5f2d902a27a' AND short_name != 'Unknown';
