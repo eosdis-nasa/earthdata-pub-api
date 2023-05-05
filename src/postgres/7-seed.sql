@@ -408,6 +408,7 @@ INSERT INTO workflow VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'ghrc_defau
 INSERT INTO workflow VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'ornl_default_workflow', 1, 'ORNL Default Workflow', 'This is the default workflow for ORNL.');
 INSERT INTO workflow VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'referred_workflow', 1, 'Referrer Close', 'Use this to close after referring the Data Producer to another DAAC.');
 INSERT INTO workflow VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'asdc_darkhorse_workflow', 1, 'ASDC Default Workflow (Darkhorse)', 'This is the darkhorse workflow for ASDC.');
+INSERT INTO workflow VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'gesdisc_community_workflow', 1, 'GES DISC Community Workflow', 'This is the default workflow for community products.');
 
 -- Step(step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_name, type) VALUES ('init', 'init');
@@ -450,13 +451,25 @@ INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'push_coll
 INSERT INTO step(step_id, step_name, type, data) VALUES ('83c0a113-ecc8-4719-984c-9b4665655495', 'push_to_ornl_database', 'action', '{"rollback":"data_publication_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8610-704dae626343"}');
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'init', 'close');
-
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form', 'data_accession_request_form_review');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review', 'push_to_ornl_database');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database', 'close');
+
+-- GES DISC 
+-- Step(step_id, step_name, type, action_id, form_id, service_id, data)
+INSERT INTO step(step_id, step_name, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'review', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('7838ed18-4ecd-499e-9a47-91fd181cbfc7', 'data_publication_request_form_esdis_review', 'review', '{"rollback":"data_publication_request_form_uwg_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+-- StepEdge(workflow_id, step_name, next_step_name)
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'data_publication_request_form_uwg_review');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_uwg_review', 'data_publication_request_form_esdis_review');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_esdis_review', 'close');
 
 -- ASDC 
 -- StepEdge(workflow_id, step_name, next_step_name)
