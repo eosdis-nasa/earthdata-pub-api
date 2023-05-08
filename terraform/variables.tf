@@ -99,3 +99,6 @@ variable "meditor_service_username" {
 variable "meditor_service_password" {
   type = string
 }
+variable "environment" {
+  type = string
+}

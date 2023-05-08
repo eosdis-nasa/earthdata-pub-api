@@ -1,5 +1,6 @@
 const queries = require('./queries.js');
 const parsers = require('./parsers.js');
+const { pubCleanString } = require('./utils.js');
 
 const rowMode = 'object';
 

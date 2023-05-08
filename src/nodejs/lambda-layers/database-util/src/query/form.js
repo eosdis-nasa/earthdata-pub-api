@@ -55,5 +55,6 @@ const findById = (params) => sql.select({
   }
 });
 
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
