@@ -33,7 +33,7 @@ const operations = {
 };
 
 async function handler(event) {
-  return { error: 'Not implemented.' };
+  return { error: 'Not Implemented' };
   /* eslint-disable no-unreachable */
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const user = event.context.user_id;

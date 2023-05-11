@@ -1,5 +1,6 @@
 const queries = require('./queries.js');
 const parsers = require('./parsers.js');
+const { pubCleanString } = require('./utils.js');
 
 const rowMode = 'object';
 
@@ -8,7 +9,7 @@ const parameterize = (query, params) => {
   const text = query.replace(/\{\{(.*?)\}\}/g, (match, token) => {
     const value = token.split('.')
       .reduce((obj, key) => key === '$' ? obj : obj[key]===null ? null : obj[key], params);
-    values.push(value);
+    values.push(pubCleanString(value));
     return `$${values.length}`;
   });
   return { text, values };
