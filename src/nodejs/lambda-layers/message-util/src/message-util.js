@@ -46,7 +46,7 @@ async function sendEmail(eventMessage) {
   };
 
   const command = new SendTemplatedEmailCommand(params);
-  await ses.send(command);
+  //await ses.send(command);
   
 }
 

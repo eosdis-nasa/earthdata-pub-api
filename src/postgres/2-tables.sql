@@ -304,7 +304,7 @@ CREATE TABLE IF NOT EXISTS step (
   form_id UUID,
   service_id UUID,
   data JSONB,
-  notification TEXT,
+  notification TEXT DEFAULT 'this is a test',
   PRIMARY KEY (step_id),
   UNIQUE (step_name),
   FOREIGN KEY (action_id) REFERENCES action (id),

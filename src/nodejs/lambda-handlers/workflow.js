@@ -8,7 +8,7 @@
 const db = require('database-util');
 
 async function createStep(step, stepName) {
-  await db.workflow.createStep({
+  return db.workflow.createStep({
     step_name: stepName,
     type: step.type,
     action_id: step.action_id,

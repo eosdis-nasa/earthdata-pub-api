@@ -539,6 +539,11 @@ VALUES({{id}}, {{edpuser_id}}, {{origin_id}}${context? `, '${context}'`:''})
 ON CONFLICT DO NOTHING
 `;
 
+const getStepMessage = () => `
+SELECT step.notification FROM step
+WHERE step.step_name = {{step_name}}
+`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -572,3 +577,4 @@ module.exports.removeContributor = removeContributor;
 module.exports.copyActionData = copyActionData;
 module.exports.copyFormData = copyFormData;
 module.exports.setSubmissionCopy = setSubmissionCopy;
+module.exports.getStepMessage = getStepMessage;

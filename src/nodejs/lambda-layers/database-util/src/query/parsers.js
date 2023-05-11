@@ -70,3 +70,4 @@ module.exports.getConversationId = one;
 module.exports.getFormData = one;
 module.exports.getUsers = many;
 module.exports.setDetail = one;
+module.exports.getStepMessage = one;

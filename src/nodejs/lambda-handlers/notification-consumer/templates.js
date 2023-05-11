@@ -1,3 +1,5 @@
+const db = require('database-util');
+
 const templates = {
   direct_message: (e) => ({
     user_id: e.user_id,
@@ -35,10 +37,14 @@ const templates = {
   })
 };
 
-const getTemplate = (message) => {
+const getTemplate = async (message) => {
   if (message.event_type && templates[message.event_type]) {
     const template = templates[message.event_type](message);
     template.conversation_id = template.conversation_id || message.conversation_id;
+    if(message.step_name && message.event_type !== 'request_initialized'){
+      const stepMessage = await db.submission.getStepMessage({step_name:message.step_name})
+      template.text = `${template.text}\n${stepMessage.notification}`
+    }
     return template;
   }
   return false;
