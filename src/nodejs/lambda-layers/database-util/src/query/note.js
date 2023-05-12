@@ -313,6 +313,12 @@ const getEmails = (params) => sql.select({
   }
 });
 
+const getLastStepConversation = (params) => `
+SELECT * FROM note
+WHERE note.conversation_id = {{conversation_id}} AND note.step_id = {{step_id}}
+ORDER BY note.created_at ASC LIMIT 1
+`;
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getConversationList = getConversationList;
@@ -324,3 +330,4 @@ module.exports.addUsersToConversation = addUsersToConversation;
 module.exports.addUserToConversation = addUserToConversation;
 module.exports.getEmails = getEmails;
 module.exports.removeUserFromConversation = removeUserFromConversation;
+module.exports.getLastStepConversation = getLastStepConversation;

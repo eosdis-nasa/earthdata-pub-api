@@ -11,7 +11,7 @@ const db = require('database-util');
 const msg = require('message-util');
 const { sendNote } = require('../lambda-layers/database-util/src/query/note.js');
 
-const { getTemplate } = require('./notification-consumer/templates.js');
+const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
 // TODO- Remove disable once send email enabled
 // eslint-disable-next-line
@@ -51,6 +51,8 @@ async function processRecord(record) {
       // TODO- Remove disable once send email enabled
       // eslint-disable-next-line
       const note = await db.note[operation](message);
+      const conversation = await db.note.getLastStepConversation({ submission_id: submissionId, step_name: stepName });
+      const emailPayload = getEmailTemplate(eventMessage)
       await sendEmailNotification({ note, event_type: eventMessage.event_type });
     }
   }

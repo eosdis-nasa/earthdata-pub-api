@@ -50,4 +50,17 @@ const getTemplate = async (message) => {
   return false;
 };
 
+const getEmailTemplate = async (message) => {
+
+  return { //based on Kim's html
+        workflow_name,
+        submission_name,
+        submission_id,
+        step_name,
+        conversation_subject,
+        conversation_last_message
+      }
+}
+
 module.exports.getTemplate = getTemplate;
+module.exports.getEmailTemplate = getEmailTemplate;

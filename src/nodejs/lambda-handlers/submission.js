@@ -125,6 +125,7 @@ async function saveMethod(event, user) {
 
 async function submitMethod(event, user) {
   const { form_id: formId } = event;
+  console.log(event)
   const status = await saveMethod(event, user);
   const eventMessage = {
     event_type: 'form_submitted',
