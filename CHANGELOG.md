@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+
+
+## 1.0.13 - 20230-05-12
 - Added GES DISC community workflow
 - Content update - "Data Product Restrictions" to "Open Data Policy"
 
