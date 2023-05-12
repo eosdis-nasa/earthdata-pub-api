@@ -92,6 +92,7 @@ UPDATE workflow SET short_name= 'example_workflow', long_name='Example Workflow'
 UPDATE daac SET workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff' WHERE workflow_id = '056ca100-107e-4fe5-a54a-e5f2d902a27a' AND short_name != 'Unknown';
 
 -- 5/2/2023 GES DISC default community workflow
+INSERT INTO workflow VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'gesdisc_community_workflow', 1, 'GES DISC Community Workflow', 'This is the default workflow for community products.');
 -- GES DISC 
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)
     INSERT INTO step(step_id, step_name, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'review', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
@@ -104,4 +105,4 @@ UPDATE daac SET workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff' WHERE workf
     INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'data_publication_request_form_uwg_review');
     INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_uwg_review', 'data_publication_request_form_esdis_review');
     INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_esdis_review', 'close');
-    UPDATE daac set hidden = 'false', workflow_id = '7843dc6d-f56d-488a-9193-bb7c0dc3696d' where id = '1ea1da68-cb95-431f-8dd8-a2cf16d7ef98'
+    UPDATE daac set hidden = 'false', workflow_id = '7843dc6d-f56d-488a-9193-bb7c0dc3696d' where id = '1ea1da68-cb95-431f-8dd8-a2cf16d7ef98';
