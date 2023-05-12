@@ -17,6 +17,12 @@ module "iam_roles" {
   permissions_boundary_arn = var.permissions_boundary_arn
 }
 
+module "s3" {
+  source = "./s3"
+
+  environment = var.environment
+}
+
 module "lambda_functions" {
   source = "./lambda"
 
