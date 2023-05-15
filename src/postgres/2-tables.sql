@@ -443,20 +443,6 @@ CREATE TABLE IF NOT EXISTS edpgroup_permission_submission (
   FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
 
-CREATE TABLE IF NOT EXISTS note (
-  id UUID DEFAULT UUID_GENERATE_V4(),
-  conversation_id UUID NOT NULL,
-  sender_edpuser_id UUID NOT NULL,
-  text VARCHAR NOT NULL,
-  submission_id UUID,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  PRIMARY KEY (id),
-  FOREIGN KEY (conversation_id) REFERENCES conversation (id),
-  FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
-  FOREIGN KEY (submission_id) REFERENCES submission (id),
-  UNIQUE (id)
-);
-
 CREATE TABLE IF NOT EXISTS privilege (
   privilege VARCHAR NOT NULL,
   PRIMARY KEY (privilege)
@@ -569,4 +555,18 @@ CREATE TABLE IF NOT EXISTS page (
   location VARCHAR NOT NULL,
   content JSONB NOT NULL,
   PRIMARY KEY (page_key)
+);
+
+CREATE TABLE IF NOT EXISTS note (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  conversation_id UUID NOT NULL,
+  sender_edpuser_id UUID NOT NULL,
+  text VARCHAR NOT NULL,
+  submission_id UUID,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (id),
+  FOREIGN KEY (conversation_id) REFERENCES conversation (id),
+  FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  UNIQUE (id)
 );
