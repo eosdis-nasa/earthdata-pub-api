@@ -544,6 +544,15 @@ SELECT step.notification FROM step
 WHERE step.step_name = {{step_name}}
 `;
 
+const getCreatorName = () => `
+SELECT edpuser.name FROM edpuser
+Where edpuser.id = (select initiator_edpuser_id from submission where id = {{id}})
+`
+
+const getStepName = () => `
+SELECT step_name FROM submission_status WHERE id = {{id}}
+`
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -578,3 +587,5 @@ module.exports.copyActionData = copyActionData;
 module.exports.copyFormData = copyFormData;
 module.exports.setSubmissionCopy = setSubmissionCopy;
 module.exports.getStepMessage = getStepMessage;
+module.exports.getCreatorName = getCreatorName;
+module.exports.getStepName = getStepName

@@ -15,24 +15,33 @@ const { getTemplate, getEmailTemplate } = require('./notification-consumer/templ
 
 // TODO- Remove disable once send email enabled
 // eslint-disable-next-line
-async function sendEmailNotification({ note }) {
+async function sendEmailNotification({ note, email_payload }) {
   // TODO - Add additional filter for system user messages
   // logic to add DAAC content
+  console.log('email triggered')
+  console.log(email_payload)
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
-  const template = note.event_type === 'direct_message' ? 'direct_message' : 'default';
-  const templatePayload = {
-    body: note.text
+  console.log('users')
+  const usersPayload = []
+  users.forEach(user => {
+    usersPayload.push({Destination:{
+      ToAddresses: [user.email],
+      ReplacementTemplateData: "{\"name\":\""+user.name+"\"}" 
+    }})
+  })
+  
+  const payload = {
+    Source: "noreply@nasa.gov",
+    Template: "Default",
+    Destinations: usersPayload,
+    DefaultTemplateData: JSON.stringify(email_payload)
   }
-  await msg.sendEmail({
-    // TODO - Update the subject
-    subject: 'RE: EDPub reply',
-    emails: users.map((user) => user.email),
-    templatePayload,
-    template: template
-  });
+  console.log(payload)
+
+  await msg.sendEmail(payload);
 }
 
 async function processRecord(record) {
@@ -51,9 +60,8 @@ async function processRecord(record) {
       // TODO- Remove disable once send email enabled
       // eslint-disable-next-line
       const note = await db.note[operation](message);
-      const conversation = await db.note.getLastStepConversation({ submission_id: submissionId, step_name: stepName });
-      const emailPayload = getEmailTemplate(eventMessage)
-      await sendEmailNotification({ note, event_type: eventMessage.event_type });
+      const emailPayload = await getEmailTemplate(eventMessage)
+      await sendEmailNotification({ note, email_payload: emailPayload });
     }
   }
 }

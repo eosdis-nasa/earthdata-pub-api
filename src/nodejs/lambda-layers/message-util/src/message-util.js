@@ -1,4 +1,5 @@
 const { SNS } = require('@aws-sdk/client-sns');
+const { fromEnv } = require('@aws-sdk/credential-providers');
 const { SESClient, SendTemplatedEmailCommand } = require('@aws-sdk/client-ses');
 const uuid = require('uuid');
 
@@ -32,20 +33,9 @@ function marshalAttributes(eventMessage) {
 }
 
 async function sendEmail(eventMessage) {
-  const { emails, templatePayload, template } = eventMessage
+  const ses = new SESClient({credentials: fromEnv()});
 
-  const ses = new SESClient()
-
-  const params = {
-    Destination: {
-      ToAddress: emails
-    },
-    Source: sourceEmail,
-    Template: template,
-    TemplateData: templatePayload
-  };
-
-  const command = new SendTemplatedEmailCommand(params);
+  const command = new SendTemplatedEmailCommand(eventMessage);
   //await ses.send(command);
   
 }

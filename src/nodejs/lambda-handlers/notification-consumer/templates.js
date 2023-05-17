@@ -51,15 +51,39 @@ const getTemplate = async (message) => {
 };
 
 const getEmailTemplate = async (message) => {
+  let emailPayload = {}
+  if(message.event_type !== "direct_message"){
 
-  return { //based on Kim's html
-        workflow_name,
-        submission_name,
-        submission_id,
-        step_name,
-        conversation_subject,
-        conversation_last_message
-      }
+    const workflow_name = db.workflow.getLongName({id: message.workflow_id})
+    const formData = await db.submission.getFormData({id: message.submission_id})
+    const conversationData = await db.note.readConversation({
+      conversation_id: message.conversation_id,
+    })
+
+    emailPayload = {
+      name : "EDPUB User", 
+      submission_id: message.submission_id,
+      workflow_name: (await workflow_name).long_name,
+      conversation_subject: conversationData.subject,
+      conversation_last_message: conversationData.notes[0].text
+    }
+
+    if(formData.data_product_name_value){
+      emailPayload['submission_name'] = formData.data_product_name_value
+    }else(emailPayload['submission_name'] = 
+      `Request Initialized by ${(await db.submission.getCreatorName({id: message.submission_id})).name}`)
+
+  }
+
+  if(message.event_type !== "form_submitted"
+    && message.event_type !== "review_approved"){
+    emailPayload['step_name'] = message.step_name
+  }else{
+    emailPayload['step_name'] = (await db.submission.getStepName({id: message.submission_id})).step_name
+  }
+
+  return emailPayload
+
 }
 
 module.exports.getTemplate = getTemplate;

@@ -18,6 +18,7 @@
     "@aws-sdk/client-lambda": "3.276.0",
     "@aws-sdk/client-rds": "3.276.0",
     "@aws-sdk/client-s3": "3.276.0",
+    "@aws-sdk/client-ses": "^3.276.0",
     "@aws-sdk/client-sns": "^3.276.0",
     "@aws-sdk/client-sqs": "3.276.0",
     "@aws-sdk/credential-providers": "3.276.0",
