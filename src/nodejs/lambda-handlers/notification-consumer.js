@@ -24,22 +24,22 @@ async function sendEmailNotification({ note, email_payload }) {
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
-  console.log('users')
-  const usersPayload = []
-  users.forEach(user => {
-    usersPayload.push({Destination:{
-      ToAddresses: [user.email],
-      ReplacementTemplateData: "{\"name\":\""+user.name+"\"}" 
-    }})
-  })
+  // console.log('users')
+  // const usersPayload = []
+  // users.forEach(user => {
+  //   usersPayload.push({Destination:{
+  //     ToAddresses: [user.email],
+  //     ReplacementTemplateData: "{\"name\":\""+user.name+"\"}" 
+  //   }})
+  // })
   
-  const payload = {
-    Source: "noreply@nasa.gov",
-    Template: "Default",
-    Destinations: usersPayload,
-    DefaultTemplateData: JSON.stringify(email_payload)
-  }
-  console.log(payload)
+  // const payload = {
+  //   Source: "noreply@nasa.gov",
+  //   Template: "Default",
+  //   Destinations: usersPayload,
+  //   DefaultTemplateData: JSON.stringify(email_payload)
+  // }
+  // console.log(payload)
 
   await msg.sendEmail(users, email_payload);
 }

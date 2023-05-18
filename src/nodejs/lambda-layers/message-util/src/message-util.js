@@ -90,7 +90,7 @@ async function sendEmail(users, eventMessage) {
   });
 
   const command = new SendTemplatedEmailCommand(eventMessage);
-  //await ses.send(command);
+  await ses.send(command);
   
 }
 

@@ -71,7 +71,6 @@ module.exports.getFormData = one;
 module.exports.getUsers = many;
 module.exports.setDetail = one;
 module.exports.getStepMessage = one;
-module.exports.getLastStepConversation = one;
 module.exports.getLongName = one;
 module.exports.getCreatorName = one;
 module.exports.getStepName = one;
