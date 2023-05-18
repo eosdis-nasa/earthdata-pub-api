@@ -51,6 +51,4 @@ RAISE;
 --ADD CONSTRAINT email_unique UNIQUE (email);
 
 -- 5/18/2023 Adds support for SES and step messages
-    ALTER TABLE note ADD submission_id UUID;
-    ALTER TABLE note ADD FOREIGN KEY (submission_id) REFERENCES submission(id);
     ALTER TABLE step ADD notification TEXT DEFAULT '';
