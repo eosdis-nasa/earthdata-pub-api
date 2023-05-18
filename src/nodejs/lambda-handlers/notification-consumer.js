@@ -9,29 +9,45 @@
 const db = require('database-util');
 
 const msg = require('message-util');
+const { sendNote } = require('../lambda-layers/database-util/src/query/note.js');
 
-const { getTemplate } = require('./notification-consumer/templates.js');
+const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
 // TODO- Remove disable once send email enabled
 // eslint-disable-next-line
-async function sendEmailNotification({ note }) {
+async function sendEmailNotification({ note, email_payload }) {
   // TODO - Add additional filter for system user messages
+  // logic to add DAAC content
+  console.log('email triggered')
+  console.log(email_payload)
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
-  await msg.sendEmail({
-    // TODO - Update the subject
-    subject: 'RE: EDPub reply',
-    emails: users.map((user) => user.email),
-    body: note.text
-  });
+  // console.log('users')
+  // const usersPayload = []
+  // users.forEach(user => {
+  //   usersPayload.push({Destination:{
+  //     ToAddresses: [user.email],
+  //     ReplacementTemplateData: "{\"name\":\""+user.name+"\"}" 
+  //   }})
+  // })
+  
+  // const payload = {
+  //   Source: "noreply@nasa.gov",
+  //   Template: "Default",
+  //   Destinations: usersPayload,
+  //   DefaultTemplateData: JSON.stringify(email_payload)
+  // }
+  // console.log(payload)
+
+  await msg.sendEmail(users, email_payload);
 }
 
 async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
   if (!(eventMessage.data && eventMessage.data.silent)) {
-    const message = getTemplate(eventMessage);
+    const message = await getTemplate(eventMessage);
     if (message) {
       const operation = message.conversation_id ? 'reply' : 'sendNote';
       if (!message.user_id) {
@@ -44,7 +60,8 @@ async function processRecord(record) {
       // TODO- Remove disable once send email enabled
       // eslint-disable-next-line
       const note = await db.note[operation](message);
-      // await sendEmailNotification({ note });
+      const emailPayload = await getEmailTemplate(eventMessage)
+      await sendEmailNotification({ note, email_payload: emailPayload });
     }
   }
 }

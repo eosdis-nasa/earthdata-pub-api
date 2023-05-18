@@ -22,6 +22,7 @@ async function actionMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
+  status.step.daac_message? (eventMessage['daac_message']=status.step.daac_message) : null;
   Object.keys(eventMessage).forEach((key) => (
     eventMessage[key] === undefined && delete eventMessage[key]));
   await msg.sendEvent(eventMessage);
@@ -37,6 +38,7 @@ async function formMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
+  status.step.daac_message? (eventMessage['daac_message']=status.step.daac_message) : null;
   await msg.sendEvent(eventMessage);
 }
 
@@ -49,6 +51,7 @@ async function reviewMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
+  status.step.daac_message? (eventMessage['daac_message']=status.step.daac_message) : null;
   await msg.sendEvent(eventMessage);
 }
 
@@ -62,6 +65,7 @@ async function serviceMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
+  status.step.daac_message? (eventMessage['daac_message']=status.step.daac_message) : null;
   await msg.sendEvent(eventMessage);
 }
 
@@ -74,6 +78,7 @@ async function closeMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
+  status.step.daac_message? (eventMessage['daac_message']=status.step.daac_message) : null;
   await msg.sendEvent(eventMessage);
 }
 
@@ -118,8 +123,9 @@ async function formSubmittedMethod(eventMessage) {
       step_name: status.step.name,
       user_id: userId
     };
+    status.step.daac_message? (eventMessage['daac_message']=status.step.daac_message) : null;
     await msg.sendEvent(newEvent);
-  }
+ }
 }
 
 async function reviewApprovedMethod(eventMessage) {

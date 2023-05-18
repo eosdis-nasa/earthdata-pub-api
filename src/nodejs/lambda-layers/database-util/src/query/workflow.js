@@ -82,6 +82,10 @@ const deleteWorkflow = () =>`
 DELETE FROM workflow WHERE id = {{id}}
 `;
 
+const getLongName = () => `
+SELECT long_name FROM workflow WHERE id = {{id}}
+`;
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.clearSteps = clearSteps;
@@ -91,3 +95,4 @@ module.exports.updateWorkflowMetaData = updateWorkflowMetaData;
 module.exports.initialize = initialize;
 module.exports.createStep = createStep;
 module.exports.deleteWorkflow = deleteWorkflow;
+module.exports.getLongName = getLongName;
