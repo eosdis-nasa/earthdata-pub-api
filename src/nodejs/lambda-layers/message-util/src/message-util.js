@@ -7,6 +7,8 @@ const sourceEmail = process.env.SOURCE_EMAIL;
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
+const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
+const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -33,7 +35,7 @@ function marshalAttributes(eventMessage) {
 }
 
 async function sendEmail(users, eventMessage) {
-  const ses = new SESClient({credentials: fromEnv()});
+  const ses = new SESClient({credentials: {accessKeyId: sesAccessKeyId, secretAccessKey: sesSecretAccessKey}});
 
   users.forEach(async user => {
     const payload = {
