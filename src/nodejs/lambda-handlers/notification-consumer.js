@@ -41,7 +41,7 @@ async function sendEmailNotification({ note, email_payload }) {
   }
   console.log(payload)
 
-  await msg.sendEmail(payload);
+  await msg.sendEmail(users, email_payload);
 }
 
 async function processRecord(record) {

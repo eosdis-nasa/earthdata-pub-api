@@ -71,6 +71,9 @@ module "lambda_functions" {
   auth_client_path = var.auth_client_path
   meditor_service_username = var.meditor_service_username
   meditor_service_password = var.meditor_service_password
+  ses_from_email = var.ses_from_email
+  ses_access_key_id = var.ses_access_key_id
+  ses_secret_access_key = var.ses_secret_access_key
 }
 
 module "apigateway_endpoints" {
