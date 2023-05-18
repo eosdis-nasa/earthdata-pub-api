@@ -562,11 +562,9 @@ CREATE TABLE IF NOT EXISTS note (
   conversation_id UUID NOT NULL,
   sender_edpuser_id UUID NOT NULL,
   text VARCHAR NOT NULL,
-  submission_id UUID,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
-  FOREIGN KEY (submission_id) REFERENCES submission (id),
   UNIQUE (id)
 );
