@@ -4,6 +4,7 @@ resource "aws_sqs_queue" "edpub_inbound_sqs" {
   name                        = "edpub_inbound_sqs.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
+  visibility_timeout_seconds  = 180
 }
 
 # Action Queue
@@ -12,6 +13,7 @@ resource "aws_sqs_queue" "edpub_action_sqs" {
   name                        = "edpub_action_sqs.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
+  visibility_timeout_seconds  = 180
 }
 
 data "template_file" "edpub_action_sqs_policy" {
@@ -45,6 +47,7 @@ resource "aws_sqs_queue" "edpub_metrics_sqs" {
   name                        = "edpub_metrics_sqs.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
+  visibility_timeout_seconds  = 180
 }
 
 data "template_file" "edpub_metrics_sqs_policy" {
@@ -78,6 +81,7 @@ resource "aws_sqs_queue" "edpub_notification_sqs" {
   name                        = "edpub_notification_sqs.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
+  visibility_timeout_seconds  = 180
 }
 
 data "template_file" "edpub_notification_sqs_policy" {
@@ -111,6 +115,7 @@ resource "aws_sqs_queue" "edpub_workflow_sqs" {
   name                        = "edpub_workflow_sqs.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
+  visibility_timeout_seconds  = 180
 }
 
 data "template_file" "edpub_workflow_sqs_policy" {
