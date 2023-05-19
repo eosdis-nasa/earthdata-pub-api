@@ -9,7 +9,6 @@
 const db = require('database-util');
 
 const msg = require('message-util');
-const { sendNote } = require('../lambda-layers/database-util/src/query/note.js');
 
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
@@ -18,8 +17,12 @@ const { getTemplate, getEmailTemplate } = require('./notification-consumer/templ
 async function sendEmailNotification({ note, email_payload }) {
   // TODO - Add additional filter for system user messages
   // logic to add DAAC content
-  console.log('email triggered')
-  console.log(email_payload)
+  // TODO - remove eslint disable when finished troubleshooting
+  // eslint-disable-next-line
+  console.log('email triggered');
+  // TODO - remove eslint disable when finished troubleshooting
+  // eslint-disable-next-line
+  console.log(email_payload);
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
@@ -29,10 +32,10 @@ async function sendEmailNotification({ note, email_payload }) {
   // users.forEach(user => {
   //   usersPayload.push({Destination:{
   //     ToAddresses: [user.email],
-  //     ReplacementTemplateData: "{\"name\":\""+user.name+"\"}" 
+  //     ReplacementTemplateData: "{\"name\":\""+user.name+"\"}"
   //   }})
   // })
-  
+
   // const payload = {
   //   Source: "noreply@nasa.gov",
   //   Template: "Default",
@@ -60,7 +63,7 @@ async function processRecord(record) {
       // TODO- Remove disable once send email enabled
       // eslint-disable-next-line
       const note = await db.note[operation](message);
-      const emailPayload = await getEmailTemplate(eventMessage)
+      const emailPayload = await getEmailTemplate(eventMessage);
       await sendEmailNotification({ note, email_payload: emailPayload });
     }
   }

@@ -41,9 +41,9 @@ const getTemplate = async (message) => {
   if (message.event_type && templates[message.event_type]) {
     const template = templates[message.event_type](message);
     template.conversation_id = template.conversation_id || message.conversation_id;
-    if(message.step_name && message.event_type !== 'request_initialized'){
-      const stepMessage = await db.submission.getStepMessage({step_name:message.step_name})
-      template.text = `${template.text}\n${stepMessage.notification}`
+    if (message.step_name && message.event_type !== 'request_initialized') {
+      const stepMessage = await db.submission.getStepMessage({ step_name: message.step_name });
+      template.text = `${template.text}\n${stepMessage.notification}`;
     }
     return template;
   }
@@ -51,40 +51,38 @@ const getTemplate = async (message) => {
 };
 
 const getEmailTemplate = async (message) => {
-  let emailPayload = {}
-  if(message.event_type !== "direct_message"){
-
-    const workflow_name = db.workflow.getLongName({id: message.workflow_id})
-    const formData = await db.submission.getFormData({id: message.submission_id})
+  let emailPayload = {};
+  if (message.event_type !== 'direct_message') {
+    const workflowName = db.workflow.getLongName({ id: message.workflow_id });
+    const formData = await db.submission.getFormData({ id: message.submission_id });
     const conversationData = await db.note.readConversation({
-      conversation_id: message.conversation_id,
-    })
+      conversation_id: message.conversation_id
+    });
 
     emailPayload = {
-      name : "EDPUB User", 
+      name: 'EDPUB User',
       submission_id: message.submission_id,
-      workflow_name: (await workflow_name).long_name,
+      workflow_name: (await workflowName).long_name,
       conversation_subject: conversationData.subject,
       conversation_last_message: conversationData.notes[0].text
-    }
+    };
 
-    if(formData.data_product_name_value){
-      emailPayload['submission_name'] = formData.data_product_name_value
-    }else(emailPayload['submission_name'] = 
-      `Request Initialized by ${(await db.submission.getCreatorName({id: message.submission_id})).name}`)
-
+    if (formData.data_product_name_value) {
+      emailPayload.submission_name = formData.data_product_name_value;
+    } else { (emailPayload.submission_name = `Request Initialized by ${(await db.submission.getCreatorName({ id: message.submission_id })).name}`); }
   }
 
-  if(message.event_type !== "form_submitted"
-    && message.event_type !== "review_approved"){
-    emailPayload['step_name'] = message.step_name
-  }else{
-    emailPayload['step_name'] = (await db.submission.getStepName({id: message.submission_id})).step_name
+  if (message.event_type !== 'form_submitted'
+    && message.event_type !== 'review_approved') {
+    emailPayload.step_name = message.step_name;
+  } else {
+    emailPayload.step_name = (await db.submission.getStepName(
+      { id: message.submission_id }
+    )).step_name;
   }
 
-  return emailPayload
-
-}
+  return emailPayload;
+};
 
 module.exports.getTemplate = getTemplate;
 module.exports.getEmailTemplate = getEmailTemplate;
