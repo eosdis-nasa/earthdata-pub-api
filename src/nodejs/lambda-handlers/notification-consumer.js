@@ -9,7 +9,6 @@
 const db = require('database-util');
 
 const msg = require('message-util');
-const { sendNote } = require('../lambda-layers/database-util/src/query/note.js');
 
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
