@@ -1,6 +1,5 @@
 const { SNS } = require('@aws-sdk/client-sns');
-const { fromEnv } = require('@aws-sdk/credential-providers');
-const { SESClient, SendTemplatedEmailCommand } = require('@aws-sdk/client-ses');
+const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const uuid = require('uuid');
 
 const sourceEmail = process.env.SOURCE_EMAIL;
@@ -35,7 +34,10 @@ function marshalAttributes(eventMessage) {
 }
 
 async function sendEmail(users, eventMessage) {
-  const ses = new SESClient({credentials: {accessKeyId: sesAccessKeyId, secretAccessKey: sesSecretAccessKey}});
+  const ses = new SESClient({
+    region: 'us-east-1',
+    credentials: {accessKeyId: sesAccessKeyId, secretAccessKey: sesSecretAccessKey
+  }});
 
   users.forEach(async user => {
     const payload = {
@@ -89,10 +91,10 @@ async function sendEmail(users, eventMessage) {
         }
       }
     }
-  });
 
-  const command = new SendTemplatedEmailCommand(eventMessage);
-  await ses.send(command);
+    const command = new SendEmailCommand(payload);
+    await ses.send(command);
+  });
   
 }
 
