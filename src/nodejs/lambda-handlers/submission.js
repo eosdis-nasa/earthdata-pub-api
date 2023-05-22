@@ -194,7 +194,8 @@ async function changeStepMethod(event, user) {
   const { id, step_name } = event;
   const validStep = await db.submission.checkWorkflow({ step_name, id });
   const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD'];
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege)) && await validStep.step_name) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))
+                                               && await validStep.step_name) {
     return db.submission.setStep({ step_name, id });
   }
   return db.submission.findById({ id });
