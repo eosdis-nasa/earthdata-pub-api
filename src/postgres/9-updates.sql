@@ -52,3 +52,7 @@ RAISE;
 
 -- 5/18/2023 Adds support for SES and step messages
     ALTER TABLE step ADD notification TEXT DEFAULT '';
+    UPDATE question SET long_name='Temporal Information Notes' where id='4f2dd369-d865-47ba-8504-8694493f128f';
+    UPDATE question SET help='If more than three distinct spatial coverage bounding boxes exist for this data product, please add a comment to the Spatial Information Notes.' where id='15a012d0-9b4b-4979-9fa9-81fac1600b09';
+    UPDATE question SET help='Please provide any additional details needed to understand what these numbers mean in the Spatial Information Notes. For example, the point of reference for the values given in the vertical spatial coverage.' where id='a3701d37-77cf-4ccc-8068-c6860a7a8929';
+    UPDATE question SET long_name='Spatial Information Notes' where id='d1ef0a6f-284e-40a7-9248-75dd8f1f0ded';

@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
-
+- Content update - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes'
+- Content update - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
 
 ## 1.0.13 - 20230-05-12
 - Added GES DISC community workflow
