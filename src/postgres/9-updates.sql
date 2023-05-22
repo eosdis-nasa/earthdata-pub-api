@@ -52,3 +52,4 @@ RAISE;
 
 -- 5/18/2023 Adds support for SES and step messages
     ALTER TABLE step ADD notification TEXT DEFAULT '';
+    UPDATE question SET help='Please provide the nominal size of the geographic area covered by a single data value. For example: 25 km at nadir; a 0.25 degree x 0.25 degree grid cell at the equator; points along a path; a 10 km x 10 km x 5 km radar slice. If the spatial resolution varies for data values, you can list "varies". If a spatial resolution is not applicable, you can list "not applicable."' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
