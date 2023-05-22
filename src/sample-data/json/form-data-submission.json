@@ -457,7 +457,7 @@
           "short_name": "file_temporal_coverage",
           "long_name": "Data File Temporal Coverage",
           "text": "On average, how much time is covered by an individual data file?",
-          "help": "",
+          "help": "If a data file represents a single point in time, meaning the start and end times of the file would be identical, choose \"Instantaneous\". If the temporal coverage cannot be reasonably represented by a single value, choose \"Varies\".",
           "inputs": [
             {
               "type": "number",
@@ -479,6 +479,7 @@
                 "Week(s)",
                 "Month(s)",
                 "Year(s)",
+                "Instantaneous",
                 "Varies"
               ],
               "required": true

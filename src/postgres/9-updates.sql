@@ -52,3 +52,5 @@ RAISE;
 
 -- 5/18/2023 Adds support for SES and step messages
     ALTER TABLE step ADD notification TEXT DEFAULT '';
+    UPDATE question SET help='If a data file represents a single point in time, meaning the start and end times of the file would be identical, choose "Instantaneous". If the temporal coverage cannot be reasonably represented by a single value, choose "Varies".' where id='91c123bf-702e-458c-90a1-b26f6498937e';
+    UPDATE input SET enums='["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Instantaneous","Varies"]' where id='91c123bf-702e-458c-90a1-b26f6498937e'
