@@ -52,3 +52,5 @@ RAISE;
 
 -- 5/18/2023 Adds support for SES and step messages
     ALTER TABLE step ADD notification TEXT DEFAULT '';
+    UPDATE question SET long_name='Ongoing Data Production', text='After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?' where id='dbf70495-433a-439e-8173-0cb20f972c16';
+    UPDATE question SET help='The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file at the time of initial delivery to the DAAC, even if there are time gaps or data production will be ongoing.' where id='4f2dd369-d865-47ba-8504-8694493f129f';
