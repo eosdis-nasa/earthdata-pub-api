@@ -60,7 +60,7 @@ async function processRecord(record) {
       // TODO- Remove disable once send email enabled
       // eslint-disable-next-line
       const note = await db.note[operation](message);
-      const emailPayload = await getEmailTemplate(eventMessage)
+      const emailPayload = await getEmailTemplate(eventMessage, message)
       await sendEmailNotification({ note, email_payload: emailPayload });
     }
   }
