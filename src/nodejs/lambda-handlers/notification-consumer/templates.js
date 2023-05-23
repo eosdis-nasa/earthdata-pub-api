@@ -41,9 +41,9 @@ const getTemplate = async (message) => {
   if (message.event_type && templates[message.event_type]) {
     const template = templates[message.event_type](message);
     template.conversation_id = template.conversation_id || message.conversation_id;
-    if(message.step_name && message.event_type !== 'request_initialized'){
-      const stepMessage = await db.submission.getStepMessage({step_name:message.step_name})
-      template.text = `${template.text}\n${stepMessage.notification}`
+    if (message.step_name && message.event_type !== 'request_initialized') {
+      const stepMessage = await db.submission.getStepMessage({ step_name: message.step_name });
+      template.text = `${template.text}\n${stepMessage.notification}`;
     }
     return template;
   }
@@ -51,7 +51,6 @@ const getTemplate = async (message) => {
 };
 
 const getEmailTemplate = async (eventMessage, message) => {
-  console.log(message)
   let emailPayload = {}
   if(eventMessage.event_type !== "direct_message"){
 
@@ -79,9 +78,8 @@ const getEmailTemplate = async (eventMessage, message) => {
     emailPayload['step_name'] = (await db.submission.getStepName({id: eventMessage.submission_id})).step_name
   }
 
-  return emailPayload
-
-}
+  return emailPayload;
+};
 
 module.exports.getTemplate = getTemplate;
 module.exports.getEmailTemplate = getEmailTemplate;

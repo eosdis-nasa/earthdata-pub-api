@@ -44,22 +44,22 @@ async function sendEmail(users, eventMessage) {
       secretAccessKey: sesCreds.ses_secret_access_key
   }});
 
-  users.forEach(async user => {
+  users.forEach(async (user) => {
     const payload = {
       Source: sourceEmail,
       Destination: {
-        ToAddresses: [user.email],
+        ToAddresses: [user.email]
       },
       Message: {
         Subject: {
-          Data: `EDPUB Notification`
+          Data: 'EDPUB Notification'
         },
         Body: {
           Text:{
             Data:`Hello ${user.name},\n\nThe following request has changed step in the ${eventMessage.workflow_name} workflow.\n\nRequest:\n${eventMessage.submission_name} (${eventMessage.submission_id})\n\nNew Step:\n${eventMessage.step_name}\n\nComments:\n${eventMessage.conversation_last_message}`
           },
-          Html:{
-            Data:`
+          Html: {
+            Data: `
               <html>
               <body>
                   <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style>
@@ -95,12 +95,11 @@ async function sendEmail(users, eventMessage) {
           }
         }
       }
-    }
+    };
 
     const command = new SendEmailCommand(payload);
     await ses.send(command);
   });
-  
 }
 
 function sendEvent(eventMessage) {
