@@ -1,6 +1,6 @@
 const { SNS } = require('@aws-sdk/client-sns');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
-const { SecretsManagerClient, GetSecretValueCommand } = require("@aws-sdk/client-secrets-manager");
+const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
 const uuid = require('uuid');
 
 const sourceEmail = process.env.SOURCE_EMAIL;
@@ -36,13 +36,14 @@ function marshalAttributes(eventMessage) {
 
 async function sendEmail(users, eventMessage) {
   const secretClient = new SecretsManagerClient();
-  const sesCreds = await secretClient.send(new GetSecretValueCommand({SecretId: 'ses_access_creds'}));
+  const sesCreds = await secretClient.send(new GetSecretValueCommand({ SecretId: 'ses_access_creds' }));
   const ses = new SESClient({
     region: 'us-east-1',
     credentials: {
-      accessKeyId: sesCreds.ses_access_key_id, 
+      accessKeyId: sesCreds.ses_access_key_id,
       secretAccessKey: sesCreds.ses_secret_access_key
-  }});
+    }
+  });
 
   users.forEach(async (user) => {
     const payload = {
@@ -55,8 +56,8 @@ async function sendEmail(users, eventMessage) {
           Data: 'EDPUB Notification'
         },
         Body: {
-          Text:{
-            Data:`Hello ${user.name},\n\nThe following request has changed step in the ${eventMessage.workflow_name} workflow.\n\nRequest:\n${eventMessage.submission_name} (${eventMessage.submission_id})\n\nNew Step:\n${eventMessage.step_name}\n\nComments:\n${eventMessage.conversation_last_message}`
+          Text: {
+            Data: `Hello ${user.name},\n\nThe following request has changed step in the ${eventMessage.workflow_name} workflow.\n\nRequest:\n${eventMessage.submission_name} (${eventMessage.submission_id})\n\nNew Step:\n${eventMessage.step_name}\n\nComments:\n${eventMessage.conversation_last_message}`
           },
           Html: {
             Data: `
