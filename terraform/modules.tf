@@ -23,6 +23,13 @@ module "s3" {
   environment = var.environment
 }
 
+module "aws_secrets" {
+  source = "./aws_secrets"
+
+  ses_access_key_id = var.ses_access_key_id
+  ses_secret_access_key = var.ses_secret_access_key
+}
+
 module "lambda_functions" {
   source = "./lambda"
 
