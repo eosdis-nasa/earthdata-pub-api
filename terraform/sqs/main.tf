@@ -78,7 +78,6 @@ resource "aws_sqs_queue" "edpub_notification_sqs" {
   name                        = "edpub_notification_sqs.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
-  visibility_timeout_seconds  = 180
 }
 
 data "template_file" "edpub_notification_sqs_policy" {
