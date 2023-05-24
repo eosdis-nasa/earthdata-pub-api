@@ -36,7 +36,8 @@ function marshalAttributes(eventMessage) {
 
 async function sendEmail(users, eventMessage) {
   const secretClient = new SecretsManagerClient();
-  const sesCreds = await secretClient.send(new GetSecretValueCommand({ SecretId: 'ses_access_creds' }));
+  const sesCredsString = (await secretClient.send(new GetSecretValueCommand({ SecretId: 'ses_access_creds' }))).SecretString;
+  const sesCreds = JSON.parse(sesCredsString)
   const ses = new SESClient({
     region: 'us-east-1',
     credentials: {

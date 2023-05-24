@@ -182,14 +182,6 @@ variable "ses_from_email" {
   type = string
 }
 
-variable "ses_access_key_id" {
-  type = string
-}
-
-variable "ses_secret_access_key" {
-  type = string
-}
-
 variable "ses_access_creds_arn" {
   type = string
 }
