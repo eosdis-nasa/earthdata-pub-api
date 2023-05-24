@@ -80,8 +80,6 @@ module "lambda_functions" {
   meditor_service_username = var.meditor_service_username
   meditor_service_password = var.meditor_service_password
   ses_from_email = var.ses_from_email
-  ses_access_key_id = var.ses_access_key_id
-  ses_secret_access_key = var.ses_secret_access_key
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
 }
 
