@@ -52,3 +52,7 @@ RAISE;
 
 -- 5/18/2023 Adds support for SES and step messages
     ALTER TABLE step ADD notification TEXT DEFAULT '';
+
+-- 5/26/2023 Adds support for querryiing notes by step
+    ALTER TABLE note ADD step_id UUID;
+    ALTER TABLE note ADD FOREIGN KEY (step_id) REFERENCES step(step_id);

@@ -12,16 +12,18 @@ const msg = require('message-util');
 
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
+// eslint-disable-next-line
 async function sendEmailNotification({ note, email_payload }) {
   // TODO - Add additional filter for system user messages
   // logic to add DAAC content
+  // eslint-disable-next-line
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
 
-  //Disabled until ready for uat Testing
-  //await msg.sendEmail(users, email_payload);
+  // Disabled until ready for uat Testing
+  // await msg.sendEmail(users, email_payload);
 }
 
 async function processRecord(record) {
@@ -38,7 +40,7 @@ async function processRecord(record) {
         message.subject = 'No Subject';
       }
       const note = await db.note[operation](message);
-      if(eventMessage.event_type !== 'direct_message' && process.env.AWS_EXECUTION_ENV) {
+      if (eventMessage.event_type !== 'direct_message' && process.env.AWS_EXECUTION_ENV) {
         const emailPayload = await getEmailTemplate(eventMessage, message);
         await sendEmailNotification({ note, email_payload: emailPayload });
       }
