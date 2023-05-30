@@ -56,3 +56,11 @@ RAISE;
 -- 5/26/2023 Adds support for querryiing notes by step
     ALTER TABLE note ADD step_id UUID;
     ALTER TABLE note ADD FOREIGN KEY (step_id) REFERENCES step(step_id);
+
+    UPDATE question SET long_name='Data Product Spatial Coverage' where id='228cb0d6-78fb-449a-8061-b1e6fb3f59d1';
+UPDATE question SET long_name='Data Product Temporal Coverage' where id='4f2dd369-d865-47ba-8504-8694493f129f';
+UPDATE question SET long_name='Data Value Temporal Resolution' where id='4f2dd369-d865-47ba-8504-8694493f139f';
+UPDATE question SET long_name='Data Product Horizontal Spatial Coverage' where id='15a012d0-9b4b-4979-9fa9-81fac1600b09';
+UPDATE question SET long_name='Data Product Vertical Spatial Coverage' where id='0f640f21-37ec-4d04-af2c-da955ae98e12';
+UPDATE question SET long_name='Data Value Spatial Resolution' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
+UPDATE input SET label='Data Value Spatial Resolution' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
