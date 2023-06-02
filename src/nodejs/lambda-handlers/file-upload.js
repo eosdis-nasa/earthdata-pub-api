@@ -1,31 +1,34 @@
-const { PutObjectCommand, S3Client } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const {  S3Client } = require('@aws-sdk/client-s3');
+import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
 async function getPutUrlMethod(event, user) {
   const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
-  const checksumAlgo = 'MD5';
+  const checksumAlgo = 'SHA256';
   if (!fileType) return ('invalid file type');
   const s3Client = new S3Client({
     region
   });
-  const command = new PutObjectCommand({
+
+  Conditions = [
+    { 'x-amz-meta-checksumalgorithm': checksumAlgo },
+    { 'x-amz-meta-checksumvalue': checksumValue}
+  ];
+
+  const resp =  await createPresignedPost(s3Client, {
     Bucket: ingestBucket,
-    Key: `${user}/${fileName}`,
-    ContentType: fileType,
-    Metadata: {
-      'file-id': fileName,
-      checksum: checksumValue,
-      'checksum-algorithm': checksumAlgo
-    }
+    key: fileName,
+    Conditions,
+    Fields: {
+      'x-amz-meta-checksumalgorithm': checksumAlgo,
+      'x-amz-meta-checksumvalue': checksumValue
+    },
+    Expires: 60
   });
 
-  const genUrl = await getSignedUrl(s3Client, command, {
-    expiresIn: 60
-  });
-  return ({ url: genUrl });
+  return (resp);
 }
 
 const operations = {
