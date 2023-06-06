@@ -8,13 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
-<<<<<<< HEAD
 - Content update - help text on Spatial Resolution question on Data Publication Form
-||||||| 4d69904
-
-=======
+- Content update - Added "Instantaneous" and help text to file_temporal_coverage
 - Content updates for data_product_status and product_temporal_coverage
->>>>>>> develop
 
 ## 1.0.13 - 20230-05-12
 - Added GES DISC community workflow
