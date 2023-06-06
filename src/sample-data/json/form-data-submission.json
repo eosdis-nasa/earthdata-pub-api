@@ -351,7 +351,7 @@
           "short_name": "product_temporal_coverage",
           "long_name": "Data Product Temporal Coverage",
           "text": "What period of time is covered by the entire data product, upon planned delivery to the DAAC?",
-          "help": "The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file, even if there are time gaps.",
+          "help": "The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file at the time of initial delivery to the DAAC, even if there are time gaps or data production will be ongoing.",
           "inputs": [
             {
               "type": "date",
@@ -371,8 +371,8 @@
         },
         {
           "short_name": "data_product_status",
-          "long_name": "Data Product Status",
-          "text": "After this data product has been published at the DAAC, will you continue to collect or create new data to extend the time series?",
+          "long_name": "Ongoing Data Production",
+          "text": "After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?",
           "help": "",
           "inputs": [
             {
@@ -457,7 +457,7 @@
           "short_name": "file_temporal_coverage",
           "long_name": "Data File Temporal Coverage",
           "text": "On average, how much time is covered by an individual data file?",
-          "help": "",
+          "help": "If a data file represents a single point in time, meaning the start and end times of the file would be identical, choose \"Instantaneous\". If the temporal coverage cannot be reasonably represented by a single value, choose \"Varies\".",
           "inputs": [
             {
               "type": "number",
@@ -479,6 +479,7 @@
                 "Week(s)",
                 "Month(s)",
                 "Year(s)",
+                "Instantaneous",
                 "Varies"
               ],
               "required": true

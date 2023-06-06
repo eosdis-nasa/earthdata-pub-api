@@ -12,8 +12,7 @@ const msg = require('message-util');
 
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
-// eslint-disable-next-line
-async function sendEmailNotification({ note, email_payload }) {
+async function sendEmailNotification({ note, emailPayload }) {
   // TODO - Add additional filter for system user messages
   // logic to add DAAC content
   // eslint-disable-next-line

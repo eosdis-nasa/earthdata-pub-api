@@ -71,7 +71,7 @@ const refs = {
       },
       group: 'note.conversation_id',
       alias: 'note_step_agg',
-      where: { filters: [{ field: 'note.step_id', param: 'step_id' }] } 
+      where: { filters: [{ field: 'note.step_name', param: 'step_name' }] } 
     }),
     on: { left: 'note_step_agg.conversation_id', right: 'conversation.id' }
   },
@@ -223,7 +223,7 @@ ${params.user_id && !params.daac ?
             joins: [
               refs.conversation_user, 
               refs.participant_agg, 
-              ...(params.step_id ? [refs.note_step_agg] : [refs.note_agg])
+              ...(params.step_name ? [refs.note_step_agg] : [refs.note_agg])
             ]
           },
           where: {
@@ -281,8 +281,8 @@ ${params.user_id && !params.daac ?
 `;
 
 const reply = (params) => `
-WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text${params.step_id?`, step_id`:''}) VALUES
- ({{conversation_id}}, {{user_id}}, {{text}}${params.step_id?`, {{step_id}}`:''})
+WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text${params.step_name?`, step_name`:''}) VALUES
+ ({{conversation_id}}, {{user_id}}, {{text}}${params.step_name?`, {{step_name}}`:''})
 RETURNING *),
 conversation_update AS (UPDATE conversation SET
  last_change = new_note.created_at

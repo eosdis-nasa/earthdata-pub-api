@@ -34,7 +34,7 @@ async function replyMethod(params) {
     },
     user_id: params.context.user_id
   };
-  message.data.step_id = params.step_id ? params.step_id : null;
+  message.data.step_name = params.step_name ? params.step_name : null;
 
   await msg.sendEvent(message);
   return { message: 'Successfully sent.' };
@@ -66,27 +66,27 @@ async function conversationsMethod(params) {
 }
 
 async function conversationMethod(params) {
-  const { params: { detailed, step_id: stepId } } = params;
+  const { params: { detailed, step_name: stepName } } = params;
   let response = {};
   const userInfo = await db.user.findById({ id: params.context.user_id });
   if (userInfo.user_privileges.includes('REQUEST_ADMINREAD') || userInfo.user_privileges.includes('ADMIN')
   || userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
     response = await db.note.readConversation({
       conversation_id: params.conversation_id,
-      ...(stepId && { step_id: stepId })
+      ...(stepName && { step_name: stepName })
     });
   } else if (userInfo.user_privileges.includes('REQUEST_DAACREAD')) {
     response = await db.note.readConversation({
       user_id: params.context.user_id,
       daac: true,
       conversation_id: params.conversation_id,
-      ...(stepId && { step_id: stepId })
+      ...(stepName && { step_name: stepName })
     });
   } else {
     response = await db.note.readConversation({
       user_id: params.context.user_id,
       conversation_id: params.conversation_id,
-      ...(stepId && { step_id: stepId })
+      ...(stepName && { step_name: stepName })
     });
   }
   // TODO - Consider updating js filter implementation to be within SQl query instead
