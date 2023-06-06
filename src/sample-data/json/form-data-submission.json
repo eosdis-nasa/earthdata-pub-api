@@ -526,7 +526,7 @@
         },
         {
           "short_name": "temporal_coverage_notes",
-          "long_name": "Temporal Coverage Notes",
+          "long_name": "Temporal Information Notes",
           "text": "Please provide any additional information about the temporal coverage that will help the DAAC understand this data product.",
           "help": "Examples of useful temporal coverage information include: seasonal data; data covering multiple, individual deployments; significant gaps in instrument operation; data from transit/ferry flights included.",
           "inputs": [
@@ -569,7 +569,7 @@
           "short_name": "spatial_horizontal",
           "long_name": "Horizontal Spatial Coverage",
           "text": "What are the coordinates for the geographic area(s) covered by the entire data product?",
-          "help": "If more than three distinct spatial coverage bounding boxes exist for this data product, please add a comment to the Spatial Coverage Notes.",
+          "help": "If more than three distinct spatial coverage bounding boxes exist for this data product, please add a comment to the Spatial Information Notes.",
           "inputs": [
             {
               "type": "bbox",
@@ -608,7 +608,7 @@
           "short_name": "spatial_vertical_details",
           "long_name": "Upper and Lower Limits",
           "text": "What are the upper and lower limits of the vertical spatial coverage of the data product?",
-          "help": "Please provide any additional details needed to understand what these numbers mean in the Spatial Coverage Notes. For example, the point of reference for the values given in the vertical spatial coverage.",
+          "help": "Please provide any additional details needed to understand what these numbers mean in the Spatial Information Notes. For example, the point of reference for the values given in the vertical spatial coverage.",
           "show_if": [
             {
               "field": "spatial_vertical_answer",
@@ -682,7 +682,7 @@
         },
         {
           "short_name": "spatial_notes",
-          "long_name": "Spatial Coverage Notes",
+          "long_name": "Spatial Information Notes",
           "text": "Please describe any additional information about the spatial coverage that will help the DAAC understand this data product.",
           "inputs": [
             {
