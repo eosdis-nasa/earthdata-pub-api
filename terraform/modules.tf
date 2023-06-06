@@ -15,12 +15,20 @@ module "iam_roles" {
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
   lambda_execution_policy_arn = var.lambda_execution_policy_arn
   permissions_boundary_arn = var.permissions_boundary_arn
+  ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
 }
 
 module "s3" {
   source = "./s3"
 
   environment = var.environment
+}
+
+module "aws_secrets" {
+  source = "./aws_secrets"
+
+  ses_access_key_id = var.ses_access_key_id
+  ses_secret_access_key = var.ses_secret_access_key
 }
 
 module "lambda_functions" {
@@ -72,8 +80,7 @@ module "lambda_functions" {
   meditor_service_username = var.meditor_service_username
   meditor_service_password = var.meditor_service_password
   ses_from_email = var.ses_from_email
-  ses_access_key_id = var.ses_access_key_id
-  ses_secret_access_key = var.ses_secret_access_key
+  ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
 }
 
 module "apigateway_endpoints" {

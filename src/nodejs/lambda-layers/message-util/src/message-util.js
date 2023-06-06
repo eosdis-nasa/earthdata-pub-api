@@ -1,13 +1,14 @@
 const { SNS } = require('@aws-sdk/client-sns');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
 const uuid = require('uuid');
 
 const sourceEmail = process.env.SOURCE_EMAIL;
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
-const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
-const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+// const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
+// const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -34,9 +35,15 @@ function marshalAttributes(eventMessage) {
 }
 
 async function sendEmail(users, eventMessage) {
+  const secretClient = new SecretsManagerClient();
+  const sesCredsString = (await secretClient.send(new GetSecretValueCommand({ SecretId: 'ses_access_creds' }))).SecretString;
+  const sesCreds = JSON.parse(sesCredsString);
   const ses = new SESClient({
     region: 'us-east-1',
-    credentials: { accessKeyId: sesAccessKeyId, secretAccessKey: sesSecretAccessKey }
+    credentials: {
+      accessKeyId: sesCreds.ses_access_key_id,
+      secretAccessKey: sesCreds.ses_secret_access_key
+    }
   });
 
   users.forEach(async (user) => {
@@ -51,7 +58,7 @@ async function sendEmail(users, eventMessage) {
         },
         Body: {
           Text: {
-            Data: `Hello ${user.name},\n\nThe following request has changed step in the ${eventMessage.workflow_name} workflow.\n\nRequest:\n${eventMessage.submission_name} (${eventMessage.submission_id})\n\nNew Step:\n${eventMessage.step_name}\n\nComments:\n${eventMessage.conversation_subject} ${eventMessage.conversation_last_message}`
+            Data: `Hello ${user.name},\n\nThe following request has changed step in the ${eventMessage.workflow_name} workflow.\n\nRequest:\n${eventMessage.submission_name} (${eventMessage.submission_id})\n\nNew Step:\n${eventMessage.step_name}\n\nComments:\n${eventMessage.conversation_last_message}`
           },
           Html: {
             Data: `
@@ -78,7 +85,7 @@ async function sendEmail(users, eventMessage) {
                               <h2>New Step:</h2>
                               <p>${eventMessage.step_name}</p>
                               <h2>Comments:</h2> 
-                              <p>${eventMessage.conversation_subject} ${eventMessage.conversation_last_message}</p>
+                              <p>${eventMessage.conversation_last_message}</p>
                               <br><br>
                               <p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard" aria-label="Visit Earthdata Pub Dashboard">https://pub.earthdata.nasa.gov/dashboard</a></p>
                           </td>
