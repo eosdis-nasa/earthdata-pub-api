@@ -8,12 +8,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Content update - Temporal and Spatial sections
+- Content update - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes'
+- Content update - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
+- Content update - help text on Spatial Resolution question on Data Publication Form
 - Content update - Added "Instantaneous" and help text to file_temporal_coverage
 - Content updates for data_product_status and product_temporal_coverage
 
 ## 1.0.13 - 20230-05-12
 - Added GES DISC community workflow
 - Content update - "Data Product Restrictions" to "Open Data Policy"
+- Fixed to look at privileges for workflow step
 
 ## 1.0.12 - 2023-03-23
 - Action consumer updated to aws sdk v3
