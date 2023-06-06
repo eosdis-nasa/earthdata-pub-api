@@ -54,3 +54,6 @@ RAISE;
     ALTER TABLE step ADD notification TEXT DEFAULT '';
     UPDATE question SET help='If a data file represents a single point in time, meaning the start and end times of the file would be identical, choose "Instantaneous". If the temporal coverage cannot be reasonably represented by a single value, choose "Varies".' where id='91c123bf-702e-458c-90a1-b26f6498937e';
     UPDATE input SET enums='["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Instantaneous","Varies"]' where id='91c123bf-702e-458c-90a1-b26f6498937e'
+    ALTER TABLE step ADD notification TEXT DEFAULT '';
+    UPDATE question SET long_name='Ongoing Data Production', text='After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?' where id='dbf70495-433a-439e-8173-0cb20f972c16';
+    UPDATE question SET help='The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file at the time of initial delivery to the DAAC, even if there are time gaps or data production will be ongoing.' where id='4f2dd369-d865-47ba-8504-8694493f129f';
