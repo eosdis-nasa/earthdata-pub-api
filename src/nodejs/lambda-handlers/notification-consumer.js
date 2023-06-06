@@ -12,39 +12,16 @@ const msg = require('message-util');
 
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
-// TODO- Remove disable once send email enabled
-// eslint-disable-next-line
-async function sendEmailNotification({ note, email_payload }) {
+async function sendEmailNotification({ note, emailPayload }) {
   // TODO - Add additional filter for system user messages
   // logic to add DAAC content
-  // TODO - remove eslint disable when finished troubleshooting
-  // eslint-disable-next-line
-  console.log('email triggered');
-  // TODO - remove eslint disable when finished troubleshooting
-  // eslint-disable-next-line
-  console.log(email_payload);
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
-  // console.log('users')
-  // const usersPayload = []
-  // users.forEach(user => {
-  //   usersPayload.push({Destination:{
-  //     ToAddresses: [user.email],
-  //     ReplacementTemplateData: "{\"name\":\""+user.name+"\"}"
-  //   }})
-  // })
 
-  // const payload = {
-  //   Source: "noreply@nasa.gov",
-  //   Template: "Default",
-  //   Destinations: usersPayload,
-  //   DefaultTemplateData: JSON.stringify(email_payload)
-  // }
-  // console.log(payload)
-
-  await msg.sendEmail(users, email_payload);
+  // Disabled until ready for uat Testing
+  await msg.sendEmail(users, emailPayload);
 }
 
 async function processRecord(record) {
@@ -60,11 +37,11 @@ async function processRecord(record) {
       if (operation === 'sendNote' && !message.subject) {
         message.subject = 'No Subject';
       }
-      // TODO- Remove disable once send email enabled
-      // eslint-disable-next-line
       const note = await db.note[operation](message);
-      const emailPayload = await getEmailTemplate(eventMessage);
-      await sendEmailNotification({ note, email_payload: emailPayload });
+      if (eventMessage.event_type !== 'direct_message' && process.env.AWS_EXECUTION_ENV) {
+        const emailPayload = await getEmailTemplate(eventMessage, message);
+        await sendEmailNotification({ note, email_payload: emailPayload });
+      }
     }
   }
 }

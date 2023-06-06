@@ -50,35 +50,31 @@ const getTemplate = async (message) => {
   return false;
 };
 
-const getEmailTemplate = async (message) => {
+const getEmailTemplate = async (eventMessage, message) => {
   let emailPayload = {};
-  if (message.event_type !== 'direct_message') {
-    const workflowName = db.workflow.getLongName({ id: message.workflow_id });
-    const formData = await db.submission.getFormData({ id: message.submission_id });
-    const conversationData = await db.note.readConversation({
-      conversation_id: message.conversation_id
-    });
+  if (eventMessage.event_type !== 'direct_message') {
+    const workflowName = db.workflow.getLongName({ id: eventMessage.workflow_id });
+    const formData = await db.submission.getFormData({ id: eventMessage.submission_id });
 
     emailPayload = {
       name: 'EDPUB User',
-      submission_id: message.submission_id,
+      submission_id: eventMessage.submission_id,
       workflow_name: (await workflowName).long_name,
-      conversation_subject: conversationData.subject,
-      conversation_last_message: conversationData.notes[0].text
+      conversation_last_message: message.text
     };
 
     if (formData.data_product_name_value) {
       emailPayload.submission_name = formData.data_product_name_value;
-    } else { (emailPayload.submission_name = `Request Initialized by ${(await db.submission.getCreatorName({ id: message.submission_id })).name}`); }
+    } else { (emailPayload.submission_name = `Request Initialized by ${(await db.submission.getCreatorName({ id: eventMessage.submission_id })).name}`); }
   }
 
-  if (message.event_type !== 'form_submitted'
-    && message.event_type !== 'review_approved') {
-    emailPayload.step_name = message.step_name;
+  if (eventMessage.event_type !== 'form_submitted'
+    && eventMessage.event_type !== 'review_approved') {
+    emailPayload.step_name = eventMessage.step_name;
   } else {
-    emailPayload.step_name = (await db.submission.getStepName(
-      { id: message.submission_id }
-    )).step_name;
+    emailPayload.step_name = (await db.submission.getStepName({
+      id: eventMessage.submission_id
+    })).step_name;
   }
 
   return emailPayload;

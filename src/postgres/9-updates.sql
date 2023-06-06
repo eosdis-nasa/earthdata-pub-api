@@ -51,5 +51,13 @@ RAISE;
 --ADD CONSTRAINT email_unique UNIQUE (email);
 
 -- 5/18/2023 Adds support for SES and step messages
+<<<<<<< HEAD
     ALTER TABLE step ADD notification TEXT DEFAULT '';
     UPDATE question SET help='Please provide the nominal size of the geographic area covered by a single data value. For example: 25 km at nadir; a 0.25 degree x 0.25 degree grid cell at the equator; points along a path; a 10 km x 10 km x 5 km radar slice. If the spatial resolution varies for data values, you can list "varies". If a spatial resolution is not applicable, you can list "not applicable."' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
+||||||| 4d69904
+    ALTER TABLE step ADD notification TEXT DEFAULT '';
+=======
+    ALTER TABLE step ADD notification TEXT DEFAULT '';
+    UPDATE question SET long_name='Ongoing Data Production', text='After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?' where id='dbf70495-433a-439e-8173-0cb20f972c16';
+    UPDATE question SET help='The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file at the time of initial delivery to the DAAC, even if there are time gaps or data production will be ongoing.' where id='4f2dd369-d865-47ba-8504-8694493f129f';
+>>>>>>> develop

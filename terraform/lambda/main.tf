@@ -451,8 +451,6 @@ resource "aws_lambda_function" "notification_consumer" {
       PG_PASS               = var.db_password
       PG_PORT               = var.db_port
       SOURCE_EMAIL          = var.ses_from_email
-      SES_ACCESS_KEY_ID     = var.ses_access_key_id
-      SES_SECRET_ACCESS_KEY = var.ses_secret_access_key
     }
   }
   vpc_config {
