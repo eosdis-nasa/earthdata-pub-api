@@ -668,7 +668,7 @@
           "short_name": "spatial_resolution",
           "long_name": "Spatial Resolution",
           "text": "What is the spatial resolution of an individual data value within the data files?",
-          "help": "Please provide the nominal size of the geographic area covered by a single data value. For example: 25 km at nadir; a 0.25 degree x 0.25 degree grid cell at the equator; points along a path; a 10 km x 10 km x 5 km radar slice.",
+          "help": "Please provide the nominal size of the geographic area covered by a single data value. For example: 25 km at nadir; a 0.25 degree x 0.25 degree grid cell at the equator; points along a path; a 10 km x 10 km x 5 km radar slice. If the spatial resolution varies for data values, you can list 'varies'. If a spatial resolution is not applicable, you can list 'not applicable.'",
           "inputs": [
             {
               "type": "text",
