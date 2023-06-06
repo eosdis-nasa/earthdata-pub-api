@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## 1.0.13 - 20230-05-12
 - Added GES DISC community workflow
 - Content update - "Data Product Restrictions" to "Open Data Policy"
+- Fixed to look at privileges for workflow step
 
 ## 1.0.12 - 2023-03-23
 - Action consumer updated to aws sdk v3
