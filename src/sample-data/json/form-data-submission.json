@@ -490,7 +490,7 @@
         },
         {
           "short_name": "value_temporal_resolution",
-          "long_name": "Temporal Resolution",
+          "long_name": "Data Value Temporal Resolution",
           "text": "On average, what is the temporal resolution of an individual data value within the data files?",
           "help": "The temporal resolution is specific to the data stored in this data product and does not necessarily represent the input data or instrument sampling rate. \n\nFor example, if measurements are taken for 1 second every 8 minutes and those 1 second measurements are represented in the data values, the temporal resolution is 1 second. If the 1 second measurements are averaged every hour and those 1-hour averages are represented in the data values, the temporal resolution is 1 hour.",
           "inputs": [
@@ -567,7 +567,7 @@
         },
         {
           "short_name": "spatial_horizontal",
-          "long_name": "Horizontal Spatial Coverage",
+          "long_name": "Data Product Horizontal Spatial Coverage",
           "text": "What are the coordinates for the geographic area(s) covered by the entire data product?",
           "help": "If more than three distinct spatial coverage bounding boxes exist for this data product, please add a comment to the Spatial Information Notes.",
           "inputs": [
@@ -590,7 +590,7 @@
         },
         {
           "short_name": "spatial_vertical",
-          "long_name": "Vertical Spatial Coverage",
+          "long_name": "Data Product Vertical Spatial Coverage",
           "text": "Does this data product have a vertical dimension?",
           "inputs": [
             {
@@ -666,7 +666,7 @@
         },
         {
           "short_name": "spatial_resolution",
-          "long_name": "Spatial Resolution",
+          "long_name": "Data Value Spatial Resolution",
           "text": "What is the spatial resolution of an individual data value within the data files?",
           "help": "Please provide the nominal size of the geographic area covered by a single data value. For example: 25 km at nadir; a 0.25 degree x 0.25 degree grid cell at the equator; points along a path; a 10 km x 10 km x 5 km radar slice. If the spatial resolution varies for data values, you can list 'varies'. If a spatial resolution is not applicable, you can list 'not applicable.'",
           "inputs": [

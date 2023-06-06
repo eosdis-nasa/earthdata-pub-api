@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Content update - Temporal and Spatial sections
 - Content update - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes'
 - Content update - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
 - Content update - help text on Spatial Resolution question on Data Publication Form
