@@ -1,5 +1,6 @@
-const {  S3Client } = require('@aws-sdk/client-s3');
-import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
+
+const { S3Client } = require('@aws-sdk/client-s3');
 
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
@@ -12,14 +13,14 @@ async function getPutUrlMethod(event, user) {
     region
   });
 
-  Conditions = [
+  const Conditions = [
     { 'x-amz-meta-checksumalgorithm': checksumAlgo },
-    { 'x-amz-meta-checksumvalue': checksumValue}
+    { 'x-amz-meta-checksumvalue': checksumValue }
   ];
 
-  const resp =  await createPresignedPost(s3Client, {
+  const resp = await createPresignedPost(s3Client, {
     Bucket: ingestBucket,
-    key: fileName,
+    key: `${user}/${fileName}`,
     Conditions,
     Fields: {
       'x-amz-meta-checksumalgorithm': checksumAlgo,
