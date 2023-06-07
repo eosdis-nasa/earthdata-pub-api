@@ -11,10 +11,12 @@ const db = require('database-util');
 const msg = require('message-util');
 
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
-//eslint-disable-next-line
+
+// eslint-disable-next-line
 async function sendEmailNotification({ note, emailPayload }) {
   // TODO - Add additional filter for system user messages
   // logic to add DAAC content
+  // eslint-disable-next-line
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id

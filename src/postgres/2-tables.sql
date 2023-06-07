@@ -563,8 +563,10 @@ CREATE TABLE IF NOT EXISTS note (
   sender_edpuser_id UUID NOT NULL,
   text VARCHAR NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  step_name VARCHAR,
   PRIMARY KEY (id),
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
-  UNIQUE (id)
+  UNIQUE (id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
 );
