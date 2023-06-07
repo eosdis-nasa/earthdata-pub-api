@@ -495,7 +495,7 @@ module.exports.notificationConversation = function notificationConversation(req,
     conversation_id: params.id.value,
     params: {
         detailed: params.detailed.value || false,
-        ...params.step_id.value && { step_id: params.step_id.value }
+        ...params.step_name.value && { step_name: params.step_name.value }
     },
     context: { user_id: req.user_id }
   };
