@@ -34,18 +34,26 @@ function marshalAttributes(eventMessage) {
   }, {});
 }
 
-async function sendEmail(users, eventMessage) {
+async function getSecretsValues() {
   const secretClient = new SecretsManagerClient();
-  const sesCredsString = (await secretClient.send(new GetSecretValueCommand({ SecretId: 'ses_access_creds' }))).SecretString;
-  const sesCreds = JSON.parse(sesCredsString);
-  const ses = new SESClient({
+  const secretCmd = new GetSecretValueCommand({ SecretId: 'ses_access_creds' });
+  return  secretClient.send(secretCmd);
+}
+
+async function getSESClient() {
+  const secretsResponse = await getSecretsValues();
+  const sesCreds = JSON.parse(secretsResponse.SecretString);
+  return new SESClient({
     region: 'us-east-1',
     credentials: {
       accessKeyId: sesCreds.ses_access_key_id,
       secretAccessKey: sesCreds.ses_secret_access_key
     }
   });
+}
 
+async function sendEmail(users, eventMessage) {
+  const ses = await getSESClient();
   users.forEach(async (user) => {
     const payload = {
       Source: sourceEmail,
@@ -98,9 +106,8 @@ async function sendEmail(users, eventMessage) {
         }
       }
     };
-
-    const command = new SendEmailCommand(payload);
-    await ses.send(command);
+    const sesResponse = await ses.send(new SendEmailCommand(payload));
+    console.log(sesResponse);
   });
 }
 
