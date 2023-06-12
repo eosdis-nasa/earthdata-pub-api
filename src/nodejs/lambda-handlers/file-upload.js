@@ -1,4 +1,4 @@
-const { PutObjectCommand, S3Client } = require('@aws-sdk/client-s3');
+const { PutObjectCommand, S3Client, ListObjectsCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const db = require('database-util');
@@ -33,34 +33,36 @@ async function getPutUrlMethod(event, user) {
 async function listFilesMethod(event, user) {
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
-  const {daac_id: daacId, contributor_ids: contributorIds} = await db.submission.findById({id: submissionId});
+  const {
+    daac_id: daacId,
+    contributor_ids: contributorIds
+  } = await db.submission.findById({ id: submissionId });
   console.log(userInfo);
-  // if(contributorIds.includes(user) ||
-  //   userInfo.user_privileges.includes('ADMIN')
-  //   ){
-  //   const s3Client = new S3Client({region});
-  //   const command = new ListObjectsCommand({Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}`});
-  //   const rawResponse = await s3Client.send(command); 
-  //   const response = rawResponse.Contents.map((item) => {
-  //     return {
-  //       key: item.key, 
-  //       size:item.size, 
-  //       last_modified: item.lastModified,
-  //       file_name: item.key.split('/').pop(),
-  //     };
-  //   })
-  //   return response;
-  // }
-
+  if (contributorIds.includes(user)
+    || userInfo.user_privileges.includes('ADMIN')
+  ) {
+    const s3Client = new S3Client({ region });
+    const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
+    const rawResponse = await s3Client.send(command);
+    const response = rawResponse.Contents.map((item) => ({
+      key: item.key,
+      size: item.size,
+      last_modified: item.lastModified,
+      file_name: item.key.split('/').pop()
+    }));
+    console.log(response);
+    return response;
+  }
+  return ({ error: 'Not Authorized' });
 }
 
 const operations = {
   getPutUrl: getPutUrlMethod,
-  listFiles: listFilesMethod,
+  listFiles: listFilesMethod
 };
 
 async function handler(event) {
-  //return { error: 'Not Implemented' };
+  // return { error: 'Not Implemented' };
   /* eslint-disable no-unreachable */
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const user = event.context.user_id;

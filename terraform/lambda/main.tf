@@ -990,6 +990,11 @@ resource "aws_lambda_function" "file_upload" {
     variables = {
       REGION          = var.region
       INGEST_BUCKET   = var.edpub_upload_s3_bucket
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
     }
   }
   vpc_config {
