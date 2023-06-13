@@ -37,7 +37,7 @@ function marshalAttributes(eventMessage) {
 async function getSecretsValues() {
   const secretClient = new SecretsManagerClient();
   const secretCmd = new GetSecretValueCommand({ SecretId: 'ses_access_creds' });
-  return  secretClient.send(secretCmd);
+  return secretClient.send(secretCmd);
 }
 
 async function getSESClient() {
@@ -106,8 +106,7 @@ async function sendEmail(users, eventMessage) {
         }
       }
     };
-    const sesResponse = await ses.send(new SendEmailCommand(payload));
-    console.log(sesResponse);
+    await ses.send(new SendEmailCommand(payload));
   });
 }
 
