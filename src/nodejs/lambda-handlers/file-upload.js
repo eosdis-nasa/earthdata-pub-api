@@ -41,7 +41,6 @@ async function listFilesMethod(event, user) {
     contributor_ids: contributorIds
   } = await db.submission.findById({ id: submissionId });
   // eslint-disable-next-line
-  console.log(userInfo);
   if (contributorIds.includes(user)
     || userInfo.user_privileges.includes('ADMIN')
   ) {
@@ -49,10 +48,10 @@ async function listFilesMethod(event, user) {
     const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
     const rawResponse = await s3Client.send(command);
     const response = rawResponse.Contents.map((item) => ({
-      key: item.key,
-      size: item.size,
-      last_modified: item.lastModified,
-      file_name: item.key.split('/').pop()
+      key: item.Key,
+      size: item.Size,
+      last_modified: item.LastModified,
+      file_name: item.Key.split('/').pop()
     }));
     // eslint-disable-next-line
     console.log(response);
