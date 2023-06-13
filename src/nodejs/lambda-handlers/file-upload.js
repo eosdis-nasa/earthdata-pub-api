@@ -1,5 +1,5 @@
-const { PutObjectCommand, S3Client, ListObjectsCommand } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const { S3Client, ListObjectsCommand } = require('@aws-sdk/client-s3');
+const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 
 const db = require('database-util');
 
@@ -8,26 +8,29 @@ const region = process.env.REGION;
 
 async function getPutUrlMethod(event, user) {
   const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
-  const checksumAlgo = 'MD5';
+  const checksumAlgo = 'SHA256';
   if (!fileType) return ('invalid file type');
   const s3Client = new S3Client({
     region
   });
-  const command = new PutObjectCommand({
+
+  const Conditions = [
+    { 'x-amz-meta-checksumalgorithm': checksumAlgo },
+    { 'x-amz-meta-checksumvalue': checksumValue }
+  ];
+
+  const resp = await createPresignedPost(s3Client, {
     Bucket: ingestBucket,
-    Key: `${user}/${fileName}`,
-    ContentType: fileType,
-    Metadata: {
-      'file-id': fileName,
-      checksum: checksumValue,
-      'checksum-algorithm': checksumAlgo
-    }
+    key: `${user}/${fileName}`,
+    Conditions,
+    Fields: {
+      'x-amz-meta-checksumalgorithm': checksumAlgo,
+      'x-amz-meta-checksumvalue': checksumValue
+    },
+    Expires: 60
   });
 
-  const genUrl = await getSignedUrl(s3Client, command, {
-    expiresIn: 60
-  });
-  return ({ url: genUrl });
+  return (resp);
 }
 
 async function listFilesMethod(event, user) {
@@ -37,6 +40,7 @@ async function listFilesMethod(event, user) {
     daac_id: daacId,
     contributor_ids: contributorIds
   } = await db.submission.findById({ id: submissionId });
+  // eslint-disable-next-line
   console.log(userInfo);
   if (contributorIds.includes(user)
     || userInfo.user_privileges.includes('ADMIN')
@@ -50,6 +54,7 @@ async function listFilesMethod(event, user) {
       last_modified: item.lastModified,
       file_name: item.key.split('/').pop()
     }));
+    // eslint-disable-next-line
     console.log(response);
     return response;
   }
