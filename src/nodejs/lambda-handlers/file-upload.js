@@ -36,6 +36,8 @@ async function getPutUrlMethod(event, user) {
 async function listFilesMethod(event, user) {
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
+  const groupIds = userInfo.user_groups.map((group) => group.id);
+  const userDaacs = await db.daac.getIds({ group_ids: groupIds });
   const {
     daac_id: daacId,
     contributor_ids: contributorIds
@@ -43,6 +45,7 @@ async function listFilesMethod(event, user) {
   // eslint-disable-next-line
   if (contributorIds.includes(user)
     || userInfo.user_privileges.includes('ADMIN')
+    || daacIds.includes(daacId)
   ) {
     const s3Client = new S3Client({ region });
     const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
