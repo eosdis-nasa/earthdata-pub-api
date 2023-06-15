@@ -37,15 +37,15 @@ async function listFilesMethod(event, user) {
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
-  const userDaacs = await db.daac.getIds({ group_ids: groupIds });
+  const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
+    .map((daac) => daac.id);
   const {
     daac_id: daacId,
     contributor_ids: contributorIds
   } = await db.submission.findById({ id: submissionId });
-  // eslint-disable-next-line
   if (contributorIds.includes(user)
     || userInfo.user_privileges.includes('ADMIN')
-    || daacIds.includes(daacId)
+    || userDaacs.includes(daacId)
   ) {
     const s3Client = new S3Client({ region });
     const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
@@ -56,8 +56,6 @@ async function listFilesMethod(event, user) {
       last_modified: item.LastModified,
       file_name: item.Key.split('/').pop()
     }));
-    // eslint-disable-next-line
-    console.log(response);
     return response;
   }
   return ({ error: 'Not Authorized' });
