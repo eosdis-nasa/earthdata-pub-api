@@ -36,6 +36,7 @@ async function getPostUrlMethod(event, user) {
   const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({id:user});
+  const groupIds = userInfo.user_groups.map((group) => group.id);
   
   if (submissionId) {
     const {
