@@ -7212,7 +7212,7 @@
           "required": true,
           "schema": {
             "type": "string",
-            "enum": ["getPutUrl"]
+            "enum": ["getPostUrl"]
           }
         }
       ],

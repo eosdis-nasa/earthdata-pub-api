@@ -1,11 +1,13 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { S3Client } = require('@aws-sdk/client-s3');
 
+const db = require('database-util');
+
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
-async function getPutUrlMethod(event, user) {
-  const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
+async function generateUploadUrl(params){
+  const { key, checksumValue } = params;
   const checksumAlgo = 'SHA256';
   if (!fileType) return ('invalid file type');
   const s3Client = new S3Client({
@@ -14,7 +16,7 @@ async function getPutUrlMethod(event, user) {
 
   const payload = {
     Bucket: ingestBucket,
-    Key: `${user}/${fileName}`,
+    Key: key,
     Conditions: [
       { 'x-amz-meta-checksumalgorithm': checksumAlgo },
       { 'x-amz-meta-checksumvalue': checksumValue }
@@ -30,8 +32,36 @@ async function getPutUrlMethod(event, user) {
   return (resp);
 }
 
+async function getPostUrlMethod(event, user) {
+  const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
+  const { submission_id: submissionId } = event;
+  const userInfo = await db.user.findById({id:user});
+  
+  if (submissionId) {
+    const {
+      daac_id: daacId,
+      contributor_ids: contributorIds,
+    } = await db.submission.findById(submissionId);
+    const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
+      .map((daac) => daac.id);
+
+    if (contributorIds.includes(user)
+      || userInfo.user_privileges.includes('ADMIN')
+      || userDaacs.includes(daacId)
+    ){
+      return generateUploadUrl({
+        key: `${daacId}/${submissionId}/${user}/${fileName}`, 
+        checksumValue
+    })}
+  };
+  return generateUploadUrl({
+    key: `${user}/${fileName}`,
+    checksumValue
+  });
+}
+
 const operations = {
-  getPutUrl: getPutUrlMethod
+  getPostUrl: getPostUrlMethod
 };
 
 async function handler(event) {
