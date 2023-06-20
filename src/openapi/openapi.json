@@ -7266,7 +7266,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
