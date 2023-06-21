@@ -7,7 +7,7 @@ const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
 async function generateUploadUrl(params){
-  const { key, checksumValue } = params;
+  const { key, checksumValue, fileType } = params;
   const checksumAlgo = 'SHA256';
   if (!fileType) return ('invalid file type');
   const s3Client = new S3Client({
@@ -42,7 +42,7 @@ async function getPostUrlMethod(event, user) {
     const {
       daac_id: daacId,
       contributor_ids: contributorIds,
-    } = await db.submission.findById(submissionId);
+    } = await db.submission.findById({ id:submissionId });
     const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
       .map((daac) => daac.id);
 
@@ -52,12 +52,14 @@ async function getPostUrlMethod(event, user) {
     ){
       return generateUploadUrl({
         key: `${daacId}/${submissionId}/${user}/${fileName}`, 
-        checksumValue
+        checksumValue,
+        fileType
     })}
   };
   return generateUploadUrl({
     key: `${user}/${fileName}`,
-    checksumValue
+    checksumValue,
+    fileType
   });
 }
 
