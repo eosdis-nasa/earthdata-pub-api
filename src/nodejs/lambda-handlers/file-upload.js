@@ -6,7 +6,7 @@ const db = require('database-util');
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
-async function generateUploadUrl(params){
+async function generateUploadUrl(params) {
   const { key, checksumValue, fileType } = params;
   const checksumAlgo = 'SHA256';
   if (!fileType) return ('invalid file type');
@@ -35,27 +35,28 @@ async function generateUploadUrl(params){
 async function getPostUrlMethod(event, user) {
   const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
   const { submission_id: submissionId } = event;
-  const userInfo = await db.user.findById({id:user});
+  const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
-  
+
   if (submissionId) {
     const {
       daac_id: daacId,
-      contributor_ids: contributorIds,
-    } = await db.submission.findById({ id:submissionId });
+      contributor_ids: contributorIds
+    } = await db.submission.findById({ id: submissionId });
     const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
       .map((daac) => daac.id);
 
     if (contributorIds.includes(user)
       || userInfo.user_privileges.includes('ADMIN')
       || userDaacs.includes(daacId)
-    ){
+    ) {
       return generateUploadUrl({
-        key: `${daacId}/${submissionId}/${user}/${fileName}`, 
+        key: `${daacId}/${submissionId}/${user}/${fileName}`,
         checksumValue,
         fileType
-    })}
-  };
+      });
+    }
+  }
   return generateUploadUrl({
     key: `${user}/${fileName}`,
     checksumValue,
