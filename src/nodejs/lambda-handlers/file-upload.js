@@ -12,22 +12,21 @@ async function getPutUrlMethod(event, user) {
     region
   });
 
-  const Conditions = [
-    { 'x-amz-meta-checksumalgorithm': checksumAlgo },
-    { 'x-amz-meta-checksumvalue': checksumValue }
-  ];
-
-  const resp = await createPresignedPost(s3Client, {
+  const payload = {
     Bucket: ingestBucket,
-    key: `${user}/${fileName}`,
-    Conditions,
+    Key: `${user}/${fileName}`,
+    Conditions: [
+      { 'x-amz-meta-checksumalgorithm': checksumAlgo },
+      { 'x-amz-meta-checksumvalue': checksumValue }
+    ],
     Fields: {
       'x-amz-meta-checksumalgorithm': checksumAlgo,
       'x-amz-meta-checksumvalue': checksumValue
     },
     Expires: 60
-  });
+  };
 
+  const resp = await createPresignedPost(s3Client, payload);
   return (resp);
 }
 
