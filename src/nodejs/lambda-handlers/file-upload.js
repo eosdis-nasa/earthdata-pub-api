@@ -1,5 +1,6 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { S3Client } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
@@ -30,8 +31,24 @@ async function getPutUrlMethod(event, user) {
   return (resp);
 }
 
+async function getDownloadUrlMethod(event, user) {
+  const { key } = event;
+  const s3Client = new S3Client({
+    region
+  });
+
+  const payload = {
+    Bucket: ingestBucket,
+    key: Key,
+  }
+  const command  = new GetObjectCommand(payload);
+  return getSignedUrl(s3Client, command, { expiresIn: 60 });
+}
+
 const operations = {
-  getPutUrl: getPutUrlMethod
+  getPutUrl: getPutUrlMethod,
+  getDownloadUrl: getDownloadUrlMethod
+
 };
 
 async function handler(event) {
