@@ -8,19 +8,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
-- Content update - Temporal and Spatial sections
-- Content update - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes'
-- Content update - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
-- Content update - help text on Spatial Resolution question on Data Publication Form
-- Content update - Added "Instantaneous" and help text to file_temporal_coverage
-- Content updates for data_product_status and product_temporal_coverage
 
-## 1.0.13 - 20230-05-12
-- Added GES DISC community workflow
+## 1.0.14
+
+- Content updates:
+  - Temporal and Spatial sections
+  - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes' (EDPUB-798)
+  - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
+  - Help text on Spatial Resolution question on Data Publication Form (EDPUB-796)
+  - Added "Instantaneous" and help text to file_temporal_coverage (EDPUB-794)
+  - data_product_status and product_temporal_coverage
+- Add support for querying notes by step id
+- Change methods to look at privileges v roles
+- Replace step_id with step_name for searching by messages by step (EDPUB-951)
+- Fix notification proxy
+- Add support for proper signing with hash (EDPUB-952)
+
+## 1.0.13 - 2023-06-22
+
+- Update assign Idealized workflow to Example Workflow and made it the default.
+- Implement question versioning
 - Content update - "Data Product Restrictions" to "Open Data Policy"
-- Fixed to look at privileges for workflow step
+- Fix to look at privileges for workflow step
+- Add terraform for upload bucket deployment
+- Limit api input sanitization to only specific calls to prevent duplicate work
+- Add GES DISC community workflow
+- Add updates to original db init.
+- Remove conditional build of upload bucket
+- Remove references to environment variable
 
 ## 1.0.12 - 2023-03-23
+
 - Action consumer updated to aws sdk v3
 - Data file upload added but disabled
 - Updated doi question verbage and help text (EDPUB-792)
