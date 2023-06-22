@@ -15,12 +15,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Content update - Added "Instantaneous" and help text to file_temporal_coverage
 - Content updates for data_product_status and product_temporal_coverage
 
-## 1.0.13 - 20230-05-12
-- Added GES DISC community workflow
+## 1.0.13 - 2023-06-22
+
+- Update assign Idealized workflow to Example Workflow and made it the default.
+- Implement question versioning
 - Content update - "Data Product Restrictions" to "Open Data Policy"
+- Add terraform for upload bucket deployment
+- Limit api input sanitization to only specific calls to prevent duplicate work
+- Add GES DISC community workflow
+- Add updates to original db init.
+- Remove conditional build of upload bucket
+- Remove references to environment variable
 - Fixed to look at privileges for workflow step
 
 ## 1.0.12 - 2023-03-23
+
 - Action consumer updated to aws sdk v3
 - Data file upload added but disabled
 - Updated doi question verbage and help text (EDPUB-792)
