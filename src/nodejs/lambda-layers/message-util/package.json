@@ -20,7 +20,7 @@
     "form-data": "4.0.0",
     "node-fetch": "2.6.7",
     "tmp": "0.2.1",
-    "uuid": "8.3.2"
+    "@aws-sdk/client-sns": "3.347.1"
   },
   "bundledDependencies": [],
   "devDependencies": {
