@@ -13,14 +13,14 @@
   "author": "Brian Ellingson",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "3.347.1",
     "@aws-sdk/client-ses": "3.347.1",
     "@aws-sdk/client-sns": "3.347.1",
     "@aws-sdk/credential-providers": "3.347.1",
-    "@aws-sdk/client-secrets-manager": "3.347.1",
     "form-data": "4.0.0",
     "node-fetch": "2.6.7",
     "tmp": "0.2.1",
-    "uuid": "8.3.2"
+    "uuid": "^9.0.0"
   },
   "bundledDependencies": [],
   "devDependencies": {
