@@ -8,12 +8,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
-- Content update - Temporal and Spatial sections
-- Content update - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes'
-- Content update - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
-- Content update - help text on Spatial Resolution question on Data Publication Form
-- Content update - Added "Instantaneous" and help text to file_temporal_coverage
-- Content updates for data_product_status and product_temporal_coverage
+
+## 1.0.14
+
+- Content updates:
+  - Temporal and Spatial sections
+  - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes' (EDPUB-798)
+  - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
+  - Help text on Spatial Resolution question on Data Publication Form (EDPUB-796)
+  - Added "Instantaneous" and help text to file_temporal_coverage (EDPUB-794)
+  - data_product_status and product_temporal_coverage
+- Add support for querying notes by step id
+- Change methods to look at privileges v roles
+- Replace step_id with step_name for searching by messages by step (EDPUB-951)
+- Fix notification proxy
+- Add support for proper signing with hash (EDPUB-952)
 
 ## 1.0.13 - 20230-05-12
 - Added GES DISC community workflow
