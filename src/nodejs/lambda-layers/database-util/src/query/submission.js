@@ -391,7 +391,8 @@ NATURAL JOIN (
       'action_id', step.action_id,
       'form_id', step.form_id,
       'service_id', step.service_id,
-      'data', step.data
+      'data', step.data,
+      'daac_message', step.notification
     )) step
   FROM step) step_data
 NATURAL JOIN (
@@ -538,6 +539,20 @@ VALUES({{id}}, {{edpuser_id}}, {{origin_id}}${context? `, '${context}'`:''})
 ON CONFLICT DO NOTHING
 `;
 
+const getStepMessage = () => `
+SELECT step.notification FROM step
+WHERE step.step_name = {{step_name}}
+`;
+
+const getCreatorName = () => `
+SELECT edpuser.name FROM edpuser
+Where edpuser.id = (select initiator_edpuser_id from submission where id = {{id}})
+`
+
+const getStepName = () => `
+SELECT step_name FROM submission_status WHERE id = {{id}}
+`
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -571,3 +586,6 @@ module.exports.removeContributor = removeContributor;
 module.exports.copyActionData = copyActionData;
 module.exports.copyFormData = copyFormData;
 module.exports.setSubmissionCopy = setSubmissionCopy;
+module.exports.getStepMessage = getStepMessage;
+module.exports.getCreatorName = getCreatorName;
+module.exports.getStepName = getStepName

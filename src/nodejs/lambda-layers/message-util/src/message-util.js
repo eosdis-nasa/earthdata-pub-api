@@ -1,10 +1,14 @@
 const { SNS } = require('@aws-sdk/client-sns');
+const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
+const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
 const uuid = require('uuid');
 
-const emailSns = process.env.EMAIL_SNS;
+const sourceEmail = process.env.SOURCE_EMAIL;
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
+// const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
+// const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -30,34 +34,74 @@ function marshalAttributes(eventMessage) {
   }, {});
 }
 
-function subscribeEmail(userEmail) {
-  const params = {
-    Protocol: 'email',
-    TopicArn: emailSns,
-    Endpoint: userEmail,
-    Attributes: {
-      FilterPolicy: `{"email": ["${userEmail}"]}`
+async function sendEmail(users, eventMessage) {
+  const secretClient = new SecretsManagerClient();
+  const sesCredsString = (await secretClient.send(new GetSecretValueCommand({ SecretId: 'ses_access_creds' }))).SecretString;
+  const sesCreds = JSON.parse(sesCredsString);
+  const ses = new SESClient({
+    region: 'us-east-1',
+    credentials: {
+      accessKeyId: sesCreds.ses_access_key_id,
+      secretAccessKey: sesCreds.ses_secret_access_key
     }
-  };
+  });
 
-  const response = sns.subscribe(params).promise().catch((e) => { console.error(e); });
-  return response;
-}
+  users.forEach(async (user) => {
+    const payload = {
+      Source: sourceEmail,
+      Destination: {
+        ToAddresses: [user.email]
+      },
+      Message: {
+        Subject: {
+          Data: 'EDPUB Notification'
+        },
+        Body: {
+          Text: {
+            Data: `Hello ${user.name},\n\nThe following request has changed step in the ${eventMessage.workflow_name} workflow.\n\nRequest:\n${eventMessage.submission_name} (${eventMessage.submission_id})\n\nNew Step:\n${eventMessage.step_name}\n\nComments:\n${eventMessage.conversation_last_message}`
+          },
+          Html: {
+            Data: `
+              <html>
+              <body>
+                  <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style>
+                  <table border="0" cellpadding="10" cellspacing="0" style="width:100%">
+                      <tr style="width:100%;background:#f8f8f8">
+                          <td><table><tr>
+                              <td width="60"><img src="https://pub.earthdata.nasa.gov/dashboard/images/app/src/assets/images/nasa-logo.78fcba4d9325e8ac5a2e15699d035ee0.svg"></td>
+                              <td><h4>Earthdata Pub</h4></td>
+                          </tr></table></td>
+                          <td align="right"><b>Step Change</b></td>
+                          <td></td>
+                      </tr>
+                      <tr>
+                          <td colspan="2" style="padding:20px;">
+                              <h1>Hello ${user.name},</h1><br>
+                              <br>
+                              <p>The following request has changed step in the ${eventMessage.workflow_name} workflow.</p>
+                              <h2>Request:</h2>
+                              <p>${eventMessage.submission_name} (${eventMessage.submission_id})<br>
+                              <a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard/requests/id/${eventMessage.submission_id}" aria-label="View the request">Go to request</a></p>
+                              <h2>New Step:</h2>
+                              <p>${eventMessage.step_name}</p>
+                              <h2>Comments:</h2> 
+                              <p>${eventMessage.conversation_last_message}</p>
+                              <br><br>
+                              <p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard" aria-label="Visit Earthdata Pub Dashboard">https://pub.earthdata.nasa.gov/dashboard</a></p>
+                          </td>
+                      </tr>
+                  </table>
+              </body>
+              </html> 
+            `
+          }
+        }
+      }
+    };
 
-function sendEmail(eventMessage) {
-  const {
-    emails,
-    subject,
-    body
-  } = eventMessage;
-  const params = {
-    Subject: subject,
-    Message: body,
-    MessageAttributes: marshalAttributes({ email: emails }),
-    TopicArn: emailSns
-  };
-  const response = sns.publish(params).catch((e) => { console.error(e); });
-  return response;
+    const command = new SendEmailCommand(payload);
+    await ses.send(command);
+  });
 }
 
 function sendEvent(eventMessage) {
@@ -135,4 +179,3 @@ module.exports.sendEvent = sendEvent;
 module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
 module.exports.parseAttributesFromParams = parseAttributesFromParams;
-module.exports.subscribeEmail = subscribeEmail;

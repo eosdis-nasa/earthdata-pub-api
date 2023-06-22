@@ -43,6 +43,38 @@ const refs = {
     }),
     on: { left: 'participant_agg.conversation_id', right: 'conversation.id' }
   },
+  note_step_agg: {
+    type: 'left_join',
+    src: sql.select({
+      fields: [
+        'note.conversation_id',
+        {
+          type: 'json_agg',
+          src: {
+            type: 'json_obj',
+            keys: [
+              ['text', 'note.text'],
+              ['sent', 'note.created_at'],
+              ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }]
+            ]
+          },
+          sort: 'note.created_at',
+          order: 'DESC',
+          alias: 'notes'
+        }
+      ],
+      from: {
+        base: 'note',
+        joins: [{
+          type: 'left_join', src: 'edpuser', on: { left: 'note.sender_edpuser_id', right: 'edpuser.id' }
+        }]
+      },
+      group: 'note.conversation_id',
+      alias: 'note_step_agg',
+      where: { filters: [{ field: 'note.step_name', param: 'step_name' }] } 
+    }),
+    on: { left: 'note_step_agg.conversation_id', right: 'conversation.id' }
+  },
   note_agg: {
     type: 'left_join',
     src: sql.select({
@@ -188,7 +220,11 @@ ${params.user_id && !params.daac ?
           }],
           from: {
             base: 'conversation',
-            joins: [refs.conversation_user, refs.participant_agg, refs.note_agg]
+            joins: [
+              refs.conversation_user, 
+              refs.participant_agg, 
+              ...(params.step_name ? [refs.note_step_agg] : [refs.note_agg])
+            ]
           },
           where: {
             filters: [
@@ -244,9 +280,9 @@ ${params.user_id && !params.daac ?
 })}
 `;
 
-const reply = () => `
-WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text) VALUES
- ({{conversation_id}}, {{user_id}}, {{text}})
+const reply = (params) => `
+WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text${params.step_name?`, step_name`:''}) VALUES
+ ({{conversation_id}}, {{user_id}}, {{text}}${params.step_name?`, {{step_name}}`:''})
 RETURNING *),
 conversation_update AS (UPDATE conversation SET
  last_change = new_note.created_at
@@ -294,7 +330,7 @@ WHERE conversation_id = {{conversation_id}} AND edpuser_id = {{user_id}}
 `;
 
 const getEmails = (params) => sql.select({
-  fields: ['email'],
+  fields: ['email', 'name'],
   from: {
     base: 'edpuser',
     joins: [{

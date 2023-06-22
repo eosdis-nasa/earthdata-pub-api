@@ -337,8 +337,8 @@
   },
   {
     "question_name": "data_product_status",
-    "title": "Data Product Status",
-    "text": "Once this data product is publicly accessible, will you continue to create data to extend this data product? What is the anticipated frequency of additional data deliveries to the DAAC?",
+    "title": "Ongoing Data Production",
+    "text": "After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?",
     "help": "",
     "inputs": [
       {

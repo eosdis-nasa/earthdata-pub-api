@@ -10,28 +10,26 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
-const { getTemplate } = require('./notification-consumer/templates.js');
+const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
-// TODO- Remove disable once send email enabled
 // eslint-disable-next-line
-async function sendEmailNotification({ note }) {
+async function sendEmailNotification({ note, emailPayload }) {
   // TODO - Add additional filter for system user messages
+  // logic to add DAAC content
+  // eslint-disable-next-line
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
-  await msg.sendEmail({
-    // TODO - Update the subject
-    subject: 'RE: EDPub reply',
-    emails: users.map((user) => user.email),
-    body: note.text
-  });
+
+  // Disabled until ready for uat Testing
+  // await msg.sendEmail(users, emailPayload);
 }
 
 async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
   if (!(eventMessage.data && eventMessage.data.silent)) {
-    const message = getTemplate(eventMessage);
+    const message = await getTemplate(eventMessage);
     if (message) {
       const operation = message.conversation_id ? 'reply' : 'sendNote';
       if (!message.user_id) {
@@ -41,10 +39,11 @@ async function processRecord(record) {
       if (operation === 'sendNote' && !message.subject) {
         message.subject = 'No Subject';
       }
-      // TODO- Remove disable once send email enabled
-      // eslint-disable-next-line
       const note = await db.note[operation](message);
-      // await sendEmailNotification({ note });
+      if (eventMessage.event_type !== 'direct_message' && process.env.AWS_EXECUTION_ENV) {
+        const emailPayload = await getEmailTemplate(eventMessage, message);
+        await sendEmailNotification({ note, email_payload: emailPayload });
+      }
     }
   }
 }

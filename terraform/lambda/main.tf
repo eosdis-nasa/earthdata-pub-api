@@ -64,6 +64,7 @@ resource "aws_lambda_function" "action_consumer" {
       MEDITOR_USER   = var.meditor_service_username
       MEDITOR_PASS   = var.meditor_service_password
       ROOT_URL       = var.client_root_url
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -102,14 +103,15 @@ resource "aws_lambda_function" "data" {
   timeout          = 180
   environment {
     variables = {
-      REGION      = var.region
-      EVENT_SNS   = var.edpub_event_sns_arn
-      METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER     = var.db_user
-      PG_HOST     = var.db_host
-      PG_DB       = var.db_database
-      PG_PASS     = var.db_password
-      PG_PORT     = var.db_port
+      REGION          = var.region
+      EVENT_SNS       = var.edpub_event_sns_arn
+      METRICS_SNS     = var.edpub_metrics_sns_arn
+      PG_USER         = var.db_user
+      PG_HOST         = var.db_host
+      PG_DB           = var.db_database
+      PG_PASS         = var.db_password
+      PG_PORT         = var.db_port
+      SOURCE_EMAIL    = var.ses_from_email
     }
   }
   vpc_config {
@@ -142,13 +144,14 @@ resource "aws_lambda_function" "inbound_consumer" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION        = var.region
+      EVENT_SNS     = var.edpub_event_sns_arn
+      PG_USER       = var.db_user
+      PG_HOST       = var.db_host
+      PG_DB         = var.db_database
+      PG_PASS       = var.db_password
+      PG_PORT       = var.db_port
+      SOURCE_EMAIL  = var.ses_from_email
     }
   }
   vpc_config {
@@ -187,14 +190,15 @@ resource "aws_lambda_function" "invoke" {
   timeout          = 180
   environment {
     variables = {
-      REGION      = var.region
-      EVENT_SNS   = var.edpub_event_sns_arn
-      METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER     = var.db_user
-      PG_HOST     = var.db_host
-      PG_DB       = var.db_database
-      PG_PASS     = var.db_password
-      PG_PORT     = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      METRICS_SNS    = var.edpub_metrics_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -228,15 +232,16 @@ resource "aws_lambda_function" "metrics" {
   timeout          = 180
   environment {
     variables = {
-      REGION      = var.region
-      EVENT_SNS   = var.edpub_event_sns_arn
-      METRICS_SNS = var.edpub_metrics_sns_arn
-      METRICS_S3  = var.edpub_metrics_s3_bucket
-      PG_USER     = var.db_user
-      PG_HOST     = var.db_host
-      PG_DB       = var.db_database
-      PG_PASS     = var.db_password
-      PG_PORT     = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      METRICS_SNS    = var.edpub_metrics_sns_arn
+      METRICS_S3     = var.edpub_metrics_s3_bucket
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -270,14 +275,15 @@ resource "aws_lambda_function" "metrics_consumer" {
   timeout          = 180
   environment {
     variables = {
-      REGION      = var.region
-      EVENT_SNS   = var.edpub_event_sns_arn
-      METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER     = var.db_user
-      PG_HOST     = var.db_host
-      PG_DB       = var.db_database
-      PG_PASS     = var.db_password
-      PG_PORT     = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      METRICS_SNS    = var.edpub_metrics_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -316,13 +322,14 @@ resource "aws_lambda_function" "model" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -393,13 +400,14 @@ resource "aws_lambda_function" "notification" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -433,15 +441,16 @@ resource "aws_lambda_function" "notification_consumer" {
   timeout          = 180
   environment {
     variables = {
-      REGION      = var.region
-      EMAIL_SNS   = var.edpub_email_sns_arn
-      EVENT_SNS   = var.edpub_event_sns_arn
-      METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER     = var.db_user
-      PG_HOST     = var.db_host
-      PG_DB       = var.db_database
-      PG_PASS     = var.db_password
-      PG_PORT     = var.db_port
+      REGION                = var.region
+      EMAIL_SNS             = var.edpub_email_sns_arn
+      EVENT_SNS             = var.edpub_event_sns_arn
+      METRICS_SNS           = var.edpub_metrics_sns_arn
+      PG_USER               = var.db_user
+      PG_HOST               = var.db_host
+      PG_DB                 = var.db_database
+      PG_PASS               = var.db_password
+      PG_PORT               = var.db_port
+      SOURCE_EMAIL          = var.ses_from_email
     }
   }
   vpc_config {
@@ -522,13 +531,14 @@ resource "aws_lambda_function" "register" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -561,13 +571,14 @@ resource "aws_lambda_function" "service_authorizer" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -601,13 +612,14 @@ resource "aws_lambda_function" "submission" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -642,13 +654,14 @@ resource "aws_lambda_function" "subscribe" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -682,15 +695,16 @@ resource "aws_lambda_function" "user" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      CUP_ID    = var.cognito_user_pool_id
-      EVENT_SNS = var.edpub_event_sns_arn
-      EMAIL_SNS = var.edpub_email_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      CUP_ID         = var.cognito_user_pool_id
+      EVENT_SNS      = var.edpub_event_sns_arn
+      EMAIL_SNS      = var.edpub_email_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -724,13 +738,14 @@ resource "aws_lambda_function" "workflow_consumer" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -769,13 +784,14 @@ resource "aws_lambda_function" "workflow" {
   timeout          = 180
   environment {
     variables = {
-      REGION    = var.region
-      EVENT_SNS = var.edpub_event_sns_arn
-      PG_USER   = var.db_user
-      PG_HOST   = var.db_host
-      PG_DB     = var.db_database
-      PG_PASS   = var.db_password
-      PG_PORT   = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
@@ -937,14 +953,15 @@ resource "aws_lambda_function" "questions" {
   timeout          = 180
   environment {
     variables = {
-      REGION      = var.region
-      EVENT_SNS   = var.edpub_event_sns_arn
-      METRICS_SNS = var.edpub_metrics_sns_arn
-      PG_USER     = var.db_user
-      PG_HOST     = var.db_host
-      PG_DB       = var.db_database
-      PG_PASS     = var.db_password
-      PG_PORT     = var.db_port
+      REGION         = var.region
+      EVENT_SNS      = var.edpub_event_sns_arn
+      METRICS_SNS    = var.edpub_metrics_sns_arn
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+      SOURCE_EMAIL   = var.ses_from_email
     }
   }
   vpc_config {
