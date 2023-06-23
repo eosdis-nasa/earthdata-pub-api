@@ -74,3 +74,4 @@ module.exports.getStepMessage = one;
 module.exports.getLongName = one;
 module.exports.getCreatorName = one;
 module.exports.getStepName = one;
+module.exports.getIds = many;
