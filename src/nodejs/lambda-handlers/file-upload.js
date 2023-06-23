@@ -1,5 +1,5 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
-const { S3Client } = require('@aws-sdk/client-s3');
+const { S3Client, ListObjectsCommand } = require('@aws-sdk/client-s3');
 
 const db = require('database-util');
 
@@ -64,8 +64,38 @@ async function getPostUrlMethod(event, user) {
   });
 }
 
+
+async function listFilesMethod(event, user) {
+  const { submission_id: submissionId } = event;
+  const userInfo = await db.user.findById({ id: user });
+  const groupIds = userInfo.user_groups.map((group) => group.id);
+  const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
+    .map((daac) => daac.id);
+  const {
+    daac_id: daacId,
+    contributor_ids: contributorIds
+  } = await db.submission.findById({ id: submissionId });
+  if (contributorIds.includes(user)
+    || userInfo.user_privileges.includes('ADMIN')
+    || userDaacs.includes(daacId)
+  ) {
+    const s3Client = new S3Client({ region });
+    const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
+    const rawResponse = await s3Client.send(command);
+    const response = rawResponse.Contents.map((item) => ({
+      key: item.Key,
+      size: item.Size,
+      last_modified: item.LastModified,
+      file_name: item.Key.split('/').pop()
+    }));
+    return response;
+  }
+  return ({ error: 'Not Authorized' });
+}
+
 const operations = {
-  getPostUrl: getPostUrlMethod
+  getPostUrl: getPostUrlMethod,
+  listFiles: listFilesMethod
 };
 
 async function handler(event) {

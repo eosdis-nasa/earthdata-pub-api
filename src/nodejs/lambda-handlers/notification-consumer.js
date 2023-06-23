@@ -42,7 +42,7 @@ async function processRecord(record) {
       const note = await db.note[operation](message);
       if (eventMessage.event_type !== 'direct_message' && process.env.AWS_EXECUTION_ENV) {
         const emailPayload = await getEmailTemplate(eventMessage, message);
-        await sendEmailNotification({ note, email_payload: emailPayload });
+        await sendEmailNotification({ note, emailPayload });
       }
     }
   }
