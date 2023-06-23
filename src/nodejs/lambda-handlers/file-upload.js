@@ -64,7 +64,6 @@ async function getPostUrlMethod(event, user) {
   });
 }
 
-
 async function listFilesMethod(event, user) {
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
