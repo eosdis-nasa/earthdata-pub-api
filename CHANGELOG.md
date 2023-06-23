@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add updates to original db init.
 - Remove conditional build of upload bucket
 - Remove references to environment variable
+- Fixed to look at privileges for workflow step
 
 ## 1.0.12 - 2023-03-23
 
