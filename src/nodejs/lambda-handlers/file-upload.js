@@ -62,7 +62,6 @@ async function listFilesMethod(event, user) {
 }
 
 async function getDownloadUrlMethod(event, user) {
-  console.log(event);
   const { key } = event;
   const s3Client = new S3Client({
     region
@@ -81,19 +80,18 @@ async function getDownloadUrlMethod(event, user) {
   if (contributorIds.includes(user)
     || userInfo.user_privileges.includes('ADMIN')
     || userDaacs.includes(daacId)
-  ){
+  ) {
     const payload = {
       Bucket: ingestBucket,
-      Key: key,
-    }
-    try{
-      const command  = new GetObjectCommand(payload);
+      Key: key
+    };
+    try {
+      const command = new GetObjectCommand(payload);
       return getSignedUrl(s3Client, command, { expiresIn: 60 });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return ({ error: 'Failed to upload' });
     }
-    
   }
   return ({ error: 'Not Authorized' });
 }
