@@ -62,6 +62,7 @@ async function listFilesMethod(event, user) {
 }
 
 async function getDownloadUrlMethod(event, user) {
+  console.log(event);
   const { key } = event;
   const s3Client = new S3Client({
     region
@@ -85,8 +86,14 @@ async function getDownloadUrlMethod(event, user) {
       Bucket: ingestBucket,
       Key: key,
     }
-    const command  = new GetObjectCommand(payload);
-    return getSignedUrl(s3Client, command, { expiresIn: 60 });
+    try{
+      const command  = new GetObjectCommand(payload);
+      return getSignedUrl(s3Client, command, { expiresIn: 60 });
+    } catch (err) {
+      console.log(err);
+      return ({ error: 'Failed to upload' });
+    }
+    
   }
   return ({ error: 'Not Authorized' });
 }
@@ -98,7 +105,7 @@ const operations = {
 };
 
 async function handler(event) {
-  return { error: 'Not Implemented' };
+  // return { error: 'Not Implemented' };
   /* eslint-disable no-unreachable */
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const user = event.context.user_id;
