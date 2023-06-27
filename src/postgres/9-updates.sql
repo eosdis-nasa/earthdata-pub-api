@@ -79,3 +79,15 @@ RAISE;
     UPDATE input SET enums='["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Instantaneous","Varies"]' where id='91c123bf-702e-458c-90a1-b26f6498937e'
     UPDATE question SET long_name='Ongoing Data Production', text='After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?' where id='dbf70495-433a-439e-8173-0cb20f972c16';
     UPDATE question SET help='The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file at the time of initial delivery to the DAAC, even if there are time gaps or data production will be ongoing.' where id='4f2dd369-d865-47ba-8504-8694493f129f';
+
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+UPDATE input set list_order=3 where question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2' and control_id='data_producer_info_email';
+UPDATE input set list_order=4 where question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2' and control_id='data_producer_info_orcid';
+
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+UPDATE input set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333' and control_id='poc_email';
+UPDATE input set list_order=4 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333' and control_id='poc_orcid';
+
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+UPDATE input set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332' and control_id='long_term_support_poc_email';
+UPDATE input set list_order=4 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332' and control_id='long_term_support_poc_orcid';
