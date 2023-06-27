@@ -13,6 +13,7 @@
   "license": "Unlicense",
   "private": true,
   "dependencies": {
+
     "@aws-sdk/client-api-gateway": "3.347.1",
     "@aws-sdk/client-cognito-identity-provider": "3.347.1",
     "@aws-sdk/client-lambda": "3.347.1",
