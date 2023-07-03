@@ -94,6 +94,7 @@ async function promoteStepMethod(eventMessage) {
   const { submission_id: id } = eventMessage;
   await db.submission.promoteStep({ id });
   const status = await db.submission.getState({ id });
+  console.log(status);
   const method = stepMethods[status.step.type];
   await method(status);
 }

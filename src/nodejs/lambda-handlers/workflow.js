@@ -40,7 +40,8 @@ async function addSteps(steps, workflowId) {
     await db.workflow.addStep({
       workflow_id: workflowId,
       step_name: activeStepName,
-      next_step_name: nextStepName
+      next_step_name: nextStepName,
+      step_message: activeStep.step_message,
     });
 
     activeStepName = nextStepName;
@@ -80,9 +81,11 @@ async function editWorkflowMethod(params, user) {
   const approvedUserRoles = ['admin'];
   if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
     const { steps: oldSteps } = await db.workflow.findById({ id });
-
-    await db.workflow.clearSteps({ id });
+    console.log('we are about to clear steps')
+    console.log(await db.workflow.clearSteps({ id }));
+    console.log('we cleared steps')
     if (!await addSteps(steps, id)) {
+      console.log('if here we failed')
       await db.workflow.clearSteps({ id });
       await addSteps(oldSteps, id);
       return (db.workflow.findById({ id }));
