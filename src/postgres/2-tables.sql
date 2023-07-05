@@ -305,7 +305,7 @@ CREATE TABLE IF NOT EXISTS step_edge (
   workflow_id UUID NOT NULL,
   step_name VARCHAR NOT NULL,
   next_step_name VARCHAR,
-  step_message TEXT DEFAULT 'this is a test from edge',
+  step_message TEXT DEFAULT '',
   PRIMARY KEY (workflow_id, step_name),
   UNIQUE (workflow_id, next_step_name),
   FOREIGN KEY (step_name) REFERENCES step (step_name),
