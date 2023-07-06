@@ -50,58 +50,32 @@ RAISE;
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
 
---2/15/2022 adds entry for tracking level of detail
-    ALTER TABLE edpuser ADD detailed BOOLEAN DEFAULT 'false';
+-- 5/18/2023 Adds support for SES and step messages
+    ALTER TABLE step ADD notification TEXT DEFAULT '';
 
-    UPDATE question SET text='What file format(s) does this data product include?' where id='50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27';
-    UPDATE question SET help='Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content.' where id='53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3';
-
-    -- Remove checkbox for table DOI, doi changing from array of values to single string
-    -- INSERT INTO question VALUES ('c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 'data_product_doi', 2, 'Data Product DOI', 'If a Digital Object Identifier (DOI) already exists for this data product (not common), please provide it.', 'This would be a DOI for the actual data and not for a paper related to this data product. The DAAC will create the data product DOI during data publication. Therefore, the DAAC needs to know if a data product DOI already exists.');
-    -- INSERT INTO input VALUES ('c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 'data_product_doi_value', 0, 'DOI', 'text', '{}', '{}', '[]','[]',  False);
-    -- INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 2, '[]', '[]');
-    -- INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 2, '[]', '[]');
-    UPDATE question SET text='If a Digital Object Identifier (DOI) already exists for this data product (not common), please provide it.' where id='c9c73e88-837a-42d2-aa1a-50874a333607';
-    UPDATE question SET help='This would be a DOI for the actual data and not for a paper related to this data product. The DAAC will create the data product DOI during data publication. Therefore, the DAAC needs to know if a data product DOI already exists.' where id='c9c73e88-837a-42d2-aa1a-50874a333607';
+    UPDATE question SET help='If a data file represents a single point in time, meaning the start and end times of the file would be identical, choose "Instantaneous". If the temporal coverage cannot be reasonably represented by a single value, choose "Varies".' where id='91c123bf-702e-458c-90a1-b26f6498937e';
+    UPDATE input SET enums='["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Instantaneous","Varies"]' where id='91c123bf-702e-458c-90a1-b26f6498937e'
     
-    UPDATE edprole SET description='The person who is primarily responsible for the data themselves. Often the PI of the project that generated the data. This role will be able to create a Request and edit their created or assigned Requests.' where id='804b335c-f191-4d26-9b98-1ec1cb62b97d';
-    UPDATE edprole SET description='The person who is filling out the Earthdata Pub Forms and expected to answer questions about the Request. Can be the same as the DP and has the same permissions as a DP.' where id='29ccab4b-65e2-4764-83ec-77375d29af39';
-    UPDATE edprole SET description='The DAAC staff member who guides the Request through Earthdata Pub workflows and iterates with the PoC on questions. This role will be able to add and edit requests.' where id='a5b4947a-67d2-434e-9889-59c2fad39676';
-    UPDATE edprole SET description='The DAAC staff member who manages all DAAC Requests. Managers assign a Request to Staff. There may be multiple DAAC Data Managers per DAAC. Some DAACs may choose to combine the Manager and Staff roles by assigning staff to both.' where id='2aa89c57-85f1-4611-812d-b6760bb6295c';
+    UPDATE question SET long_name='Ongoing Data Production', text='After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?' where id='dbf70495-433a-439e-8173-0cb20f972c16';
+    UPDATE question SET help='The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file at the time of initial delivery to the DAAC, even if there are time gaps or data production will be ongoing.' where id='4f2dd369-d865-47ba-8504-8694493f129f';
 
---4/17/2023 EDPUB-869 - "Data Product Restrictions" to "Open Data Policy".
-    -- Question(id, short_name, version, long_name, text, help)
-    UPDATE question set long_name='Open Data Policy' where id='2dd6c8b1-22a8-4866-91c3-da9b4ce849dc';
+-- 5/26/2023 Adds support for querryiing notes by step
+    ALTER TABLE note ADD step_name VARCHAR;
+    ALTER TABLE note ADD FOREIGN KEY (step_name) REFERENCES step(step_name);
 
---3/7/2023 Update reassign permissions
-INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REASSIGN');
-    UPDATE question SET long_name='Science Value' where id='7fd7bccf-5065-4033-9956-9e80bc99c205';
-
---3/7/2023 Update reassign permissions
-INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REASSIGN');
-    
---4/12/2023 Remove checkbox for table DOI, doi changing from array of values to single string
-    INSERT INTO question VALUES ('c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 'data_product_doi', 2, 'Data Product DOI', 'If a Digital Object Identifier (DOI) already exists for this data product (not common), please provide it.', 'This would be a DOI for the actual data and not for a paper related to this data product. The DAAC will create the data product DOI during data publication. Therefore, the DAAC needs to know if a data product DOI already exists.');
-    INSERT INTO input VALUES ('c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 'data_product_doi_value', 0, 'DOI', 'text', '{}', '{}', '[]','[]',  False);
-    INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 2, '[]', '[]');
-    INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 2, '[]', '[]');
-    DELETE FROM section_question WHERE question_id='c9c73e88-837a-42d2-aa1a-50874a333607';
-
--- 4/4/2023 Updates idealized workflow to Example workflow and makes it the default workflow for DAAC's without a workflow
-UPDATE workflow SET short_name= 'example_workflow', long_name='Example Workflow' WHERE id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
-UPDATE daac SET workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff' WHERE workflow_id = '056ca100-107e-4fe5-a54a-e5f2d902a27a' AND short_name != 'Unknown';
-
--- 5/2/2023 GES DISC default community workflow
--- GES DISC 
--- Step(step_id, step_name, type, action_id, form_id, service_id, data)
-    INSERT INTO step(step_id, step_name, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'review', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
-    INSERT INTO step(step_id, step_name, type, data) VALUES ('7838ed18-4ecd-499e-9a47-91fd181cbfc7', 'data_publication_request_form_esdis_review', 'review', '{"rollback":"data_publication_request_form_uwg_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
--- StepEdge(workflow_id, step_name, next_step_name)
-    INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'init', 'data_accession_request_form');
-    INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_accession_request_form', 'data_accession_request_form_review');
-    INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_accession_request_form_review', 'data_publication_request_form');
-    INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form', 'data_publication_request_form_review');
-    INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'data_publication_request_form_uwg_review');
-    INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_uwg_review', 'data_publication_request_form_esdis_review');
-    INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_esdis_review', 'close');
-    UPDATE daac set hidden = 'false', workflow_id = '7843dc6d-f56d-488a-9193-bb7c0dc3696d' where id = '1ea1da68-cb95-431f-8dd8-a2cf16d7ef98'
+    UPDATE question SET long_name='Data Product Spatial Coverage' where id='228cb0d6-78fb-449a-8061-b1e6fb3f59d1';
+    UPDATE question SET long_name='Data Product Temporal Coverage' where id='4f2dd369-d865-47ba-8504-8694493f129f';
+    UPDATE question SET long_name='Data Value Temporal Resolution' where id='4f2dd369-d865-47ba-8504-8694493f139f';
+    UPDATE question SET long_name='Data Product Horizontal Spatial Coverage' where id='15a012d0-9b4b-4979-9fa9-81fac1600b09';
+    UPDATE question SET long_name='Data Product Vertical Spatial Coverage' where id='0f640f21-37ec-4d04-af2c-da955ae98e12';
+    UPDATE question SET long_name='Data Value Spatial Resolution' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
+    UPDATE input SET label='Data Value Spatial Resolution' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
+    UPDATE question SET long_name='Temporal Information Notes' where id='4f2dd369-d865-47ba-8504-8694493f128f';
+    UPDATE question SET help='If more than three distinct spatial coverage bounding boxes exist for this data product, please add a comment to the Spatial Information Notes.' where id='15a012d0-9b4b-4979-9fa9-81fac1600b09';
+    UPDATE question SET help='Please provide any additional details needed to understand what these numbers mean in the Spatial Information Notes. For example, the point of reference for the values given in the vertical spatial coverage.' where id='a3701d37-77cf-4ccc-8068-c6860a7a8929';
+    UPDATE question SET long_name='Spatial Information Notes' where id='d1ef0a6f-284e-40a7-9248-75dd8f1f0ded';
+    UPDATE question SET help='Please provide the nominal size of the geographic area covered by a single data value. For example: 25 km at nadir; a 0.25 degree x 0.25 degree grid cell at the equator; points along a path; a 10 km x 10 km x 5 km radar slice. If the spatial resolution varies for data values, you can list "varies". If a spatial resolution is not applicable, you can list "not applicable."' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
+    UPDATE question SET help='If a data file represents a single point in time, meaning the start and end times of the file would be identical, choose "Instantaneous". If the temporal coverage cannot be reasonably represented by a single value, choose "Varies".' where id='91c123bf-702e-458c-90a1-b26f6498937e';
+    UPDATE input SET enums='["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Instantaneous","Varies"]' where id='91c123bf-702e-458c-90a1-b26f6498937e'
+    UPDATE question SET long_name='Ongoing Data Production', text='After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?' where id='dbf70495-433a-439e-8173-0cb20f972c16';
+    UPDATE question SET help='The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file at the time of initial delivery to the DAAC, even if there are time gaps or data production will be ongoing.' where id='4f2dd369-d865-47ba-8504-8694493f129f';

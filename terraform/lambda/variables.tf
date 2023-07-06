@@ -178,3 +178,10 @@ variable "meditor_service_password" {
   type = string
 }
 
+variable "ses_from_email" {
+  type = string
+}
+
+variable "ses_access_creds_arn" {
+  type = string
+}

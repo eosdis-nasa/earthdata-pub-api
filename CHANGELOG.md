@@ -9,11 +9,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+## 1.0.14
+
+- Content updates:
+  - Temporal and Spatial sections
+  - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes' (EDPUB-798)
+  - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
+  - Help text on Spatial Resolution question on Data Publication Form (EDPUB-796)
+  - Added "Instantaneous" and help text to file_temporal_coverage (EDPUB-794)
+  - data_product_status and product_temporal_coverage
+- Add support for querying notes by step id
+- Change methods to look at privileges v roles
+- Replace step_id with step_name for searching by messages by step (EDPUB-951)
+- Fix notification proxy
+- Add support for proper signing with hash (EDPUB-952)
+
 ## 1.0.13 - 2023-06-22
 
 - Update assign Idealized workflow to Example Workflow and made it the default.
 - Implement question versioning
 - Content update - "Data Product Restrictions" to "Open Data Policy"
+- Fix to look at privileges for workflow step
 - Add terraform for upload bucket deployment
 - Limit api input sanitization to only specific calls to prevent duplicate work
 - Add GES DISC community workflow

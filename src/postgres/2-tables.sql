@@ -264,18 +264,6 @@ CREATE TABLE IF NOT EXISTS conversation (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS note (
-  id UUID DEFAULT UUID_GENERATE_V4(),
-  conversation_id UUID NOT NULL,
-  sender_edpuser_id UUID NOT NULL,
-  text VARCHAR NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  PRIMARY KEY (id),
-  FOREIGN KEY (conversation_id) REFERENCES conversation (id),
-  FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
-  UNIQUE (id)
-);
-
 CREATE TABLE IF NOT EXISTS conversation_edpuser (
   conversation_id UUID NOT NULL,
   edpuser_id UUID NOT NULL,
@@ -304,6 +292,7 @@ CREATE TABLE IF NOT EXISTS step (
   form_id UUID,
   service_id UUID,
   data JSONB,
+  notification TEXT DEFAULT 'this is a test',
   PRIMARY KEY (step_id),
   UNIQUE (step_name),
   FOREIGN KEY (action_id) REFERENCES action (id),
@@ -566,4 +555,18 @@ CREATE TABLE IF NOT EXISTS page (
   location VARCHAR NOT NULL,
   content JSONB NOT NULL,
   PRIMARY KEY (page_key)
+);
+
+CREATE TABLE IF NOT EXISTS note (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  conversation_id UUID NOT NULL,
+  sender_edpuser_id UUID NOT NULL,
+  text VARCHAR NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  step_name VARCHAR,
+  PRIMARY KEY (id),
+  FOREIGN KEY (conversation_id) REFERENCES conversation (id),
+  FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
+  UNIQUE (id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
 );

@@ -53,3 +53,7 @@ variable "lambda_execution_policy_arn" {
 variable "permissions_boundary_arn" {
   type = string
 }
+
+variable "ses_access_creds_arn" {
+  type = string
+}
