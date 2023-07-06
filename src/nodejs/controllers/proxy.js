@@ -756,6 +756,18 @@ module.exports.fileUpload = function fileUpload(req, res, next) {
   });
 };
 
+module.exports.listFiles = function listFiles(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'listFiles',
+    submission_id: params.submission_id.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({
     message: 'Placeholder for overview app root endpoint.'

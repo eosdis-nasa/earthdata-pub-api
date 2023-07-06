@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+## 1.0.15
+
+- Display uploaded files on the dashboard api (EDPUB-904)
+- Update ses implementation
+- Integrate upload package to dashboard and dashboard cicd (EDPUB-971)
+
 ## 1.0.14
 
 - Content updates:
@@ -36,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add updates to original db init.
 - Remove conditional build of upload bucket
 - Remove references to environment variable
+- Fixed to look at privileges for workflow step
 
 ## 1.0.12 - 2023-03-23
 
