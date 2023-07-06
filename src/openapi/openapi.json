@@ -6399,7 +6399,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req=$input.params()) { \"refresh\": true, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}"
+            "application/json": "#set($req=$input.params()) { \"refresh\": true, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
