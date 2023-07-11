@@ -550,7 +550,7 @@
       "questions": [
         {
           "short_name": "spatial_general",
-          "long_name": "Data Product Spatial Coverage",
+          "long_name": "Data Product Spatial Region",
           "text": "What is the general geographic region covered by this data product?",
           "help": "For example, Global, Northern Hemisphere, Alaska, Korean Peninsula, East Tropical Pacific, or Gulf Stream.",
           "inputs": [
