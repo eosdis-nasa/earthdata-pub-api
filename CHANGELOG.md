@@ -10,7 +10,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- Unreleased changes can be added here. -->
 - Content updates:
   - Added Department to contact information
-  
+  - Changed 'Temporal Information Notes' to 'Additional Temporal Information'
+  - Changed 'Additional Temporal Information' question and help
+  - Changed 'Spatial Information Notes' to 'Additional Spatial Information'
+  - Changed 'Additional Spatial Information' question
+  - Data 'Product Spatial Coverage' to 'Data Product Spatial Region' (edpub795)
+  - Temporal and Spatial sections
+  - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes'
+  - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
+  - help text on Spatial Resolution question on Data Publication Form
+  - Added "Instantaneous" and help text to file_temporal_coverage
+  - data_product_status and product_temporal_coverage
+
 ## 1.0.14
 
 - Content updates:

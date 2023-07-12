@@ -70,24 +70,27 @@ RAISE;
     UPDATE question SET long_name='Data Product Vertical Spatial Coverage' where id='0f640f21-37ec-4d04-af2c-da955ae98e12';
     UPDATE question SET long_name='Data Value Spatial Resolution' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
     UPDATE input SET label='Data Value Spatial Resolution' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
-    UPDATE question SET long_name='Temporal Information Notes' where id='4f2dd369-d865-47ba-8504-8694493f128f';
-    UPDATE question SET help='If more than three distinct spatial coverage bounding boxes exist for this data product, please add a comment to the Spatial Information Notes.' where id='15a012d0-9b4b-4979-9fa9-81fac1600b09';
-    UPDATE question SET help='Please provide any additional details needed to understand what these numbers mean in the Spatial Information Notes. For example, the point of reference for the values given in the vertical spatial coverage.' where id='a3701d37-77cf-4ccc-8068-c6860a7a8929';
-    UPDATE question SET long_name='Spatial Information Notes' where id='d1ef0a6f-284e-40a7-9248-75dd8f1f0ded';
+    UPDATE question SET long_name='Additional Temporal Information', text='Is there any additional temporal information that will help the DAAC understand this data product?', help='Examples of useful temporal information include: seasonal data; data covering multiple, individual deployments; significant gaps in instrument operation; data from transit/ferry flights included.' where id='4f2dd369-d865-47ba-8504-8694493f128f';
+    UPDATE question SET help='If more than three distinct spatial coverage bounding boxes exist for this data product, please add a comment to the Additional Spatial Information.' where id='15a012d0-9b4b-4979-9fa9-81fac1600b09';
+    UPDATE question SET help='Please provide any additional details needed to understand what these numbers mean in the Additional Spatial Information. For example, the point of reference for the values given in the vertical spatial coverage.' where id='a3701d37-77cf-4ccc-8068-c6860a7a8929';
+    UPDATE question SET long_name='Additional Spatial Information', text='Is there any additional spatial information that will help the DAAC understand this data product?', help='' where id='d1ef0a6f-284e-40a7-9248-75dd8f1f0ded';
     UPDATE question SET help='Please provide the nominal size of the geographic area covered by a single data value. For example: 25 km at nadir; a 0.25 degree x 0.25 degree grid cell at the equator; points along a path; a 10 km x 10 km x 5 km radar slice. If the spatial resolution varies for data values, you can list "varies". If a spatial resolution is not applicable, you can list "not applicable."' where id='a12ccd39-1d94-46a5-8aad-3587fd50c4ad';
     UPDATE question SET help='If a data file represents a single point in time, meaning the start and end times of the file would be identical, choose "Instantaneous". If the temporal coverage cannot be reasonably represented by a single value, choose "Varies".' where id='91c123bf-702e-458c-90a1-b26f6498937e';
     UPDATE input SET enums='["Minute(s)","Hour(s)","Day(s)","Week(s)","Month(s)","Year(s)","Instantaneous","Varies"]' where id='91c123bf-702e-458c-90a1-b26f6498937e'
     UPDATE question SET long_name='Ongoing Data Production', text='After this data product has been published at the DAAC, will you continue to collect or produce new data files to extend the temporal coverage?' where id='dbf70495-433a-439e-8173-0cb20f972c16';
     UPDATE question SET help='The temporal coverage should encompass the beginning date of the first data file and the ending date of the last data file at the time of initial delivery to the DAAC, even if there are time gaps or data production will be ongoing.' where id='4f2dd369-d865-47ba-8504-8694493f129f';
+    UPDATE question SET long_name='Data Product Spatial Region' where id='228cb0d6-78fb-449a-8061-b1e6fb3f59d1';
 
-INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
-UPDATE input set list_order=3 where question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2' and control_id='data_producer_info_email';
-UPDATE input set list_order=4 where question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2' and control_id='data_producer_info_orcid';
+-- 7/12/2023 Added department to contact information
+    INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+    UPDATE input set list_order=3 where question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2' and control_id='data_producer_info_email';
+    UPDATE input set list_order=4 where question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2' and control_id='data_producer_info_orcid';
 
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
-UPDATE input set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333' and control_id='poc_email';
-UPDATE input set list_order=4 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333' and control_id='poc_orcid';
+    INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+    UPDATE input set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333' and control_id='poc_email';
+    UPDATE input set list_order=4 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333' and control_id='poc_orcid';
 
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
-UPDATE input set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332' and control_id='long_term_support_poc_email';
-UPDATE input set list_order=4 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332' and control_id='long_term_support_poc_orcid';
+    INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+    UPDATE input set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332' and control_id='long_term_support_poc_email';
+    UPDATE input set list_order=4 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332' and control_id='long_term_support_poc_orcid';
+
