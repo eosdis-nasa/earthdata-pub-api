@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 - Content updates:
+  - Added Department to contact information
   - Changed 'Temporal Information Notes' to 'Additional Temporal Information'
   - Changed 'Additional Temporal Information' question and help
   - Changed 'Spatial Information Notes' to 'Additional Spatial Information'

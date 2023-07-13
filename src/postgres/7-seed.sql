@@ -157,12 +157,14 @@ INSERT INTO section_question VALUES ('933da7a8-4db6-4b7b-b128-d815fe151d29', '38
 
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_email', 3, 'Email', 'email', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_orcid', 4, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_email', 3, 'Email', 'email', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_orcid', 4, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_nasa', 0, 'NASA', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_noaa', 1, 'NOAA', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_nsf', 2, 'NSF', 'checkbox', '{}', '{}', '[]','[]',  False);
@@ -202,8 +204,9 @@ INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_
 INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_file_url', 0, '', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_email', 3, 'Email', 'email', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_orcid', 4, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('d2bc7af7-211e-494a-a0bd-11b44f112eaa', 'funding_grant_number', 0, '', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c729', 'data_producers_table', 0, '', 'table', '[{"key":"producer_first_name","label":"First Name","type":"text","editable":true},{"key": "producer_middle_initial","label": "Middle Initial","type": "text","editable": true},{"key":"producer_last_name_or_organization","label":"Last Name or Group","type":"text","editable":true}]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f625108f-7203-4045-9d1c-b1312b585584', 'data_production_latency_units', 1, '', 'radio', '["3 hours or less","24 hours or less","48 hours or less","2 to 7 days","1 week to 1 month","1 to 3 months","3 to 6 months","6 months to 1 year","more than 1 year"]', '{}', '[]','[]',  False);
