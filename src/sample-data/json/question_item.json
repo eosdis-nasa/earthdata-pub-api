@@ -362,7 +362,7 @@
   },
   {
     "question_name": "data_product_spatial_coverage",
-    "title": "Data Product Spatial Coverage",
+    "title": "Data Product Spatial Region",
     "text": "What is the general geographic region covered by this data product?",
     "help": "For example, Global, Northern Hemisphere, Alaska, Korean Peninsula, East Tropical Pacific, or Gulf Stream.",
     "inputs": [

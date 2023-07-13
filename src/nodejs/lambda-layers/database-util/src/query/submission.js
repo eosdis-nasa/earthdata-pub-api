@@ -346,8 +346,8 @@ WHERE id = {{id}}
 RETURNING *`;
 
 const getFormData = () => `
-SELECT data FROM submission_form_data
-WHERE id = {{id}} AND form_id = {{form_id}}`;
+SELECT data FROM submission_form_data_pool
+WHERE id = {{id}}`;
 
 const updateFormData = ({id, data, form_id}) => `
 DO $$
