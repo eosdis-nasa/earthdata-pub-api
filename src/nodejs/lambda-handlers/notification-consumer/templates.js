@@ -54,7 +54,7 @@ const getEmailTemplate = async (eventMessage, message) => {
   let emailPayload = {};
   if (eventMessage.event_type !== 'direct_message') {
     const workflowName = db.workflow.getLongName({ id: eventMessage.workflow_id });
-    const formData = await db.submission.getFormData({ id: eventMessage.submission_id });
+    const formData = (await db.submission.getFormData({ id: eventMessage.submission_id })).data;
 
     emailPayload = {
       name: 'EDPUB User',
