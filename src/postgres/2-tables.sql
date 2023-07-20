@@ -292,7 +292,6 @@ CREATE TABLE IF NOT EXISTS step (
   form_id UUID,
   service_id UUID,
   data JSONB,
-  notification TEXT DEFAULT 'this is a test',
   PRIMARY KEY (step_id),
   UNIQUE (step_name),
   FOREIGN KEY (action_id) REFERENCES action (id),
@@ -306,6 +305,7 @@ CREATE TABLE IF NOT EXISTS step_edge (
   workflow_id UUID NOT NULL,
   step_name VARCHAR NOT NULL,
   next_step_name VARCHAR,
+  step_message TEXT DEFAULT '',
   PRIMARY KEY (workflow_id, step_name),
   UNIQUE (workflow_id, next_step_name),
   FOREIGN KEY (step_name) REFERENCES step (step_name),
@@ -350,7 +350,8 @@ CREATE TABLE IF NOT EXISTS submission_status (
   last_change TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   FOREIGN KEY (id) REFERENCES submission (id),
-  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (workflow_id) REFERENCES workflow (id)
 );
 
 CREATE TABLE IF NOT EXISTS submission_workflow (

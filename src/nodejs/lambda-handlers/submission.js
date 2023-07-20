@@ -134,7 +134,7 @@ async function submitMethod(event, user) {
     form_id: formId,
     user_id: user.id
   };
-  await msg.sendEvent(eventMessage);
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   return status;
 }
 
@@ -149,6 +149,7 @@ async function reviewMethod(event, user) {
     user_id: user.id,
     data: status.step.data
   };
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
   return status;
 }

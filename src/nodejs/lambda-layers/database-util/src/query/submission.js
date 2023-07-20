@@ -346,8 +346,8 @@ WHERE id = {{id}}
 RETURNING *`;
 
 const getFormData = () => `
-SELECT data FROM submission_form_data
-WHERE id = {{id}} AND form_id = {{form_id}}`;
+SELECT data FROM submission_form_data_pool
+WHERE id = {{id}}`;
 
 const updateFormData = ({id, data, form_id}) => `
 DO $$
@@ -384,17 +384,23 @@ FROM submission_status
 NATURAL JOIN submission
 NATURAL JOIN (
   SELECT
-    step.step_name,
+    step_info.step_name,
+    step_info.workflow_id,
     JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
-      'type', step.type,
-      'name', step.step_name,
-      'action_id', step.action_id,
-      'form_id', step.form_id,
-      'service_id', step.service_id,
-      'data', step.data,
-      'daac_message', step.notification
+      'type', step_info.type,
+      'name', step_info.step_name,
+      'action_id', step_info.action_id,
+      'form_id', step_info.form_id,
+      'service_id', step_info.service_id,
+      'data', step_info.data,
+      'step_message', step_info.step_message
     )) step
-  FROM step) step_data
+  FROM (
+    SELECT step.*, step_edge. step_message, step_edge.workflow_id
+    FROM step
+    NATURAL JOIN step_edge
+    )step_info
+  ) step_data
 NATURAL JOIN (
   SELECT
     submission_workflow.id,
