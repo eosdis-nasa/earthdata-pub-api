@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+## 1.0.16
+
 - Refresh token extension fixed
 - Content updates:
   - Content updates for data_product_status and product_temporal_coverage
