@@ -8,14 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+
 - Refresh token extension fixed
-- Content update - Temporal and Spatial sections
-- Content update - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes'
-- Content update - Changed 'Spatial Coverage Notes' to 'Spatial Information Notes'
-- Content update - help text on Spatial Resolution question on Data Publication Form
-- Content update - Added "Instantaneous" and help text to file_temporal_coverage
-- Content updates for data_product_status and product_temporal_coverage
 - Content updates:
+  - Content updates for data_product_status and product_temporal_coverage
   - Added Department to contact information
   - Changed 'Temporal Information Notes' to 'Additional Temporal Information'
   - Changed 'Additional Temporal Information' question and help
@@ -28,6 +24,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - help text on Spatial Resolution question on Data Publication Form
   - Added "Instantaneous" and help text to file_temporal_coverage
   - data_product_status and product_temporal_coverage
+
+## 1.0.15
+
+- Display uploaded files on the dashboard api (EDPUB-904)
+- Update ses implementation
+- Integrate upload package to dashboard and dashboard cicd (EDPUB-971)
 
 ## 1.0.14
 
@@ -48,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Update assign Idealized workflow to Example Workflow and made it the default.
 - Implement question versioning
-- Content update - "Data Product Restrictions" to "Open Data Policy"
+- "Data Product Restrictions" to "Open Data Policy"
 - Fix to look at privileges for workflow step
 - Add terraform for upload bucket deployment
 - Limit api input sanitization to only specific calls to prevent duplicate work
