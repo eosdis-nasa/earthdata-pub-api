@@ -72,6 +72,32 @@ async function getPostUrlMethod(event, user) {
   });
 }
 
+async function getDaacUploadUrlMethod(event, user) {
+  const {
+    file_name: fileName, file_type: fileType, checksum_value: checksumValue, prefix
+  } = event;
+  const { daac_id: daacId } = event;
+  const userInfo = await db.user.findById({ id: user });
+  const groupIds = userInfo.user_groups.map((group) => group.id);
+
+  if (daacId) {
+    const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
+      .map((daac) => daac.id);
+
+    if (userInfo.user_privileges.includes('ADMIN')
+      || (userDaacs.includes(daacId) && userInfo.user_privileges.includes('DAAC_UPLOAD'))
+    ) {
+      const key = prefix ? `${daacId}/upload/${prefix}/${fileName}` : `${daacId}/upload/${fileName}`;
+      return generateUploadUrl({
+        key,
+        checksumValue,
+        fileType
+      });
+    }
+  }
+  return ({ error: 'Not Authorized' });
+}
+
 async function listFilesMethod(event, user) {
   let rawResponse;
   const { submission_id: submissionId } = event;
@@ -144,11 +170,12 @@ async function getDownloadUrlMethod(event, user) {
 const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
-  getDownloadUrl: getDownloadUrlMethod
+  getDownloadUrl: getDownloadUrlMethod,
+  getDaacUploadUrl: getDaacUploadUrlMethod
 };
 
 async function handler(event) {
-  return { error: 'Not Implemented' };
+  // return { error: 'Not Implemented' };
   /* eslint-disable no-unreachable */
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const user = event.context.user_id;
