@@ -16,6 +16,7 @@ const findAll = () => `
           'service_id', step.service_id,
           'next_step_name', step_edge_details.next_step_name,
           'prev_step_name', step_edge_details.prev_step_name,
+          'step_message', step_edge_details.step_message,
           'prev_step', step.data
       ))) steps
     FROM step
@@ -62,9 +63,9 @@ const findById = () => `${findAll()} WHERE workflow.id = {{id}}`;
 
 const clearSteps = () => `DELETE FROM step_edge WHERE step_edge.workflow_id = {{id}}`;
 
-const addStep = () => `
-  INSERT INTO step_edge (workflow_id, step_name, next_step_name)
-  VALUES ({{workflow_id}}, {{step_name}}, {{next_step_name}})
+const addStep = (params) => `
+  INSERT INTO step_edge (workflow_id, step_name, next_step_name${params.step_message? ', step_message':''})
+  VALUES ({{workflow_id}}, {{step_name}}, {{next_step_name}}${params.step_message? ', {{step_message}}':''})
 `;
 
 const addClose = () => `

@@ -22,7 +22,7 @@ async function actionMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  if (status.step.daac_message) eventMessage.daac_message = status.step.daac_message;
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   Object.keys(eventMessage).forEach((key) => (
     eventMessage[key] === undefined && delete eventMessage[key]));
   await msg.sendEvent(eventMessage);
@@ -38,7 +38,7 @@ async function formMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  if (status.step.daac_message) eventMessage.daac_message = status.step.daac_message;
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
 }
 
@@ -51,7 +51,7 @@ async function reviewMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  if (status.step.daac_message) eventMessage.daac_message = status.step.daac_message;
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
 }
 
@@ -65,7 +65,7 @@ async function serviceMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  if (status.step.daac_message) eventMessage.daac_message = status.step.daac_message;
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
 }
 
@@ -78,7 +78,7 @@ async function closeMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
-  if (status.step.daac_message) eventMessage.daac_message = status.step.daac_message;
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
 }
 
@@ -123,7 +123,7 @@ async function formSubmittedMethod(eventMessage) {
       step_name: status.step.name,
       user_id: userId
     };
-    if (status.step.daac_message) eventMessage.daac_message = status.step.daac_message;
+    if (status.step.step_message) newEvent.step_message = status.step.step_message;
     await msg.sendEvent(newEvent);
   }
 }

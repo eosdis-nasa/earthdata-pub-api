@@ -768,6 +768,18 @@ module.exports.listFiles = function listFiles(req, res, next) {
   });
 };
 
+module.exports.getDownloadUrl = function getDownloadUrl(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'getDownloadUrl',
+    key: params.key.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
+
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({
     message: 'Placeholder for overview app root endpoint.'

@@ -41,9 +41,8 @@ const getTemplate = async (message) => {
   if (message.event_type && templates[message.event_type]) {
     const template = templates[message.event_type](message);
     template.conversation_id = template.conversation_id || message.conversation_id;
-    if (message.step_name && message.event_type !== 'request_initialized') {
-      const stepMessage = await db.submission.getStepMessage({ step_name: message.step_name });
-      template.text = `${template.text}\n${stepMessage.notification}`;
+    if (message.event_type !== 'request_initialized') {
+      template.text = `${template.text}\n${message.step_message}`;
     }
     return template;
   }
@@ -54,7 +53,7 @@ const getEmailTemplate = async (eventMessage, message) => {
   let emailPayload = {};
   if (eventMessage.event_type !== 'direct_message') {
     const workflowName = db.workflow.getLongName({ id: eventMessage.workflow_id });
-    const formData = await db.submission.getFormData({ id: eventMessage.submission_id });
+    const formData = (await db.submission.getFormData({ id: eventMessage.submission_id })).data;
 
     emailPayload = {
       name: 'EDPUB User',

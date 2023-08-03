@@ -1,5 +1,6 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
-const { S3Client, ListObjectsCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const { S3Client, ListObjectsCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 const db = require('database-util');
 
@@ -9,7 +10,7 @@ const region = process.env.REGION;
 async function generateUploadUrl(params) {
   const { key, checksumValue, fileType } = params;
   const checksumAlgo = 'SHA256';
-  if (!fileType) return ('invalid file type');
+  if (!fileType) return ({ error: 'invalid file type' });
   const s3Client = new S3Client({
     region
   });
@@ -28,8 +29,13 @@ async function generateUploadUrl(params) {
     Expires: 60
   };
 
-  const resp = await createPresignedPost(s3Client, payload);
-  return (resp);
+  try {
+    const resp = await createPresignedPost(s3Client, payload);
+    return (resp);
+  } catch (err) {
+    console.error(err);
+    return ({ error: 'Error generating upload url' });
+  }
 }
 
 async function getPostUrlMethod(event, user) {
@@ -43,6 +49,8 @@ async function getPostUrlMethod(event, user) {
       daac_id: daacId,
       contributor_ids: contributorIds
     } = await db.submission.findById({ id: submissionId });
+    if (!daacId) return ({ error: 'Submission not found' });
+
     const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
       .map((daac) => daac.id);
 
@@ -65,6 +73,7 @@ async function getPostUrlMethod(event, user) {
 }
 
 async function listFilesMethod(event, user) {
+  let rawResponse;
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
@@ -80,7 +89,12 @@ async function listFilesMethod(event, user) {
   ) {
     const s3Client = new S3Client({ region });
     const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
-    const rawResponse = await s3Client.send(command);
+    try {
+      rawResponse = await s3Client.send(command);
+    } catch (err) {
+      console.error(err);
+      return ({ error: 'Error listing files' });
+    }
     const response = rawResponse.Contents.map((item) => ({
       key: item.Key,
       size: item.Size,
@@ -92,9 +106,45 @@ async function listFilesMethod(event, user) {
   return ({ error: 'Not Authorized' });
 }
 
+async function getDownloadUrlMethod(event, user) {
+  const { key } = event;
+  const s3Client = new S3Client({
+    region
+  });
+
+  const submissionId = key.split('/')[1];
+  const userInfo = await db.user.findById({ id: user });
+  const groupIds = userInfo.user_groups.map((group) => group.id);
+  const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
+    .map((daac) => daac.id);
+  const {
+    daac_id: daacId,
+    contributor_ids: contributorIds
+  } = await db.submission.findById({ id: submissionId });
+
+  if (contributorIds.includes(user)
+    || userInfo.user_privileges.includes('ADMIN')
+    || userDaacs.includes(daacId)
+  ) {
+    const payload = {
+      Bucket: ingestBucket,
+      Key: key
+    };
+    try {
+      const command = new GetObjectCommand(payload);
+      return getSignedUrl(s3Client, command, { expiresIn: 60 });
+    } catch (err) {
+      console.error(err);
+      return ({ error: 'Failed to upload' });
+    }
+  }
+  return ({ error: 'Not Authorized' });
+}
+
 const operations = {
   getPostUrl: getPostUrlMethod,
-  listFiles: listFilesMethod
+  listFiles: listFilesMethod,
+  getDownloadUrl: getDownloadUrlMethod
 };
 
 async function handler(event) {
