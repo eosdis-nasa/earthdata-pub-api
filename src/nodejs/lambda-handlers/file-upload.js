@@ -87,7 +87,8 @@ async function getDaacUploadUrlMethod(event, user) {
     if (userInfo.user_privileges.includes('ADMIN')
       || (userDaacs.includes(daacId) && userInfo.user_privileges.includes('DAAC_UPLOAD'))
     ) {
-      const key = prefix ? `${daacId}/upload/${prefix}/${fileName}` : `${daacId}/upload/${fileName}`;
+      const daacName = (await db.daac.findById({ id: daacId })).short_name.toLowerCase().replace(/ /g, '_');
+      const key = prefix ? `daac/${daacName}/${prefix}/${fileName}` : `daac/${daacName}/${fileName}`;
       return generateUploadUrl({
         key,
         checksumValue,
