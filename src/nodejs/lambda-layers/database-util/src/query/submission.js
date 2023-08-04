@@ -289,7 +289,6 @@ const findAll = ({
       ...(daac_name ? [{ field: 'daac.long_name', param: 'daac_name' }] : []),
       ...(workflow_id ? [{ field: 'submission_status.workflow_id', param: 'workflow_id' }] : []),
       ...(workflow_name ? [{ field: 'workflow.long_name', param: 'workflow_name' }] : []),
-      ...(workflow ? [{ field: 'workflow.long_name', param: 'workflow_name' }] : []),
       ...(step_name ? [{ field: 'step.step_name', param: 'step_name' }] : []),
       ...(status ? [{ field: 'step.status', param: 'status' }] : []),
       ...(step_type ? step_type.startsWith('!') ? [{ field: 'step.type', op: 'ne', value: `'${step_type.substring(1)}'` }] :
