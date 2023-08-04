@@ -6,16 +6,14 @@
  * @see module:Actions
  */
 
-const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const fs = require('fs');
 const { Readable } = require('node:stream');
 
 const Schema = require('schema-util');
-
 const MessageUtil = require('message-util');
-
 const DatabaseUtil = require('database-util');
 
-const fs = require('fs');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 async function fetchAction(key, local) {
   const s3 = new S3Client();
