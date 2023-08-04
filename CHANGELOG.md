@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Added daac_name to submission call to save having to do request in the dashboard.
 - Refresh token extension fixed
 - Content update - Temporal and Spatial sections
 - Content update - Changed 'Temporal Coverage Notes' to 'Temporal Information Notes'
