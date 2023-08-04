@@ -135,6 +135,7 @@ async function submitMethod(event, user) {
     user_id: user.id
   };
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+  await msg.sendEvent(eventMessage);
   return status;
 }
 
