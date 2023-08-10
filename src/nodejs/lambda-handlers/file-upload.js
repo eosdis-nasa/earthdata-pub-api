@@ -95,7 +95,7 @@ async function listFilesMethod(event, user) {
       console.error(err);
       return ({ error: 'Error listing files' });
     }
-    if (rawResponse.Contents !== undefined) {
+    if (rawResponse.Contents) {
       const response = rawResponse.Contents.map((item) => ({
         key: item.Key,
         size: item.Size,
@@ -103,6 +103,8 @@ async function listFilesMethod(event, user) {
         file_name: item.Key.split('/').pop()
       }));
       return response;
+    }else{
+      return ({});
     }
   }
   return ({ error: 'Not Authorized' });
