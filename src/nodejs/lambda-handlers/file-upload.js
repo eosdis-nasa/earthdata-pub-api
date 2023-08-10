@@ -103,9 +103,8 @@ async function listFilesMethod(event, user) {
         file_name: item.Key.split('/').pop()
       }));
       return response;
-    }else{
-      return ({});
     }
+    return ({});
   }
   return ({ error: 'Not Authorized' });
 }
