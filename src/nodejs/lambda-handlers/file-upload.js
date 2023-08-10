@@ -104,7 +104,7 @@ async function listFilesMethod(event, user) {
       }));
       return response;
     }
-    return ({});
+    return ([]);
   }
   return ({ error: 'Not Authorized' });
 }
