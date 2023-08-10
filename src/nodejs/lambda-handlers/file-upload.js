@@ -91,6 +91,11 @@ async function listFilesMethod(event, user) {
     const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
     try {
       rawResponse = await s3Client.send(command);
+    } catch (err) {
+      console.error(err);
+      return ({ error: 'Error listing files' });
+    }
+    if (rawResponse.Contents !== undefined) {
       const response = rawResponse.Contents.map((item) => ({
         key: item.Key,
         size: item.Size,
@@ -98,9 +103,6 @@ async function listFilesMethod(event, user) {
         file_name: item.Key.split('/').pop()
       }));
       return response;
-    } catch (err) {
-      console.error(err);
-      return ({ error: 'Error listing files' });
     }
   }
   return ({ error: 'Not Authorized' });
