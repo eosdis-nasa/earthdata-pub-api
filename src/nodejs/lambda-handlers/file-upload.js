@@ -95,13 +95,16 @@ async function listFilesMethod(event, user) {
       console.error(err);
       return ({ error: 'Error listing files' });
     }
-    const response = rawResponse.Contents.map((item) => ({
-      key: item.Key,
-      size: item.Size,
-      last_modified: item.LastModified,
-      file_name: item.Key.split('/').pop()
-    }));
-    return response;
+    if (rawResponse.Contents) {
+      const response = rawResponse.Contents.map((item) => ({
+        key: item.Key,
+        size: item.Size,
+        last_modified: item.LastModified,
+        file_name: item.Key.split('/').pop()
+      }));
+      return response;
+    }
+    return ([]);
   }
   return ({ error: 'Not Authorized' });
 }
