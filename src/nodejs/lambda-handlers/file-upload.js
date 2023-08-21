@@ -118,12 +118,10 @@ async function getDownloadUrlMethod(event, user) {
   const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
     .map((daac) => daac.id);
   const {
-    daac_id: daacId,
-    contributor_ids: contributorIds
+    daac_id: daacId
   } = await db.submission.findById({ id: submissionId });
 
-  if (contributorIds.includes(user)
-    || userInfo.user_privileges.includes('ADMIN')
+  if (userInfo.user_privileges.includes('ADMIN')
     || userDaacs.includes(daacId)
   ) {
     const payload = {
