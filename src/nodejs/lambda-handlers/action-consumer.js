@@ -8,7 +8,6 @@
 
 const fs = require('fs');
 const { Readable } = require('node:stream');
-const fs = require('fs');
 
 const Schema = require('schema-util');
 const MessageUtil = require('message-util');
