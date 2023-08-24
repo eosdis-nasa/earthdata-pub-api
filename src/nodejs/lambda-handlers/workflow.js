@@ -54,9 +54,9 @@ async function createWorkflowMethod(params, user) {
   const {
     short_name: shortName, version, long_name: longName, description, steps
   } = params;
-  const approvedUserRoles = ['admin'];
+  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
 
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { id } = await db.workflow.initialize({
       short_name: shortName, version, long_name: longName, description
     });
@@ -78,8 +78,8 @@ async function editWorkflowMethod(params, user) {
     id, version, description, steps
   } = params;
 
-  const approvedUserRoles = ['admin'];
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_UPDATE'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { steps: oldSteps } = await db.workflow.findById({ id });
     await db.workflow.clearSteps({ id });
     if (!await addSteps(steps, id)) {
