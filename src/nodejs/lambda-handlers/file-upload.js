@@ -95,13 +95,16 @@ async function listFilesMethod(event, user) {
       console.error(err);
       return ({ error: 'Error listing files' });
     }
-    const response = rawResponse.Contents.map((item) => ({
-      key: item.Key,
-      size: item.Size,
-      last_modified: item.LastModified,
-      file_name: item.Key.split('/').pop()
-    }));
-    return response;
+    if (rawResponse.Contents) {
+      const response = rawResponse.Contents.map((item) => ({
+        key: item.Key,
+        size: item.Size,
+        last_modified: item.LastModified,
+        file_name: item.Key.split('/').pop()
+      }));
+      return response;
+    }
+    return ([]);
   }
   return ({ error: 'Not Authorized' });
 }
@@ -148,14 +151,11 @@ const operations = {
 };
 
 async function handler(event) {
-  /* return { error: 'Not Implemented' };
-  eslint-disable no-unreachable */
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const user = event.context.user_id;
   const operation = operations[event.operation];
   const data = await operation(event, user);
   return data;
-  /* eslint-enable no-unreachable */
 }
 
 exports.handler = handler;
