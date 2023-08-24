@@ -110,10 +110,12 @@ async function listFilesMethod(event, user) {
   const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
     .map((daac) => daac.id);
   const {
-    daac_id: daacId
+    daac_id: daacId,
+    contributor_ids: contributorIds
   } = await db.submission.findById({ id: submissionId });
 
-  if (userInfo.user_privileges.includes('ADMIN')
+  if (contributorIds.includes(user)
+    || userInfo.user_privileges.includes('ADMIN')
     || userDaacs.includes(daacId)
   ) {
     const s3Client = new S3Client({ region });
