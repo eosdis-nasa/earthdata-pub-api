@@ -1,6 +1,8 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const { S3Client, ListObjectsCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
+const {
+  S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand
+} = require('@aws-sdk/client-s3');
 
 const db = require('database-util');
 
@@ -72,6 +74,34 @@ async function getPostUrlMethod(event, user) {
   });
 }
 
+async function getChecksum(key, s3Client) {
+  const payload = {
+    Bucket: ingestBucket,
+    Key: key,
+    ChecksumMode: 'ENABLED'
+  };
+  try {
+    const command = new HeadObjectCommand(payload);
+    const response = await s3Client.send(command);
+    return response.ChecksumSHA256;
+  } catch (err) {
+    console.error(err);
+    return ({ error: 'Error getting checksum' });
+  }
+}
+
+async function processFile(item, s3Client) {
+  const sha256Checksum = item.ChecksumAlgorithm ? (await getChecksum(item.Key, s3Client)) : null;
+  const fileMetaData = {
+    key: item.Key,
+    size: item.Size,
+    lastModified: item.LastModified,
+    file_name: item.Key.split('/').pop(),
+    ...(sha256Checksum && { sha256Checksum })
+  };
+  return fileMetaData;
+}
+
 async function listFilesMethod(event, user) {
   let rawResponse;
   const { submission_id: submissionId } = event;
@@ -83,25 +113,26 @@ async function listFilesMethod(event, user) {
     daac_id: daacId,
     contributor_ids: contributorIds
   } = await db.submission.findById({ id: submissionId });
+
   if (contributorIds.includes(user)
     || userInfo.user_privileges.includes('ADMIN')
     || userDaacs.includes(daacId)
   ) {
     const s3Client = new S3Client({ region });
     const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
+
     try {
       rawResponse = await s3Client.send(command);
     } catch (err) {
       console.error(err);
       return ({ error: 'Error listing files' });
     }
+
     if (rawResponse.Contents) {
-      const response = rawResponse.Contents.map((item) => ({
-        key: item.Key,
-        size: item.Size,
-        last_modified: item.LastModified,
-        file_name: item.Key.split('/').pop()
-      }));
+      const response = [];
+      for (let i = 0; i < rawResponse.Contents.length; i += 1) {
+        response.push(await processFile(rawResponse.Contents[i], s3Client));
+      }
       return response;
     }
     return ([]);
@@ -121,12 +152,10 @@ async function getDownloadUrlMethod(event, user) {
   const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
     .map((daac) => daac.id);
   const {
-    daac_id: daacId,
-    contributor_ids: contributorIds
+    daac_id: daacId
   } = await db.submission.findById({ id: submissionId });
 
-  if (contributorIds.includes(user)
-    || userInfo.user_privileges.includes('ADMIN')
+  if (userInfo.user_privileges.includes('ADMIN')
     || userDaacs.includes(daacId)
   ) {
     const payload = {
