@@ -6,6 +6,7 @@
  * @see module:Actions
  */
 
+const fs = require('fs');
 const { Readable } = require('node:stream');
 const fs = require('fs');
 
