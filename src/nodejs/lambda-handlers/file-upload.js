@@ -1,9 +1,10 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const { S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand } = require('@aws-sdk/client-s3');
+const {
+  S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand
+} = require('@aws-sdk/client-s3');
 
 const db = require('database-util');
-const { async } = require('citation-js');
 
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
@@ -90,8 +91,7 @@ async function getChecksum(key, s3Client) {
 }
 
 async function processFile(item, s3Client) {
-  console.log(item)
-  const sha256Checksum = item.ChecksumAlgorithm? (await getChecksum(item.Key, s3Client)): null;
+  const sha256Checksum = item.ChecksumAlgorithm ? (await getChecksum(item.Key, s3Client)) : null;
   const fileMetaData = {
     key: item.Key,
     size: item.Size,
@@ -125,13 +125,13 @@ async function listFilesMethod(event, user) {
       console.error(err);
       return ({ error: 'Error listing files' });
     }
-    
+
     if (rawResponse.Contents) {
-      const response = []
-      for(let i = 0; i < rawResponse.Contents.length; i++){
-        response.push(await processFile(rawResponse.Contents[i], s3Client))
+      const response = [];
+      for (let i = 0; i < rawResponse.Contents.length; i += 1) {
+        response.push(await processFile(rawResponse.Contents[i], s3Client));
       }
-      return response
+      return response;
     }
     return ([]);
   }
