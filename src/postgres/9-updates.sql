@@ -99,3 +99,8 @@ RAISE;
     UPDATE input set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332' and control_id='long_term_support_poc_email';
     INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
 
+-- 8/24/2023 Update workflow permissions
+    INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_CREATE');
+    INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_READ');
+    INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_UPDATE');
+    INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'WORKFLOW_DELETE');
