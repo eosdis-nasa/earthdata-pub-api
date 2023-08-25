@@ -99,15 +99,14 @@ RAISE;
     UPDATE input set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332' and control_id='long_term_support_poc_email';
     INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
 
-<<<<<<< HEAD
---7/26/2023 Adds privilages for daac data upload
-    INSERT INTO privilege VALUES ('DAAC_UPLOAD');
-    INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'DAAC_UPLOAD');
-    INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'DAAC_UPLOAD');
-=======
+--7/26/2023 Adds privilages for group data upload
+    DELETE FROM privilege WHERE privilege = 'DAAC_UPLOAD';
+    DELETE FROM edprole_privilege WHERE privilege = 'DAAC_UPLOAD';
+    INSERT INTO privilege VALUES ('GROUP_UPLOAD');
+    INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'GROUP_UPLOAD');
+    INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'GROUP_UPLOAD');
 -- 8/24/2023 Update workflow permissions
     INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_CREATE');
     INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_READ');
     INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_UPDATE');
     INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'WORKFLOW_DELETE');
->>>>>>> 8a7deaf0bef75b79d911e37a73af62f9dc444940

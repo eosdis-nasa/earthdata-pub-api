@@ -756,12 +756,12 @@ module.exports.fileUpload = function fileUpload(req, res, next) {
   });
 };
 
-module.exports.daacFileUpload = function daacFileUpload(req, res, next) {
+module.exports.groupFileUpload = function groupFileUpload(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
   const lambdaEvent = {
     resource: 'upload',
-    operation: 'getDaacUploadUrl',
+    operation: 'getGroupUploadUrl',
     context: { user_id: req.user_id },
     ...payload.value
   };

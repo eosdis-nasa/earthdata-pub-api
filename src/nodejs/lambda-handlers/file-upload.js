@@ -74,31 +74,25 @@ async function getPostUrlMethod(event, user) {
   });
 }
 
-async function getDaacUploadUrlMethod(event, user) {
+async function getGroupUploadUrlMethod(event, user) {
   const {
     file_name: fileName, file_type: fileType, checksum_value: checksumValue, prefix
   } = event;
-  const { daac_id: daacId } = event;
+  const { group_id: groupId } = event;
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
 
-  if (daacId) {
-    const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
-      .map((daac) => daac.id);
-
-    if (userInfo.user_privileges.includes('ADMIN')
-      || (userDaacs.includes(daacId) && userInfo.user_privileges.includes('DAAC_UPLOAD'))
-    ) {
-      const daacName = (await db.daac.findById({ id: daacId })).short_name.toLowerCase().replace(/ /g, '_');
-      const key = prefix ? `daac/${daacName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileName}` : `daac/${daacName}/${fileName}`;
-      return generateUploadUrl({
-        key,
-        checksumValue,
-        fileType
-      });
+  if(!userInfo.user_privileges.includes('ADMIN')
+    && !(groupIds.includes(groupId) && userInfo.user_privileges.includes('GROUP_UPLOAD'))) {
+      return ({ error: 'Not Authorized' });
     }
-  }
-  return ({ error: 'Not Authorized' });
+  const groupShortName = user_groups.find(group => group.id === groupId).short_name
+  const key = prefix ? `group/${groupShortName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileName}` : `group/${groupShortName}/${fileName}`;
+  return generateUploadUrl({
+    key,
+    checksumValue,
+    fileType
+  });
 }
 
 async function getChecksum(key, s3Client) {
@@ -204,7 +198,7 @@ const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
   getDownloadUrl: getDownloadUrlMethod,
-  getDaacUploadUrl: getDaacUploadUrlMethod
+  getGroupUploadUrl: getGroupUploadUrlMethod
 };
 
 async function handler(event) {
