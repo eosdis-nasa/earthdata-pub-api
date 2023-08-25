@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 1.0.17
 
+- Adds support for the daac upload area in the api and upload module.
 - Adds support for listing hash's as part of the list files payload
 - Added daac_name to submission call to save having to do request in the dashboard.
 - Added daac_name to submission call to save having to do request in the dashboard.
