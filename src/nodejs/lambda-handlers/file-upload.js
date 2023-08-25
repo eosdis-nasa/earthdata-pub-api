@@ -82,11 +82,11 @@ async function getGroupUploadUrlMethod(event, user) {
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
 
-  if(!userInfo.user_privileges.includes('ADMIN')
+  if (!userInfo.user_privileges.includes('ADMIN')
     && !(groupIds.includes(groupId) && userInfo.user_privileges.includes('GROUP_UPLOAD'))) {
-      return ({ error: 'Not Authorized' });
-    }
-  const groupShortName = user_groups.find(group => group.id === groupId).short_name
+    return ({ error: 'Not Authorized' });
+  }
+  const groupShortName = userInfo.user_groups.find((group) => group.id === groupId).short_name;
   const key = prefix ? `group/${groupShortName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileName}` : `group/${groupShortName}/${fileName}`;
   return generateUploadUrl({
     key,
