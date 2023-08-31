@@ -747,7 +747,21 @@ module.exports.fileUpload = function fileUpload(req, res, next) {
   const { payload } = params;
   const lambdaEvent = {
     resource: 'upload',
-    operation: params.operation.value,
+    operation: 'getPostUrl',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.groupFileUpload = function groupFileUpload(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: 'getGroupUploadUrl',
     context: { user_id: req.user_id },
     ...payload.value
   };
