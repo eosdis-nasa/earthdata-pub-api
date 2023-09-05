@@ -62,7 +62,7 @@ const getEmailTemplate = async (eventMessage, message) => {
       conversation_last_message: message.text
     };
 
-    if (formData.data_product_name_value) {
+    if (formData?.data_product_name_value) {
       emailPayload.submission_name = formData.data_product_name_value;
     } else { (emailPayload.submission_name = `Request Initialized by ${(await db.submission.getCreatorName({ id: eventMessage.submission_id })).name}`); }
   }
