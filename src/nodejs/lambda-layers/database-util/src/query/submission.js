@@ -230,7 +230,7 @@ const getDaacSubmissions = (params) => sql.select({
                 any: {
                 values: {
                   type: 'select',
-                  fields: ['daac.id', 'daac_name.long_name'],
+                  fields: ['daac.id'],
                   from: {
                   base: 'daac',
                   joins: [{
