@@ -1,6 +1,7 @@
 const db = require('database-util');
 
 const getHTML = async (params) => {
+    console.log('getHTML', params);
     if (message.event_type && templates[message.event_type]) {
         console.log('getHTML', params);
         const HTML = `
