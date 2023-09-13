@@ -1,6 +1,8 @@
 const { SNS } = require('@aws-sdk/client-sns');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
+const { getHTML } = require('./create-email');
+
 const uuid = require('uuid');
 
 const sourceEmail = process.env.SOURCE_EMAIL;
@@ -9,12 +11,14 @@ const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
 // const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
 // const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+console.log('message-util general, processEnv', process.env)
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
 });
 
 function marshalAttribute(attribute) {
+  console.log('marshalAttribute', attribute)
   if (Array.isArray(attribute)) {
     return { DataType: 'String.Array', StringValue: JSON.stringify(attribute) };
   } if (typeof attribute === 'string') {
@@ -30,6 +34,7 @@ function marshalAttributes(eventMessage) {
     if (key !== 'data') {
       Object.assign(attributes, { [key]: marshalAttribute(val) });
     }
+    console.log('marshalAttributes', attributes)
     return attributes;
   }, {});
 }
@@ -37,12 +42,14 @@ function marshalAttributes(eventMessage) {
 async function getSecretsValues() {
   const secretClient = new SecretsManagerClient();
   const secretCmd = new GetSecretValueCommand({ SecretId: 'ses_access_creds' });
+  console.log('getSecretValues', secretClient, secretCmd)
   return secretClient.send(secretCmd);
 }
 
 async function getSESClient() {
   const secretsResponse = await getSecretsValues();
   const sesCreds = JSON.parse(secretsResponse.SecretString);
+  console.log('getSESClient creds', secretsResponse, sesCreds)
   return new SESClient({
     region: 'us-east-1',
     credentials: {
@@ -51,10 +58,13 @@ async function getSESClient() {
     }
   });
 }
-
+/* Update the sendEmail function to have the email payload built using a function in an additional file in the message-util package.  This function should select and populate the email template based on the event_type. one for direct_message and one for the rest. Also the logic at the second link should be updated to allow direct messages to send emails and populate the email payload with any data needed for the template..  This can be done with a custom function in notification-consumer/templates.js for direct_message events. */
 async function sendEmail(users, eventMessage) {
+  console.log('send email function operating', users, eventMessage)
   const ses = await getSESClient();
   users.forEach(async (user) => {
+    const html = getHTML(users, eventMessage)
+    console.log('html from sendEmail', html)
     const payload = {
       Source: sourceEmail,
       Destination: {
@@ -106,11 +116,13 @@ async function sendEmail(users, eventMessage) {
         }
       }
     };
-    await ses.send(new SendEmailCommand(payload));
+    console.log('sendEmail payload', payload)
+    // await ses.send(new SendEmailCommand(payload));
   });
 }
 
 function sendEvent(eventMessage) {
+  console.log('sendEvent working', eventMessage)
   const params = {
     Subject: 'event',
     Message: JSON.stringify(eventMessage),
@@ -119,19 +131,24 @@ function sendEvent(eventMessage) {
     MessageDeduplicationId: Date.now().toString(),
     TopicArn: eventSns
   };
+  console.log('sendEvent params', params)
   const response = sns.publish(params).catch((e) => { console.error(e); });
+  console.log('sendEvent response after publish', response)
   return response;
 }
 
 function sendMetric(eventMessage) {
   const { data, ...cleanedMessage } = eventMessage;
+  console.log('sendMetric data message and cleanedMessage', data, eventMessage, ...cleanedMessage)
   cleanedMessage.message_id = uuid.v4();
   const params = {
     Subject: 'metric',
     Message: JSON.stringify(cleanedMessage),
     TopicArn: metricsSns
   };
+  console.log('sendMetric params', params)
   const response = sns.publish(params).catch((e) => { console.error(e); });
+  console.log('sendMetric response after publish', response)
   return response;
 }
 
@@ -149,10 +166,12 @@ function parseAttributesFromParams(params) {
     ...(params.user && { user_id: params.user.id }),
     ...(params.workflow && { workflow_id: params.workflow.id })
   };
+  console.log('parsingAttributes from params', attributes)
   return attributes;
 }
 
 function parseSnsMessage(message) {
+  console.log('parse Sns Message', message)
   return {
     subject: message.Subject,
     eventMessage: JSON.parse(message.Message),
@@ -162,7 +181,9 @@ function parseSnsMessage(message) {
 
 function parseSqsMessage(message) {
   const body = JSON.parse(message.body);
+  console.log('parse Sqs Message', message)
   if (body.TopicArn) {
+    console.log('parse Sqs Message body topicArn', body)
     return parseSnsMessage(body);
   }
   const unixTime = parseInt(message.attributes.SentTimestamp, 10);
@@ -180,8 +201,12 @@ function parseRecord(record) {
   return parseSqsMessage(record);
 }
 
+function getEmail(){
+  return getHTML;
+}
 module.exports.sendEmail = sendEmail;
 module.exports.sendEvent = sendEvent;
 module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
 module.exports.parseAttributesFromParams = parseAttributesFromParams;
+module.exports.getEmail = getEmail;

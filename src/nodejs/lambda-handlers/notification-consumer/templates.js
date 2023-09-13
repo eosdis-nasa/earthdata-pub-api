@@ -42,7 +42,10 @@ const getTemplate = async (message) => {
     const template = templates[message.event_type](message);
     template.conversation_id = template.conversation_id || message.conversation_id;
     if (message.event_type !== 'request_initialized') {
-      template.text = `${template.text}\n${message.step_message}`;
+      template.text = `${template.text}`
+      if(message.step_message){
+        template.text += `\n${ message.step_message }`
+      };
     }
     return template;
   }
