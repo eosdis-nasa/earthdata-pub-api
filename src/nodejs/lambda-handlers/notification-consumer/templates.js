@@ -62,7 +62,8 @@ const getEmailTemplate = async (eventMessage, message) => {
       name: 'EDPUB User',
       submission_id: eventMessage.submission_id,
       workflow_name: (await workflowName).long_name,
-      conversation_last_message: message.text
+      conversation_last_message: message.text,
+      event_type: eventMessage.event_type
     };
 
     if (formData?.data_product_name_value) {
