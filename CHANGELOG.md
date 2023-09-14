@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 
+## 1.0.18
+
+- Add lifecycle rule to age off group uploads
+
 ## 1.0.17
 
 - Adds support for the daac upload area in the api and upload module.
