@@ -58,7 +58,7 @@ async function sendEmail(users, eventMessage) {
   users.forEach(async (user) => {
     // eslint-disable-next-line
     console.log('sendEmail user and eventMessage', user, eventMessage)
-    const bodyArray = createEmailHtml({ user, eventMessage });
+    const bodyArray = await createEmailHtml({ user, eventMessage });
     // eslint-disable-next-line
     console.log('sendEmail textbody', bodyArray[0])
     // eslint-disable-next-line
