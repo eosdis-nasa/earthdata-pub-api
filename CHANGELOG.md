@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Added create-email.js for multiple email templates.
+- Added direct message email template
 
 ## 1.0.17
 
