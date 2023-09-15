@@ -107,6 +107,8 @@ const createEmailHtml = async (params) => {
       </body>
     </html> 
   `;
+  // eslint-disable-next-line
+  console.log('createEmailHtml', stepChangeAsText || directMessageAsText, HTML)
   return [stepChangeAsText || directMessageAsText, HTML];
 };
 
