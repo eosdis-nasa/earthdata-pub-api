@@ -1,48 +1,48 @@
 const htmlSnippets = {
   default_style: () => ({
-      text: 'td h1 { margin: 0; padding: 0; font-size: 22px; }'
+    text: 'td h1 { margin: 0; padding: 0; font-size: 22px; }'
   }),
   title: () => ({
-      text: '<h4>Earthdata Pub</h4>'
+    text: '<h4>Earthdata Pub</h4>'
   }),
   logo: () => ({
-      text: '<img src = "https://pub.earthdata.nasa.gov/dashboard/images/app/src/assets/images/nasa-logo.78fcba4d9325e8ac5a2e15699d035ee0.svg">'
+    text: '<img src = "https://pub.earthdata.nasa.gov/dashboard/images/app/src/assets/images/nasa-logo.78fcba4d9325e8ac5a2e15699d035ee0.svg">'
   }),
   step_change: () => ({
-      text: '<b>Step Change</b>'
+    text: '<b>Step Change</b>'
   }),
   greeting: (params) => ({
-      text: `<h1>Hello ${params.user.name},</h1><br><br>`
+    text: `<h1>Hello ${params.user.name},</h1><br><br>`
   }),
   request_body: (params) => ({
-      text: `<h2>Request:</h2><p>${params.eventMessage.submission_name} (${params.eventMessage.submission_id})<br><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">Go to request</a></p>`
+    text: `<h2>Request:</h2><p>${params.eventMessage.submission_name} (${params.eventMessage.submission_id})<br><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">Go to request</a></p>`
   }),
   step_change_body1: (params) => ({
-      text: `<p>The following request has changed step in the ${params.eventMessage.workflow_name} workflow.</p>`
+    text: `<p>The following request has changed step in the ${params.eventMessage.workflow_name} workflow.</p>`
   }),
   step_change_body2: (params) => ({
-      text: `<h2>New Step:</h2><p>${params.eventMessage.step_name}</p>`
+    text: `<h2>New Step:</h2><p>${params.eventMessage.step_name}</p>`
   }),
   step_change_body3: (params) => ({
-      text: `<h2>Comments:</h2><p>${params.eventMessage.conversation_last_message}</p><br><br>`
+    text: `<h2>Comments:</h2><p>${params.eventMessage.conversation_last_message}</p><br><br>`
   }),
   dashboard_link: () => ({
-      text: '<p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard" aria-label="Visit Earthdata Pub Dashboard">https://pub.earthdata.nasa.gov/dashboard</a></p>'
+    text: '<p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard" aria-label="Visit Earthdata Pub Dashboard">https://pub.earthdata.nasa.gov/dashboard</a></p>'
   }),
   step_change_as_text: (params) => ({
-      text: `Hello ${params.user.name},\n\nThe following request has changed step in the ${params.eventMessage.workflow_name} workflow.\n\nRequest:\n${params.eventMessage.submission_name} (${params.eventMessage.submission_id})\n\nNew Step:\n${params.eventMessage.step_name}\n\nComments:\n${params.eventMessage.conversation_last_message}`
+    text: `Hello ${params.user.name},\n\nThe following request has changed step in the ${params.eventMessage.workflow_name} workflow.\n\nRequest:\n${params.eventMessage.submission_name} (${params.eventMessage.submission_id})\n\nNew Step:\n${params.eventMessage.step_name}\n\nComments:\n${params.eventMessage.conversation_last_message}`
   }),
   direct_message: () => ({
-      text: '<p>You have received a direct message on the Earthdata Pub Dashboard.</p>'
+    text: '<p>You have received a direct message on the Earthdata Pub Dashboard.</p>'
   }),
   event_type_for_direct_message: () => ({
-      text: '<b>Direct Message Sent</b>'
+    text: '<b>Direct Message Sent</b>'
   }),
   direct_message_body1: (params) => ({
-      text: `<h2>Comments:</h2><p>${params.eventMessage.conversation_last_message}</p><br><br>`
+    text: `<h2>Comments:</h2><p>${params.eventMessage.conversation_last_message}</p><br><br>`
   }),
   direct_message_as_text: (params) => ({
-      text: `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nRequest:\n${params.eventMessage.submission_name} (${params.eventMessage.submission_id})\n\nComments:\n${params.eventMessage.conversation_last_message}`
+    text: `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nRequest:\n${params.eventMessage.submission_name} (${params.eventMessage.submission_id})\n\nComments:\n${params.eventMessage.conversation_last_message}`
   })
 };
 
@@ -54,8 +54,15 @@ const createEmailHtml = async (params) => {
   const requestBody = htmlSnippets.request_body(params).text;
   const dashboardLink = htmlSnippets.dashboard_link().text;
 
-  let stepChange, stepChangeBody1, stepChangeBody2, stepChangeBody3, stepChangeAsText;
-  let eventTypeForDirectMessage, directMessage, directMessageBody1, directMessageAsText;
+  let stepChange;
+  let stepChangeBody1;
+  let stepChangeBody2;
+  let stepChangeBody3;
+  let stepChangeAsText;
+  let eventTypeForDirectMessage;
+  let directMessage;
+  let directMessageBody1;
+  let directMessageAsText;
 
   if (params.eventMessage.event_type.match(/direct_message/gi)) {
     eventTypeForDirectMessage = htmlSnippets.event_type_for_direct_message().text;
