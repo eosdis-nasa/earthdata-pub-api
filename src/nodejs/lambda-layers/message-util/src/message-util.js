@@ -60,7 +60,9 @@ async function sendEmail(users, eventMessage) {
     console.log('sendEmail user and eventMessage', user, eventMessage)
     const bodyArray = createEmailHtml({ user, eventMessage });
     // eslint-disable-next-line
-    console.log('sendEmail bodyArray', bodyArray)
+    console.log('sendEmail textbody', bodyArray[0])
+    // eslint-disable-next-line
+    console.log('sendEmail Htmlbody', bodyArray[1])
     const payload = {
       Source: sourceEmail,
       Destination: {
