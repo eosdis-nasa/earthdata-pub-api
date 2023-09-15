@@ -1,9 +1,8 @@
 const { SNS } = require('@aws-sdk/client-sns');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
-const { createEmailHtml } = require('./create-email');
-
 const uuid = require('uuid');
+const { createEmailHtml } = require('./create-email');
 
 const sourceEmail = process.env.SOURCE_EMAIL;
 const eventSns = process.env.EVENT_SNS;
