@@ -1,7 +1,7 @@
 const { SNS } = require('@aws-sdk/client-sns');
 const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
-const { createEmailBody } = require('./create-email');
+const { createEmailHtml } = require('./create-email');
 
 const uuid = require('uuid');
 
@@ -53,13 +53,12 @@ async function getSESClient() {
     }
   });
 }
-/* Update the sendEmail function to have the email payload built using a function in an additional file in the message-util package.  This function should select and populate the email template based on the event_type. one for direct_message and one for the rest. Also the logic at the second link should be updated to allow direct messages to send emails and populate the email payload with any data needed for the template..  This can be done with a custom function in notification-consumer/templates.js for direct_message events. */
+
 async function sendEmail(users, eventMessage) {
-  console.log('send email function operating', users, eventMessage)
   const ses = await getSESClient();
   users.forEach(async (user) => {
-    const html = createEmailBody(users, eventMessage)
-    console.log('html from sendEmail', html)
+    const eventMessage = params.eventMessage;
+    const bodyArray = createEmailHtml({ user, eventMessage });
     const payload = {
       Source: sourceEmail,
       Destination: {
@@ -71,53 +70,19 @@ async function sendEmail(users, eventMessage) {
         },
         Body: {
           Text: {
-            Data: `Hello ${user.name},\n\nThe following request has changed step in the ${eventMessage.workflow_name} workflow.\n\nRequest:\n${eventMessage.submission_name} (${eventMessage.submission_id})\n\nNew Step:\n${eventMessage.step_name}\n\nComments:\n${eventMessage.conversation_last_message}`
+            Data: bodyArray[0]
           },
           Html: {
-            Data: `
-              <html>
-              <body>
-                  <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style>
-                  <table border="0" cellpadding="10" cellspacing="0" style="width:100%">
-                      <tr style="width:100%;background:#f8f8f8">
-                          <td><table><tr>
-                              <td width="60"><img src="https://pub.earthdata.nasa.gov/dashboard/images/app/src/assets/images/nasa-logo.78fcba4d9325e8ac5a2e15699d035ee0.svg"></td>
-                              <td><h4>Earthdata Pub</h4></td>
-                          </tr></table></td>
-                          <td align="right"><b>Step Change</b></td>
-                          <td></td>
-                      </tr>
-                      <tr>
-                          <td colspan="2" style="padding:20px;">
-                              <h1>Hello ${user.name},</h1><br>
-                              <br>
-                              <p>The following request has changed step in the ${eventMessage.workflow_name} workflow.</p>
-                              <h2>Request:</h2>
-                              <p>${eventMessage.submission_name} (${eventMessage.submission_id})<br>
-                              <a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard/requests/id/${eventMessage.submission_id}" aria-label="View the request">Go to request</a></p>
-                              <h2>New Step:</h2>
-                              <p>${eventMessage.step_name}</p>
-                              <h2>Comments:</h2> 
-                              <p>${eventMessage.conversation_last_message}</p>
-                              <br><br>
-                              <p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard" aria-label="Visit Earthdata Pub Dashboard">https://pub.earthdata.nasa.gov/dashboard</a></p>
-                          </td>
-                      </tr>
-                  </table>
-              </body>
-              </html> 
-            `
+            Data: bodyArray[1]
           }
         }
       }
     };
-    console.log('sendEmail payload', JSON.stringify(payload))
-    // await ses.send(new SendEmailCommand(payload));
+    await ses.send(new SendEmailCommand(payload));
   });
 }
 
 function sendEvent(eventMessage) {
-  console.log('sendEvent working', eventMessage)
   const params = {
     Subject: 'event',
     Message: JSON.stringify(eventMessage),
@@ -126,9 +91,7 @@ function sendEvent(eventMessage) {
     MessageDeduplicationId: Date.now().toString(),
     TopicArn: eventSns
   };
-  console.log('sendEvent params', params)
   const response = sns.publish(params).catch((e) => { console.error(e); });
-  console.log('sendEvent response after publish', response)
   return response;
 }
 
@@ -158,12 +121,10 @@ function parseAttributesFromParams(params) {
     ...(params.user && { user_id: params.user.id }),
     ...(params.workflow && { workflow_id: params.workflow.id })
   };
-  console.log('parsingAttributes from params', attributes)
   return attributes;
 }
 
 function parseSnsMessage(message) {
-  console.log('parse Sns Message', message)
   return {
     subject: message.Subject,
     eventMessage: JSON.parse(message.Message),
@@ -173,9 +134,7 @@ function parseSnsMessage(message) {
 
 function parseSqsMessage(message) {
   const body = JSON.parse(message.body);
-  console.log('parse Sqs Message', message)
   if (body.TopicArn) {
-    console.log('parse Sqs Message body topicArn', body)
     return parseSnsMessage(body);
   }
   const unixTime = parseInt(message.attributes.SentTimestamp, 10);
@@ -193,12 +152,8 @@ function parseRecord(record) {
   return parseSqsMessage(record);
 }
 
-function getEmail(){
-  return createEmailBody;
-}
 module.exports.sendEmail = sendEmail;
 module.exports.sendEvent = sendEvent;
 module.exports.sendMetric = sendMetric;
 module.exports.parseRecord = parseRecord;
 module.exports.parseAttributesFromParams = parseAttributesFromParams;
-module.exports.getEmail = getEmail;

@@ -1,6 +1,3 @@
-const db = require('database-util');
-const sourceEmail = process.env.SOURCE_EMAIL;
-
 const htmlSnippets = {
     default_style: () => ({
         text: 'td h1 { margin: 0; padding: 0; font-size: 22px; }'
@@ -103,37 +100,7 @@ const createEmailHtml = async (params) => {
         </body>
     </html> 
   `;
-    console.log(HTML)
     return [stepChangeAsText || directMessageAsText, HTML];
-};
-
-const createEmailPayload = async (params) => {
-    const users = params.users;
-    users.forEach(async (user) => {
-        const eventMessage = params.eventMessage;
-        const bodyArray = createEmailHtml({ user, eventMessage });
-        const emailPayload = {
-            Source: process.env.SOURCE_EMAIL,
-            Destination: {
-                ToAddresses: [user.email]
-            },
-            Message: {
-                Subject: {
-                    Data: 'EDPUB Notification'
-                },
-                Body: {
-                    Text: {
-                        Data: bodyArray[0]
-                    },
-                    Html: {
-                        Data: bodyArray[1]
-                    }
-                }
-            }
-        };
-        console.log('emailPayload', emailPayload);
-        return emailPayload;
-    });
 };
 
 module.exports.createEmailHtml = createEmailHtml;
