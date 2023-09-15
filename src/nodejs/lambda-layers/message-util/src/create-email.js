@@ -15,7 +15,7 @@ const htmlSnippets = {
     text: `<h1>Hello ${params.user.name},</h1><br><br>`
   }),
   request_body: (params) => ({
-    text: `<h2>Request:</h2><p>${params.eventMessage.submission_name} (${params.eventMessage.submission_id})<br><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">Go to request</a></p>`
+    text: `<h2>Request:</h2><p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">${params.eventMessage.submission_name} (${params.eventMessage.submission_id})</a><br></p>`
   }),
   step_change_body1: (params) => ({
     text: `<p>The following request has changed step in the ${params.eventMessage.workflow_name} workflow.</p>`
