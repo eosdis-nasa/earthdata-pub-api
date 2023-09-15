@@ -57,8 +57,11 @@ async function getSESClient() {
 async function sendEmail(users, eventMessage) {
   const ses = await getSESClient();
   users.forEach(async (user) => {
-    const eventMessage = params.eventMessage;
+    // eslint-disable-next-line
+    console.log('sendEmail user and eventMessage', user, eventMessage)
     const bodyArray = createEmailHtml({ user, eventMessage });
+    // eslint-disable-next-line
+    console.log('sendEmail bodyArray', bodyArray)
     const payload = {
       Source: sourceEmail,
       Destination: {

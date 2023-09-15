@@ -12,7 +12,6 @@ const msg = require('message-util');
 
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
-// eslint-disable-next-line
 async function sendEmailNotification({ note, emailPayload }) {
   // TODO - Add additional filter for system user messages
   // logic to add DAAC content
@@ -22,6 +21,8 @@ async function sendEmailNotification({ note, emailPayload }) {
     senderId: note.sender_edpuser_id
   });
   // Disabled until ready for uat Testing
+  // eslint-disable-next-line
+  console.log('sendEmailNotification emailPayload', emailPayload)
   await msg.sendEmail(users, emailPayload);
 }
 
