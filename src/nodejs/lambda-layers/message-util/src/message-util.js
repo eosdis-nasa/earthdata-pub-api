@@ -78,7 +78,7 @@ async function sendEmail(users, eventMessage) {
       }
     };
     // eslint-disable-next-line
-    console.log('sendEmail', JSON.stringify(payload).replace(/\n/g, ''));
+    console.log('sendEmail', JSON.stringify(payload).replace(/[\r\n]/gm, ''));
     await ses.send(new SendEmailCommand(payload));
   });
 }
