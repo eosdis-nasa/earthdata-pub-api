@@ -56,7 +56,6 @@ async function getSESClient() {
 async function sendEmail(users, eventMessage) {
   const ses = await getSESClient();
   users.forEach(async (user) => {
-    eventMessage.event_type = 'direct_message';
     const bodyArray = await createEmailHtml({ user, eventMessage });
     const payload = {
       Source: sourceEmail,
