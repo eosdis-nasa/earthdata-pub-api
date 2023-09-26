@@ -61,7 +61,7 @@ async function getLoginUrl({ state }) {
   redirect.search = new URLSearchParams({
     client_id: clientId,
     redirect_uri: clientUri.href,
-    scope: 'openid',
+    scope: ['openid', 'aws.cognito.signin.user.admin'],
     response_type: 'code',
     state
   });
