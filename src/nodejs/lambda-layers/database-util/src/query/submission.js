@@ -403,9 +403,10 @@ NATURAL JOIN (
       'step_message', step_info.step_message
     )) step
   FROM (
-    SELECT step.*, step_edge. step_message, step_edge.workflow_id
+    SELECT step.*, step_edge step_message, step_edge.workflow_id
     FROM step
-    NATURAL JOIN step_edge
+    INNER JOIN step_edge
+    ON step.step_name = step_edge.next_step_name
     )step_info
   ) step_data
 NATURAL JOIN (
