@@ -12,7 +12,7 @@ resource "aws_sqs_queue" "edpub_inbound_sqs" {
 }
 
 resource "aws_sqs_queue" "edpub_inbound_sqs_dead_letter_queue" {
-  name                       = "edpub_inbound_sqs_DeadLetterQueue"
+  name                       = "edpub_inbound_sqs_DeadLetterQueue.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
   receive_wait_time_seconds  = var.receive_wait_time_seconds
@@ -59,7 +59,7 @@ resource "aws_sns_topic_subscription" "edpub_action_sqs" {
 }
 
 resource "aws_sqs_queue" "edpub_action_sqs_dead_letter_queue" {
-  name                       = "edpub_action_sqs_DeadLetterQueue"
+  name                       = "edpub_action_sqs_DeadLetterQueue.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
   receive_wait_time_seconds  = var.receive_wait_time_seconds
@@ -106,7 +106,7 @@ resource "aws_sns_topic_subscription" "edpub_metrics_sqs" {
 }
 
 resource "aws_sqs_queue" "edpub_metrics_sqs_dead_letter_queue" {
-  name                       = "edpub_metrics_sqs_DeadLetterQueue"
+  name                       = "edpub_metrics_sqs_DeadLetterQueue.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
   receive_wait_time_seconds  = var.receive_wait_time_seconds
@@ -153,7 +153,7 @@ resource "aws_sns_topic_subscription" "edpub_notification_sqs" {
 }
 
 resource "aws_sqs_queue" "edpub_notification_sqs_dead_letter_queue" {
-  name                       = "edpub_notification_sqs_DeadLetterQueue"
+  name                       = "edpub_notification_sqs_DeadLetterQueue.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
   receive_wait_time_seconds  = var.receive_wait_time_seconds
@@ -200,7 +200,7 @@ resource "aws_sns_topic_subscription" "edpub_workflow_sqs" {
 }
 
 resource "aws_sqs_queue" "edpub_workflow_sqs_dead_letter_queue" {
-  name                       = "edpub_workflow_sqs_DeadLetterQueue"
+  name                       = "edpub_workflow_sqs_DeadLetterQueue.fifo"
   fifo_queue                  = true
   content_based_deduplication = true
   receive_wait_time_seconds  = var.receive_wait_time_seconds
