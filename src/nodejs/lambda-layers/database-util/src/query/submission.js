@@ -413,7 +413,7 @@ NATURAL JOIN (
 	  SELECT step.*, step_edge step_message, step_edge.workflow_id
     FROM step
     INNER JOIN step_edge
-    ON step.step_name = step_edge.next_step_name
+    ON step.step_name = step_edge.next_step_name WHERE next_step_name='close'
     )step_info
   ) step_data
 NATURAL JOIN (
