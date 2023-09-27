@@ -13,3 +13,21 @@ variable "account_id" {
 variable "edpub_event_sns_arn" {
   type = string
 }
+
+variable "dlq_message_retention" {
+  type = number
+  description = "Message retention in seconds for dead letter queues. Default is 14 days"
+  default = 1209600
+}
+
+variable "visibility_timeout_seconds" {
+  type = number
+  description = "Seconds after a consumer accepts message before consumer can attempt to receive or process the same message."
+  default = 180
+}
+
+variable "receive_wait_time_seconds" {
+  type = number
+  description = "Intentional delay of message to queue in seconds"
+  default = 20
+}
