@@ -385,6 +385,8 @@ ON CONFLICT (id, action_id) DO UPDATE SET
 data = EXCLUDED.data
 RETURNING *`;
 
+// TODO- This command needs lots of reworking and its output/use case needs more refinement
+// within the application. Specifically how it differs from the above findById cmd
 const getState = () => `
 SELECT submission.conversation_id, submission.daac_id, submission_status.*, step_data.step, workflows
 FROM submission_status
@@ -404,6 +406,11 @@ NATURAL JOIN (
     )) step
   FROM (
     SELECT step.*, step_edge step_message, step_edge.workflow_id
+    FROM step
+    INNER JOIN step_edge
+    ON step.step_name = step_edge.step_name
+	UNION
+	  SELECT step.*, step_edge step_message, step_edge.workflow_id
     FROM step
     INNER JOIN step_edge
     ON step.step_name = step_edge.next_step_name
