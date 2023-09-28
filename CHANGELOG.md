@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Add dead-letter-queue for all queues
+- Resolve queue infinite loop on request close
 
 ## 1.0.17
 
