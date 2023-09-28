@@ -7,6 +7,7 @@ const db = require('database-util');
 const auth = require('auth-util');
 
 async function handler(event) {
+  console.info(`[EVENT]\n${JSON.stringify(event)}`);
   if (event.code) {
     const { access, refresh, decoded } = await auth.getToken(event);
     await db.user.loginUser({ ...decoded, refresh_token: refresh });

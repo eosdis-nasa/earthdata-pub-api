@@ -22,11 +22,13 @@ async function generateUploadUrl(params) {
     Key: key,
     Conditions: [
       { 'x-amz-meta-checksumalgorithm': checksumAlgo },
-      { 'x-amz-meta-checksumvalue': checksumValue }
+      { 'x-amz-meta-checksumvalue': checksumValue },
+      { 'x-amz-checksum-sha256': checksumValue }
     ],
     Fields: {
       'x-amz-meta-checksumalgorithm': checksumAlgo,
-      'x-amz-meta-checksumvalue': checksumValue
+      'x-amz-meta-checksumvalue': checksumValue,
+      'x-amz-checksum-sha256': checksumValue
     },
     Expires: 60
   };

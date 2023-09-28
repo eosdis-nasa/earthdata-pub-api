@@ -6,6 +6,17 @@ resource "aws_s3_bucket" "earthdatapub-upload" {
   lifecycle {
     prevent_destroy = true
   }
+
+  # Group upload age-off after 14 days
+  lifecycle_rule {
+    id      = "group-upload-age-off"
+    prefix  = "group/"
+    enabled = true
+
+    expiration {
+      days = 14
+    }
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "upload-encryption" {

@@ -36,8 +36,7 @@ const validateAuthentication = async (id, secret, submissionId) => {
 };
 
 exports.handler = async (event, context, callback) => {
-  console.info('Received event:', JSON.stringify(event, null, 2));
-
+  console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const { headers } = event;
   const auth = (headers.Authorization || headers.authorization || '').split(' ')[1] || '';
   const authStr = Buffer.from(auth, 'base64').toString();
