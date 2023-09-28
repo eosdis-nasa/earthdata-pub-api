@@ -405,12 +405,12 @@ NATURAL JOIN (
       'step_message', step_info.step_message
     )) step
   FROM (
-    SELECT step.*, step_edge step_message, step_edge.workflow_id
+    SELECT step.*, step_message, workflow_id
     FROM step
     INNER JOIN step_edge
     ON step.step_name = step_edge.step_name
-	UNION
-	  SELECT step.*, step_edge step_message, step_edge.workflow_id
+  UNION
+    SELECT step.*, step_message, workflow_id
     FROM step
     INNER JOIN step_edge
     ON step.step_name = step_edge.next_step_name WHERE next_step_name='close'
