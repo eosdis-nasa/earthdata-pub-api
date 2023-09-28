@@ -69,7 +69,7 @@ async function processRecord(record) {
 
 async function handler(event) {
   // eslint-disable-next-line
-  console.log(event);
+  console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const promises = event.Records.map((record) => processRecord(record));
   await Promise.all(promises);
   return {
