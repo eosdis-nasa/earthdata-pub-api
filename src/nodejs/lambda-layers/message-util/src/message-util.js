@@ -26,6 +26,7 @@ function marshalAttribute(attribute) {
 }
 
 function marshalAttributes(eventMessage) {
+  console.log(eventMessage);
   return Object.entries(eventMessage).reduce((attributes, [key, val]) => {
     if (key !== 'data') {
       Object.assign(attributes, { [key]: marshalAttribute(val) });
@@ -119,6 +120,7 @@ function sendEvent(eventMessage) {
     MessageDeduplicationId: Date.now().toString(),
     TopicArn: eventSns
   };
+  console.log(params);
   const response = sns.publish(params).catch((e) => { console.error(e); });
   return response;
 }
