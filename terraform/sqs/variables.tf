@@ -31,3 +31,9 @@ variable "receive_wait_time_seconds" {
   description = "Intentional delay of message to queue in seconds"
   default = 20
 }
+
+variable "maxReceiveCount" {
+  type = number
+  description = "Number of times a sqs consumer will retry ingesting a message before sending the message to the dlq"
+  default = 5
+}

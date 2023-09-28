@@ -7,7 +7,7 @@ resource "aws_sqs_queue" "edpub_inbound_sqs" {
   visibility_timeout_seconds  = var.visibility_timeout_seconds
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.edpub_inbound_sqs_dead_letter_queue.arn
-    maxReceiveCount     = 5
+    maxReceiveCount     = var.maxReceiveCount
   })
 }
 
@@ -29,7 +29,7 @@ resource "aws_sqs_queue" "edpub_action_sqs" {
   visibility_timeout_seconds  = var.visibility_timeout_seconds
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.edpub_action_sqs_dead_letter_queue.arn
-    maxReceiveCount     = 5
+    maxReceiveCount     = var.maxReceiveCount
   })
 }
 
@@ -76,7 +76,7 @@ resource "aws_sqs_queue" "edpub_metrics_sqs" {
   visibility_timeout_seconds  = var.visibility_timeout_seconds
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.edpub_metrics_sqs_dead_letter_queue.arn
-    maxReceiveCount     = 5
+    maxReceiveCount     = var.maxReceiveCount
   })
 }
 
@@ -123,7 +123,7 @@ resource "aws_sqs_queue" "edpub_notification_sqs" {
   visibility_timeout_seconds  = var.visibility_timeout_seconds
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.edpub_notification_sqs_dead_letter_queue.arn
-    maxReceiveCount     = 5
+    maxReceiveCount     = var.maxReceiveCount
   })
 }
 
@@ -170,7 +170,7 @@ resource "aws_sqs_queue" "edpub_workflow_sqs" {
   visibility_timeout_seconds  = var.visibility_timeout_seconds
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.edpub_workflow_sqs_dead_letter_queue.arn
-    maxReceiveCount     = 5
+    maxReceiveCount     = var.maxReceiveCount
   })
 }
 
