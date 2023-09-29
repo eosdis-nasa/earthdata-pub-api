@@ -42,7 +42,10 @@ const getTemplate = async (message) => {
     const template = templates[message.event_type](message);
     template.conversation_id = template.conversation_id || message.conversation_id;
     if (message.event_type !== 'request_initialized') {
-      template.text = `${template.text}\n${message.step_message}`;
+      template.text = `${template.text}`;
+      if (message.step_message) {
+        template.text += `\n${message.step_message}`;
+      }
     }
     return template;
   }
@@ -59,7 +62,8 @@ const getEmailTemplate = async (eventMessage, message) => {
       name: 'EDPUB User',
       submission_id: eventMessage.submission_id,
       workflow_name: (await workflowName).long_name,
-      conversation_last_message: message.text
+      conversation_last_message: message.text,
+      event_type: eventMessage.event_type
     };
 
     if (formData?.data_product_name_value) {

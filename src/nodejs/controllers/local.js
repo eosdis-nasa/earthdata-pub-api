@@ -89,7 +89,7 @@ function getToken(req, res) {
       expires_in: exp,
       token_type: 'Bearer'
     };
-    console.info(tokens);
+    console.info('tokens', tokens);
     res.status(200);
     res.send(tokens);
   } else if (refresh_token) {
@@ -108,7 +108,7 @@ function getToken(req, res) {
       expires_in: exp,
       token_type: 'Bearer'
     };
-    console.info(tokens);
+    console.info('tokens', tokens);
     res.status(200);
     res.send(tokens);
   }
