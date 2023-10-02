@@ -7725,7 +7725,7 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${file_mfa_auth_lambda_arn}",
+          "uri": "${mfa_auth_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
@@ -7843,7 +7843,7 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${file_mfa_auth_lambda_arn}",
+          "uri": "${mfa_auth_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
