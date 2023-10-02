@@ -112,4 +112,4 @@ RAISE;
     INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'WORKFLOW_DELETE');
 
 -- 9/28/2023 Adds support for MFA
-    INSERT INTO edpuser VALUES mfa_enabled BOOLEAN DEFAULT FALSE;
+    ALTER TABLE edpuser ADD mfa_enabled BOOLEAN DEFAULT FALSE;

@@ -2,7 +2,8 @@ import {
     CognitoIdentityProviderClient,
     AssociateSoftwareTokenCommand,
     VerifySoftwareTokenCommand,
-    AdminSetUserMFAPreferenceCommand
+    AdminSetUserMFAPreferenceCommand,
+    GetUserCommand
 } from '@aws-sdk/client-cognito-identity-provider'
 
 const db = require('database-util');
@@ -14,11 +15,11 @@ async function getUser(idp, accessToken){
         AccessToken: accessToken
     })
     const resp = await idp.send(command)
-    respPayload = {
+    const respPayload = {
         username: resp.Username,
         id: resp.find((attr) => attr.Name === 'sub').Value
     }
-    return resp
+    return respPayload
 }
 
 async function associateTokenMethod(event){
