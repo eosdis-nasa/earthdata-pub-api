@@ -7679,10 +7679,10 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/token/mfa/associate": {
+    "/api/data/mfa/associate": {
       "post": {
         "tags": [
-          "token"
+          "data"
         ],
         "summary": "Associate user with MFA",
         "description": "Associates a user with MFA",
@@ -7797,10 +7797,10 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/token/mfa/verify": {
+    "/api/data/mfa/verify": {
       "post": {
         "tags": [
-          "token"
+          "data"
         ],
         "summary": "Verifies users MFA device",
         "description": "Verifies users MFA device",
