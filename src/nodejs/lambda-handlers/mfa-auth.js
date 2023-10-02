@@ -24,7 +24,7 @@ async function getUser(idp, accessToken){
 
 async function associateTokenMethod(event){
 
-    const {access_token:accessToken} = event
+    const {auth_token:accessToken} = event
     let resp
     
     try{
