@@ -102,6 +102,7 @@ module "apigateway_endpoints" {
   questions_lambda_arn = module.lambda_functions.questions_lambda_arn
   workflow_lambda_arn = module.lambda_functions.workflow_lambda_arn
   file_upload_lambda_arn = module.lambda_functions.file_upload_lambda_arn
+  mfa_auth_lambda_arn = module.lambda_functions.mfa_auth_lambda_arn
   cognito_user_pool_arn = "arn:aws:cognito-idp:${var.region}:${var.account_id}:userpool/${var.cognito_user_pool_id}"
   edpub_apigateway_s3_role_arn = module.iam_roles.edpub_apigateway_s3_role_arn
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket

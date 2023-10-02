@@ -110,3 +110,6 @@ RAISE;
     INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_READ');
     INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_UPDATE');
     INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'WORKFLOW_DELETE');
+
+-- 9/28/2023 Adds support for MFA
+    INSERT INTO edpuser VALUES mfa_enabled BOOLEAN DEFAULT FALSE;
