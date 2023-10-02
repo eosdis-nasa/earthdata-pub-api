@@ -1,10 +1,10 @@
-import {
+const {
     CognitoIdentityProviderClient,
     AssociateSoftwareTokenCommand,
     VerifySoftwareTokenCommand,
     AdminSetUserMFAPreferenceCommand,
     GetUserCommand
-} from '@aws-sdk/client-cognito-identity-provider'
+} = require('@aws-sdk/client-cognito-identity-provider')
 
 const db = require('database-util');
 
@@ -82,9 +82,9 @@ async function setMFAPreferenceMethod (event){
 }
 
 const operations = {
-    associateToken, associateTokenMethod,
-    verifyToken, verifyTokenMethod,
-    setMFAPreference, setMFAPreferenceMethod
+    associateToken: associateTokenMethod,
+    verifyToken: verifyTokenMethod,
+    setMFAPreference: setMFAPreferenceMethod
   };
 
 async function handler(event) {
