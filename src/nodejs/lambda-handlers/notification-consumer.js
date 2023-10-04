@@ -13,16 +13,40 @@ const msg = require('message-util');
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
 async function sendEmailNotification({ note, emailPayload }) {
-  // TODO - Add additional filter for system user messages
-  // logic to add DAAC content
-  // eslint-disable-next-line
+  //dict of roles for readability
+  const roles = {
+    data_producer: '804b335c-f191-4d26-9b98-1ec1cb62b97d',
+    data_poc: '29ccab4b-65e2-4764-83ec-77375d29af39',
+    daac_staff: 'a5b4947a-67d2-434e-9889-59c2fad39676',
+    daac_manager: '2aa89c57-85f1-4611-812d-b6760bb6295c',
+    daac_observer: '4be6ca4d-6362-478b-8478-487a668314b1',
+    admin: '75605ac9-bf65-4dec-8458-93e018dcca97'
+  }
+
+  let userRole = null;
+  
+  switch (emailPayload.event_type) {
+    case 'form_request':
+      userRole = [roles.data_producer, roles.data_poc, roles.admin]
+    case 'review_request':
+      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin]
+    case 'form_submitted':
+      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin]
+    case 'review_approved':
+      userRole = [roles.data_producer, roles.data_poc, roles.admin]
+    case 'review_rejected':
+      userRole = [roles.data_producer, roles.data_poc, roles.admin]
+    case 'metadata_updated':
+      userRole = [roles.data_producer, roles.data_poc, roles.admin]
+    default:
+      userRole = null;
+  }
+
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
-    senderId: note.sender_edpuser_id
+    senderId: note.sender_edpuser_id,
+    userRole
   });
-  // Disabled until ready for uat Testing
-  // eslint-disable-next-line
-  console.log('sendEmailNotification emailPayload', emailPayload)
   await msg.sendEmail(users, emailPayload);
 }
 

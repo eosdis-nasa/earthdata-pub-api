@@ -339,12 +339,21 @@ const getEmails = (params) => sql.select({
         left: 'edpuser.id',
         right: 'conversation_edpuser.edpuser_id'
       }
-    }]
+    },
+    {
+      type: 'inner_join', src: 'edpuser_edprole',
+      on:{
+        left: 'edpuser.id',
+        right: 'edprole.edpuser_id'
+      }
+    }
+  ]
    },
   where: {
     filters: [
       ...([{field: 'conversation_edpuser.conversation_id', param: 'conversationId'}]),
-      ...(params.senderId ? [{field: 'conversation_edpuser.edpuser_id', op: 'ne', param: 'senderId'}] : [])
+      ...(params.senderId ? [{field: 'conversation_edpuser.edpuser_id', op: 'ne', param: 'senderId'}] : []),
+      ...(params.userRole ? [{field: 'edpuser_edprole.edprole_id', any: {values: {param: 'userRole'}}}] : [])
     ]
   }
 });
