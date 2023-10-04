@@ -1033,6 +1033,7 @@ resource "aws_lambda_function" "mfa_auth" {
       PG_DB          = var.db_database
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
+      CUP_ID         = var.cognito_user_pool_id
     }
   }
   vpc_config {

@@ -37,7 +37,6 @@ async function getToken({ code }) {
     grant_type: 'authorization_code',
     redirect_uri: clientUri.href
   });
-  console.log(tokens);
   const decoded = jwt.decode(tokens.id_token);
   const refresh = tokens.refresh_token;
   const access = tokens.access_token;
