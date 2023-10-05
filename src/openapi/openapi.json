@@ -7751,7 +7751,7 @@
         ],
         "summary": "CORS",
         "description": "OPERATION method for CORS",
-        "operationId": "optionsAssociateMfa",
+        "operationId": "optionsNotify",
         "responses": {
           "200": {
             "description": "OK",
@@ -7869,7 +7869,7 @@
         ],
         "summary": "CORS",
         "description": "OPERATION method for CORS",
-        "operationId": "optionsVerifyMfa",
+        "operationId": "optionsNotify",
         "responses": {
           "200": {
             "description": "OK",
