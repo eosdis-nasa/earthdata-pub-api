@@ -39,6 +39,24 @@ async function associateTokenMethod(event) {
   return resp;
 }
 
+async function setMFAPreferenceMethod(event) {
+  const { access_token: accessToken } = event;
+  const idp = new CognitoIdentityProviderClient();
+  const user = await getUser(idp, accessToken);
+  const payload = {
+    SoftwareTokenMfaSettings: {
+      Enabled: true,
+      PreferredMfa: true
+    },
+    Username: user.username,
+    UserPoolId: userPoolId
+  };
+  const command = new AdminSetUserMFAPreferenceCommand(payload);
+  const resp = await idp.send(command);
+  db.user.enableMFA({ id: user.id });
+  return resp;
+}
+
 async function verifyTokenMethod(event) {
   const {
     tops_token: topsToken,
@@ -58,24 +76,6 @@ async function verifyTokenMethod(event) {
     return { error: 'Failed to verify token' };
   }
   await setMFAPreferenceMethod({ access_token: accessToken });
-  return resp;
-}
-
-async function setMFAPreferenceMethod(event) {
-  const { access_token: accessToken } = event;
-  const idp = new CognitoIdentityProviderClient();
-  const user = await getUser(idp, accessToken);
-  const payload = {
-    SoftwareTokenMfaSettings: {
-      Enabled: true,
-      PreferredMfa: true
-    },
-    Username: user.username,
-    UserPoolId: userPoolId
-  };
-  const command = new AdminSetUserMFAPreferenceCommand(payload);
-  const resp = await idp.send(command);
-  db.user.enableMFA({ id: user.id });
   return resp;
 }
 
