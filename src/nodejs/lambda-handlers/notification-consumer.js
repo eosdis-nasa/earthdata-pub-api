@@ -27,16 +27,22 @@ async function sendEmailNotification({ note, emailPayload }) {
   
   switch (emailPayload.event_type) {
     case 'form_request':
+      console.log("data producer, data poc, admin")
       userRole = [roles.data_producer, roles.data_poc, roles.admin]
     case 'review_request':
+      console.log("daac staff, daac manager, daac observer, admin")
       userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin]
     case 'form_submitted':
+      console.log("daac staff, daac manager, daac observer, admin")
       userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin]
     case 'review_approved':
+      console.log("data producer, data poc, admin")
       userRole = [roles.data_producer, roles.data_poc, roles.admin]
     case 'review_rejected':
+      console.log("data producer, data poc, admin")
       userRole = [roles.data_producer, roles.data_poc, roles.admin]
     case 'metadata_updated':
+      console.log("data producer, data poc, admin")
       userRole = [roles.data_producer, roles.data_poc, roles.admin]
     default:
       userRole = null;
@@ -64,7 +70,7 @@ async function processRecord(record) {
         message.subject = 'No Subject';
       }
       const note = await db.note[operation](message);
-      if (eventMessage.event_type !== 'direct_message' && process.env.AWS_EXECUTION_ENV) {
+      if (eventMessage.event_type !== 'direct_message' /*&& process.env.AWS_EXECUTION_ENV*/) {
         const emailPayload = await getEmailTemplate(eventMessage, message);
         await sendEmailNotification({ note, emailPayload });
       }
