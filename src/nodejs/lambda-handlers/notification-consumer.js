@@ -27,23 +27,23 @@ async function sendEmailNotification({ note, emailPayload }) {
   
   switch (emailPayload.event_type) {
     case 'form_request':
-      console.log("data producer, data poc, admin")
       userRole = [roles.data_producer, roles.data_poc, roles.admin]
+      break;
     case 'review_request':
-      console.log("daac staff, daac manager, daac observer, admin")
       userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin]
+      break;
     case 'form_submitted':
-      console.log("daac staff, daac manager, daac observer, admin")
       userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin]
+      break; 
     case 'review_approved':
-      console.log("data producer, data poc, admin")
       userRole = [roles.data_producer, roles.data_poc, roles.admin]
+      break;
     case 'review_rejected':
-      console.log("data producer, data poc, admin")
       userRole = [roles.data_producer, roles.data_poc, roles.admin]
+      break;
     case 'metadata_updated':
-      console.log("data producer, data poc, admin")
       userRole = [roles.data_producer, roles.data_poc, roles.admin]
+      break;
     default:
       userRole = null;
   }

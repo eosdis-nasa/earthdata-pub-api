@@ -344,7 +344,7 @@ const getEmails = (params) => sql.select({
       type: 'inner_join', src: 'edpuser_edprole',
       on:{
         left: 'edpuser.id',
-        right: 'edprole.edpuser_id'
+        right: 'edpuser_edprole.edpuser_id'
       }
     }
   ]
