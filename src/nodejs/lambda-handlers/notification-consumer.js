@@ -13,7 +13,7 @@ const msg = require('message-util');
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
 async function sendEmailNotification({ note, emailPayload }) {
-  //dict of roles for readability
+  // dict of roles for readability
   const roles = {
     data_producer: '804b335c-f191-4d26-9b98-1ec1cb62b97d',
     data_poc: '29ccab4b-65e2-4764-83ec-77375d29af39',
@@ -21,28 +21,28 @@ async function sendEmailNotification({ note, emailPayload }) {
     daac_manager: '2aa89c57-85f1-4611-812d-b6760bb6295c',
     daac_observer: '4be6ca4d-6362-478b-8478-487a668314b1',
     admin: '75605ac9-bf65-4dec-8458-93e018dcca97'
-  }
+  };
 
   let userRole = null;
-  
+
   switch (emailPayload.event_type) {
     case 'form_request':
-      userRole = [roles.data_producer, roles.data_poc, roles.admin]
+      userRole = [roles.data_producer, roles.data_poc, roles.admin];
       break;
     case 'review_request':
-      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin]
+      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin];
       break;
     case 'form_submitted':
-      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin]
-      break; 
+      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin];
+      break;
     case 'review_approved':
-      userRole = [roles.data_producer, roles.data_poc, roles.admin]
+      userRole = [roles.data_producer, roles.data_poc, roles.admin];
       break;
     case 'review_rejected':
-      userRole = [roles.data_producer, roles.data_poc, roles.admin]
+      userRole = [roles.data_producer, roles.data_poc, roles.admin];
       break;
     case 'metadata_updated':
-      userRole = [roles.data_producer, roles.data_poc, roles.admin]
+      userRole = [roles.data_producer, roles.data_poc, roles.admin];
       break;
     default:
       userRole = null;
@@ -70,7 +70,7 @@ async function processRecord(record) {
         message.subject = 'No Subject';
       }
       const note = await db.note[operation](message);
-      if (eventMessage.event_type !== 'direct_message' /*&& process.env.AWS_EXECUTION_ENV*/) {
+      if (eventMessage.event_type !== 'direct_message' /* && process.env.AWS_EXECUTION_ENV */) {
         const emailPayload = await getEmailTemplate(eventMessage, message);
         await sendEmailNotification({ note, emailPayload });
       }
