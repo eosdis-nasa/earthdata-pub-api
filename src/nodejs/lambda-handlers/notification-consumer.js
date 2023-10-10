@@ -27,25 +27,26 @@ async function sendEmailNotification({ note, emailPayload }) {
 
   switch (emailPayload.event_type) {
     case 'form_request':
-      userRole = [roles.data_producer, roles.data_poc, roles.admin];
+      userRole = [roles.data_producer, roles.data_poc];
       break;
     case 'review_request':
-      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin];
+      userRole = [roles.daac_staff, roles.daac_manager];
       break;
     case 'form_submitted':
-      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer, roles.admin];
+      userRole = [roles.daac_staff, roles.daac_manager];
       break;
     case 'review_approved':
-      userRole = [roles.data_producer, roles.data_poc, roles.admin];
+      userRole = [roles.data_producer, roles.data_poc];
       break;
     case 'review_rejected':
-      userRole = [roles.data_producer, roles.data_poc, roles.admin];
+      userRole = [roles.data_producer, roles.data_poc];
       break;
     case 'metadata_updated':
-      userRole = [roles.data_producer, roles.data_poc, roles.admin];
+      userRole = [roles.data_producer, roles.data_poc];
       break;
     default:
-      userRole = null;
+      userRole = [roles.data_producer, roles.data_poc, roles.daac_staff, roles.daac_manager];
+      break;
   }
 
   const users = await db.note.getEmails({
