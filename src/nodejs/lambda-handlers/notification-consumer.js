@@ -71,7 +71,7 @@ async function processRecord(record) {
         message.subject = 'No Subject';
       }
       const note = await db.note[operation](message);
-      if (eventMessage.event_type !== 'direct_message' /* && process.env.AWS_EXECUTION_ENV */) {
+      if (eventMessage.event_type !== 'direct_message' && process.env.AWS_EXECUTION_ENV) {
         const emailPayload = await getEmailTemplate(eventMessage, message);
         await sendEmailNotification({ note, emailPayload });
       }
