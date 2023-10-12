@@ -488,6 +488,7 @@
               "label": "Unit",
               "enums": [
                 "Daily",
+                "Sub-Daily",
                 "Weekly",
                 "Monthly",
                 "Quarterly",

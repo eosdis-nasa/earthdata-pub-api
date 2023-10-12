@@ -166,7 +166,7 @@ INSERT INTO input VALUES ('228cb0d6-78fb-449a-8061-b1e6fb3f59d1', 'spatial_gener
 INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f129f', 'product_temporal_coverage_start', 0, 'Start', 'date', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f129f', 'product_temporal_coverage_end', 1, 'End', 'date', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('dbf70495-433a-439e-8173-0cb20f972c16', 'data_product_status', 0, 'Product Status', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 'data_delivery_frequency', 0, 'Unit', 'radio', '["Daily","Weekly","Monthly","Quarterly","Yearly","Varies"]', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 'data_delivery_frequency', 0, 'Unit', 'radio', '["Daily","Sub-Daily","Weekly","Monthly","Quarterly","Yearly","Varies"]', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_amount', 0, 'Amount', 'number', '{}', '{"min": "1"}', '[]','[]',  True);
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_units', 1, 'Unit', 'radio', '["KB","MB","GB","TB","PB"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_file_url', 0, 'Sample File URL', 'text', '{}', '{}', '[]','[]',  False);
