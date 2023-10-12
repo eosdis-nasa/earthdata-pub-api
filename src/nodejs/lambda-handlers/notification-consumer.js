@@ -12,7 +12,6 @@ const msg = require('message-util');
 
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
 
-// eslint-disable-next-line
 async function sendEmailNotification({ note, emailPayload }) {
   // TODO - Add additional filter for system user messages
   // logic to add DAAC content
@@ -21,9 +20,10 @@ async function sendEmailNotification({ note, emailPayload }) {
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id
   });
-
   // Disabled until ready for uat Testing
-  // await msg.sendEmail(users, emailPayload);
+  // eslint-disable-next-line
+  console.log('sendEmailNotification emailPayload', emailPayload)
+  await msg.sendEmail(users, emailPayload);
 }
 
 async function processRecord(record) {
@@ -49,6 +49,7 @@ async function processRecord(record) {
 }
 
 async function handler(event) {
+  console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const records = event.Records;
   const promises = records.map((record) => processRecord(record));
   await Promise.all(promises);
