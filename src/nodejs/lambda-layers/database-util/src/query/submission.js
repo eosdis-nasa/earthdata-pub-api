@@ -577,10 +577,13 @@ SELECT step_name FROM submission_status WHERE id = {{id}}
 // TODO - Upate this query's complexity and to use sql builder
 const getSubmissionDetailsById = () => `
 SELECT submission.id id, conversation_id, submission.created_at created_at, daac.long_name daac_name, 
-edpuser1.name initiator_name, submission_status.last_change last_change, workflow.long_name workflow_name,
+JSONB_BUILD_OBJECT('name', edpuser1.name, 'id', edpuser1.id) initiator,
+submission_status.last_change last_change,
 submission_form_data_pool.data::json->'data_producer_info_name' data_producer_name, 
 submission_form_data_pool.data::json->'data_product_name_value' data_product_name, 
-array_agg(DISTINCT edpuser2.name) as contributors, array_agg(DISTINCT step_edge.step_name) as workflow_steps,
+array_agg(DISTINCT JSONB_BUILD_OBJECT('id', edpuser2.id, 'name', edpuser2.name)) as contributors,
+JSONB_BUILD_OBJECT('id', workflow.id, 'name', workflow.long_name, 'steps',
+array_agg(DISTINCT step_edge.step_name)) workflow,
 JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('type', step.type, 'name', step.step_name,'action_id', step.action_id, 
 'form_id', step.form_id,'service_id', step.service_id, 'data', step.data)) step_data,
 CASE 
@@ -612,9 +615,11 @@ ON submission.id = submission_form_data.id
 LEFT JOIN form
 ON submission_form_data.form_id = form.id
 WHERE submission.id= {{id}}
-GROUP BY submission.id, daac.long_name, edpuser1.name, submission_status.last_change, workflow.long_name, 
-submission_form_data_pool.data, step.type, step.step_name, step.action_id, step.form_id, step.service_id, step.data,
-form.long_name, submission_form_data.submitted_at;
+GROUP BY submission.id, daac.long_name, edpuser1.name, edpuser1.id,
+submission_status.last_change, workflow.long_name, workflow.id,
+submission_form_data_pool.data, step.type, step.step_name, step.action_id,
+step.form_id, step.service_id, step.data, form.long_name,
+submission_form_data.submitted_at;
 `;
 
 module.exports.findAll = findAll;
