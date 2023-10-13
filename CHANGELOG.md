@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Made content updates for EDPUB 1085, adding 'Sub-Daily'
 - Reduce API calls for request details page
 - Update UMMC metadata mapping template
 
