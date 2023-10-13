@@ -258,7 +258,7 @@ async function copySubmissionMethod(event, user) {
 }
 
 async function getDetailsMethod(event, user) {
-  const { id } = event;
+  const { params: {id} } = event;
   return db.submission.getSubmissionDetailsById({id});
 }
 

@@ -368,7 +368,7 @@ module.exports.getSubmissionDetailsById = function getSubmissionDetailsById(req,
     resource: 'submission',
     operation: 'getDetails',
     context: { user_id: req.user_id },
-    id: params.id.value
+    params: { id: params.id.value }
   };
   handlers.submission(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);

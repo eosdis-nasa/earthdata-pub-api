@@ -587,10 +587,11 @@ array_agg(DISTINCT step_edge.step_name)) workflow,
 JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('type', step.type, 'name', step.step_name,'action_id', step.action_id, 
 'form_id', step.form_id,'service_id', step.service_id, 'data', step.data)) step_data,
 CASE 
+  WHEN form.id is null THEN '[]'
   WHEN form.long_name is null THEN '[]' 
   WHEN submission_form_data.submitted_at is null THEN '[]' 
   ELSE
-    JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
+    JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('id', form.id,
       'long_name', form.long_name,'submitted_at', submission_form_data.submitted_at))) 
 END forms
 FROM submission
@@ -618,7 +619,7 @@ WHERE submission.id= {{id}}
 GROUP BY submission.id, daac.long_name, edpuser1.name, edpuser1.id,
 submission_status.last_change, workflow.long_name, workflow.id,
 submission_form_data_pool.data, step.type, step.step_name, step.action_id,
-step.form_id, step.service_id, step.data, form.long_name,
+step.form_id, step.service_id, step.data, form.id, form.long_name,
 submission_form_data.submitted_at;
 `;
 
