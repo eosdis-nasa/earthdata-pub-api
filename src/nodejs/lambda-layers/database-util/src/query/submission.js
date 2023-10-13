@@ -593,7 +593,7 @@ CASE
   ELSE
     JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('id', form.id,
       'long_name', form.long_name,'submitted_at', submission_form_data.submitted_at))) 
-END forms
+END forms, submission_metadata.metadata metadata
 FROM submission
 JOIN daac
 ON submission.daac_id = daac.id
@@ -615,12 +615,14 @@ LEFT JOIN submission_form_data
 ON submission.id = submission_form_data.id
 LEFT JOIN form
 ON submission_form_data.form_id = form.id
+JOIN submission_metadata
+ON submission.id = submission_metadata.id
 WHERE submission.id= {{id}}
 GROUP BY submission.id, daac.long_name, edpuser1.name, edpuser1.id,
 submission_status.last_change, workflow.long_name, workflow.id,
 submission_form_data_pool.data, step.type, step.step_name, step.action_id,
 step.form_id, step.service_id, step.data, form.id, form.long_name,
-submission_form_data.submitted_at;
+submission_form_data.submitted_at, submission_metadata.metadata;
 `;
 
 module.exports.findAll = findAll;
