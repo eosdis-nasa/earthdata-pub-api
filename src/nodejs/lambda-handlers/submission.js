@@ -257,9 +257,9 @@ async function copySubmissionMethod(event, user) {
   return db.submission.findById({ id });
 }
 
-async function getDetailsMethod(event, user) {
-  const { params: {id} } = event;
-  return db.submission.getSubmissionDetailsById({id});
+async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-vars
+  const { params: { id } } = event;
+  return db.submission.getSubmissionDetailsById({ id });
 }
 
 const operations = {
