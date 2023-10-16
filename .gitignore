@@ -23,6 +23,7 @@ apidoc/
 #Ignore eslint and jest outputs
 eslint.json
 jest.json
+/coverage
 
 #Ignore installation artifacts
 *.zip
