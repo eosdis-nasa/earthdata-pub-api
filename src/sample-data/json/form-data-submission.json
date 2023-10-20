@@ -402,8 +402,8 @@
               "control_id": "data_delivery_frequency",
               "label": "Unit",
               "enums": [
-                "Daily",
                 "Sub-Daily",
+                "Daily",
                 "Weekly",
                 "Monthly",
                 "Quarterly",
