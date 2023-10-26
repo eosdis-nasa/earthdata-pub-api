@@ -30,6 +30,7 @@ data "template_file" "edpub_oas" {
     questions_lambda_arn          = var.questions_lambda_arn
     workflow_lambda_arn           = var.workflow_lambda_arn
     file_upload_lambda_arn        = var.file_upload_lambda_arn
+    mfa_auth_lambda_arn           = var.mfa_auth_lambda_arn
     edpub_dashboard_s3_bucket     = var.edpub_dashboard_s3_bucket
     edpub_forms_s3_bucket         = var.edpub_forms_s3_bucket
     edpub_overview_s3_bucket      = var.edpub_overview_s3_bucket

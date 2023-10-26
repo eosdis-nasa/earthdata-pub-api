@@ -50,6 +50,7 @@ install_lambda workflow-consumer
 install_lambda questions
 install_lambda workflow
 install_lambda file-upload
+install_lambda mfa-auth
 #Add more lambda functions here <--
 
 #Change back to root directory and remove temp folder
