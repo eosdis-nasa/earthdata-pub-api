@@ -612,6 +612,29 @@ module.exports.putMetric = function putMetric(req, res, next) {
   });
 };
 
+module.exports.getPublicationMetrics = function getPublicationMetrics(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'get_submissions',
+    payload: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.metrics(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.metricsGetDaacs = function metricsGetDaacs(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'get_daacs',
+    context: { user_id: req.user_id }
+  };
+  handlers.metrics(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.metricsListReports = function metricsListReports(req, res, next) {
   const body = ["2021-06-20", "2021-06-21", "2021-06-22"];
   setTimeout(() => res.send(body), latency);
