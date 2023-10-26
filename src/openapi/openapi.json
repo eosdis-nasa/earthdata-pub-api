@@ -5788,7 +5788,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LogEventRequest"
+                "$ref": "#/components/schemas/MetricsGenerateReport"
               }
             }
           }
@@ -5816,7 +5816,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/MetricsGenerateReportResp"
                 }
               }
             }
@@ -5931,7 +5931,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/MetricsGetDaacsResp"
                 }
               }
             }
