@@ -362,6 +362,19 @@ module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
   });
 };
 
+module.exports.getSubmissionDetailsById = function getSubmissionDetailsById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'submission',
+    operation: 'getDetails',
+    context: { user_id: req.user_id },
+    params: { id: params.id.value }
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.userFindById = function userFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

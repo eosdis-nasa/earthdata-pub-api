@@ -568,11 +568,62 @@ WHERE step.step_name = {{step_name}}
 const getCreatorName = () => `
 SELECT edpuser.name FROM edpuser
 Where edpuser.id = (select initiator_edpuser_id from submission where id = {{id}})
-`
+`;
 
 const getStepName = () => `
 SELECT step_name FROM submission_status WHERE id = {{id}}
-`
+`;
+
+// TODO - Upate this query's complexity and to use sql builder
+const getSubmissionDetailsById = () => `
+SELECT submission.id id, conversation_id, submission.created_at created_at, daac.long_name daac_name, 
+JSONB_BUILD_OBJECT('name', edpuser1.name, 'id', edpuser1.id) initiator,
+submission_status.last_change last_change,
+submission_form_data_pool.data::json->'data_producer_info_name' data_producer_name, 
+submission_form_data_pool.data::json->'data_product_name_value' data_product_name, 
+array_agg(DISTINCT JSONB_BUILD_OBJECT('id', edpuser2.id, 'name', edpuser2.name)) as contributors,
+JSONB_BUILD_OBJECT('id', workflow.id, 'name', workflow.long_name, 'steps',
+array_agg(DISTINCT step_edge.step_name)) workflow,
+JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('type', step.type, 'name', step.step_name,'action_id', step.action_id, 
+'form_id', step.form_id,'service_id', step.service_id, 'data', step.data)) step_data,
+CASE 
+  WHEN form.id is null THEN '[]'
+  WHEN form.long_name is null THEN '[]' 
+  WHEN submission_form_data.submitted_at is null THEN '[]' 
+  ELSE
+    JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('id', form.id,
+      'long_name', form.long_name,'submitted_at', submission_form_data.submitted_at))) 
+END forms, submission_metadata.metadata metadata
+FROM submission
+JOIN daac
+ON submission.daac_id = daac.id
+JOIN edpuser edpuser1
+ON submission.initiator_edpuser_id = edpuser1.id
+JOIN submission_status
+ON submission.id = submission_status.id
+JOIN workflow
+ON submission_status.workflow_id = workflow.id
+LEFT JOIN submission_form_data_pool
+ON submission.id = submission_form_data_pool.id
+JOIN edpuser edpuser2
+ON edpuser2.id = ANY(submission.contributor_ids)
+JOIN step_edge
+ON submission_status.workflow_id = step_edge.workflow_id
+JOIN step
+ON submission_status.step_name = step.step_name
+LEFT JOIN submission_form_data
+ON submission.id = submission_form_data.id
+LEFT JOIN form
+ON submission_form_data.form_id = form.id
+JOIN submission_metadata
+ON submission.id = submission_metadata.id
+WHERE submission.id= {{id}}
+GROUP BY submission.id, daac.long_name, edpuser1.name, edpuser1.id,
+submission_status.last_change, workflow.long_name, workflow.id,
+submission_form_data_pool.data, step.type, step.step_name, step.action_id,
+step.form_id, step.service_id, step.data, form.id, form.long_name,
+submission_form_data.submitted_at, submission_metadata.metadata;
+`;
 
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
@@ -609,4 +660,5 @@ module.exports.copyFormData = copyFormData;
 module.exports.setSubmissionCopy = setSubmissionCopy;
 module.exports.getStepMessage = getStepMessage;
 module.exports.getCreatorName = getCreatorName;
-module.exports.getStepName = getStepName
+module.exports.getStepName = getStepName;
+module.exports.getSubmissionDetailsById = getSubmissionDetailsById;
