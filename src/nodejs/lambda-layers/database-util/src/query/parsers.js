@@ -75,3 +75,5 @@ module.exports.getLongName = one;
 module.exports.getCreatorName = one;
 module.exports.getStepName = one;
 module.exports.getIds = many;
+module.exports.getSubmissions = many;
+module.exports.getActiveDaacs = many;
