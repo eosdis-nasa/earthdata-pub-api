@@ -62,6 +62,10 @@ variable "file_upload_lambda_arn" {
   type = string
 }
 
+variable "mfa_auth_lambda_arn" {
+  type = string
+}
+
 variable "edpub_dashboard_s3_bucket" {
   type = string
 }

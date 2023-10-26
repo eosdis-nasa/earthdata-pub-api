@@ -362,6 +362,19 @@ module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
   });
 };
 
+module.exports.getSubmissionDetailsById = function getSubmissionDetailsById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'submission',
+    operation: 'getDetails',
+    context: { user_id: req.user_id },
+    params: { id: params.id.value }
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.userFindById = function userFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -814,6 +827,18 @@ module.exports.getDownloadUrl = function getDownloadUrl(req, res, next) {
   };
   handlers.fileUpload(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
+  });
+}
+
+module.exports.associateMfa = function associateMfa(req, res, next) {
+  res.send({
+    message: 'Local placeholder for associate MFA function.'
+  });
+}
+
+module.exports.verifyMfa = function verifyMfa(req, res, next) {
+  res.send({
+    message: 'Local placeholder for verify MFA function.'
   });
 }
 

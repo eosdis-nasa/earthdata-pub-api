@@ -77,3 +77,4 @@ module.exports.getStepName = one;
 module.exports.getIds = many;
 module.exports.getSubmissions = many;
 module.exports.getActiveDaacs = many;
+module.exports.getSubmissionDetailsById = one;
