@@ -3,7 +3,7 @@ const role = require('./role.js');
 const group = require('./group.js');
 
 const table = 'edpuser';
-const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'user_privileges', 'subscriptions', 'detailed', 'mfa_enabled'];
+const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'user_privileges', 'subscriptions', 'detailed'];
 const fieldMap = {
   id: 'edpuser.id',
   name: 'edpuser.name',
@@ -11,7 +11,6 @@ const fieldMap = {
   registered: 'edpuser.registered',
   last_login: 'edpuser.last_login',
   refresh_token: 'edpuser.refresh_token',
-  mfa_enabled: 'edpuser.mfa_enabled',
   user_groups: {
     type: 'coalesce',
     src: 'user_groups',
@@ -375,12 +374,6 @@ detailed = {{detailed}}
 WHERE edpuser.id = {{id}}
 RETURNING *`;
 
-const enableMFA = () => `
-UPDATE edpuser SET
-mfa_enabled = TRUE
-WHERE edpuser.id = {{id}}
-`
-
 
 module.exports.find = find;
 module.exports.findAll = findAll;
@@ -401,4 +394,3 @@ module.exports.getEmails = getEmails;
 module.exports.findByEmail = findByEmail;
 module.exports.getUsers = getUsers;
 module.exports.setDetail = setDetail;
-module.exports.enableMFA = enableMFA;

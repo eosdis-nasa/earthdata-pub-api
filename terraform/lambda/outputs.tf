@@ -69,7 +69,3 @@ output "workflow_lambda_arn" {
 output "file_upload_lambda_arn" {
   value = aws_lambda_function.file_upload.invoke_arn
 }
-
-output "mfa_auth_lambda_arn" {
-  value = aws_lambda_function.mfa_auth.invoke_arn
-}
