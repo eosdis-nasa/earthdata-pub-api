@@ -33,3 +33,6 @@ jest.json
 
 #Ignore folder of test scripts
 /test-scripts
+
+# Ignore vscode config
+*.vscode
