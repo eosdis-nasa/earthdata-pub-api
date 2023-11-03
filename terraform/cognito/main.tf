@@ -14,7 +14,7 @@ resource "aws_cognito_user_pool_client" "edpub_cognito" {
   callback_urls = [ var.client_auth_url ]
   logout_urls = [ var.client_auth_url ]
   allowed_oauth_flows = ["code", "implicit"]
-  allowed_oauth_scopes = ["email", "openid"]
+  allowed_oauth_scopes = ["email", "openid", "aws.cognito.signin.user.admin"]
   allowed_oauth_flows_user_pool_client = true
   prevent_user_existence_errors = "ENABLED"
 }

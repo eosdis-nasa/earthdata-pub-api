@@ -57,11 +57,32 @@ async function put({ payload, context }) {
   return { message: 'Success!' };
 }
 
+async function getsubmissions({ payload }) {
+  const { start_date: startDate, end_date: endDate } = payload;
+  const submissions = await db.metrics.getSubmissions({
+    ...startDate ? { start_date: startDate } : {},
+    ...endDate ? { end_date: endDate } : {}
+  });
+  const resp = {
+    published: submissions.length,
+    submissions
+  };
+  return resp;
+}
+
+async function getDaacs() {
+  const daacs = await db.daac.getActiveDaacs();
+  const resp = { daac_count: daacs.length, daacs };
+  return resp;
+}
+
 const operations = {
   search,
   put,
   get_report: getReport,
-  list_reports: listReports
+  list_reports: listReports,
+  get_submissions: getsubmissions,
+  get_daacs: getDaacs
 };
 
 async function handler(event) {

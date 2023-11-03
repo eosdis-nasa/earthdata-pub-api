@@ -1,9 +1,17 @@
 module.exports = {
   rootDir: './',
   projects: [
-    '<rootDir>/src/nodejs/lambda-layers'
+    '<rootDir>/src/nodejs'
   ],
-  testResultsProcessor: 'jest-bamboo-formatter'
+  testResultsProcessor: 'jest-bamboo-formatter',
+  collectCoverage: true,
+  coverageThreshold:{
+    global:{
+      branches: 5,
+      functions: 4,
+      lines: 40,
+    }
+  }
 };
 
 process.env.TABLE_SUFFIX = '_TEST';
