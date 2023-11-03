@@ -830,18 +830,6 @@ module.exports.getDownloadUrl = function getDownloadUrl(req, res, next) {
   });
 }
 
-module.exports.associateMfa = function associateMfa(req, res, next) {
-  res.send({
-    message: 'Local placeholder for associate MFA function.'
-  });
-}
-
-module.exports.verifyMfa = function verifyMfa(req, res, next) {
-  res.send({
-    message: 'Local placeholder for verify MFA function.'
-  });
-}
-
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({
     message: 'Placeholder for overview app root endpoint.'

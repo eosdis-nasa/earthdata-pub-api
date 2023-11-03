@@ -1013,39 +1013,3 @@ resource "aws_lambda_permission" "file_upload" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/upload/*"
 }
-
-resource "aws_lambda_function" "mfa_auth" {
-  filename      = "../artifacts/mfa-auth-lambda.zip"
-  function_name = "mfa_auth"
-  role          = var.edpub_lambda_role_arn
-  handler       = "mfa-auth.handler"
-  runtime          = "nodejs18.x"
-  source_code_hash = filesha256("../artifacts/mfa-auth-lambda.zip")
-  timeout          = 180
-  layers = [
-    aws_lambda_layer_version.database_util.arn,
-  ]
-  environment {
-    variables = {
-      REGION          = var.region
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      CUP_ID         = var.cognito_user_pool_id
-    }
-  }
-  vpc_config {
-    subnet_ids         = var.subnet_ids
-    security_group_ids = var.security_group_ids
-  }
-}
-
-resource "aws_lambda_permission" "mfa_auth" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.mfa_auth.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/mfa/*"
-}
