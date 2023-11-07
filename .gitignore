@@ -1,0 +1,34 @@
+#Ignore all installed node modules and package-locks
+node_modules/
+package-lock.json
+
+#Ignore npm debug logs
+npm-debug.log
+
+#Ignore all dynamic and generated components
+/terraform/*.tfvars
+/terraform/.terraform/
+/terraform/.terraform.lock.hcl
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.backup
+/terraform/.terraform.lock.hcl
+/terraform/tfplan
+/terraform/apigateway/openapi.json
+jsdoc/
+apidoc/
+/src/nodejs/api/openapi.json
+/src/nodejs/lambda-layers/database-util/src/db-setup
+/ecr-credentials
+
+#Ignore eslint and jest outputs
+eslint.json
+jest.json
+
+#Ignore installation artifacts
+*.zip
+*.tgz
+*.gz
+*.tar
+
+#Ignore folder of test scripts
+/test-scripts

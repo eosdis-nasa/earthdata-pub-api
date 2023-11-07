@@ -1,0 +1,37 @@
+{
+  "name": "earthdata-pub-modules",
+  "version": "1.0.18",
+  "description": "Collection of lambda functions and layers for Earthdata Pub",
+  "scripts": {
+    "clean-modules": "rm -rf package-lock.json node_modules/ src/*/package-lock.json src/*/node_modules/",
+    "build-docker-image": "docker build . -f ./Dockefile -t edpub-build",
+    "build": "bash ./scripts/build.sh",
+    "build-in-docker": "docker run --rm -v `pwd`:`pwd` -w `pwd` edpub-build npm run build",
+    "build:local": "bash ./scripts/build-local.sh",
+    "build-in-docker:local": "docker run --rm -v `pwd`:`pwd` -w `pwd` edpub-build npm run build:local",
+    "start": "docker-compose up",
+    "start:detached": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "lint": "eslint ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
+    "lint-fix": "eslint --fix ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
+    "test": "jest -c jest.config.js --all",
+    "generate-docs": "bash ./scripts/generate-jsdoc.sh; bash ./scripts/generate-apidoc.sh"
+  },
+  "author": "Brian Ellingson",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "eslint": "^7.27.0",
+    "eslint-bamboo-formatter": "^0.1.1",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^23.8.2",
+    "jest": "^27.3.1",
+    "jest-bamboo-formatter": "^1.0.1",
+    "jsdoc": "^3.6.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eosdis-nasa/earthdata-pub-api.git"
+  },
+  "dependencies": {}
+}

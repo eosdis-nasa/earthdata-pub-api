@@ -1,0 +1,338 @@
+<!doctype html>
+<html>
+<head>
+  <title>EarthdataPub Dev Login</title>
+  <link rel="stylesheet" href="https://unpkg.com/docute@4/dist/docute.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+  <link href="https://cdn.earthdata.nasa.gov/eui/1.1.7/stylesheets/application.css" rel="stylesheet" />
+</head>
+<style>
+#main {
+  position: relative;
+  font-family: Open Sans,Helvetica Neue,Helvetica,Arial,sans-serif;
+  width: 760px;
+  height: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: calc( (100vh - 640px) / 2 );
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+#banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: #2275AA;
+  height: 5em;
+  width: 100%;
+}
+#selector {
+
+}
+#body {
+
+}
+#footer {
+  position: absolute;
+  bottom: 0;
+  margin: 1.2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5em;
+  width: 100%;
+}
+#user-select {
+  width: 100%;
+  height: 2em;
+  box-sizing: border-box;
+  border: 1px solid #b2b2b2;
+}
+.panel {
+  height: 50%;
+  justify-content: center;
+}
+.table-div {
+  height: 80%;
+}
+.button {
+  color: white;
+  background-color: #158749;
+  width: 120px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.button:hover {
+  background-color: #12713d;
+  box-shadow: none;
+  cursor: pointer;
+}
+.col-set {
+  height: 0px;
+}
+.r-col {
+  width: 70%;
+}
+.l-col {
+  width: 30%;
+}
+.c-col {
+  width: 50%;
+}
+.text-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #b2b2b2;
+}
+h2 {
+  border-bottom:0px;
+}
+table {
+  width: 85%;
+  margin: 0px auto 0px auto;
+  border:0px;
+}
+table th, table td {
+  border:0px;
+  background: white;
+}
+ul {
+  width: 100%;
+  height: calc(1.2em * 6);
+  overflow-y: scroll;
+  list-style: none;
+  line-height: 1.2em;
+}
+li label {
+  align-items: left;
+}
+</style>
+<body>
+<div id="main">
+  <div id="banner" role="banner">
+    <h2>Earthdata Pub Dev Login</h2>
+  </div>
+  <div id="selector">
+    <table>
+      <tr class="col-set">
+        <th class="l-col"></th>
+        <th class="r-col"></th>
+        <th class="r-col"></th>
+      </tr>
+      <tr>
+        <td><label for="name">Pick a test user:</label></td>
+        <td>
+          <select id="user-select">
+            <option value="register">Register New</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="body">
+    <div id="register" class="panel">
+      <div class="table-div">
+        <table>
+          <tr class="col-set">
+            <th class="l-col"></th>
+            <th class="r-col"></th>
+          </tr>
+          <tr>
+            <td><label for="name">Full Name</label></td>
+            <td><input type="text" id="input-name" class="text-input" name="name"></td>
+          </tr>
+          <tr>
+            <td><label for="email">Email</label></td>
+            <td><input type="email" id="input-email" class="text-input" name="email"></td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th class="c-col"></th>
+            <th class="c-col"></th>
+          </tr>
+          <tr>
+            <td style="text-align:center;"><label for="role-list">Roles</label></td>
+            <td style="text-align:center;"><label for="group-list">Groups</label></td>
+          </tr>
+          <tr>
+            <td><ul id="role-list"></ul></td>
+            <td><ul id="group-list"></ul></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div id="user-info" class="panel">
+      <div class="table-div">
+        <table>
+          <tr class="col-set">
+            <th class="l-col"></th>
+            <th class="r-col"></th>
+          </tr>
+          <tr>
+            <td>User ID</td>
+            <td id="user-info-id"></td>
+          </tr>
+          <tr>
+            <td>Full Name</td>
+            <td id="user-info-name"></td>
+          </tr>
+          <tr>
+            <td>Email</td>
+            <td id="user-info-email"></td>
+          </tr>
+          <tr>
+            <td>Last Login</td>
+            <td id="user-info-last-login"></td>
+          </tr>
+          <tr>
+            <td>Registered</td>
+            <td id="user-info-registered"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div id="btn-login" class="button">Login</div>
+    <div id="btn-register" class="button">Register</div>
+  </div>
+</div>
+  <script>
+    const state = new URLSearchParams(window.location.search).get('state');
+    const users = {};
+    const groups = {};
+    const roles = {};
+    const userSelect = document.getElementById('user-select');
+    const groupUList = document.getElementById('group-list');
+    const roleUList = document.getElementById('role-list');
+    const userInfoPanel = document.getElementById('user-info');
+    const registerPanel = document.getElementById('register');
+    const nameInput = document.getElementById('input-name');
+    const emailInput = document.getElementById('input-email');
+    const registerButton = document.getElementById('btn-register');
+    const loginButton = document.getElementById('btn-login');
+    const info = {
+      id: document.getElementById('user-info-id'),
+      name: document.getElementById('user-info-name'),
+      email: document.getElementById('user-info-email'),
+      last_login: document.getElementById('user-info-last-login'),
+      registered: document.getElementById('user-info-registered')
+    }
+    userInfoPanel.style.display = "none";
+    loginButton.style.display = "none";
+    fetch('http://localhost:8080/auth/user_list')
+    .then((res) => { return res.json(); })
+    .then((userList) => {
+      userList.forEach((user) => {
+        users[user.id] = user;
+        const option = document.createElement("option");
+        option.value = user.id;
+        option.text = user.name;
+        userSelect.options.add(option);
+      })
+    });
+    fetch('http://localhost:8080/auth/group_list')
+    .then((res) => { return res.json(); })
+    .then((groupList) => {
+      groupList.forEach((group) => {
+        const item = document.createElement("li");
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        const text = document.createElement("text");
+        input.type = "checkbox";
+        text.textContent = group.long_name;
+        label.appendChild(input);
+        label.appendChild(text);
+        item.append(label);
+        groupUList.appendChild(item);
+        groups[group.id] = input;
+      });
+    });
+    fetch('http://localhost:8080/auth/role_list')
+    .then((res) => { return res.json(); })
+    .then((roleList) => {
+      roleList.forEach((role) => {
+        const item = document.createElement("li");
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        const text = document.createElement("text");
+        input.type = "checkbox";
+        text.textContent = role.long_name;
+        label.appendChild(input);
+        label.appendChild(text);
+        item.append(label);
+        roleUList.appendChild(item);
+        roles[role.id] = input
+      });
+    });
+
+    function handleSelect(e) {
+      const pick = e.target.value;
+      if (pick === 'register') {
+        registerPanel.style.display = "";
+        registerButton.style.display = "";
+        userInfoPanel.style.display = "none";
+        loginButton.style.display = "none";
+      } else {
+        userInfoPanel.style.display = "";
+        loginButton.style.display = "";
+        registerPanel.style.display = "none";
+        registerButton.style.display = "none";
+        const user = users[pick];
+        info.id.innerText = user.id;
+        info.name.innerText = user.name;
+        info.email.innerText = user.email;
+        info.last_login.innerText = user.last_login;
+        info.registered.innerText = user.registered;
+      }
+    }
+
+    function handleLogin(e) {
+      const id = userSelect.value;
+      const user = users[id];
+      user.new_user = false;
+      login(user);
+    }
+
+    function handleRegister(e) {
+      const user = {
+        new_user: true,
+        name: nameInput.value,
+        email: emailInput.value,
+        user_groups: Object.entries(groups).reduce((acc, [k, v]) => {
+          if (v.checked) acc.push(k);
+          return acc; }, []),
+        user_roles: Object.entries(roles).reduce((acc, [k, v]) => {
+          if (v.checked) acc.push(k);
+          return acc; }, [])
+      };
+      login(user);
+    }
+
+    function login(payload) {
+      payload.state = state;
+      fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then((res) => { return res.json() })
+      .then(data => {
+        window.location.replace(data.redirect);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    }
+
+    userSelect.addEventListener('change', handleSelect, false);
+    registerButton.addEventListener('click', handleRegister, false);
+    loginButton.addEventListener('click', handleLogin, false);
+  </script>
+</body>
+</html>

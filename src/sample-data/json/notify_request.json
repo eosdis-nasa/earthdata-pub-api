@@ -1,0 +1,11 @@
+[
+  {
+    "subject": "Subject",
+    "text": "Message body",
+    "user_list": ["1b10a09d-d342-4eee-a9eb-c99acd2dde17"]
+  },
+  {
+    "conversation_id": "*uuid of existing conversation",
+    "text": "Message body"
+  }
+]
