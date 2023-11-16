@@ -3107,27 +3107,14 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/operation/{operation}": {
-      "parameters": [
-        {
-          "name": "operation",
-          "in": "path",
-          "description": "Which submission operation to perform.",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "enum": ["initialize", "active", "inactive", "apply", "metadata", "submit", "save", "review", "resume", "lock",
-              "unlock", "withdraw", "restore", "changeStep", "addContributors", "removeContributor", "copySubmission"]
-          }
-        }
-      ],
+    "/api/data/submission/operation/initialize": {
       "post": {
         "tags": [
           "data"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Perform an operation for a Submission, i.e. initialize, save, submit, review.",
-        "operationId": "submissionOperation",
+        "summary": "Initializes a submission",
+        "description": "Allowes a user to initialize a submission.",
+        "operationId": "submissionOperationInitalize",
         "requestBody": {
           "x-name": "payload",
           "content": {
@@ -3171,7 +3158,1895 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"initialize\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/active": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Lets a user make a submission active.",
+        "operationId": "submissionOperationActive",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"active\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/inactive": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to make a submisssion inactive.",
+        "operationId": "submissionOperationInactive",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"inactive\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/apply": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to apply.",
+        "operationId": "submissionOperationApply",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/metadata": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to submit metadata for a submission.",
+        "operationId": "submissionOperationMetadata",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"metadata\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/submit": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to be able to submit a form for review.",
+        "operationId": "submissionOperationSubmit",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/save": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to be able to save a request in progress",
+        "operationId": "submissionOperationSave",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/review": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a submission to be reviewed.",
+        "operationId": "submissionOperationReview",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"review\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/resume": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to resume a submission.",
+        "operationId": "submissionOperationResume",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"resume\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/lock": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to lock a submission.",
+        "operationId": "submissionOperationLock",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"lock\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/unlock": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user unlock submission.",
+        "operationId": "submissionOperationUnlock",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"unlock\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/withdraw": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user withdraw a solution that is in progress.",
+        "operationId": "submissionOperationWithdraw",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/restore": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to restore a withdrawn submission",
+        "operationId": "submissionOperationRestore",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"restore\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/changeStep": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to change the step a workflow is on",
+        "operationId": "submissionOperationChangeStep",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/addContributors": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to add contributors to a submission",
+        "operationId": "submissionOperationAddContributors",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/removeContributor": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to be able to remove a contributor from a submission",
+        "operationId": "submissionOperationRemoveContributor",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/submission/operation/copySubmission": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform an operation on a Submission.",
+        "description": "Allowes a user to copy an existing submission",
+        "operationId": "submissionOperationCopySubmission",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"copySubmission\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
