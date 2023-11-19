@@ -129,6 +129,7 @@ CREATE TABLE IF NOT EXISTS question (
   help VARCHAR NOT NULL,
   required BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  daac_ids UUID[] DEFAULT '{}',
   PRIMARY KEY (id),
   UNIQUE (short_name, version)
 );
