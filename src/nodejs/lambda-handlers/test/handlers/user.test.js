@@ -161,4 +161,26 @@ describe('user', () => {
         const response = await user.handler(testEvent);
         expect(response).toEqual({error: 'No privilege'});
     })
+    it('should create a user', async () => {
+        const payload = {
+            operation: 'create',
+            context:{user_id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc'},
+            email: 'test@test.test',
+            role_ids: ['958fab13-ae06-470b-80e0-c9ba4e60f1bc'],
+            group_ids: ['958fab13-ae06-470b-80e0-c9ba4e60f1bc'],
+            username: 'test',
+            name: 'test',
+        }
+        const mockCreateCognitoUser = jest.fn();
+        mockCreateCognitoUser.mockReturnValue({msg: "a new user has been created in cognito"})
+        db.user.findById.mockReturnValueOnce({user_privileges: ['USER_CREATE']})
+        db.user.findById.mockReturnValueOnce({user_privileges: ['ADMIN']})
+        db.user.findById.mockReturnValueOnce({user_privileges: ['NO_PRIVILEGES']})
+        db.user.loginUser.mockReturnValue({msg: "a new user has been created"})
+        db.user.findByEmail.mockReturnValueOnce({email:''});
+        db.user.findByEmail.mockReturnValueOnce({email:'test@test.test'});
+        expect(await user.handler(payload)).toEqual({msg: "a new user has been created"})
+        expect(await user.handler(payload)).toEqual({error: "Duplicate email"})
+        expect(await user.handler(payload)).toEqual({error: "No privilege"})
+    });
 });
