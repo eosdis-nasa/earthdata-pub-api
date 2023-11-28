@@ -257,6 +257,11 @@ async function copySubmissionMethod(event, user) {
   return db.submission.findById({ id });
 }
 
+async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-vars
+  const { params: { id } } = event;
+  return db.submission.getSubmissionDetailsById({ id });
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -274,7 +279,8 @@ const operations = {
   changeStep: changeStepMethod,
   addContributors: addContributorsMethod,
   removeContributor: removeContributorMethod,
-  copySubmission: copySubmissionMethod
+  copySubmission: copySubmissionMethod,
+  getDetails: getDetailsMethod
 };
 
 async function handler(event) {

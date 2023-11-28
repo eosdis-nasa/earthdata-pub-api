@@ -114,3 +114,6 @@ RAISE;
 -- 10/12/2023 Add sub-daily to question options
     -- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))
     UPDATE input set enums='["Sub-Daily","Daily","Weekly","Monthly","Quarterly","Yearly","Varies"]' where question_id='4c42796a-8ff1-444e-8fc5-82ccad82e5fb'
+
+-- 11/1/2023 Remove custome MFA from edpub
+    ALTER TABLE edpuser DROP COLUMN mfa_enabled;
