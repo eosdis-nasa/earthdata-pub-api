@@ -22,9 +22,6 @@
     "tmp": "0.2.1",
     "uuid": "^9.0.0"
   },
-  "overrides": {
-    "lambda-agent": "1.6.5"
-  },
   "bundledDependencies": [],
   "devDependencies": {
     "aws-sdk": "^2.825.0"
