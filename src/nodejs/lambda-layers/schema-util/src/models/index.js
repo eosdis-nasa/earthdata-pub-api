@@ -11,6 +11,9 @@ const LogEventRequest = require('./log-event-request.js');
 const Note = require('./note.js');
 const NotificationReplyRequest = require('./notification-reply-request.js');
 const NotificationSendRequest = require('./notification-send-request.js');
+const MetricsGenerateReport = require('./metrics-generate-report.js');
+const MetricsGenerateReportResp = require('./metrics-generate-report-resp.js');
+const MetricsGetDaacsResp = require('./metrics-get-daacs-resp.js');
 const Page = require('./page.js');
 const Permission = require('./permission.js');
 const Question = require('./question.js');
@@ -49,6 +52,9 @@ const models = {
   Note,
   NotificationReplyRequest,
   NotificationSendRequest,
+  MetricsGenerateReport,
+  MetricsGenerateReportResp,
+  MetricsGetDaacsResp,
   Page,
   Permission,
   Question,
