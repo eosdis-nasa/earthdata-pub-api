@@ -1,8 +1,8 @@
-const invoke = require('../../invoke.js');
 const msg = require('message-util');
+const invoke = require('../../invoke.js');
 
 jest.mock('message-util', () => ({
-  sendEvent: jest.fn(),
+  sendEvent: jest.fn()
 }));
 
 describe('Invoke handler', () => {
@@ -15,11 +15,11 @@ describe('Invoke handler', () => {
       payload: {
         action_id: 'test_action_id',
         submission_id: 'test_submission_id',
-        data: 'test_data',
+        data: 'test_data'
       },
       context: {
-        user_id: 'test_user_id',
-      },
+        user_id: 'test_user_id'
+      }
     };
 
     const expectedEventMessage = {
@@ -27,7 +27,7 @@ describe('Invoke handler', () => {
       action_id: event.payload.action_id,
       submission_id: event.payload.submission_id,
       data: event.payload.data,
-      user_id: event.context.user_id,
+      user_id: event.context.user_id
     };
 
     await invoke.handler(event);
@@ -40,11 +40,11 @@ describe('Invoke handler', () => {
       payload: {
         action_id: 'test_action_id',
         submission_id: 'test_submission_id',
-        data: 'test_data',
+        data: 'test_data'
       },
       context: {
-        user_id: 'test_user_id',
-      },
+        user_id: 'test_user_id'
+      }
     };
 
     const response = await invoke.handler(event);
