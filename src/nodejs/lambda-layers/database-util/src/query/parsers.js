@@ -78,3 +78,5 @@ module.exports.getIds = many;
 module.exports.getSubmissions = many;
 module.exports.getActiveDaacs = many;
 module.exports.getSubmissionDetailsById = one;
+module.exports.getUserCount = one;
+module.exports.getAverageTimeToPublish = many;

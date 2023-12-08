@@ -18,6 +18,7 @@ async function execute({ resource, operation }, params) {
   const response = { data: {} };
   try {
     const { parser, ...query } = queryBuilder[resource][operation](params);
+    console.log(query);
     const data = parser(await pool.query(query));
     if (data) {
       Object.assign(response, { data });

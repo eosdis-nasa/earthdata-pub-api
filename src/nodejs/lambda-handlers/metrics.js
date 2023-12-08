@@ -4,15 +4,11 @@
  */
 
 const path = require('path');
-
 const { S3 } = require('@aws-sdk/client-s3');
-
 const db = require('database-util');
-
 const msg = require('message-util');
 
 const bucket = process.env.METRICS_BUCKET;
-
 const region = process.env.REGION;
 
 const s3 = new S3({ region });
@@ -58,13 +54,36 @@ async function put({ payload, context }) {
 }
 
 async function getsubmissions({ payload }) {
-  const { start_date: startDate, end_date: endDate } = payload;
+  const { start_date: startDate, end_date: endDate, daac_id: daacId, workflow_id:workflowId, submission_id:submissionId, role_id:roleId, privilege,  metric, state } = payload;
+  if(metric === 'user_count'){
+    console.log(privilege)
+    const resp = await db.metrics.getUserCount({
+      group_id: daacId,
+      role_id: roleId,
+      privilege
+    });
+    console.log(resp)
+    return resp;
+  }
+  if(metric === 'time_to_publish' && (
+    !daacId || !workflowId || !submissionId
+  )){
+    const resp = await db.metrics.getAverageTimeToPublish({})
+    console.log(resp)
+    return resp;
+  }
+  console.log(state)
   const submissions = await db.metrics.getSubmissions({
     ...startDate ? { start_date: startDate } : {},
-    ...endDate ? { end_date: endDate } : {}
+    ...endDate ? { end_date: endDate } : {},
+    ...daacId ? { daac_id: daacId } : {},
+    ...workflowId ? { workflow_id: workflowId } : {},
+    ...submissionId ? { submission_id: submissionId } : {},
+    ...state ? { state:state } : {},
   });
+  console.log(typeof(submissions[0].time_to_publish))
   const resp = {
-    published: submissions.length,
+    count: submissions.length,
     submissions
   };
   return resp;
