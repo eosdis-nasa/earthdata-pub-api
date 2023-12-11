@@ -3113,8 +3113,8 @@
           "data"
         ],
         "summary": "Initializes a submission",
-        "description": "Allowes a user to initialize a submission.",
-        "operationId": "submissionOperationInitalize",
+        "description": "Allows a user to initialize a submission.",
+        "operationId": "submissionOperationInitialize",
         "requestBody": {
           "x-name": "payload",
           "content": {
@@ -3349,7 +3349,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to make a submisssion inactive.",
+        "description": "Allows a user to make a submission inactive.",
         "operationId": "submissionOperationInactive",
         "requestBody": {
           "x-name": "payload",
@@ -3467,7 +3467,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to apply.",
+        "description": "Allows a user to apply.",
         "operationId": "submissionOperationApply",
         "requestBody": {
           "x-name": "payload",
@@ -3585,7 +3585,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to submit metadata for a submission.",
+        "description": "Allows a user to submit metadata for a submission.",
         "operationId": "submissionOperationMetadata",
         "requestBody": {
           "x-name": "payload",
@@ -3703,7 +3703,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to be able to submit a form for review.",
+        "description": "Allows a user to be able to submit a form for review.",
         "operationId": "submissionOperationSubmit",
         "requestBody": {
           "x-name": "payload",
@@ -3821,7 +3821,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to be able to save a request in progress",
+        "description": "Allows a user to be able to save a request in progress",
         "operationId": "submissionOperationSave",
         "requestBody": {
           "x-name": "payload",
@@ -3939,7 +3939,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a submission to be reviewed.",
+        "description": "Allows a submission to be reviewed.",
         "operationId": "submissionOperationReview",
         "requestBody": {
           "x-name": "payload",
@@ -4057,7 +4057,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to resume a submission.",
+        "description": "Allows a user to resume a submission.",
         "operationId": "submissionOperationResume",
         "requestBody": {
           "x-name": "payload",
@@ -4175,7 +4175,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to lock a submission.",
+        "description": "Allows a user to lock a submission.",
         "operationId": "submissionOperationLock",
         "requestBody": {
           "x-name": "payload",
@@ -4293,7 +4293,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user unlock submission.",
+        "description": "Allows a user unlock submission.",
         "operationId": "submissionOperationUnlock",
         "requestBody": {
           "x-name": "payload",
@@ -4411,7 +4411,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user withdraw a solution that is in progress.",
+        "description": "Allows a user withdraw a solution that is in progress.",
         "operationId": "submissionOperationWithdraw",
         "requestBody": {
           "x-name": "payload",
@@ -4529,7 +4529,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to restore a withdrawn submission",
+        "description": "Allows a user to restore a withdrawn submission",
         "operationId": "submissionOperationRestore",
         "requestBody": {
           "x-name": "payload",
@@ -4647,7 +4647,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to change the step a workflow is on",
+        "description": "Allows a user to change the step a workflow is on",
         "operationId": "submissionOperationChangeStep",
         "requestBody": {
           "x-name": "payload",
@@ -4765,7 +4765,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to add contributors to a submission",
+        "description": "Allows a user to add contributors to a submission",
         "operationId": "submissionOperationAddContributors",
         "requestBody": {
           "x-name": "payload",
@@ -4883,7 +4883,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to be able to remove a contributor from a submission",
+        "description": "Allows a user to be able to remove a contributor from a submission",
         "operationId": "submissionOperationRemoveContributor",
         "requestBody": {
           "x-name": "payload",
@@ -5001,7 +5001,7 @@
           "data"
         ],
         "summary": "Perform an operation on a Submission.",
-        "description": "Allowes a user to copy an existing submission",
+        "description": "Allows a user to copy an existing submission",
         "operationId": "submissionOperationCopySubmission",
         "requestBody": {
           "x-name": "payload",
@@ -6709,7 +6709,7 @@
         "tags": [
           "notification"
         ],
-        "summary": "Subscribe or unscubscribe to an event",
+        "summary": "Subscribe or unsubscribe to an event",
         "description": "Subscribe or unsubscribe to events raised by given entities.",
         "operationId": "subscribe",
         "requestBody": {
@@ -7785,7 +7785,7 @@
           "metrics"
         ],
         "summary": "build publication report",
-        "description": "Builds a publication report bassed on a time gate if provided",
+        "description": "Builds a publication report based on a time gate if provided",
         "operationId": "getPublicationMetrics",
         "requestBody": {
           "x-name": "payload",
@@ -8829,7 +8829,7 @@
           "pages"
         ],
         "summary": "Get page for the overview app",
-        "description": "Returns the frontpage content",
+        "description": "Returns the front-page content",
         "operationId": "pageFindAll",
         "responses": {
           "200": {

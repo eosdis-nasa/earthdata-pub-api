@@ -1,4 +1,4 @@
-const latency = parseInt(process.env.SIMULATED_LATENCTY || '0');
+const latency = parseInt(process.env.SIMULATED_LATENCY || '0');
 const handlers = require('./handlers.js');
 
 module.exports.actionFindById = function actionFindById(req, res, next) {
@@ -570,11 +570,11 @@ module.exports.userOperationPost = function userOperationPost(req, res, next) {
   });
 };
 
-module.exports.submissionOperationInitalize = function submissionOperationInitalize(req, res, next) {
+module.exports.submissionOperationInitialize = function submissionOperationInitialize(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
   const lambdaEvent = {
-    operation: 'initalize',
+    operation: 'initialize',
     context: { user_id: req.user_id },
     ...payload.value
   };
