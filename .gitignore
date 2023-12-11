@@ -35,4 +35,4 @@ jest.json
 /test-scripts
 
 # Ignore vscode config
-*.vscode
+*.vscode*
