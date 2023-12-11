@@ -791,19 +791,6 @@ module.exports.submissionOperationCopySubmission = function submissionOperationC
   });
 };
 
-module.exports.submissionOperation = function submissionOperation(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: params.operation.value,
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.submission(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.searchMetrics = function searchMetrics(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
