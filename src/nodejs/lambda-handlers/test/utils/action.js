@@ -1,5 +1,5 @@
-function execute () {
-    return ({output: 'output'});
+function execute() {
+  return ({ output: 'output' });
 }
 
 exports.execute = execute;
