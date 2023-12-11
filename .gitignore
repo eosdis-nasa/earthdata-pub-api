@@ -36,3 +36,6 @@ jest.json
 
 # Ignore vscode config
 *.vscode*
+
+# Ignore files made in testing
+.DS_Store

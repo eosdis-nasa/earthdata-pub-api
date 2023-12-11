@@ -20,7 +20,7 @@ services:
       - PG_DB=edpub
       - PG_PASS=edpub
       - PG_PORT=5432
-      - SIMULATED_LATENCTY=1000
+      - SIMULATED_LATENCY=1000
       - AUTH_RESPECT_EXP=true
       - AUTH_TOKEN_EXP=3600
       - AUTH_PROVIDER_URL=http://localhost:8080
