@@ -117,3 +117,6 @@ RAISE;
 
 -- 11/1/2023 Remove custome MFA from edpub
     ALTER TABLE edpuser DROP COLUMN mfa_enabled;
+
+-- 12/1/2023 Add daac_ids to question table
+    ALTER TABLE question ADD daac_ids UUID[] DEFAULT '{}';
