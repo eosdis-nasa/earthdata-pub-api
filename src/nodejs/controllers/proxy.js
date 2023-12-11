@@ -570,6 +570,227 @@ module.exports.userOperationPost = function userOperationPost(req, res, next) {
   });
 };
 
+module.exports.submissionOperationInitalize = function submissionOperationInitalize(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'initalize',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationActive = function submissionOperationActive(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'active',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationInactive = function submissionOperationInactive(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'inactive',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationApply = function submissionOperationApply(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'apply',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationMetadata = function submissionOperationMetadata(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'metadata',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationSubmit = function submissionOperationSubmit(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'submit',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationSave = function submissionOperationSave(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'save',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationReview = function submissionOperationReview(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'review',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationResume = function submissionOperationResume(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'resume',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationLock = function submissionOperationLock(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'lock',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationUnlock = function submissionOperationUnlock(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'unlock',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationWithdraw = function submissionOperationWithdraw(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'withdraw',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationRestore = function submissionOperationRestore(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'restore',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationChangeStep = function submissionOperationChangeStep(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'changeStep',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationAddContributors = function submissionOperationAddContributors(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'addContributors',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationRemoveContributor = function submissionOperationRemoveContributor(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'removeContributor',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationCopySubmission = function submissionOperationCopySubmission(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'copySubmission',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.submissionOperation = function submissionOperation(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
