@@ -55,7 +55,7 @@ async function put({ payload, context }) {
 
 async function getSubmissions({ payload }) {
   const {
-    start_date: startDate, end_date: endDate, daac_id: daacId, workflow_id: workflowId, 
+    start_date: startDate, end_date: endDate, daac_id: daacId, workflow_id: workflowId,
     submission_id: submissionId, role_id: roleId, privilege, metric, state
   } = payload;
   if (metric === 'user_count') {
