@@ -53,7 +53,7 @@ async function put({ payload, context }) {
   return { message: 'Success!' };
 }
 
-async function getsubmissions({ payload }) {
+async function getSubmissions({ payload }) {
   const {
     start_date: startDate, end_date: endDate, daac_id: daacId, workflow_id: workflowId, 
     submission_id: submissionId, role_id: roleId, privilege, metric, state
@@ -98,7 +98,7 @@ const operations = {
   put,
   get_report: getReport,
   list_reports: listReports,
-  get_submissions: getsubmissions,
+  get_submissions: getSubmissions,
   get_daacs: getDaacs
 };
 
