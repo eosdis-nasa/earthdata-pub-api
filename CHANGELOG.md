@@ -8,12 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
-
-## 1.0.19
-
 - Made content updates for EDPUB 1085, adding 'Sub-Daily'
 - Reduce API calls for request details page
 - Update UMMC metadata mapping template
+
+## 1.0.19
+
 - Added create-email.js for multiple email templates.
 - Added direct message email template
 - Add dead-letter-queue for all queues
