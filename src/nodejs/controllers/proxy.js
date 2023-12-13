@@ -362,6 +362,19 @@ module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
   });
 };
 
+module.exports.getSubmissionDetailsById = function getSubmissionDetailsById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'submission',
+    operation: 'getDetails',
+    context: { user_id: req.user_id },
+    params: { id: params.id.value }
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.userFindById = function userFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -592,6 +605,29 @@ module.exports.putMetric = function putMetric(req, res, next) {
   const lambdaEvent = {
     operation: 'put',
     data: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.metrics(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.getPublicationMetrics = function getPublicationMetrics(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'get_submissions',
+    payload: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.metrics(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.metricsGetDaacs = function metricsGetDaacs(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'get_daacs',
     context: { user_id: req.user_id }
   };
   handlers.metrics(lambdaEvent).then((body) => {
