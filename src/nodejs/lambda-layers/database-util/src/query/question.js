@@ -1,7 +1,7 @@
 const sql = require('./sql-builder.js');
 
 const table = 'question';
-const allFields = ['id', 'short_name', 'version', 'long_name', 'text', 'help', 'required', 'created_at', 'inputs'];
+const allFields = ['id', 'short_name', 'version', 'long_name', 'text', 'help', 'required', 'created_at', 'inputs', 'daac_ids'];
 const fieldMap = {
   id: 'question.id',
   short_name: 'question.short_name',
@@ -11,6 +11,7 @@ const fieldMap = {
   help: 'question.help',
   required: 'question.required',
   created_at: 'question.created_at',
+  daac_ids: 'question.daac_ids',
   inputs: 'inputs'
 };
 const refs = {
@@ -72,6 +73,7 @@ const sectionJoin = () => sql.select({
           ['required', 'question.required'],
           ['required_if', 'section_question.required_if'],
           ['show_if', 'section_question.show_if'],
+          ['daac_ids', 'question.daac_ids'],
           ['inputs', 'inputs']
         ]
       },
@@ -81,6 +83,11 @@ const sectionJoin = () => sql.select({
   from: {
     base: 'question',
     joins: [refs.section_question, refs.input]
+  },
+  where: {
+    filters:[
+      ...([{cmd: `(question.daac_ids = '{}' OR {{daac_id}} = ANY(question.daac_ids))`}]),
+    ]
   },
   group: 'section_question.section_id',
   alias: 'question_agg'
@@ -107,16 +114,18 @@ const findAllEx = () => `
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
 const findById = () => `${findAllEx()} WHERE question.id = {{id}}`;
 const findByName = () => `${findAllEx()} WHERE question.short_name = {{short_name}}`;
-const update = () => `
-  INSERT INTO question (id, short_name, version, long_name, text, help, required, created_at)
+const update = ({ daac_ids }) => `
+  INSERT INTO question (id, short_name, version, long_name, text, help, required, created_at, daac_ids)
   VALUES ({{payload.id}}, {{payload.short_name}}, {{payload.version}}, {{payload.long_name}}, {{payload.text}},
-  {{payload.help}}, {{payload.required}}, {{payload.created_at}})
+  {{payload.help}}, {{payload.required}}, {{payload.created_at}}, ARRAY(
+    SELECT DISTINCT unnest(array_cat(daac_ids, ARRAY['${daac_ids.join('\',\'')}']::UUID[]))
+  ))
   ON CONFLICT(short_name, version) DO UPDATE SET
   long_name = EXCLUDED.long_name, text = EXCLUDED.text, help = EXCLUDED.help,
-  required = EXCLUDED.required, created_at = EXCLUDED.created_at
+  required = EXCLUDED.required, created_at = EXCLUDED.created_at, EXCLUDED.daac_ids
   RETURNING *`;
-const add = () => `
-  WITH new_question AS (${update()}),
+const add = ({ daac_ids }) => `
+  WITH new_question AS (${update({ daac_ids })}),
   new_section_question AS (INSERT INTO section_question (section_id, question_id, list_order, required_if, show_if)
   VALUES ({{payload.section_question.section_id}}, {{payload.section_question.question_id}}, 
   {{payload.section_question.list_order}}, {{payload.section_question.required_if}}, 
