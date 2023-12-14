@@ -4,13 +4,13 @@ DEPRECATED: The following is now performed by Bamboo.
 
 Execute the following to install dependencies and package all of the deployment modules:
 
-```bash
+```
 npm run build
 ```
 
 Move to the terraform sub directory
 
-```bash
+```
 cd terraform
 ```
 
@@ -24,7 +24,7 @@ between test and production environments.
 
 Run the following to install Terraform modules.
 
-```bash
+```
 terraform init
 ```
 
@@ -32,7 +32,7 @@ terraform init
 
 Next, it is recommended to validate.
 
-```bash
+```
 terraform validate
 ```
 
@@ -40,7 +40,7 @@ terraform validate
 
 Then generate a plan.
 
-```bash
+```
 terraform plan -out=tfplan -var-file=env.tfvars
 ```
 
@@ -48,6 +48,6 @@ terraform plan -out=tfplan -var-file=env.tfvars
 
 Finally, apply the plan!
 
-```bash
+```
 terraform apply tfplan
 ```
