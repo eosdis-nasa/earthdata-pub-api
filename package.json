@@ -15,7 +15,7 @@
     "lint": "eslint ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
     "lint-fix": "eslint --fix ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
     "test": "jest -c jest.config.js --all",
-    "generate-docs": "bash ./scripts/generate-jsdoc.sh; bash ./scripts/generate-apidoc.sh"
+    "generate-docs": "bash ./scripts/generate-jsdoc.sh && bash ./scripts/generate-apidoc.sh"
   },
   "author": "Brian Ellingson",
   "license": "BSD 3-Clause License",
