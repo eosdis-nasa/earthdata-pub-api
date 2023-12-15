@@ -12,6 +12,8 @@ db.daac = jest.fn();
 db.daac.getIds = jest.fn();
 db.submission = jest.fn();
 db.submission.findById = jest.fn();
+db.group = jest.fn();
+db.group.findById = jest.fn();
 
 describe('file-upload', () => {
   beforeEach(() => {
@@ -101,6 +103,9 @@ describe('file-upload', () => {
     db.user.findById.mockReturnValueOnce({
       user_groups: [{ id: 'daac_id', short_name: 'daac_name' }],
       user_privileges: ['GROUP_UPLOAD']
+    });
+    db.group.findById.mockReturnValueOnce({
+      short_name: 'daac_name'
     });
     createPresignedPost.mockImplementationOnce((client, functPayload) => {
       expect(functPayload).toEqual({
