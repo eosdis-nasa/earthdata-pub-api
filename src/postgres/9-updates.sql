@@ -49,3 +49,6 @@ RAISE;
 --this should not be run until after the db's have been cleaned of duplicate entries as document in the closing of EDPUB-785
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
+
+--1/3/2014 add in permission for daac data manager to initialize requests
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_INITIALIZE');
