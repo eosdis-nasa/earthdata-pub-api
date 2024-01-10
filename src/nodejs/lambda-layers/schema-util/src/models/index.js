@@ -22,6 +22,7 @@ const Input = require('./input.js')
 const Role = require('./role.js');
 const Service = require('./service.js');
 const Submission = require('./submission.js');
+const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
@@ -63,6 +64,7 @@ const models = {
   Role,
   Service,
   Submission,
+  SubmissionOperationMapMetadata,
   SubmissionOperationRequest,
   SubscribeRequest,
   Subscription,

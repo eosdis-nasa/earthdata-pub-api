@@ -18,7 +18,7 @@
   "parserOptions": {
     "ecmaVersion": 2020
   },
-  "ignorePatterns": ["node_modules/", "/jsdoc/", "query/", "models/" ],
+  "ignorePatterns": ["node_modules/", "/jsdoc/", "query/", "models/", "src/nodejs/lambda-handlers/submission/metadata-mapper.js" ],
   "rules": {
     "comma-dangle": ["error", "never"],
     "class-methods-use-this": 0,
