@@ -1,3 +1,4 @@
+/* eslint-disable max-len, no-unused-expressions */
 const stringToBool = (inputString) => {
   if (inputString?.toLowerCase() === 'true' || inputString?.toLowerCase() === 'yes') {
     return true;
@@ -18,7 +19,7 @@ const mapEDPubToUmmc = async (formData) => {
   // remapped to Processing Level since this is where it should exist
   const dataProcessingLevel = {
     ProcessingLevel: {
-      Id: formData.data_processing_level == 'Other/Unsure' ? formData.data_processing_other_info : formData.data_processing_level
+      Id: formData.data_processing_level === 'Other/Unsure' ? formData.data_processing_other_info : formData.data_processing_level
     }
   };
 
@@ -136,7 +137,7 @@ const mapEDPubToUmmc = async (formData) => {
   const spatialExtent = {
     SpatialExtent: {
       GranuleSpatialRepresentation: 'CARTESIAN',
-      SpatialCoverageType: formData.spatial_vertical_answer?.toUpperCase() == 'YES' ? 'HORIZONTAL_VERTICAL' : 'HORIZONTAL',
+      SpatialCoverageType: formData.spatial_vertical_answer?.toUpperCase() === 'YES' ? 'HORIZONTAL_VERTICAL' : 'HORIZONTAL',
       HorizontalSpatialDomain: {
         Geometry: {
           CoordinateSystem: 'CARTESIAN',
