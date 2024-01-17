@@ -11,7 +11,7 @@ const { Readable } = require('node:stream');
 
 const Schema = require('schema-util');
 const MessageUtil = require('message-util');
-const DatabaseUtil = require('database-util')
+const DatabaseUtil = require('database-util');
 
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 

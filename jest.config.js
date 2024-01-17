@@ -3,7 +3,6 @@ module.exports = {
   projects: [
     '<rootDir>/src/nodejs'
   ],
-  testResultsProcessor: 'jest-bamboo-formatter',
   collectCoverage: true,
   coverageThreshold:{
     global:{
