@@ -1,10 +1,10 @@
 const { Pool } = require('pg');
 
-const dbHost = process.env.DB_HOST;
-const dbUser = process.env.DB_USER;
-const dbPassword = process.env.DB_PASSWORD;
-const dbDatabase = process.env.DB_DATABASE;
-const dbPort = process.env.DB_PORT;
+const dbHost = process.env.PG_HOST;
+const dbUser = process.env.PG_USER;
+const dbPassword = process.env.PG_PASS;
+const dbDatabase = process.env.PG_DB;
+const dbPort = process.env.PG_PORT;
 
 async function handler(){
 
