@@ -1022,7 +1022,7 @@ resource "aws_lambda_function" "rds_update" {
   role          = var.edpub_lambda_role_arn
   handler       = "rds-update.handler"
   runtime          = "nodejs18.x"
-  source_code_hash = filesha256("../artifacts/rds-update.zip")
+  source_code_hash = filesha256("../artifacts/rds-update-lambda.zip")
   timeout          = 180
   environment {
     variables = {
@@ -1042,7 +1042,7 @@ resource "aws_lambda_function" "rds_update" {
 resource "aws_lambda_invocation" "rds_update" {
   function_name         = aws_lambda_function.rds_update.function_name
   triggers  = {
-    source_code_hash    = filesha256("../artifacts/rds-update.zip")
+    source_code_hash    = filesha256("../artifacts/rds-update-lambda.zip")
   }
   input                 = jsonencode({})
 }
