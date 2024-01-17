@@ -1024,6 +1024,9 @@ resource "aws_lambda_function" "rds_update" {
   runtime          = "nodejs18.x"
   source_code_hash = filesha256("../artifacts/rds-update-lambda.zip")
   timeout          = 180
+  layers = [
+    aws_lambda_layer_version.database_util.arn,
+  ]
   environment {
     variables = {
       PG_USER            = var.db_user
