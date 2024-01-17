@@ -1017,7 +1017,7 @@ resource "aws_lambda_permission" "file_upload" {
 # rds update
 
 resource "aws_lambda_function" "rds_update" {
-  filename      = "../artifacts/rds-update.zip"
+  filename      = "../artifacts/rds-update-lambda.zip"
   function_name = "rds_update"
   role          = var.edpub_lambda_role_arn
   handler       = "rds-update.handler"
