@@ -4,7 +4,30 @@ name: github-actions
 run-name: Deploy to ${{ github.head_ref || github.ref_name }}  by @${{ github.actor }}
 on: [push, pull_request]
 jobs:
-  test-build:
+  test-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set Up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Install dependencies including dev dependencies
+        run: npm install --include=dev
+      - name: Test linting rules against code
+        run: npm run lint
+  test-snyk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.EDPUB_SNYK_TOKEN }}
+        with:
+          args: "--all-projects --detection-depth=6  --org=edpub --severity-threshold=high"
+  test-unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -19,39 +42,5 @@ jobs:
         run: npm run build:local
       - name: Build production app
         run: npm run build
-  test-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-      - name: Install dependencies including dev dependencies
-        run: npm install --include=dev
-      - name: Test linting rules against code
-        run: npm run lint
-  test-unit-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Set Up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-      - name: Install dependencies
-        run: npm install
       - name: Run unit tests
         run: npm run test
-  test-snyk:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.EDPUB_SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
