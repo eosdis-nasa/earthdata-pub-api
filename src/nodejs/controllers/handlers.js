@@ -20,3 +20,4 @@ module.exports.serviceAuthorizer = require('../lambda-handlers/service-authorize
 module.exports.rdsBackup = require('../lambda-handlers/rds-backup').handler;
 module.exports.workflow = require('../lambda-handlers/workflow.js').handler;
 module.exports.fileUpload = require('../lambda-handlers/file-upload.js').handler;
+module.exports.rdsUpdate = require('../lambda-handlers/rds-update.js').handler;
