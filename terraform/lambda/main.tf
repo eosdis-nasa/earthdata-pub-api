@@ -1045,7 +1045,7 @@ resource "aws_lambda_function" "rds_update" {
 resource "aws_lambda_invocation" "rds_update" {
   function_name         = aws_lambda_function.rds_update.function_name
   triggers  = {
-    redeployment        = aws_lambda_function.rds_update.source_code_hash
+    source_code_hash    = aws_lambda_function.rds_update.source_code_hash
   }
   input                 = jsonencode({})
 }
