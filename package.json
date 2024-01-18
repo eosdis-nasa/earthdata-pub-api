@@ -12,7 +12,7 @@
     "start": "docker-compose up",
     "start:detached": "docker-compose up -d",
     "stop": "docker-compose down",
-    "lint": "eslint ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json -f node_modules/eslint-bamboo-formatter/reporter.js",
+    "lint": "eslint ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
     "lint-fix": "eslint --fix ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
     "test": "jest -c jest.config.js --all",
     "generate-docs": "bash ./scripts/generate-jsdoc.sh && bash ./scripts/generate-apidoc.sh"
@@ -21,12 +21,10 @@
   "license": "BSD 3-Clause License",
   "devDependencies": {
     "eslint": "^7.27.0",
-    "eslint-bamboo-formatter": "^0.1.1",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
     "jest": "^27.3.1",
-    "jest-bamboo-formatter": "^1.0.1",
     "jsdoc": "^3.6.4"
   },
   "repository": {
