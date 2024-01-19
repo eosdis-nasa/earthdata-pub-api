@@ -58,13 +58,16 @@ async function getSubmissions({ payload }) {
     start_date: startDate, end_date: endDate, daac_id: daacId, workflow_id: workflowId,
     submission_id: submissionId, role_id: roleId, privilege, metric, state
   } = payload;
-  if (metric === 'user_count') {
-    const resp = await db.metrics.getUserCount({
+  let userCount
+  if (metric === 'user_count' || (Object.keys(payload).length === 0)) {
+    userCount = await db.metrics.getUserCount({
       group_id: daacId,
       role_id: roleId,
       privilege
     });
-    return resp;
+    if (metric === 'user_count') {
+      return { user_count: userCount };
+    }
   }
   if (metric === 'time_to_publish' && (
     !daacId || !workflowId || !submissionId
@@ -80,9 +83,11 @@ async function getSubmissions({ payload }) {
     ...submissionId ? { submission_id: submissionId } : {},
     ...state ? { state } : {}
   });
+
   const resp = {
     count: submissions.length,
-    submissions
+    submissions,
+    ...userCount ? { user_count:userCount } : {}
   };
   return resp;
 }
