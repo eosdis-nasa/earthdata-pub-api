@@ -36,6 +36,31 @@ const refs = {
     type: 'left_join',
     src: 'edprole_privilege',
     on: {left: 'edprole_privilege.edprole_id', right: 'edpuser_edprole.edprole_id'}
+  },
+  submission_step: {
+    type: 'left_join',
+    src: 'submission',
+    on: {left: 'submission.id', right: 'step_metric.submission_id'}
+  },
+  submission_metrics:{
+    type: 'left_join',
+    src: 'submission',
+    on: {left: 'submission.id', right: 'submission_metrics.id'}
+  },
+  submission_status_metrics:{
+    type: 'left_join',
+    src: 'submission_status',
+    on: {left: 'submission_status.id', right: 'submission_metrics.id'}
+  },
+  submission_reversion:{
+    type: 'left_join',
+    src: 'submission',
+    on: {left: 'submission.id', right: 'submission_reversion_metrics.submission_id'}
+  },
+  submission_status_reversion:{
+    type: 'left_join',
+    src: 'submission_status',
+    on: {left: 'submission_status.id', right: 'submission_metrics.submission_id'}
   }
 }
 
@@ -107,6 +132,36 @@ const getAverageTimeToPublish = (params) => `
   GROUP BY submission.daac_id
 `
 
+const getStepMetrics = (params) => sql.select({
+  fields: ['AVG(AGE(step_metrics.last_change, step_metrics.created_at)) as time_to_complete)'],
+  from: {
+    base: 'step_metrics',
+    joins: [refs.submission]
+  },
+  where:{
+    filters: [
+      ...(params.daac_id ? [{field: 'submission.daac_id', op: 'eq', param: "daac_id"}] : []),
+      ...(params.workflow_id ? [{field: 'step_metrics.workflow_id', op: 'eq', param: "workflow_id"}] : []),
+      ...(params.submission_id ? [{field: 'step_metrics.submission_id', op: 'eq', param: "submission_id"}] : []),
+    ]
+  }
+});
+
+const getAdvSubmissionMetrics = (params) => sql.select({
+  fields: ['submission_metrics.*'],
+  from: {
+    base: 'submission_metrics',
+    joins: [refs.submission_metrics, refs.submission_status_metrics]
+  },
+  where: {
+    filters:[
+      ...(params.daac_id ? [{field: 'submission.daac_id', op: 'eq', param: "daac_id"}] : []),
+      ...(params.workflow_id ? [{field: 'submission_status.workflow_id', op: 'eq', params: "workflow_id"}]: []),
+      ...(params.submission_id ? [{field: 'submission_metrics.id', op: 'eq', param: "submission_id"}] : [])
+    ]
+  }
+});
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.metricsFilter = metricsFilter;
@@ -115,3 +170,5 @@ module.exports.putMetric = putMetric;
 module.exports.getSubmissions = getSubmissions;
 module.exports.getUserCount = getUserCount;
 module.exports.getAverageTimeToPublish = getAverageTimeToPublish;
+module.exports.getStepMetrics = getStepMetrics;
+module.exports.getAdvSubmissionMetrics = getAdvSubmissionMetrics;

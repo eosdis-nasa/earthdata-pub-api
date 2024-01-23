@@ -58,22 +58,20 @@ async function getSubmissions({ payload }) {
     start_date: startDate, end_date: endDate, daac_id: daacId, workflow_id: workflowId,
     submission_id: submissionId, role_id: roleId, privilege, metric, state
   } = payload;
-  let userCount
+  let userCount;
+  let timeToPublish;
+
   if (metric === 'user_count' || (Object.keys(payload).length === 0)) {
-    userCount = await db.metrics.getUserCount({
+    userCount = db.metrics.getUserCount({
       group_id: daacId,
       role_id: roleId,
       privilege
     });
-    if (metric === 'user_count') {
-      return { user_count: userCount };
-    }
   }
-  if (metric === 'time_to_publish' && (
-    !daacId || !workflowId || !submissionId
-  )) {
-    const resp = await db.metrics.getAverageTimeToPublish({});
-    return resp;
+  if (((metric === 'time_to_publish' || (Object.keys(payload).length === 0)) && (
+    !daacId || !workflowId || !submissionId))
+    || (Object.keys(payload).length === 0)) {
+    timeToPublish = await db.metrics.getAverageTimeToPublish({});
   }
   const submissions = await db.metrics.getSubmissions({
     ...startDate ? { start_date: startDate } : {},
@@ -85,9 +83,10 @@ async function getSubmissions({ payload }) {
   });
 
   const resp = {
-    count: submissions.length,
-    submissions,
-    ...userCount ? { user_count:userCount } : {}
+    ...submissions ? { submission_count: submissions.length } : {},
+    ...submissions ? { submissions } : {},
+    ...userCount ? { user_count: userCount } : {},
+    ...timeToPublish ? { avg_time_to_publish: timeToPublish } : {}
   };
   return resp;
 }

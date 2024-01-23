@@ -58,3 +58,28 @@ INSERT INTO input VALUES ('d3c4f81e-1954-4b6f-9edf-90f240f525a8', 'acknowledgeme
 
 --1/3/2014 add in permission for daac data manager to initialize requests
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_INITIALIZE');
+
+--1/19/2024 adds tables for metrics tracking
+CREATE TABLE IF NOT EXISTS step_metrics (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  step_id UUID NOT NULL,
+  submission_id UUID NOT NULL,
+  workflow_id UUID NOT NULL,
+  start_time TIMESTAMP NOT NULL DEFAULT NOW(),
+  complete_time TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (step_id) REFERENCES step (id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (workflow_id) REFERENCES workflow (id)
+);
+
+CREATE TABLE IF NOT EXISTS submission_metrics (
+  id UUID NOT NULL,
+  submitted_to_mmt BOOLEAN DEFAULT FALSE,
+  referral_origin UUID,
+  accession_rejected BOOLEAN,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id),
+  FOREIGN KEY (referral_origin) REFERENCES daac (id)
+);
