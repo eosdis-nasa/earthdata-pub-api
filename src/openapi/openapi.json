@@ -11944,13 +11944,6 @@
                   "type": "string"
                 }
               }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
             }
           }
         },
@@ -11964,6 +11957,9 @@
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"onboardDaac\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
           "responses": {
             "default": {
               "statusCode": "200",
@@ -12010,7 +12006,7 @@
         "x-amazon-apigateway-integration": {
           "type": "mock",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"onboardDaac\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "{\"statusCode\": 200 }"
           },
           "responses": {
             "default": {
@@ -12029,7 +12025,6 @@
         "x-router-controller": "cors"
       }
     },
-
     "/api/data/daac/offboard": {
       "post": {
         "tags": [
@@ -12067,13 +12062,6 @@
                   "type": "string"
                 }
               }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
             }
           }
         },
@@ -12087,6 +12075,9 @@
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"offboardDaac\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
           "responses": {
             "default": {
               "statusCode": "200",
@@ -12133,7 +12124,7 @@
         "x-amazon-apigateway-integration": {
           "type": "mock",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"offboardDaac\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "{\"statusCode\": 200 }"
           },
           "responses": {
             "default": {
