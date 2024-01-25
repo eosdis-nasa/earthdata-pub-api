@@ -30,8 +30,8 @@ jobs:
         run: npm install && 
           cd ./src/nodejs/lambda-layers/auth-util && npm i && 
           cd ../database-util && npm i && 
-          cd ../message-util && npm i && \
-          cd ../schema-util && npm i
+          cd ../message-util && npm i && 
+          cd ../schema-util && npm i &&
           cd ../../../../
       - name: Build local app
         run: npm run build:local
