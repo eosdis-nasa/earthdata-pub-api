@@ -27,14 +27,11 @@ jobs:
         with:
           node-version-file: '.nvmrc'
       - name: Install dependencies
-        run: npm install && 
-          cd ./src/nodejs/lambda-layers/auth-util && npm i && 
-          cd ../database-util && npm i && 
-          cd ../message-util && npm i && 
-          cd ../schema-util && npm i &&
-          cd ../../../../
+        run: npm install
       - name: Build local app
         run: npm run build:local
+      - name: Build production app
+        run: npm run build
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
