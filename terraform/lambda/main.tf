@@ -1046,7 +1046,7 @@ resource "aws_lambda_invocation" "rds_update" {
   function_name         = aws_lambda_function.rds_update.function_name
   
   triggers  = {
-    lambda_function_last_modified    = aws_lambda_function.rds_update.last_modified
+    redeployment    =  filesha256("../src/nodejs/lambda-handlers/rds-update")
   }
 
   input                 = jsonencode({})
