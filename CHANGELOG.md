@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Renames improperly named /api/data/submission/{operation} endpoints back to the intended /api/submission/{operation}.
 
 ## 1.0.20
 
