@@ -20,7 +20,7 @@ async function handler(){
     let dbResp;
 
     const command = `
-    SELECT * FROM users LIMIT 2;
+    SELECT * FROM submission LIMIT 2;
     `;
 
     try{
