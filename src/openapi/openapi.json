@@ -7757,7 +7757,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/initialize": {
+    "/api/submission/initialize": {
       "post": {
         "tags": [
           "submission"
@@ -7875,7 +7875,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/active": {
+    "/api/submission/active": {
       "post": {
         "tags": [
           "submission"
@@ -7993,7 +7993,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/inactive": {
+    "/api/submission/inactive": {
       "post": {
         "tags": [
           "submission"
@@ -8111,7 +8111,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/apply": {
+    "/api/submission/apply": {
       "post": {
         "tags": [
           "submission"
@@ -8229,7 +8229,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/metadata": {
+    "/api/submission/metadata": {
       "post": {
         "tags": [
           "submission"
@@ -8347,7 +8347,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/submit": {
+    "/api/submission/submit": {
       "post": {
         "tags": [
           "submission"
@@ -8465,7 +8465,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/save": {
+    "/api/submission/save": {
       "post": {
         "tags": [
           "submission"
@@ -8583,7 +8583,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/review": {
+    "/api/submission/review": {
       "post": {
         "tags": [
           "submission"
@@ -8701,7 +8701,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/resume": {
+    "/api/submission/resume": {
       "post": {
         "tags": [
           "submission"
@@ -8819,7 +8819,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/lock": {
+    "/api/submission/lock": {
       "post": {
         "tags": [
           "submission"
@@ -8937,7 +8937,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/unlock": {
+    "/api/submission/unlock": {
       "post": {
         "tags": [
           "submission"
@@ -9055,7 +9055,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/withdraw": {
+    "/api/submission/withdraw": {
       "post": {
         "tags": [
           "submission"
@@ -9173,7 +9173,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/restore": {
+    "/api/submission/restore": {
       "post": {
         "tags": [
           "submission"
@@ -9291,7 +9291,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/changeStep": {
+    "/api/submission/changeStep": {
       "post": {
         "tags": [
           "submission"
@@ -9409,7 +9409,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/addContributors": {
+    "/api/submission/addContributors": {
       "post": {
         "tags": [
           "submission"
@@ -9527,7 +9527,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/removeContributor": {
+    "/api/submission/removeContributor": {
       "post": {
         "tags": [
           "submission"
@@ -9645,7 +9645,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/copySubmission": {
+    "/api/submission/copySubmission": {
       "post": {
         "tags": [
           "submission"
