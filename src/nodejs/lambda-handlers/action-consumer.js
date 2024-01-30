@@ -37,6 +37,8 @@ async function fetchAction(key, local) {
 
 async function processRecord(record) {
   const { eventMessage } = MessageUtil.parseRecord(record);
+  console.log('in action handler')
+  console.log(eventMessage)
   const { action_id: actionId, submission_id: submissionId, data } = eventMessage;
   const action = await DatabaseUtil.execute({ resource: 'action', operation: 'findById' },
     { id: actionId });

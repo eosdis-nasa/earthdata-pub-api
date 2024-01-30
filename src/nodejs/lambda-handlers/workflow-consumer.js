@@ -22,6 +22,8 @@ async function actionMethod(status) {
     step_name: status.step.name,
     data: status.step.data
   };
+  console.log('in actionMethod')
+  console.log(eventMessage)
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   Object.keys(eventMessage).forEach((key) => (
     eventMessage[key] === undefined && delete eventMessage[key]));
@@ -156,6 +158,7 @@ const eventMethods = {
 };
 
 async function processRecord(record) {
+  console.log('in workflow handler')
   const { eventMessage } = msg.parseRecord(record);
   const method = eventMethods[eventMessage.event_type];
   await method(eventMessage);
@@ -163,6 +166,7 @@ async function processRecord(record) {
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
+  console.log('in workflow handler base')
   const records = event.Records;
   const promises = records.map((record) => processRecord(record));
   await Promise.all(promises);
