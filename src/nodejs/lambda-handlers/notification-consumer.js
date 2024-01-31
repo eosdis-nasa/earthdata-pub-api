@@ -59,7 +59,6 @@ async function sendEmailNotification({ note, emailPayload }) {
 
 async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
-  console.log(eventMessage)
   if (!(eventMessage.data && eventMessage.data.silent)) {
     const message = await getTemplate(eventMessage);
     if (message) {
@@ -82,7 +81,6 @@ async function processRecord(record) {
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  console.log('in notification handler')
   const records = event.Records;
   const promises = records.map((record) => processRecord(record));
   await Promise.all(promises);
