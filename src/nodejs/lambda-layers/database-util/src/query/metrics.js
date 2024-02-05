@@ -162,6 +162,25 @@ const getAdvSubmissionMetrics = (params) => sql.select({
   }
 });
 
+const setStepStartTime = () => `
+  INSERT INTO step_metrics(step_name, submission_id, workflow_id)
+  VALUES({{step_name}}, {{submission_id}}, {{workflow_id}})
+  ON CONFLICT (step_name, submission_id) DO NOTHING
+`;
+
+const setStepStopTime = () => `
+  UPDATE step_metrics
+  SET complete_time = NOW()
+  WHERE step_name = {{step_name}} AND submission_id = {{submission_id}}
+`;
+
+const setAccessionReversion = () => `
+  INSERT INTO submission_metrics(id, accession_rejected)
+  VALUES({{id}}, {{status}})
+  ON CONFLICT (id) DO UPDATE SET accession_rejected = {{status}}
+`
+
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.metricsFilter = metricsFilter;
@@ -172,3 +191,6 @@ module.exports.getUserCount = getUserCount;
 module.exports.getAverageTimeToPublish = getAverageTimeToPublish;
 module.exports.getStepMetrics = getStepMetrics;
 module.exports.getAdvSubmissionMetrics = getAdvSubmissionMetrics;
+module.exports.setStepStartTime = setStepStartTime;
+module.exports.setStepStopTime = setStepStopTime;
+module.exports.setAccessionReversion = setAccessionReversion;
