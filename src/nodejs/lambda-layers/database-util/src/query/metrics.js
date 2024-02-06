@@ -101,7 +101,13 @@ const getUserCount = ( params ) => sql.select({
 });
 
 const getSubmissions = (params) => sql.select({
-  fields: ['submission.*', 'submission_status.*', 'AGE(last_change, created_at) as time_to_publish'],
+  fields: [
+    'submission.*', 
+    'submission_status.*', 
+    `CASE WHEN submission_status.step_name = 'close' 
+      THEN AGE(last_change, created_at) ELSE NULL END 
+      as time_to_publish`
+  ],
   from:{
     base: 'submission',
     joins: [refs.submission_status]
@@ -110,7 +116,7 @@ const getSubmissions = (params) => sql.select({
     filters: [
       ...(params.start_date ? [{field: 'submission.created_at', op: 'gte', param: "start_date"}] : []),
       ...(params.end_date ? [{field: 'submission.created_at', op: 'lte', param: "end_date"}] : []),
-      ...(params.daac_id ? [{field: 'submission.daac_id', op: 'eq', param: "daac_id"}] : []),
+      ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY('${params.daac_ids.join('\',\'')}')`}] : []),
       ...(params.workflow_id ? [{field: 'submission_status.workflow_id', op: 'eq', param: "workflow_id"}] : []),
       ...(params.submission_id ? [{field: 'submission.id', op: 'eq', param: "submission_id"}] : []),
       ...(params.state ? [
@@ -123,43 +129,40 @@ const getSubmissions = (params) => sql.select({
   }
 })
 
+//rewrite with sql-builder and daac handling
 const getAverageTimeToPublish = (params) => `
   SELECT submission.daac_id, AVG(AGE(last_change, created_at)) as time_to_publish
   FROM submission 
   LEFT JOIN submission_status 
   ON submission_status.id = submission.id 
-  WHERE  submission_status.step_name = 'close'
+  WHERE  
+    submission_status.step_name = 'close'
   GROUP BY submission.daac_id
 `
 
 const getStepMetrics = (params) => sql.select({
-  fields: ['AVG(AGE(step_metrics.last_change, step_metrics.created_at)) as time_to_complete)'],
-  from: {
+  fields:[
+    'AGE(step_metrics.complete_time, step_metrics.start_time) as time_for_step', 
+    'step_metrics.step_name', 
+    'step_metrics.submission_id', 
+    'step_metrics.workflow_id'
+  ],
+  from:{
     base: 'step_metrics',
-    joins: [refs.submission]
+    joins: [refs.submission_step]
   },
   where:{
-    filters: [
-      ...(params.daac_id ? [{field: 'submission.daac_id', op: 'eq', param: "daac_id"}] : []),
-      ...(params.workflow_id ? [{field: 'step_metrics.workflow_id', op: 'eq', param: "workflow_id"}] : []),
+    filters:[
+      ...(params.step_name ? [{field: 'step_metrics.step_name', op: 'eq', param: "step_name"}] : []),
       ...(params.submission_id ? [{field: 'step_metrics.submission_id', op: 'eq', param: "submission_id"}] : []),
+      ...(params.workflow_id ? [{field: 'step_metrics.workflow_id', op: 'eq', param: "workflow_id"}] : []),
+      ...(params.daac_id ? [{field: 'submission.daac_id', op: 'eq', param: "daac_id"}] : [])
     ]
   }
 });
 
 const getAdvSubmissionMetrics = (params) => sql.select({
-  fields: ['submission_metrics.*'],
-  from: {
-    base: 'submission_metrics',
-    joins: [refs.submission_metrics, refs.submission_status_metrics]
-  },
-  where: {
-    filters:[
-      ...(params.daac_id ? [{field: 'submission.daac_id', op: 'eq', param: "daac_id"}] : []),
-      ...(params.workflow_id ? [{field: 'submission_status.workflow_id', op: 'eq', params: "workflow_id"}]: []),
-      ...(params.submission_id ? [{field: 'submission_metrics.id', op: 'eq', param: "submission_id"}] : [])
-    ]
-  }
+  
 });
 
 const setStepStartTime = () => `
