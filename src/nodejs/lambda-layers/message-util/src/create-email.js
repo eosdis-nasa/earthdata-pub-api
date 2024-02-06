@@ -71,8 +71,8 @@ const createEmailHtml = async (params) => {
     directMessage = htmlSnippets.direct_message().text;
     directMessageBody1 = htmlSnippets.direct_message_body1(params).text;
     directMessageAsText = htmlSnippets.direct_message_as_text(params).text;
-  } else if (params.eventMessage.event_type.match(/init/gi)) {
-    return getNewSubmissionTemplate;
+  } else if (params.eventMessage.event_type.match(/request_initialized/gi)) {
+    return getNewSubmissionTemplate(params);
   } else {
     stepChange = htmlSnippets.step_change().text;
     stepChangeBody1 = htmlSnippets.step_change_body1(params).text;
