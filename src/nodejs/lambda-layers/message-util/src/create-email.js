@@ -1,6 +1,6 @@
 const { getNewSubmissionTemplate } = require('./templates/new-submission');
- 
-htmlSnippets = {
+
+const htmlSnippets = {
   default_style: () => ({
     text: 'td h1 { margin: 0; padding: 0; font-size: 22px; }'
   }),
