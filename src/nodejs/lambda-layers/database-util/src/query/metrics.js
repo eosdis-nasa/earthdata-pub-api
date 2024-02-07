@@ -37,34 +37,22 @@ const refs = {
     src: 'edprole_privilege',
     on: {left: 'edprole_privilege.edprole_id', right: 'edpuser_edprole.edprole_id'}
   },
+  user_daac:{
+    type: 'left_join',
+    src: 'daac',
+    on: {left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id'}
+  },
   submission_step: {
     type: 'left_join',
     src: 'submission',
     on: {left: 'submission.id', right: 'step_metric.submission_id'}
   },
-  submission_metrics:{
+  submission_metrics: {
     type: 'left_join',
-    src: 'submission',
-    on: {left: 'submission.id', right: 'submission_metrics.id'}
-  },
-  submission_status_metrics:{
-    type: 'left_join',
-    src: 'submission_status',
-    on: {left: 'submission_status.id', right: 'submission_metrics.id'}
-  },
-  submission_reversion:{
-    type: 'left_join',
-    src: 'submission',
-    on: {left: 'submission.id', right: 'submission_reversion_metrics.submission_id'}
-  },
-  submission_status_reversion:{
-    type: 'left_join',
-    src: 'submission_status',
-    on: {left: 'submission_status.id', right: 'submission_metrics.submission_id'}
+    src: 'submission_metrics',
+    on: {left: 'submission_metrics.id', right: 'submission.id'}
   }
 }
-
-const fields = (list) => list.map((field) => fieldMap[field]);
 
 const findAll = () => `
 SELECT * FROM metrics`;
@@ -89,11 +77,11 @@ const getUserCount = ( params ) => sql.select({
   fields: ['COUNT(DISTINCT edpuser.id) as count'],
   from: {
     base : 'edpuser',
-    joins:[refs.ueser_group, refs.user_role, refs.user_privilege]
+    joins:[refs.ueser_group, refs.user_role, refs.user_privilege, refs.user_daac]
   },
   where:{
     filters: [
-      ...(params.group_id ? [{field: 'edpuser_edpgroup.edpgroup_id', op: 'eq', param: "group_id"}] : []),
+      ...(params.daac_ids ? [{cmd: `daac.id = ANY(ARRAY[\'${params.daac_ids.join('\',\'')}\']::UUID[])`}] : []),
       ...(params.role_id ? [{field: 'edpuser_edprole.edprole_id', op: 'eq', param: "role_id"}] : []),
       ...(params.privilege ? [{field: 'edprole_privilege.privilege', op: 'eq', param: "privilege"}] : [])
     ]
@@ -102,21 +90,25 @@ const getUserCount = ( params ) => sql.select({
 
 const getSubmissions = (params) => sql.select({
   fields: [
-    'submission.*', 
-    'submission_status.*', 
+    'submission.id',
+    'submission.daac_id',
+    'submission.created_at',
+    'submission.hidden', 
+    'submission_status.*',
+    'submission_metrics.accession_rejected',
     `CASE WHEN submission_status.step_name = 'close' 
       THEN AGE(last_change, created_at) ELSE NULL END 
       as time_to_publish`
   ],
   from:{
     base: 'submission',
-    joins: [refs.submission_status]
+    joins: [refs.submission_status, refs.submission_metrics]
   },
   where:{
     filters: [
       ...(params.start_date ? [{field: 'submission.created_at', op: 'gte', param: "start_date"}] : []),
       ...(params.end_date ? [{field: 'submission.created_at', op: 'lte', param: "end_date"}] : []),
-      ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY('${params.daac_ids.join('\',\'')}')`}] : []),
+      ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY(ARRAY['${params.daac_ids.join('\',\'')}']::UUID[])`}] : []),
       ...(params.workflow_id ? [{field: 'submission_status.workflow_id', op: 'eq', param: "workflow_id"}] : []),
       ...(params.submission_id ? [{field: 'submission.id', op: 'eq', param: "submission_id"}] : []),
       ...(params.state ? [
@@ -130,7 +122,26 @@ const getSubmissions = (params) => sql.select({
 })
 
 //rewrite with sql-builder and daac handling
-const getAverageTimeToPublish = (params) => `
+const getAverageTimeToPublish = (params) => sql.select({
+  fields:[
+    'submission.daac_id', 
+    'AVG(AGE(last_change, created_at)) as time_to_publish'
+  ],
+  from:{
+    base: 'submission',
+    joins: [refs.submission_status]
+  },
+  where:{
+    filters:[
+      {field: 'submission_status.step_name', op: 'eq', value: "'close'"},
+      ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY(ARRAY['${params.daac_ids.join('\',\'')}']::UUID[])`}] : [])
+    ]
+  },
+  group: 'submission.daac_id'
+});
+
+
+const temp =`
   SELECT submission.daac_id, AVG(AGE(last_change, created_at)) as time_to_publish
   FROM submission 
   LEFT JOIN submission_status 
@@ -156,13 +167,9 @@ const getStepMetrics = (params) => sql.select({
       ...(params.step_name ? [{field: 'step_metrics.step_name', op: 'eq', param: "step_name"}] : []),
       ...(params.submission_id ? [{field: 'step_metrics.submission_id', op: 'eq', param: "submission_id"}] : []),
       ...(params.workflow_id ? [{field: 'step_metrics.workflow_id', op: 'eq', param: "workflow_id"}] : []),
-      ...(params.daac_id ? [{field: 'submission.daac_id', op: 'eq', param: "daac_id"}] : [])
+      ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY(ARRAY['${params.daac_ids.join('\',\'')}']::UUID[])`}] : [])
     ]
   }
-});
-
-const getAdvSubmissionMetrics = (params) => sql.select({
-  
 });
 
 const setStepStartTime = () => `
@@ -193,7 +200,6 @@ module.exports.getSubmissions = getSubmissions;
 module.exports.getUserCount = getUserCount;
 module.exports.getAverageTimeToPublish = getAverageTimeToPublish;
 module.exports.getStepMetrics = getStepMetrics;
-module.exports.getAdvSubmissionMetrics = getAdvSubmissionMetrics;
 module.exports.setStepStartTime = setStepStartTime;
 module.exports.setStepStopTime = setStepStopTime;
 module.exports.setAccessionReversion = setAccessionReversion;

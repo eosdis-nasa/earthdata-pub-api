@@ -56,10 +56,10 @@ async function put({ payload, context }) {
 async function getSubmissions({ payload, context }) {
   const { user_id: userId} = context;
 
-  const user =  await db.user.findById({ id: null });
+  const user =  await db.user.findById({ id: userId });
   console.log(user);
-  const groupIds = user.user_groups.map((group) => group.id);
-  const userDaac = (await db.daac.getIds({ group_ids: groupIds }))
+  const userGroupIds = user.user_groups.map((group) => group.id);
+  const userDaac = (await db.daac.getIds({ group_ids: userGroupIds }))
     .map((daac) => daac.id);
 
   const {
@@ -77,14 +77,13 @@ async function getSubmissions({ payload, context }) {
     } else {
       daacIds = [zeroUUID, ...userDaac];
     }
-    console.log('here')
   }else{
     daacIds = reqDaacId? [reqDaacId] : null;
   }
   console.log(daacIds);
 
-  if (metric === 'user_count' || (Object.keys(payload).length === 0)) {
-    //needs group filter logic.
+  if ((metric === 'user_count' || (Object.keys(payload).length === 0)) && 
+    ( user.user_privileges.includes('ADMIN') || user.user_privileges.includes('DAAC_READ'))) {
     userCount = (await db.metrics.getUserCount({
       daac_ids: daacIds,
       role_id: roleId,
@@ -92,10 +91,9 @@ async function getSubmissions({ payload, context }) {
     })).count;
   }
   if (((metric === 'time_to_publish' || (Object.keys(payload).length === 0)) && !(
-    daacIds || workflowId || submissionId))
+    daacIds?.length === 1 || workflowId || submissionId))
     || (Object.keys(payload).length === 0)) {
-      //add daac logic
-    timeToPublish = await db.metrics.getAverageTimeToPublish({});
+    timeToPublish = await db.metrics.getAverageTimeToPublish({ ...daacIds ? { daac_ids: daacIds } : {} });
   }
   const submissions = await db.metrics.getSubmissions({
     ...startDate ? { start_date: startDate } : {},
