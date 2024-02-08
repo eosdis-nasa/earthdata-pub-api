@@ -247,7 +247,27 @@ const findAll = ({name, email, sort, order, per_page, page}) => sql.select({
     ...(page ? { offset: page } : {})
 });
 
-const findById = (params) => find(params);
+const findById = () => sql.select({
+  fields: fields(allFields),
+  from: {
+    base: table,
+    joins: [
+      refs.group,
+      refs.role,
+      refs.user_permission_submission,
+      refs.user_subscription_action,
+      refs.user_subscription_form,
+      refs.user_subscription_service,
+      refs.user_subscription_submission,
+      refs.user_subscription_workflow
+    ]
+  },
+  where: {
+    filters: [
+      ...([{ field: 'edpuser.id', param: 'id' }])
+    ]
+  }
+});
 
 const findSystemUser = () => sql.select({
   fields: fields(['id', 'name', 'email']),
