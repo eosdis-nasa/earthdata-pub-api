@@ -144,8 +144,17 @@ async function submitMethod(event, user) {
 async function reviewMethod(event, user) {
   const { id, approve } = event;
   const status = await db.submission.getState({ id });
+  const stepType = status.step.type;
+  let eventType;
+  if (!approve) {
+    eventType = 'review_rejected';
+  } else if (stepType === 'review') {
+    eventType = 'review_approved';
+  } else {
+    eventType = 'workflow_promote_step';
+  }
   const eventMessage = {
-    event_type: approve && approve !== 'false' ? 'review_approved' : 'review_rejected',
+    event_type: eventType,
     submission_id: id,
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
