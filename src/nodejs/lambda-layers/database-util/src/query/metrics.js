@@ -45,7 +45,7 @@ const refs = {
   submission_step: {
     type: 'left_join',
     src: 'submission',
-    on: {left: 'submission.id', right: 'step_metric.submission_id'}
+    on: {left: 'submission.id', right: 'step_metrics.submission_id'}
   },
   submission_metrics: {
     type: 'left_join',
@@ -111,6 +111,7 @@ const getSubmissions = (params) => sql.select({
       ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY(ARRAY['${params.daac_ids.join('\',\'')}']::UUID[])`}] : []),
       ...(params.workflow_id ? [{field: 'submission_status.workflow_id', op: 'eq', param: "workflow_id"}] : []),
       ...(params.submission_id ? [{field: 'submission.id', op: 'eq', param: "submission_id"}] : []),
+      ...(params.accession_rejected ? [{field: 'submission_metrics.accession_rejected', op: 'eq', param: "accession_rejected"}] : []),
       ...(params.state ? [
         ...(params.state === 'published' ? [{field: 'submission_status.step_name', op: 'eq', value: "'close'"}] : []),
         ...(params.state === 'in_progress' ? [{field: 'submission_status.step_name', op: 'ne', value: "'close'"}] : []),
@@ -134,22 +135,13 @@ const getAverageTimeToPublish = (params) => sql.select({
   where:{
     filters:[
       {field: 'submission_status.step_name', op: 'eq', value: "'close'"},
+      ...(params.start_date ? [{field: 'submission.created_at', op: 'gte', param: "start_date"}] : []),
+      ...(params.end_date ? [{field: 'submission.created_at', op: 'lte', param: "end_date"}] : []),
       ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY(ARRAY['${params.daac_ids.join('\',\'')}']::UUID[])`}] : [])
     ]
   },
   group: 'submission.daac_id'
 });
-
-
-const temp =`
-  SELECT submission.daac_id, AVG(AGE(last_change, created_at)) as time_to_publish
-  FROM submission 
-  LEFT JOIN submission_status 
-  ON submission_status.id = submission.id 
-  WHERE  
-    submission_status.step_name = 'close'
-  GROUP BY submission.daac_id
-`
 
 const getStepMetrics = (params) => sql.select({
   fields:[
@@ -164,6 +156,9 @@ const getStepMetrics = (params) => sql.select({
   },
   where:{
     filters:[
+      {cmd: 'step_metrics.complete_time IS NOT NULL'},
+      ...(params.start_date ? [{field: 'step_metrics.start_time', op: 'gte', param: "start_date"}] : []),
+      ...(params.end_date ? [{field: 'step_metrics.start_time', op: 'lte', param: "end_date"}] : []),
       ...(params.step_name ? [{field: 'step_metrics.step_name', op: 'eq', param: "step_name"}] : []),
       ...(params.submission_id ? [{field: 'step_metrics.submission_id', op: 'eq', param: "submission_id"}] : []),
       ...(params.workflow_id ? [{field: 'step_metrics.workflow_id', op: 'eq', param: "workflow_id"}] : []),

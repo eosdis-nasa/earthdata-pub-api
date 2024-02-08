@@ -54,61 +54,90 @@ async function put({ payload, context }) {
 }
 
 async function getSubmissions({ payload, context }) {
-  const { user_id: userId} = context;
-
-  const user =  await db.user.findById({ id: userId });
-  console.log(user);
+  // gets using information and checks for minimum permissions
+  const { user_id: userId } = context;
+  const user = await db.user.findById({ id: userId });
+  if (!(user.user_privileges.includes('ADMIN') || user.user_privileges.includes('REQUEST_DAACREAD'))) {
+    return { message: 'Invalid Permissions' };
+  }
+  // convers user groups to daacs for more granular permissions
   const userGroupIds = user.user_groups.map((group) => group.id);
   const userDaac = (await db.daac.getIds({ group_ids: userGroupIds }))
     .map((daac) => daac.id);
 
+  // parses the payload for filters and sets up variables
   const {
     start_date: startDate, end_date: endDate, daac_id: reqDaacId, workflow_id: workflowId,
-    submission_id: submissionId, role_id: roleId, privilege, metric, state
+    submission_id: submissionId, role_id: roleId, accession_rejected: accessionRejected,
+    privilege, metric, state
   } = payload;
   let daacIds;
   let userCount;
   let timeToPublish;
-  const zeroUUID = '00000000-0000-0000-0000-000000000000';
+  let stepMetrics;
+  let submissions;
+  const zeroUUID = '00000000-0000-0000-0000-000000000000';// exits to prevent non admin users from seeing all daacs
 
+  // Establishes daac level permissions
   if (!user.user_privileges.includes('ADMIN')) {
-    if(reqDaacId) {
+    if (reqDaacId) {
       daacIds = [zeroUUID, ...(userDaac.filter((daacId) => daacId === reqDaacId))];
     } else {
       daacIds = [zeroUUID, ...userDaac];
     }
-  }else{
-    daacIds = reqDaacId? [reqDaacId] : null;
+  } else {
+    daacIds = reqDaacId ? [reqDaacId] : null;
   }
-  console.log(daacIds);
 
-  if ((metric === 'user_count' || (Object.keys(payload).length === 0)) && 
-    ( user.user_privileges.includes('ADMIN') || user.user_privileges.includes('DAAC_READ'))) {
+  // queries for user count if needed bassed on filters
+  if ((!metric || metric?.includes('user_count'))
+    && !(startDate || endDate || workflowId || submissionId || accessionRejected || state)) {
     userCount = (await db.metrics.getUserCount({
       daac_ids: daacIds,
       role_id: roleId,
       privilege
     })).count;
   }
-  if (((metric === 'time_to_publish' || (Object.keys(payload).length === 0)) && !(
-    daacIds?.length === 1 || workflowId || submissionId))
-    || (Object.keys(payload).length === 0)) {
-    timeToPublish = await db.metrics.getAverageTimeToPublish({ ...daacIds ? { daac_ids: daacIds } : {} });
+  // queries for average time to publish if needed bassed on filters
+  if ((!metric || metric?.includes('submission'))
+    && !(workflowId || submissionId || accessionRejected || state)) {
+    timeToPublish = await db.metrics.getAverageTimeToPublish({
+      ...startDate ? { start_date: startDate } : {},
+      ...endDate ? { end_date: endDate } : {},
+      ...daacIds ? { daac_ids: daacIds } : {}
+    });
   }
-  const submissions = await db.metrics.getSubmissions({
-    ...startDate ? { start_date: startDate } : {},
-    ...endDate ? { end_date: endDate } : {},
-    ...daacIds ? { daac_ids: daacIds } : {},
-    ...workflowId ? { workflow_id: workflowId } : {},
-    ...submissionId ? { submission_id: submissionId } : {},
-    ...state ? { state } : {}
-  });
-
+  // queries for step metrics if needed bassed on filters
+  if ((!metric || metric?.includes('step_metrics'))
+    && !(roleId || privilege || metric || state || accessionRejected)) {
+    stepMetrics = await db.metrics.getStepMetrics({
+      ...startDate ? { start_date: startDate } : {},
+      ...endDate ? { end_date: endDate } : {},
+      ...daacIds ? { daac_ids: daacIds } : {},
+      ...workflowId ? { workflow_id: workflowId } : {},
+      ...submissionId ? { submission_id: submissionId } : {}
+    });
+  }
+  // queries for submission metrics if needed bassed on filters
+  if ((!metric || metric?.includes('submission'))
+    && !(roleId || privilege)) {
+    submissions = await db.metrics.getSubmissions({
+      ...startDate ? { start_date: startDate } : {},
+      ...endDate ? { end_date: endDate } : {},
+      ...daacIds ? { daac_ids: daacIds } : {},
+      ...workflowId ? { workflow_id: workflowId } : {},
+      ...submissionId ? { submission_id: submissionId } : {},
+      ...accessionRejected ? { accession_rejected: accessionRejected } : {},
+      ...state ? { state } : {}
+    });
+  }
+  // builds response object bassed on what was queried
   const resp = {
     ...submissions ? { submission_count: submissions.length } : {},
     ...submissions ? { submissions } : {},
+    ...timeToPublish ? { avg_time_to_publish: timeToPublish } : {},
     ...userCount ? { user_count: userCount } : {},
-    ...timeToPublish ? { avg_time_to_publish: timeToPublish } : {}
+    ...stepMetrics ? { step_metrics: stepMetrics } : {}
   };
   return resp;
 }
