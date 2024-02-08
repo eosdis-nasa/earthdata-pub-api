@@ -791,6 +791,19 @@ module.exports.submissionOperationCopySubmission = function submissionOperationC
   });
 };
 
+module.exports.submissionOperationMapMetadata = function submissionOperationMapMetadata(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'mapMetadata',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.searchMetrics = function searchMetrics(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1071,5 +1084,31 @@ module.exports.getFormsApp = function getFormsApp(req, res, next) {
 module.exports.getFormsAppSubpath = function getFormsAppSubpath(req, res, next) {
   res.send({
     message: 'Placeholder for forms app subpath endpoint.'
+  });
+};
+
+module.exports.onboardDaac = function onboardDaac(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'onboardDaac',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.offboardDaac = function offboardDaac(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'offboardDaac',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
   });
 };

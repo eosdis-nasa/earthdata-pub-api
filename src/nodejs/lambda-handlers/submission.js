@@ -10,6 +10,8 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
+const { mapEDPubToUmmc } = require('./submission/metadata-mapper.js');
+
 function filterObject(base, filter) {
   const filtered = Object.keys(base)
     .filter((key) => filter.includes(key))
@@ -262,6 +264,23 @@ async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-
   return db.submission.getSubmissionDetailsById({ id });
 }
 
+async function mapMetadataMethod(event, user) {
+  const { id: submissionId } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD'];
+  let mappedMetadata = {};
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+  const formData = await db.submission.getFormData({ id: submissionId });
+  try {
+    mappedMetadata = await mapEDPubToUmmc(formData.data);
+  } catch (e) {
+    return { error: 'Invalid form data. Data publication form must be complete' };
+  }
+
+  return mappedMetadata;
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -280,7 +299,8 @@ const operations = {
   addContributors: addContributorsMethod,
   removeContributor: removeContributorMethod,
   copySubmission: copySubmissionMethod,
-  getDetails: getDetailsMethod
+  getDetails: getDetailsMethod,
+  mapMetadata: mapMetadataMethod
 };
 
 async function handler(event) {

@@ -5113,6 +5113,124 @@
         "x-router-controller": "cors"
       }
     },
+    "/api/data/submission/operation/mapMetadata": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Maps and returns metadata for a submission.",
+        "description": "Maps and returns metadata generated from form responses",
+        "operationId": "submissionOperationMapMetadata",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationMapMetadata"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"mapMetadata\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
     "/api/data/submission/{id}/details": {
       "parameters": [
         {
@@ -7639,7 +7757,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/initialize": {
+    "/api/submission/initialize": {
       "post": {
         "tags": [
           "submission"
@@ -7757,7 +7875,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/active": {
+    "/api/submission/active": {
       "post": {
         "tags": [
           "submission"
@@ -7875,7 +7993,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/inactive": {
+    "/api/submission/inactive": {
       "post": {
         "tags": [
           "submission"
@@ -7993,7 +8111,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/apply": {
+    "/api/submission/apply": {
       "post": {
         "tags": [
           "submission"
@@ -8111,7 +8229,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/metadata": {
+    "/api/submission/metadata": {
       "post": {
         "tags": [
           "submission"
@@ -8229,7 +8347,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/submit": {
+    "/api/submission/submit": {
       "post": {
         "tags": [
           "submission"
@@ -8347,7 +8465,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/save": {
+    "/api/submission/save": {
       "post": {
         "tags": [
           "submission"
@@ -8465,7 +8583,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/review": {
+    "/api/submission/review": {
       "post": {
         "tags": [
           "submission"
@@ -8583,7 +8701,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/resume": {
+    "/api/submission/resume": {
       "post": {
         "tags": [
           "submission"
@@ -8701,7 +8819,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/lock": {
+    "/api/submission/lock": {
       "post": {
         "tags": [
           "submission"
@@ -8819,7 +8937,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/unlock": {
+    "/api/submission/unlock": {
       "post": {
         "tags": [
           "submission"
@@ -8937,7 +9055,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/withdraw": {
+    "/api/submission/withdraw": {
       "post": {
         "tags": [
           "submission"
@@ -9055,7 +9173,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/restore": {
+    "/api/submission/restore": {
       "post": {
         "tags": [
           "submission"
@@ -9173,7 +9291,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/changeStep": {
+    "/api/submission/changeStep": {
       "post": {
         "tags": [
           "submission"
@@ -9291,7 +9409,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/addContributors": {
+    "/api/submission/addContributors": {
       "post": {
         "tags": [
           "submission"
@@ -9409,7 +9527,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/removeContributor": {
+    "/api/submission/removeContributor": {
       "post": {
         "tags": [
           "submission"
@@ -9527,7 +9645,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/copySubmission": {
+    "/api/submission/copySubmission": {
       "post": {
         "tags": [
           "submission"
@@ -11744,6 +11862,242 @@
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsNotify",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/daac/onboard": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Onboard a DAAC",
+        "description": "Enables a DAAC selection in EDPub",
+        "operationId": "onboardDaac",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DAAC"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"onboardDaac\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataDaac",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/daac/offboard": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Offboard a DAAC",
+        "description": "Disables a DAAC selection in EDPub",
+        "operationId": "offboardDaac",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DAAC"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${data_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"offboardDaac\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataDaac",
         "responses": {
           "200": {
             "description": "OK",
