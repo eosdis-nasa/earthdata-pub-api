@@ -8,8 +8,8 @@ const templates = {
   request_initialized: (e) => ({
     text: `Request ID ${e.submission_id} has been initialized.`
   }),
-  workflow_promote_step: (e) => ({
-    text: `The request has completed step "${e.step_name}" and promoted to the next step in the workflow.`
+  action_request_no_id: (e) => ({
+    text: `The request has completed step "${e.data.rollback}" and promoted to the next step in the workflow.`
   }),
   workflow_started: (e) => ({
     text: `The request has started on Workflow ID ${e.workflow_id}.`

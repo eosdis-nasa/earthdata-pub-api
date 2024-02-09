@@ -1,3 +1,5 @@
+const { getNewSubmissionTemplate } = require('./templates/new-submission');
+
 const htmlSnippets = {
   default_style: () => ({
     text: 'td h1 { margin: 0; padding: 0; font-size: 22px; }'
@@ -69,6 +71,8 @@ const createEmailHtml = async (params) => {
     directMessage = htmlSnippets.direct_message().text;
     directMessageBody1 = htmlSnippets.direct_message_body1(params).text;
     directMessageAsText = htmlSnippets.direct_message_as_text(params).text;
+  } else if (params.eventMessage.event_type.match(/request_initialized/gi)) {
+    return getNewSubmissionTemplate(params);
   } else {
     stepChange = htmlSnippets.step_change().text;
     stepChangeBody1 = htmlSnippets.step_change_body1(params).text;
