@@ -1,3 +1,4 @@
+const { getDefaultStepPromotion } = require('./templates/default-step-promotion');
 const { getNewSubmissionTemplate } = require('./templates/new-submission');
 
 const htmlSnippets = {
@@ -38,13 +39,13 @@ const htmlSnippets = {
     text: '<p>You have received a direct message on the Earthdata Pub Dashboard.</p>'
   }),
   event_type_for_direct_message: () => ({
-    text: '<b>Direct Message Sent</b>'
+    text: '<b>Direct Message Received</b>'
   }),
   direct_message_body1: (params) => ({
-    text: `<h2>Comments:</h2><p>${params.eventMessage.conversation_last_message}</p><br><br>`
+    text: `<h2>Message:</h2><p>${params.eventMessage.conversation_last_message}</p><br><br>`
   }),
   direct_message_as_text: (params) => ({
-    text: `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nRequest:\n${params.eventMessage.submission_name} (${params.eventMessage.submission_id})\n\nComments:\n${params.eventMessage.conversation_last_message}`
+    text: `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}`
   })
 };
 
@@ -74,11 +75,12 @@ const createEmailHtml = async (params) => {
   } else if (params.eventMessage.event_type.match(/request_initialized/gi)) {
     return getNewSubmissionTemplate(params);
   } else {
-    stepChange = htmlSnippets.step_change().text;
-    stepChangeBody1 = htmlSnippets.step_change_body1(params).text;
-    stepChangeBody2 = htmlSnippets.step_change_body2(params).text;
-    stepChangeBody3 = htmlSnippets.step_change_body3(params).text;
-    stepChangeAsText = htmlSnippets.step_change_as_text(params).text;
+    return getDefaultStepPromotion(params);
+    // stepChange = htmlSnippets.step_change().text;
+    // stepChangeBody1 = htmlSnippets.step_change_body1(params).text;
+    // stepChangeBody2 = htmlSnippets.step_change_body2(params).text;
+    // stepChangeBody3 = htmlSnippets.step_change_body3(params).text;
+    // stepChangeAsText = htmlSnippets.step_change_as_text(params).text;
   }
   const HTML = `
     <html>

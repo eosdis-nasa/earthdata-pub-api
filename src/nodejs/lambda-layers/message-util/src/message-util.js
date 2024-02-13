@@ -76,10 +76,8 @@ async function sendEmail(users, eventMessage) {
         }
       }
     };
-    // eslint-disable-next-line
-    console.log('sendEmail Html', bodyArray[1]);
-    // eslint-disable-next-line
-    console.log('sendEmail Text', bodyArray[0]);
+    console.log('total payload')
+    console.log(payload)    
     await ses.send(new SendEmailCommand(payload));
   });
 }
