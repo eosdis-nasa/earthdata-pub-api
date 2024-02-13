@@ -355,7 +355,8 @@ const getEmails = (params) => sql.select({
       ...(params.senderId ? [{field: 'conversation_edpuser.edpuser_id', op: 'ne', param: 'senderId'}] : []),
       ...(params.userRole ? [{field: 'edpuser_edprole.edprole_id', any: {values: {param: 'userRole'}}}] : [])
     ]
-  }
+  },
+  group: 'email'
 });
 
 module.exports.findAll = findAll;
