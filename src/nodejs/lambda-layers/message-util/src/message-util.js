@@ -78,7 +78,8 @@ async function sendEmail(users, eventMessage) {
     };
     console.log('total payload')
     console.log(payload)    
-    await ses.send(new SendEmailCommand(payload));
+    const sent = await ses.send(new SendEmailCommand(payload));
+    console.log(sent)
   });
 }
 
