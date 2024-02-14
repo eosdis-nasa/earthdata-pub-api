@@ -68,18 +68,23 @@ async function sendEmail(users, eventMessage) {
         },
         Body: {
           Text: {
-            Data: bodyArray[0]
+            Data: bodyArray[0],
+            Charset: 'UTF-8'
           },
           Html: {
-            Data: bodyArray[1]
+            Data: bodyArray[1],
+            Charset: 'UTF-8'
           }
         }
       }
     };
     console.log('total payload')
-    console.log(payload)    
-    const sent = await ses.send(new SendEmailCommand(payload));
-    console.log(sent)
+    console.log(payload)
+    const command = new SendEmailCommand(payload);
+    console.log(command)
+    const response = await ses.send(command);
+    console.log(response)
+    console.log(`Email sent to ${user.email}`);
   });
 }
 
