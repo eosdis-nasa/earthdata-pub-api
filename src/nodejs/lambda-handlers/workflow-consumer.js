@@ -76,7 +76,10 @@ async function closeMethod(status) {
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step.name,
-    data: status.step.data
+    data: status.step.data,
+    time_to_publish: await db.metrics.getSubmissions({
+      submissionId: status.id
+    })[0].time_to_publish
   };
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
