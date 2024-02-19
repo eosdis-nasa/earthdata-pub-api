@@ -58,8 +58,6 @@ async function sendEmailNotification({ note, emailPayload }) {
 
 async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
-  console.log('process record eventMessage')
-  console.log(eventMessage)
   if (!(eventMessage.data && eventMessage.data.silent)) {
     const message = await getTemplate(eventMessage);
     if (message) {
@@ -73,6 +71,8 @@ async function processRecord(record) {
       }
       const note = await db.note[operation](message);
       if (/*process.env.AWS_EXECUTION_ENV*/ eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
+        console.log('eventMessage');
+        console.log(eventMessage)
         const emailPayload = await getEmailTemplate(eventMessage, message);
         console.log('emailPayload');
         console.log(emailPayload);

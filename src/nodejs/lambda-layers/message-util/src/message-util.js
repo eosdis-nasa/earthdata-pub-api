@@ -55,6 +55,8 @@ async function getSESClient() {
 
 async function send(user, eventMessage, ses){
   const bodyArray = await createEmailHtml({ user, eventMessage });
+  console.log('bodyArray')
+  console.log(bodyArray)
   const payload = {
     Source: sourceEmail,
     Destination: {
@@ -76,10 +78,7 @@ async function send(user, eventMessage, ses){
       }
     }
   };
-  console.log('total payload')
-  console.log(payload)
   const command = new SendEmailCommand(payload);
-  console.log(command)
   await ses.send(command);
 }
 
@@ -95,38 +94,6 @@ async function sendEmail(users, eventMessage) {
   });
   const promises = users.map((user) => send(user, eventMessage, ses));
   await Promise.all(promises);
-  // users.forEach(async (user) => {
-  //   const bodyArray = await createEmailHtml({ user, eventMessage });
-  //   const payload = {
-  //     Source: sourceEmail,
-  //     Destination: {
-  //       ToAddresses: [user.email]
-  //     },
-  //     Message: {
-  //       Subject: {
-  //         Data: 'EDPUB Notification'
-  //       },
-  //       Body: {
-  //         Text: {
-  //           Data: bodyArray[0],
-  //           Charset: 'UTF-8'
-  //         },
-  //         Html: {
-  //           Data: bodyArray[1],
-  //           Charset: 'UTF-8'
-  //         }
-  //       }
-  //     }
-  //   };
-  //   console.log('total payload')
-  //   console.log(payload)
-  //   const command = new SendEmailCommand(payload);
-  //   console.log(command)
-  //   const response = await ses.send(command);
-  
-  //   console.log(response)
-  //   console.log(`Email sent to ${user.email}`);
-  // });
 }
 
 function sendEvent(eventMessage) {
