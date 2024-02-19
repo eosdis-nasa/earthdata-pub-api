@@ -53,7 +53,7 @@ async function getSESClient() {
   });
 }
 
-async function send(){user, eventMessage, ses}{
+async function send(user, eventMessage, ses){
   const bodyArray = await createEmailHtml({ user, eventMessage });
   const payload = {
     Source: sourceEmail,
@@ -127,8 +127,6 @@ async function sendEmail(users, eventMessage) {
   //   console.log(response)
   //   console.log(`Email sent to ${user.email}`);
   // });
-  const response = { status: 'success' };
-  return response;
 }
 
 function sendEvent(eventMessage) {

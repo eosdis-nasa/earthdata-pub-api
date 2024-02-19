@@ -53,8 +53,7 @@ async function sendEmailNotification({ note, emailPayload }) {
     senderId: note.sender_edpuser_id,
     userRole
   });
-  const resp = await msg.sendEmail(users, emailPayload);
-  return resp
+  await msg.sendEmail(users, emailPayload);
 }
 
 async function processRecord(record) {
@@ -78,8 +77,7 @@ async function processRecord(record) {
         console.log('emailPayload');
         console.log(emailPayload);
         console.log(note);
-        const resp = await sendEmailNotification({ note, emailPayload });
-        return resp;
+        await sendEmailNotification({ note, emailPayload });
       }
     }
   }
