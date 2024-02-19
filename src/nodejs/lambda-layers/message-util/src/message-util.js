@@ -41,22 +41,8 @@ async function getSecretsValues() {
   return secretClient.send(secretCmd);
 }
 
-async function getSESClient() {
-  const secretsResponse = await getSecretsValues();
-  const sesCreds = JSON.parse(secretsResponse.SecretString);
-  return new SESClient({
-    region: 'us-east-1',
-    credentials: {
-      accessKeyId: sesCreds.ses_access_key_id,
-      secretAccessKey: sesCreds.ses_secret_access_key
-    }
-  });
-}
-
-async function send(user, eventMessage, ses){
+async function send(user, eventMessage, ses) {
   const bodyArray = await createEmailHtml({ user, eventMessage });
-  console.log('bodyArray')
-  console.log(bodyArray)
   const payload = {
     Source: sourceEmail,
     Destination: {

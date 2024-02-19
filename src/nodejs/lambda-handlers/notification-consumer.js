@@ -42,7 +42,14 @@ async function sendEmailNotification({ note, emailPayload }) {
       userRole = [roles.data_producer, roles.data_poc];
       break;
     case 'direct_message':
-      userRole = [roles.data_producer, roles.data_poc, roles.daac_staff, roles.daac_manager, roles.admin, roles.daac_observer];
+      userRole = [
+        roles.data_producer,
+        roles.data_poc,
+        roles.daac_staff,
+        roles.daac_manager,
+        roles.admin,
+        roles.daac_observer
+      ];
       break;
     default:
       userRole = [roles.data_producer, roles.data_poc, roles.daac_staff, roles.daac_manager];
@@ -70,13 +77,8 @@ async function processRecord(record) {
         message.subject = 'No Subject';
       }
       const note = await db.note[operation](message);
-      if (/*process.env.AWS_EXECUTION_ENV*/ eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
-        console.log('eventMessage');
-        console.log(eventMessage)
+      if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
         const emailPayload = await getEmailTemplate(eventMessage, message);
-        console.log('emailPayload');
-        console.log(emailPayload);
-        console.log(note);
         await sendEmailNotification({ note, emailPayload });
       }
     }

@@ -1,7 +1,7 @@
 const db = require('database-util');
 
-function parseStepName(step){
-  return step.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+function parseStepName(step) {
+  return step.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 }
 
 const templates = {
@@ -74,12 +74,11 @@ const getEmailTemplate = async (eventMessage, message) => {
     if (formData?.data_product_name_value) {
       emailPayload.submission_name = formData.data_product_name_value;
     } else { (emailPayload.submission_name = `Request Initialized by ${(await db.submission.getCreatorName({ id: eventMessage.submission_id })).name}`); }
-  }
-  else{
+  } else {
     emailPayload = {
       conversation_last_message: message.text,
       event_type: eventMessage.event_type
-    }
+    };
   }
 
   return emailPayload;
