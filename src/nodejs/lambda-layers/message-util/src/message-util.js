@@ -93,7 +93,7 @@ async function sendEmail(users, eventMessage) {
       secretAccessKey: sesCreds.ses_secret_access_key
     }
   });
-  const promises = users.map(async (user) => send(user, eventMessage, ses));
+  const promises = users.map((user) => send(user, eventMessage, ses));
   await Promise.all(promises);
   // users.forEach(async (user) => {
   //   const bodyArray = await createEmailHtml({ user, eventMessage });
