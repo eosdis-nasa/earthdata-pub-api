@@ -91,9 +91,12 @@ async function sendEmail(users, eventMessage) {
     const command = new SendEmailCommand(payload);
     console.log(command)
     const response = await ses.send(command);
+  
     console.log(response)
     console.log(`Email sent to ${user.email}`);
   });
+  const response = { status: 'success' };
+  return response;
 }
 
 function sendEvent(eventMessage) {
