@@ -55,32 +55,32 @@ async function getSESClient() {
 
 async function send(){user, eventMessage, ses}{
   const bodyArray = await createEmailHtml({ user, eventMessage });
-    const payload = {
-      Source: sourceEmail,
-      Destination: {
-        ToAddresses: [user.email]
+  const payload = {
+    Source: sourceEmail,
+    Destination: {
+      ToAddresses: [user.email]
+    },
+    Message: {
+      Subject: {
+        Data: 'EDPUB Notification'
       },
-      Message: {
-        Subject: {
-          Data: 'EDPUB Notification'
+      Body: {
+        Text: {
+          Data: bodyArray[0],
+          Charset: 'UTF-8'
         },
-        Body: {
-          Text: {
-            Data: bodyArray[0],
-            Charset: 'UTF-8'
-          },
-          Html: {
-            Data: bodyArray[1],
-            Charset: 'UTF-8'
-          }
+        Html: {
+          Data: bodyArray[1],
+          Charset: 'UTF-8'
         }
       }
-    };
-    console.log('total payload')
-    console.log(payload)
-    const command = new SendEmailCommand(payload);
-    console.log(command)
-    await ses.send(command);
+    }
+  };
+  console.log('total payload')
+  console.log(payload)
+  const command = new SendEmailCommand(payload);
+  console.log(command)
+  await ses.send(command);
 }
 
 async function sendEmail(users, eventMessage) {
@@ -93,7 +93,7 @@ async function sendEmail(users, eventMessage) {
       secretAccessKey: sesCreds.ses_secret_access_key
     }
   });
-  const promises = users.map(async (user) => {send(user, eventMessage, ses)});
+  const promises = users.map(async (user) => send(user, eventMessage, ses));
   await Promise.all(promises);
   // users.forEach(async (user) => {
   //   const bodyArray = await createEmailHtml({ user, eventMessage });
