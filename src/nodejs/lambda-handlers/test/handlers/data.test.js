@@ -86,7 +86,7 @@ describe('onboard daac', () => {
     db.daac.onboard.mockResolvedValue({ short_name: 'test' });
     const response = await data.handler(testEvent);
     expect(response.short_name).toEqual('test');
-  })
+  });
   test('should fail without permissions', async () => {
     const testEvent = {
       operation: 'onboardDaac',
