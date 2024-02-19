@@ -53,18 +53,8 @@ async function getSESClient() {
   });
 }
 
-async function sendEmail(users, eventMessage) {
-  const secretsResponse = await getSecretsValues();
-  const sesCreds = JSON.parse(secretsResponse.SecretString);
-  const ses = new SESClient({
-    region: 'us-east-1',
-    credentials: {
-      accessKeyId: sesCreds.ses_access_key_id,
-      secretAccessKey: sesCreds.ses_secret_access_key
-    }
-  });
-  users.forEach(async (user) => {
-    const bodyArray = await createEmailHtml({ user, eventMessage });
+async function send(){user, eventMessage, ses}{
+  const bodyArray = await createEmailHtml({ user, eventMessage });
     const payload = {
       Source: sourceEmail,
       Destination: {
@@ -90,11 +80,53 @@ async function sendEmail(users, eventMessage) {
     console.log(payload)
     const command = new SendEmailCommand(payload);
     console.log(command)
-    const response = await ses.send(command);
-  
-    console.log(response)
-    console.log(`Email sent to ${user.email}`);
+    await ses.send(command);
+}
+
+async function sendEmail(users, eventMessage) {
+  const secretsResponse = await getSecretsValues();
+  const sesCreds = JSON.parse(secretsResponse.SecretString);
+  const ses = new SESClient({
+    region: 'us-east-1',
+    credentials: {
+      accessKeyId: sesCreds.ses_access_key_id,
+      secretAccessKey: sesCreds.ses_secret_access_key
+    }
   });
+  const promises = users.map(async (user) => {send(user, eventMessage, ses)});
+  await Promise.all(promises);
+  // users.forEach(async (user) => {
+  //   const bodyArray = await createEmailHtml({ user, eventMessage });
+  //   const payload = {
+  //     Source: sourceEmail,
+  //     Destination: {
+  //       ToAddresses: [user.email]
+  //     },
+  //     Message: {
+  //       Subject: {
+  //         Data: 'EDPUB Notification'
+  //       },
+  //       Body: {
+  //         Text: {
+  //           Data: bodyArray[0],
+  //           Charset: 'UTF-8'
+  //         },
+  //         Html: {
+  //           Data: bodyArray[1],
+  //           Charset: 'UTF-8'
+  //         }
+  //       }
+  //     }
+  //   };
+  //   console.log('total payload')
+  //   console.log(payload)
+  //   const command = new SendEmailCommand(payload);
+  //   console.log(command)
+  //   const response = await ses.send(command);
+  
+  //   console.log(response)
+  //   console.log(`Email sent to ${user.email}`);
+  // });
   const response = { status: 'success' };
   return response;
 }
