@@ -16,6 +16,7 @@ db.submission = jest.fn();
 db.submission.getFormData = jest.fn();
 db.submission.getStepName = jest.fn();
 db.submission.getCreatorName = jest.fn();
+db.submission.getSubmissionDaac = jest.fn();
 
 jest.mock('message-util', () => jest.fn());
 msg.parseRecord = jest.fn();
@@ -54,18 +55,18 @@ describe('notification-consumer', () => {
     db.submission.getFormData.mockImplementation(async () => ({ data: { data_product_name_value: 'test product' } }));
     db.submission.getStepName.mockImplementation(async () => ({ step_name: 'test step' }));
     db.submission.getCreatorName.mockImplementation(async () => ({ name: 'test user' }));
+    db.submission.getSubmissionDaac.mockImplementation(async () => ({ short_name: 'test daac' }));
     db.note.reply.mockImplementation(async () => ({ conversation_id: '1043c36e-3b6b-48c3-b1fa-8277fe65589f', sender_edpuser_id: '1043c36e-3b6b-48c3-b1fa-8277fe65589f' }));
     db.note.getEmails.mockImplementation(async () => [{ email: 'test@test.test' }]);
     msg.sendEmail.mockImplementation(async (users, emailPayload) => {
       expect(users).toEqual([{ email: 'test@test.test' }]);
       expect(emailPayload).toEqual({
-        name: 'EDPUB User',
         submission_id: 'f68a54ba-0411-47ad-934b-42fa552b6fe5',
         workflow_name: 'test workflow',
-        conversation_last_message: 'Request ID f68a54ba-0411-47ad-934b-42fa552b6fe5 has passed review and Workflow progress will resume.',
+        conversation_last_message: 'Data Accession Request Form review completed; please click on the green button on the far right of your submission’s row to complete the next action, if applicable.',
         event_type: 'review_approved',
         submission_name: 'test product',
-        step_name: 'test step'
+        daac_name: 'test daac'
       });
       return {};
     });
