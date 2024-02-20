@@ -97,7 +97,7 @@ const getSubmissions = (params) => sql.select({
     'submission_status.*',
     'submission_metrics.accession_rejected',
     `CASE WHEN submission_status.step_name = 'close' 
-      THEN AGE(last_change, created_at) ELSE NULL END 
+      THEN EXTRACT(EPOCH FROM (last_change - created_at)) ELSE NULL END 
       as time_to_publish`
   ],
   from:{
@@ -126,7 +126,7 @@ const getSubmissions = (params) => sql.select({
 const getAverageTimeToPublish = (params) => sql.select({
   fields:[
     'submission.daac_id', 
-    'AVG(AGE(last_change, created_at)) as time_to_publish'
+    'AVG(EXTRACT(EPOCH FROM (last_change - created_at))) as time_to_publish'
   ],
   from:{
     base: 'submission',
@@ -145,7 +145,7 @@ const getAverageTimeToPublish = (params) => sql.select({
 
 const getStepMetrics = (params) => sql.select({
   fields:[
-    'AGE(step_metrics.complete_time, step_metrics.start_time) as time_for_step', 
+    'EXTRACT(EPOCH FROM (step_metrics.complete_time - step_metrics.start_time)) as time_for_step', 
     'step_metrics.step_name', 
     'step_metrics.submission_id', 
     'step_metrics.workflow_id'
