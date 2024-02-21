@@ -20,11 +20,11 @@ const getDefaultStepPromotion = (params) => {
                     <br>
                     <p>The following request to the ${eventMessage.daac_name} in Earthdata Pub has a change in status:</p>
                     <h2>Request:</h2>
-                    <p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard/requests/id/${eventMessage.submission_id}" aria-label="View the request">${eventMessage.submission_name} (${eventMessage.submission_id})</a><br></p>
+                    <p><a style="text-align: left;" href="${envUrl}/dashboard/requests/id/${eventMessage.submission_id}" aria-label="View the request">${eventMessage.submission_name} (${eventMessage.submission_id})</a><br></p>
                     <h2>New Status:</h2>
                     <p>${eventMessage.conversation_last_message}</p>
                     <br><br>
-                    <p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard" aria-label="Visit Earthdata Pub Dashboard">https://pub.earthdata.nasa.gov/dashboard</a></p>
+                    <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                 </td>
             </tr>
         </table>

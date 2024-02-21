@@ -23,7 +23,7 @@ const getDMTemplate = (params) => {
                  <p>You have received a direct message on the Earthdata Pub Dashboard.</p>
                  <h2>Message:</h2><p>${params.eventMessage.conversation_last_message}</p><br><br>
                  
-                 <p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard" aria-label="Visit Earthdata Pub Dashboard">https://pub.earthdata.nasa.gov/dashboard</a></p>
+                 <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                </td>
              </tr>
           </table>
