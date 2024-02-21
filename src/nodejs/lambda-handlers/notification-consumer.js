@@ -41,6 +41,9 @@ async function sendEmailNotification({ note, emailPayload }) {
     case 'metadata_updated':
       userRole = [roles.data_producer, roles.data_poc];
       break;
+    case 'action_request_no_id':
+      userRole = [roles.daac_staff, roles.daac_manager];
+      break;
     case 'direct_message':
       userRole = [
         roles.data_producer,
