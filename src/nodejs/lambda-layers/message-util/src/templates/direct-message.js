@@ -1,4 +1,4 @@
-const getDMTemplate = (params) => {
+const getDMTemplate = (params, envUrl) => {
   const text = `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}`;
   const html = `
     <html>

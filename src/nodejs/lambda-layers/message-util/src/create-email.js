@@ -1,6 +1,7 @@
 const { getDefaultStepPromotion } = require('./templates/default-step-promotion');
 const { getNewSubmissionTemplate } = require('./templates/new-submission');
 const { getDMTemplate } = require('./templates/direct-message');
+
 const envUrl = process.env.ROOT_URL;
 
 const createEmailHtml = async (params) => {

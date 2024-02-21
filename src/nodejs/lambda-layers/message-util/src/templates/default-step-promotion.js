@@ -1,4 +1,4 @@
-const getDefaultStepPromotion = (params) => {
+const getDefaultStepPromotion = (params, envUrl) => {
   const { user, eventMessage } = params;
   const text = `Hello ${user.name},\n\nThe following request has changed step in the ${eventMessage.workflow_name} workflow.\n\nRequest:\n${eventMessage.submission_name} (${eventMessage.submission_id})\n\nNew Step:\n${eventMessage.step_name}\n\nComments:\n${eventMessage.conversation_last_message}`;
   const html = `
