@@ -1,0 +1,8 @@
+# Documentation of syntax can be found at:
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#codeowners-syntax
+
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# all of the below will be requested for review when someone
+# opens a pull request.
+*       @camposeddie @DavisGauntUAH @broughtonkkornl @ckd002
