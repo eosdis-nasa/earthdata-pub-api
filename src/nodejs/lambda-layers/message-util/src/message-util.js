@@ -41,47 +41,45 @@ async function getSecretsValues() {
   return secretClient.send(secretCmd);
 }
 
-async function getSESClient() {
+async function send(user, eventMessage, ses) {
+  const bodyArray = await createEmailHtml({ user, eventMessage });
+  const payload = {
+    Source: sourceEmail,
+    Destination: {
+      ToAddresses: [user.email]
+    },
+    Message: {
+      Subject: {
+        Data: 'EDPUB Notification'
+      },
+      Body: {
+        Text: {
+          Data: bodyArray[0],
+          Charset: 'UTF-8'
+        },
+        Html: {
+          Data: bodyArray[1],
+          Charset: 'UTF-8'
+        }
+      }
+    }
+  };
+  const command = new SendEmailCommand(payload);
+  await ses.send(command);
+}
+
+async function sendEmail(users, eventMessage) {
   const secretsResponse = await getSecretsValues();
   const sesCreds = JSON.parse(secretsResponse.SecretString);
-  return new SESClient({
+  const ses = new SESClient({
     region: 'us-east-1',
     credentials: {
       accessKeyId: sesCreds.ses_access_key_id,
       secretAccessKey: sesCreds.ses_secret_access_key
     }
   });
-}
-
-async function sendEmail(users, eventMessage) {
-  const ses = await getSESClient();
-  users.forEach(async (user) => {
-    const bodyArray = await createEmailHtml({ user, eventMessage });
-    const payload = {
-      Source: sourceEmail,
-      Destination: {
-        ToAddresses: [user.email]
-      },
-      Message: {
-        Subject: {
-          Data: 'EDPUB Notification'
-        },
-        Body: {
-          Text: {
-            Data: bodyArray[0]
-          },
-          Html: {
-            Data: bodyArray[1]
-          }
-        }
-      }
-    };
-    // eslint-disable-next-line
-    console.log('sendEmail Html', bodyArray[1]);
-    // eslint-disable-next-line
-    console.log('sendEmail Text', bodyArray[0]);
-    await ses.send(new SendEmailCommand(payload));
-  });
+  const promises = users.map((user) => send(user, eventMessage, ses));
+  await Promise.all(promises);
 }
 
 function sendEvent(eventMessage) {
