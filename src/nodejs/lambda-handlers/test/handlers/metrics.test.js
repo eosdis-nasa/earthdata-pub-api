@@ -7,7 +7,10 @@ jest.mock('database-util');
 msg.sendEvent = jest.fn();
 db.metrics = jest.fn();
 db.daac = jest.fn();
+db.user = jest.fn();
+db.user.findById = jest.fn();
 db.daac.getActiveDaacs = jest.fn();
+db.daac.getIds = jest.fn();
 db.metrics.getSubmissions = jest.fn();
 db.metrics.getAverageTimeToPublish = jest.fn();
 db.metrics.getUserCount = jest.fn();
@@ -56,16 +59,24 @@ describe('Metrics', () => {
         daac_id: 'daac1',
         workflow_id: 'workflow1',
         submission_id: 'submission1',
-        role_id: 'role1',
-        privilege: 'privilege1',
         state: 'state1'
-      }
+      },
+      context: { user_id: 'user1' }
     };
+    db.user.findById.mockResolvedValue({
+      user_privileges: ['ADMIN'],
+      user_groups:[
+        {id: 'group1'}
+      ]
+    });
+    db.daac.getIds.mockResolvedValue(
+      [{id: 'daac1'}]
+    )
     db.metrics.getSubmissions.mockImplementationOnce(async (args) => {
       expect(args).toEqual({
         start_date: '2021-01-01',
         end_date: '2021-01-31',
-        daac_id: 'daac1',
+        daac_ids: ['daac1'],
         workflow_id: 'workflow1',
         submission_id: 'submission1',
         state: 'state1'
@@ -78,7 +89,7 @@ describe('Metrics', () => {
     });
     const result = await handler(event);
     expect(result).toEqual({
-      count: 1,
+      submission_count: 1,
       submissions: [
         {
           submission_id: 'submission1'
@@ -88,39 +99,41 @@ describe('Metrics', () => {
     const event2 = {
       operation: 'get_submissions',
       payload: {
-        metric: 'time_to_publish'
-      }
+        metric: ['submission'],
+      },
+      context: { user_id: 'user1' }
     };
     db.metrics.getAverageTimeToPublish.mockResolvedValue([
       {
-        submission_id: 'submission1'
+        time: 'time1'
       }
     ]);
     const result2 = await handler(event2);
-    expect(result2).toEqual([
+    expect(result2).toEqual({avg_time_to_publish: [
       {
-        submission_id: 'submission1'
+        time: 'time1'
       }
-    ]);
+    ]});
     const event3 = {
       operation: 'get_submissions',
       payload: {
-        metric: 'user_count',
+        metric: ['user_count'],
         daac_id: 'daac1',
         role_id: 'role1',
         privilege: 'privilege1'
-      }
+      },
+      context: { user_id: 'user1' }
     };
     db.metrics.getUserCount.mockImplementationOnce(async (args) => {
       expect(args).toEqual({
-        group_id: 'daac1',
+        daac_ids: ['daac1'],
         role_id: 'role1',
         privilege: 'privilege1'
       });
-      return 10;
+      return {count:10};
     });
     const result3 = await handler(event3);
-    expect(result3).toEqual(10);
+    expect(result3).toEqual({user_count:10});
   });
   it('should use the put method', async () => {
     const event = {
