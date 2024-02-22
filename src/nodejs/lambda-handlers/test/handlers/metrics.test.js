@@ -65,13 +65,13 @@ describe('Metrics', () => {
     };
     db.user.findById.mockResolvedValue({
       user_privileges: ['ADMIN'],
-      user_groups:[
-        {id: 'group1'}
+      user_groups: [
+        { id: 'group1' }
       ]
     });
     db.daac.getIds.mockResolvedValue(
-      [{id: 'daac1'}]
-    )
+      [{ id: 'daac1' }]
+    );
     db.metrics.getSubmissions.mockImplementationOnce(async (args) => {
       expect(args).toEqual({
         start_date: '2021-01-01',
@@ -99,7 +99,7 @@ describe('Metrics', () => {
     const event2 = {
       operation: 'get_submissions',
       payload: {
-        metric: ['submission'],
+        metric: ['submission']
       },
       context: { user_id: 'user1' }
     };
@@ -109,11 +109,13 @@ describe('Metrics', () => {
       }
     ]);
     const result2 = await handler(event2);
-    expect(result2).toEqual({avg_time_to_publish: [
-      {
-        time: 'time1'
-      }
-    ]});
+    expect(result2).toEqual({
+      avg_time_to_publish: [
+        {
+          time: 'time1'
+        }
+      ]
+    });
     const event3 = {
       operation: 'get_submissions',
       payload: {
@@ -130,10 +132,10 @@ describe('Metrics', () => {
         role_id: 'role1',
         privilege: 'privilege1'
       });
-      return {count:10};
+      return { count: 10 };
     });
     const result3 = await handler(event3);
-    expect(result3).toEqual({user_count:10});
+    expect(result3).toEqual({ user_count: 10 });
   });
   it('should use the put method', async () => {
     const event = {
