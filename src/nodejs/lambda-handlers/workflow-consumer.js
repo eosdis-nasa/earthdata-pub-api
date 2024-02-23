@@ -72,7 +72,7 @@ async function serviceMethod(status) {
 async function closeMethod(status) {
   const submissionMetrics = await db.metrics.getSubmissions({
     submissionId: status.id
-  })
+  });
   const eventMessage = {
     event_type: 'workflow_completed',
     submission_id: status.id,

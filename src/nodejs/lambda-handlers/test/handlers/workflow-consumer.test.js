@@ -374,9 +374,9 @@ describe('workflow-consumer', () => {
   });
 
   it('should close a submission', async () => {
-    db.metrics.getSubmissions.mockImplementationOnce((params) => {
-      return Promise.resolve([{time_to_publish: 38}]);
-    });
+    db.metrics.getSubmissions.mockImplementationOnce(
+      () => Promise.resolve([{ time_to_publish: 38 }])
+    );
     const event = {
       Records: [
         {
