@@ -1,4 +1,4 @@
-const getNewSubmissionTemplate = (params) => {
+const getNewSubmissionTemplate = (params, envUrl) => {
   const newSubmissionText = `Hello ${params.user.name},\n\nThank you for creating a request to the ${params.eventMessage.daac_name} in Earthdata Pub. On your personal dashboard (https://pub.earthdata.nasa.gov/dashboard), your submission has received the following temporary name:\n\n${params.eventMessage.submission_name} (${params.eventMessage.submission_id})\n\nPlease click on the green button on the far right of your submission's row to complete the appropriate form, which will gather information to continue your submission.\n\nThank you for using Earthdata Pub.`;
   const newSubmissionHTML = `
     <html>
@@ -17,8 +17,8 @@ const getNewSubmissionTemplate = (params) => {
                 <td colspan="2" style="padding:20px;">
                     <h1>Hello ${params.user.name},</h1><br>
                     <br>
-                    <p>Thank you for creating a request to the ${params.eventMessage.daac_name} in Earthdata Pub.  On your personal dashboard (https://pub.earthdata.nasa.gov/dashboard), your submission has received the following temporary name:</p>
-                    <p><a style="text-align: left;" href="https://pub.earthdata.nasa.gov/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">
+                    <p>Thank you for creating a request to the ${params.eventMessage.daac_name} in Earthdata Pub.  On your personal dashboard (${envUrl}/dashboard), your submission has received the following temporary name:</p>
+                    <p><a style="text-align: left;" href="${envUrl}/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">
                     ${params.eventMessage.submission_name} (${params.eventMessage.submission_id})</a></p>
                     <p>Please click on the green button on the far right of your submission’s row to complete the appropriate form, which will gather information to continue your submission.</p>
                     <p>Thank you for using Earthdata Pub.</p>

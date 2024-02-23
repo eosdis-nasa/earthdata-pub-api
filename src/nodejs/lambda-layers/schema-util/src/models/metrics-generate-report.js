@@ -9,8 +9,12 @@ module.exports.model = (path) => ({
         submission_id: { $ref: `#${path}UUID` },
         role_id: { type: 'string' },
         privilege: { type: 'string' },
-        metric: { type: 'string' },
+        metric: { 
+            type: 'array',
+            items: { type: 'string' }
+         },
         state: { type: 'string' },
+        accession_rejected: { type: 'boolean' }
     }
 });
 

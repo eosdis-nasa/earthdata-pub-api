@@ -29,9 +29,6 @@ async function sendEmailNotification({ note, emailPayload }) {
     case 'form_request':
       userRole = [roles.data_producer, roles.data_poc];
       break;
-    case 'review_request':
-      userRole = [roles.daac_staff, roles.daac_manager];
-      break;
     case 'form_submitted':
       userRole = [roles.daac_staff, roles.daac_manager];
       break;
@@ -44,11 +41,23 @@ async function sendEmailNotification({ note, emailPayload }) {
     case 'metadata_updated':
       userRole = [roles.data_producer, roles.data_poc];
       break;
+    case 'action_request_no_id':
+      userRole = [roles.daac_staff, roles.daac_manager];
+      break;
+    case 'direct_message':
+      userRole = [
+        roles.data_producer,
+        roles.data_poc,
+        roles.daac_staff,
+        roles.daac_manager,
+        roles.admin,
+        roles.daac_observer
+      ];
+      break;
     default:
       userRole = [roles.data_producer, roles.data_poc, roles.daac_staff, roles.daac_manager];
       break;
   }
-
   const users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id,
@@ -71,7 +80,7 @@ async function processRecord(record) {
         message.subject = 'No Subject';
       }
       const note = await db.note[operation](message);
-      if (eventMessage.event_type !== 'direct_message' && process.env.AWS_EXECUTION_ENV) {
+      if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
         const emailPayload = await getEmailTemplate(eventMessage, message);
         await sendEmailNotification({ note, emailPayload });
       }
