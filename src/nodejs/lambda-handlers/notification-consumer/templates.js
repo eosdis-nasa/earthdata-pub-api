@@ -1,5 +1,9 @@
 const db = require('database-util');
 
+function parseStepName(step) {
+  return step.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+}
+
 const templates = {
   direct_message: (e) => ({
     user_id: e.user_id,
@@ -8,8 +12,8 @@ const templates = {
   request_initialized: (e) => ({
     text: `Request ID ${e.submission_id} has been initialized.`
   }),
-  workflow_promote_step: (e) => ({
-    text: `The request has completed step "${e.step_name}" and promoted to the next step in the workflow.`
+  action_request_no_id: (e) => ({
+    text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your submission's row to work on this action, if applicable`
   }),
   workflow_started: (e) => ({
     text: `The request has started on Workflow ID ${e.workflow_id}.`
@@ -21,13 +25,13 @@ const templates = {
     text: `Progress for Workflow ID ${e.workflow_id} has halted pending submission of Form ID ${e.form_id}.`
   }),
   review_request: (e) => ({
-    text: `Progress for Workflow ID ${e.workflow_id} has halted pending a review by DAAC staff.`
+    text: `${parseStepName(e.data.rollback)} completed; now under DAAC review.`
   }),
   form_submitted: (e) => ({
     text: `Form ID ${e.form_id} has been submitted and Workflow progress will resume.`
   }),
   review_approved: (e) => ({
-    text: `Request ID ${e.submission_id} has passed review and Workflow progress will resume.`
+    text: `${parseStepName(e.data.rollback)} review completed; please click on the green button on the far right of your submission’s row to complete the next action, if applicable.`
   }),
   review_rejected: (e) => ({
     text: `Request ID ${e.submission_id} has not passed review and rolled back to step "${e.data.rollback}"`
@@ -57,27 +61,24 @@ const getEmailTemplate = async (eventMessage, message) => {
   if (eventMessage.event_type !== 'direct_message') {
     const workflowName = db.workflow.getLongName({ id: eventMessage.workflow_id });
     const formData = (await db.submission.getFormData({ id: eventMessage.submission_id })).data;
+    const daac = await db.submission.getSubmissionDaac({ id: eventMessage.submission_id });
 
     emailPayload = {
-      name: 'EDPUB User',
       submission_id: eventMessage.submission_id,
       workflow_name: (await workflowName).long_name,
       conversation_last_message: message.text,
-      event_type: eventMessage.event_type
+      event_type: eventMessage.event_type,
+      daac_name: daac.short_name
     };
 
     if (formData?.data_product_name_value) {
       emailPayload.submission_name = formData.data_product_name_value;
     } else { (emailPayload.submission_name = `Request Initialized by ${(await db.submission.getCreatorName({ id: eventMessage.submission_id })).name}`); }
-  }
-
-  if (eventMessage.event_type !== 'form_submitted'
-    && eventMessage.event_type !== 'review_approved') {
-    emailPayload.step_name = eventMessage.step_name;
   } else {
-    emailPayload.step_name = (await db.submission.getStepName({
-      id: eventMessage.submission_id
-    })).step_name;
+    emailPayload = {
+      conversation_last_message: message.text,
+      event_type: eventMessage.event_type
+    };
   }
 
   return emailPayload;

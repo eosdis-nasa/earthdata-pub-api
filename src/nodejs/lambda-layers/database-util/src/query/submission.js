@@ -625,6 +625,17 @@ step.form_id, step.service_id, step.data, form.id, form.long_name,
 submission_form_data.submitted_at, submission_metadata.metadata;
 `;
 
+const getSubmissionDaac = () => sql.select({
+  fields: ['daac.short_name'],
+  from: {
+    base: 'submission',
+    joins: [refs.daac]
+  },
+  where: {
+    filters: [{ field: 'submission.id', param: 'id' }]
+  }
+})
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -662,3 +673,4 @@ module.exports.getStepMessage = getStepMessage;
 module.exports.getCreatorName = getCreatorName;
 module.exports.getStepName = getStepName;
 module.exports.getSubmissionDetailsById = getSubmissionDetailsById;
+module.exports.getSubmissionDaac = getSubmissionDaac;
