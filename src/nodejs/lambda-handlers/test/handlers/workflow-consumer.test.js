@@ -12,6 +12,7 @@ db.submission.promoteStep = jest.fn();
 db.metrics.setAccessionReversion = jest.fn();
 db.metrics.setStepStartTime = jest.fn();
 db.metrics.setStepStopTime = jest.fn();
+db.metrics.getSubmissions = jest.fn();
 db.service.deleteSecret = jest.fn();
 msg.sendEvent = jest.fn();
 msg.parseRecord = jest.fn();
@@ -373,6 +374,9 @@ describe('workflow-consumer', () => {
   });
 
   it('should close a submission', async () => {
+    db.metrics.getSubmissions.mockImplementationOnce((params) => {
+      return Promise.resolve([{time_to_publish: 38}]);
+    });
     const event = {
       Records: [
         {
@@ -414,7 +418,8 @@ describe('workflow-consumer', () => {
         step_name: 'close',
         data: {
           rollback: 'rollback'
-        }
+        },
+        time_to_publish: 38
       });
       return Promise.resolve('success');
     });
