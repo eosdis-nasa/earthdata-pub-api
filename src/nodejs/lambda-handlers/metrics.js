@@ -78,8 +78,8 @@ async function getSubmissions({ payload, context }) {
   let submissions;
   const zeroUUID = '00000000-0000-0000-0000-000000000000';// exits to prevent non admin users from seeing all daacs
 
-  // Establishes daac level permissions
-  if (!user.user_privileges.includes('ADMIN')) {
+  // Establishes daac level permissions UUID is for root_group
+  if (!(user.user_privileges.includes('ADMIN') || userGroupIds.includes('4daa6b22-f015-4ce2-8dac-8b3510004fca'))) {
     if (reqDaacId) {
       daacIds = [zeroUUID, ...(userDaac.filter((daacId) => daacId === reqDaacId))];
     } else {
