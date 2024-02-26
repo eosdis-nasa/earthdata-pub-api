@@ -22,11 +22,7 @@ async function execute({ resource, operation }, params) {
     if (data) {
       Object.assign(response, { data });
     } else {
-      Object.assign(response, { data: { 
-        statusCode: 503,
-        body: 'No results'
-       }});
-       console.error({error: 'No results'});
+      Object.assign(response, { data: { error: 'No results' } });
     }
   } catch (e) {
     Object.assign(response, { data: { 
