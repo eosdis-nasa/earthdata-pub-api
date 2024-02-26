@@ -25,11 +25,13 @@ async function execute({ resource, operation }, params) {
       Object.assign(response, { data: { error: 'No results' } });
     }
   } catch (e) {
-    Object.assign(response, { data: { 
-      statusCode: 503,
-      body: 'Internal Database Error'
-     } });
-    console.error({error: e});
+    Object.assign(response, {
+      data: {
+        statusCode: 503,
+        body: 'Internal Database Error'
+      }
+    });
+    console.error({ error: e });
   }
   return response.data;
 }
