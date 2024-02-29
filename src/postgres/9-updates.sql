@@ -93,3 +93,7 @@ INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'export_me
 
 UPDATE daac SET hidden=false, workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' WHERE id='6b3ea184-57c5-4fc5-a91b-e49708f91b67';
 
+-- 2.28/2024 Add push metadata step to ORNL DAAC workflow
+INSERT INTO action VALUES ('6d872804-609b-4e5d-a80c-143908051e07', 'push_metadata_to_daac', 1, 'Pushes Metadata to a Daac Endpoint', 'This action is used to push metadata to a DAAC endpoint.', '<env source>');
+
+UPDATE step SET action_id='6d872804-609b-4e5d-a80c-143908051e07' WHERE step_id='a5a14d98-df13-47f2-b86b-1504c7d4360d'
