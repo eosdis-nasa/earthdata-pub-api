@@ -36,10 +36,23 @@ const refs = {
     type: 'left_join',
     src: 'edprole_privilege',
     on: {left: 'edprole_privilege.edprole_id', right: 'edpuser_edprole.edprole_id'}
+  },
+  user_daac:{
+    type: 'left_join',
+    src: 'daac',
+    on: {left: 'daac.edpgroup_id', right: 'edpuser_edpgroup.edpgroup_id'}
+  },
+  submission_step: {
+    type: 'left_join',
+    src: 'submission',
+    on: {left: 'submission.id', right: 'step_metrics.submission_id'}
+  },
+  submission_metrics: {
+    type: 'left_join',
+    src: 'submission_metrics',
+    on: {left: 'submission_metrics.id', right: 'submission.id'}
   }
 }
-
-const fields = (list) => list.map((field) => fieldMap[field]);
 
 const findAll = () => `
 SELECT * FROM metrics`;
@@ -64,11 +77,11 @@ const getUserCount = ( params ) => sql.select({
   fields: ['COUNT(DISTINCT edpuser.id) as count'],
   from: {
     base : 'edpuser',
-    joins:[refs.ueser_group, refs.user_role, refs.user_privilege]
+    joins:[refs.ueser_group, refs.user_role, refs.user_privilege, refs.user_daac]
   },
   where:{
     filters: [
-      ...(params.group_id ? [{field: 'edpuser_edpgroup.edpgroup_id', op: 'eq', param: "group_id"}] : []),
+      ...(params.daac_ids ? [{cmd: `daac.id = ANY(ARRAY[\'${params.daac_ids.join('\',\'')}\']::UUID[])`}] : []),
       ...(params.role_id ? [{field: 'edpuser_edprole.edprole_id', op: 'eq', param: "role_id"}] : []),
       ...(params.privilege ? [{field: 'edprole_privilege.privilege', op: 'eq', param: "privilege"}] : [])
     ]
@@ -76,18 +89,29 @@ const getUserCount = ( params ) => sql.select({
 });
 
 const getSubmissions = (params) => sql.select({
-  fields: ['submission.*', 'submission_status.*', 'AGE(last_change, created_at) as time_to_publish'],
+  fields: [
+    'submission.id',
+    'submission.daac_id',
+    'submission.created_at',
+    'submission.hidden', 
+    'submission_status.*',
+    'submission_metrics.accession_rejected',
+    `CASE WHEN submission_status.step_name = 'close' 
+      THEN EXTRACT(EPOCH FROM (last_change - created_at)) ELSE NULL END 
+      as time_to_publish`
+  ],
   from:{
     base: 'submission',
-    joins: [refs.submission_status]
+    joins: [refs.submission_status, refs.submission_metrics]
   },
   where:{
     filters: [
       ...(params.start_date ? [{field: 'submission.created_at', op: 'gte', param: "start_date"}] : []),
       ...(params.end_date ? [{field: 'submission.created_at', op: 'lte', param: "end_date"}] : []),
-      ...(params.daac_id ? [{field: 'submission.daac_id', op: 'eq', param: "daac_id"}] : []),
+      ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY(ARRAY['${params.daac_ids.join('\',\'')}']::UUID[])`}] : []),
       ...(params.workflow_id ? [{field: 'submission_status.workflow_id', op: 'eq', param: "workflow_id"}] : []),
       ...(params.submission_id ? [{field: 'submission.id', op: 'eq', param: "submission_id"}] : []),
+      ...(params.accession_rejected ? [{field: 'submission_metrics.accession_rejected', op: 'eq', param: "accession_rejected"}] : []),
       ...(params.state ? [
         ...(params.state === 'published' ? [{field: 'submission_status.step_name', op: 'eq', value: "'close'"}] : []),
         ...(params.state === 'in_progress' ? [{field: 'submission_status.step_name', op: 'ne', value: "'close'"}] : []),
@@ -98,14 +122,69 @@ const getSubmissions = (params) => sql.select({
   }
 })
 
-const getAverageTimeToPublish = (params) => `
-  SELECT submission.daac_id, AVG(AGE(last_change, created_at)) as time_to_publish
-  FROM submission 
-  LEFT JOIN submission_status 
-  ON submission_status.id = submission.id 
-  WHERE  submission_status.step_name = 'close'
-  GROUP BY submission.daac_id
+//rewrite with sql-builder and daac handling
+const getAverageTimeToPublish = (params) => sql.select({
+  fields:[
+    'submission.daac_id', 
+    'AVG(EXTRACT(EPOCH FROM (last_change - created_at))) as time_to_publish'
+  ],
+  from:{
+    base: 'submission',
+    joins: [refs.submission_status]
+  },
+  where:{
+    filters:[
+      {field: 'submission_status.step_name', op: 'eq', value: "'close'"},
+      ...(params.start_date ? [{field: 'submission.created_at', op: 'gte', param: "start_date"}] : []),
+      ...(params.end_date ? [{field: 'submission.created_at', op: 'lte', param: "end_date"}] : []),
+      ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY(ARRAY['${params.daac_ids.join('\',\'')}']::UUID[])`}] : [])
+    ]
+  },
+  group: 'submission.daac_id'
+});
+
+const getStepMetrics = (params) => sql.select({
+  fields:[
+    'EXTRACT(EPOCH FROM (step_metrics.complete_time - step_metrics.start_time)) as time_for_step', 
+    'step_metrics.step_name', 
+    'step_metrics.submission_id', 
+    'step_metrics.workflow_id'
+  ],
+  from:{
+    base: 'step_metrics',
+    joins: [refs.submission_step]
+  },
+  where:{
+    filters:[
+      {cmd: 'step_metrics.complete_time IS NOT NULL'},
+      ...(params.start_date ? [{field: 'step_metrics.start_time', op: 'gte', param: "start_date"}] : []),
+      ...(params.end_date ? [{field: 'step_metrics.start_time', op: 'lte', param: "end_date"}] : []),
+      ...(params.step_name ? [{field: 'step_metrics.step_name', op: 'eq', param: "step_name"}] : []),
+      ...(params.submission_id ? [{field: 'step_metrics.submission_id', op: 'eq', param: "submission_id"}] : []),
+      ...(params.workflow_id ? [{field: 'step_metrics.workflow_id', op: 'eq', param: "workflow_id"}] : []),
+      ...(params.daac_ids ? [{cmd:`submission.daac_id = ANY(ARRAY['${params.daac_ids.join('\',\'')}']::UUID[])`}] : [])
+    ]
+  }
+});
+
+const setStepStartTime = () => `
+  INSERT INTO step_metrics(step_name, submission_id, workflow_id)
+  VALUES({{step_name}}, {{submission_id}}, {{workflow_id}})
+  ON CONFLICT (step_name, submission_id) DO NOTHING
+`;
+
+const setStepStopTime = () => `
+  UPDATE step_metrics
+  SET complete_time = NOW()
+  WHERE step_name = {{step_name}} AND submission_id = {{submission_id}}
+`;
+
+const setAccessionReversion = () => `
+  INSERT INTO submission_metrics(id, accession_rejected)
+  VALUES({{id}}, {{status}})
+  ON CONFLICT (id) DO UPDATE SET accession_rejected = {{status}}
 `
+
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
@@ -115,3 +194,7 @@ module.exports.putMetric = putMetric;
 module.exports.getSubmissions = getSubmissions;
 module.exports.getUserCount = getUserCount;
 module.exports.getAverageTimeToPublish = getAverageTimeToPublish;
+module.exports.getStepMetrics = getStepMetrics;
+module.exports.setStepStartTime = setStepStartTime;
+module.exports.setStepStopTime = setStepStopTime;
+module.exports.setAccessionReversion = setAccessionReversion;

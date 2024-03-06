@@ -134,7 +134,8 @@ async function submitMethod(event, user) {
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     form_id: formId,
-    user_id: user.id
+    user_id: user.id,
+    step_name: status.step.name
   };
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
@@ -159,7 +160,8 @@ async function reviewMethod(event, user) {
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     user_id: user.id,
-    data: status.step.data
+    data: status.step.data,
+    step_name: status.step_name
   };
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
