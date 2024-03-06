@@ -11,7 +11,7 @@ const redirectEndpoint = process.env.AUTH_CALLBACK_URL;
 const respectExp = process.env.AUTH_RESPECT_EXP === 'true';
 const codes = {};
 
-const workflowEventFilter = ['request_initialized', 'workflow_resume', 'form_submitted', 'review_approved', 'review_rejected'];
+const workflowEventFilter = ['request_initialized', 'workflow_resume', 'form_submitted', 'review_approved', 'review_rejected', 'workflow_promote_step'];
 
 function aclAllowAll(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
