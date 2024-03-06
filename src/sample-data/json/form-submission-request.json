@@ -18,7 +18,7 @@
             {
               "type": "text",
               "control_id": "data_producer_info_name",
-              "label": "First and Last Name",
+              "label": "Full Name",
               "validation_error_msg": "Please enter a name for the point of contact.",
               "required": true
             },
@@ -55,7 +55,7 @@
             {
               "type": "text",
               "control_id": "poc_name",
-              "label": "First and Last Name",
+              "label": "Full Name",
               "validation_error_msg": "Please enter a name for the point of contact.",
               "required": true
             },
