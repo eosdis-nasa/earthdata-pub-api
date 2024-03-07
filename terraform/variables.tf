@@ -115,3 +115,11 @@ variable "ses_access_key_id" {
 variable "ses_secret_access_key" {
   type = string
 }
+
+variable "ornl_daac_endpoint"{
+  type = string
+}
+
+variable "ornl_daac_auth_token"{
+  type = string
+}

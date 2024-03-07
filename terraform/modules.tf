@@ -81,6 +81,8 @@ module "lambda_functions" {
   meditor_service_password = var.meditor_service_password
   ses_from_email = var.ses_from_email
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
+  ornl_daac_endpoint = var.ornl_daac_endpoint
+  ornl_daac_auth_token = var.ornl_daac_auth_token
 }
 
 module "apigateway_endpoints" {

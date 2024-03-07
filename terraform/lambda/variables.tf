@@ -185,3 +185,11 @@ variable "ses_from_email" {
 variable "ses_access_creds_arn" {
   type = string
 }
+
+variable "ornl_daac_endpoint" {
+  type = string
+}
+
+variable "ornl_daac_auth_token" {
+  type = string
+}
