@@ -35,16 +35,13 @@ async function addSteps(steps, workflowId) {
         || (!nextStep)
       ) { return false; }
 
-      if (nextStepName !== 'data_accession_request_form') {
-        const nextStepRollbackInfo = {
-          rollback: activeStepName,
-          type: activeStep.type,
-          form_id: activeStep.form_id
-        };
-        await createStep(steps[nextStepName], nextStepName, nextStepRollbackInfo);
-      } else {
-        await createStep(steps[nextStepName], nextStepName);
-      }
+      const nextStepRollbackInfo = {
+        rollback: activeStepName,
+        type: activeStep.type,
+        form_id: activeStep.form_id
+      };
+      await createStep(steps[nextStepName], nextStepName, nextStepRollbackInfo);
+
       i += 1;
     }
     await db.workflow.addStep({
