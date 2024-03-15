@@ -94,3 +94,9 @@ INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'export_me
 UPDATE daac SET hidden=false, workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' WHERE id='6b3ea184-57c5-4fc5-a91b-e49708f91b67';
 update input SET label='Full Name' WHERE label='First and Last Name';
 
+-- 03/14/2024 Added Processing Organization Extended Question for NSIDC
+INSERT INTO question(id, short_name, version, long_name, text, help, daac_ids) VALUES ('bb5a7158-a625-49f8-b979-d89ab0957cbb', 'processing_organization', 1, 'Processing Organization', 'If the primary organization responsible for processing the data files is different from the primary data producer’s organization, specify it below.', '', '{"aec3724f-b30b-4b3f-9b9a-e0907d9d14b3"}');
+INSERT INTO section_question VALUES ('6cabfad8-912c-4f9b-bf96-78d7145787c9', 'bb5a7158-a625-49f8-b979-d89ab0957cbb', 1, '[]', '[]');
+UPDATE section_question set list_order=2 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333' and section_id='6cabfad8-912c-4f9b-bf96-78d7145787c9';
+UPDATE section_question set list_order=3 where question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d332'  and section_id='6cabfad8-912c-4f9b-bf96-78d7145787c9';
+INSERT INTO input VALUES ('bb5a7158-a625-49f8-b979-d89ab0957cbb', 'processing_organization', 0, 'Processing Organization', 'text', '{}', '{}', '[]', '[]', False);
