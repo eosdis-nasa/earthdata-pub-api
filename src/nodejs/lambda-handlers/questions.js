@@ -6,12 +6,12 @@
 
 const db = require('database-util');
 
-const editPerms = { roles: ['ADMIN'] };
-const readPerms = { roles: ['ADMIN', 'QUESTION_READ'] };
+const editPerms = { privilages: ['ADMIN'] };
+const readPerms = { privilages: ['ADMIN', 'QUESTION_READ'] };
 
 async function hasPerms(uid, perms) {
   const userInfo = await db.user.findById({ id: uid });
-  if (userInfo.user_privilages.some((privilage) => perms.privilages.includes(privilage))) {
+  if (userInfo.user_privileges.some((privilage) => perms.privilages.includes(privilage))) {
     return true;
   }
   return false;
