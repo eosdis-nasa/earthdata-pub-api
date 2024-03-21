@@ -76,8 +76,8 @@ const mapEDPubToUmmc = async (formData) => {
       NonDataCenterAffiliation: pocAffiliation
     });
   }
-  if (!stringToBool(formData.same_as_long_term_support_poc_name_data_producer_info_name)) {
-    const ltsPocSplitName = formData.long_term_support_poc_name.split(' ') || [];
+  if (!stringToBool(formData.same_as_long_term_support_poc_name_data_producer_info_name) && formData.long_term_support_poc_name) {
+    const ltsPocSplitName = formData.long_term_support_poc_name?.split(' ') || [];
     const ltsPocAffiliation = formData.long_term_support_poc_organization
             && formData.long_term_support_poc_department
       ? `${formData.long_term_support_poc_organization} - ${formData.long_term_support_poc_department}`
@@ -545,17 +545,28 @@ const mapEDPubToUmmc = async (formData) => {
   // with undefined value
   // TODO- Test how CMR handles this in case some are required attributes
   return JSON.parse(JSON.stringify({
-    ...dataProcessingLevel,
-    ...contactPerson,
-    ...dataProducersTableCitations,
-    ...abstract,
-    ...doi,
-    ...entryTitle,
-    ...temporalExtent,
-    ...spatialExtent,
-    ...{ AdditionalAttributes: additionalAttributes },
-    ...metadataDates,
-    ...metadataSpecification
+    ...(dataProcessingLevel? dataProcessingLevel : {}),
+    ...(contactPerson? contactPerson : {}),
+    ...(dataProducersTableCitations? dataProducersTableCitations : {}),
+    ...(abstract? abstract : {}),
+    ...(doi? doi : {}),
+    ...(entryTitle? entryTitle : {}),
+    ...(temporalExtent? temporalExtent : {}),
+    ...(spatialExtent? spatialExtent : {}),
+    ...(additionalAttributes? { AdditionalAttributes: additionalAttributes } : {}),
+    ...(metadataDates? metadataDates : {}),
+    ...(metadataSpecification? metadataSpecification : {})
+    // ...dataProcessingLevel,
+    // ...contactPerson,
+    // ...dataProducersTableCitations,
+    // ...abstract,
+    // ...doi,
+    // ...entryTitle,
+    // ...temporalExtent,
+    // ...spatialExtent,
+    // ...{ AdditionalAttributes: additionalAttributes },
+    // ...metadataDates,
+    // ...metadataSpecification
   }));
 };
 
