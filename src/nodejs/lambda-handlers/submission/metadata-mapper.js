@@ -556,17 +556,6 @@ const mapEDPubToUmmc = async (formData) => {
     ...(additionalAttributes ? { AdditionalAttributes: additionalAttributes } : {}),
     ...(metadataDates || {}),
     ...(metadataSpecification || {})
-    // ...dataProcessingLevel,
-    // ...contactPerson,
-    // ...dataProducersTableCitations,
-    // ...abstract,
-    // ...doi,
-    // ...entryTitle,
-    // ...temporalExtent,
-    // ...spatialExtent,
-    // ...{ AdditionalAttributes: additionalAttributes },
-    // ...metadataDates,
-    // ...metadataSpecification
   }));
 };
 
