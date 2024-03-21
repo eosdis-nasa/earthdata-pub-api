@@ -545,17 +545,17 @@ const mapEDPubToUmmc = async (formData) => {
   // with undefined value
   // TODO- Test how CMR handles this in case some are required attributes
   return JSON.parse(JSON.stringify({
-    ...(dataProcessingLevel? dataProcessingLevel : {}),
-    ...(contactPerson? contactPerson : {}),
-    ...(dataProducersTableCitations? dataProducersTableCitations : {}),
-    ...(abstract? abstract : {}),
-    ...(doi? doi : {}),
-    ...(entryTitle? entryTitle : {}),
-    ...(temporalExtent? temporalExtent : {}),
-    ...(spatialExtent? spatialExtent : {}),
-    ...(additionalAttributes? { AdditionalAttributes: additionalAttributes } : {}),
-    ...(metadataDates? metadataDates : {}),
-    ...(metadataSpecification? metadataSpecification : {})
+    ...(dataProcessingLevel || {}),
+    ...(contactPerson || {}),
+    ...(dataProducersTableCitations || {}),
+    ...(abstract || {}),
+    ...(doi || {}),
+    ...(entryTitle || {}),
+    ...(temporalExtent || {}),
+    ...(spatialExtent || {}),
+    ...(additionalAttributes ? { AdditionalAttributes: additionalAttributes } : {}),
+    ...(metadataDates || {}),
+    ...(metadataSpecification || {})
     // ...dataProcessingLevel,
     // ...contactPerson,
     // ...dataProducersTableCitations,
