@@ -7,14 +7,14 @@
 
 const db = require('database-util');
 
-async function createStep(step, stepName) {
+async function createStep(step, stepName, rollbackInfo) {
   return db.workflow.createStep({
     step_name: stepName,
     type: step.type,
     action_id: step.action_id,
     form_id: step.form_id,
     service_id: step.service_id,
-    data: step.prev_step
+    data: rollbackInfo
   });
 }
 
@@ -34,7 +34,14 @@ async function addSteps(steps, workflowId) {
         || (!nextStepName)
         || (!nextStep)
       ) { return false; }
-      await createStep(steps[nextStepName], nextStepName);
+
+      const nextStepRollbackInfo = {
+        rollback: activeStepName,
+        type: activeStep.type,
+        form_id: activeStep.form_id
+      };
+      await createStep(steps[nextStepName], nextStepName, nextStepRollbackInfo);
+
       i += 1;
     }
     await db.workflow.addStep({

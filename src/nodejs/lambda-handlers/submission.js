@@ -143,7 +143,7 @@ async function reviewMethod(event, user) {
   const status = await db.submission.getState({ id });
   const stepType = status.step.type;
   let eventType;
-  if (approve === 'false') {
+  if (approve === 'false' || !approve) {
     eventType = 'review_rejected';
   } else if (stepType === 'review') {
     eventType = 'review_approved';
