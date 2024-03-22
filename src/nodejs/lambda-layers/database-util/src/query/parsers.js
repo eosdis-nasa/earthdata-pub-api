@@ -80,6 +80,7 @@ module.exports.getActiveDaacs = many;
 module.exports.getSubmissionDetailsById = one;
 module.exports.getUserCount = one;
 module.exports.getAverageTimeToPublish = many;
+module.exports.getStepMetrics = many;
 module.exports.onboard = one;
 module.exports.offboard = one;
 module.exports.getSubmissionDaac = one;

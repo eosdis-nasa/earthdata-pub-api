@@ -44,6 +44,8 @@ DROP TABLE IF EXISTS step CASCADE;
 
 DROP TABLE IF EXISTS step_edge CASCADE;
 
+DROP TABLE IF EXISTS step_metrics CASCADE;
+
 DROP TABLE IF EXISTS submission CASCADE;
 
 DROP TABLE IF EXISTS submission_status CASCADE;
@@ -61,6 +63,8 @@ DROP TABLE IF EXISTS submission_form_data_pool CASCADE;
 DROP TABLE IF EXISTS submission_lock CASCADE;
 
 DROP TABLE IF EXISTS submission_copy CASCADE;
+
+DROP TABLE IF EXISTS submission_metrics CASCADE;
 
 DROP TABLE IF EXISTS edpuser_permission_submission CASCADE;
 
@@ -419,6 +423,27 @@ CREATE TABLE IF NOT EXISTS submission_copy (
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (origin_id) REFERENCES submission (id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
+);
+
+CREATE TABLE IF NOT EXISTS submission_metrics (
+  id UUID NOT NULL,
+  referral_origin UUID,
+  accession_rejected BOOLEAN,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES submission (id),
+  FOREIGN KEY (referral_origin) REFERENCES daac (id)
+);
+
+CREATE TABLE IF NOT EXISTS step_metrics (
+  step_name VARCHAR NOT NULL,
+  submission_id UUID NOT NULL,
+  workflow_id UUID NOT NULL,
+  start_time TIMESTAMP NOT NULL DEFAULT NOW(),
+  complete_time TIMESTAMP,
+  PRIMARY KEY (step_name, submission_id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (workflow_id) REFERENCES workflow (id)
 );
 
 CREATE TABLE IF NOT EXISTS service_secret (

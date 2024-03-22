@@ -70,13 +70,17 @@ async function serviceMethod(status) {
 }
 
 async function closeMethod(status) {
+  const submissionMetrics = await db.metrics.getSubmissions({
+    submissionId: status.id
+  });
   const eventMessage = {
     event_type: 'workflow_completed',
     submission_id: status.id,
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step.name,
-    data: status.step.data
+    data: status.step.data,
+    time_to_publish: Math.round(submissionMetrics[0].time_to_publish)
   };
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
@@ -94,6 +98,19 @@ async function promoteStepMethod(eventMessage) {
   const { submission_id: id } = eventMessage;
   await db.submission.promoteStep({ id });
   const status = await db.submission.getState({ id });
+  if (!(status.step_name === 'close')) {
+    await db.metrics.setStepStartTime({
+      step_name: status.step_name,
+      submission_id: id,
+      workflow_id: status.workflow_id
+    });
+  }
+  if (!['init', 'close'].includes(eventMessage.step_name)) {
+    await db.metrics.setStepStopTime({
+      step_name: eventMessage.step_name,
+      submission_id: id
+    });
+  }
   const method = stepMethods[status.step.type];
   await method(status);
 }
@@ -130,12 +147,24 @@ async function formSubmittedMethod(eventMessage) {
 
 async function reviewApprovedMethod(eventMessage) {
   const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
+  if (eventMessage.step_name === 'data_accession_request_form_review') {
+    await db.metrics.setAccessionReversion({
+      id: eventMessage.submission_id,
+      status: 'FALSE'
+    });
+  }
   await promoteStepMethod(eventMessage);
   await msg.sendEvent(newEvent);
 }
 
 async function reviewRejectedMethod(eventMessage) {
   const { submission_id: id, data: { rollback } } = eventMessage;
+  if (eventMessage.step_name === 'data_accession_request_form_review') {
+    await db.metrics.setAccessionReversion({
+      id: eventMessage.submission_id,
+      status: 'TRUE'
+    });
+  }
   await db.submission.rollback({ id, rollback });
   await promoteStepMethod(eventMessage);
 }
