@@ -112,8 +112,8 @@ describe('submission', () => {
       workflow_id: 'test workflow'
 
     };
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'no_perms' }] });
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'admin' }] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['NONE'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_REASSIGN'] });
     db.submission.getState.mockReturnValueOnce({ workflow_id: 'pass_no_perms' });
     db.submission.getState.mockReturnValueOnce({ workflow_id: 'fail_perms' });
     db.submission.getState.mockReturnValueOnce({

@@ -94,3 +94,6 @@ INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'export_me
 UPDATE daac SET hidden=false, workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' WHERE id='6b3ea184-57c5-4fc5-a91b-e49708f91b67';
 update input SET label='Full Name' WHERE label='First and Last Name';
 
+-- 2/18/2024 Update all endpoint to use permissions not roles for access
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'QUESTION_READ');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'QUESTION_READ');
