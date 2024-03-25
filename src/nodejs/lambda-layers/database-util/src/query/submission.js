@@ -61,14 +61,9 @@ const refs = {
     src: 'submission_metadata'
   },
   submission_copy:{
-    type: 'natural_left_join',
-    src: {
-      type: 'select',
-      fields: ['submission_copy.origin_id'],
-      from: {base: 'submission_copy'},
-      group: 'submission_copy.id',
-      alias: 'submission_copy'
-    }
+    type: 'left_join',
+    src: 'submission_copy',
+    on: { left: 'submission.id', right: 'submission_copy.id' }
   },
   submission_action_data: {
     type: 'natural_left_join',
