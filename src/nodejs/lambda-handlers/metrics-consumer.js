@@ -14,7 +14,7 @@ async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
   // Log used to communicate status to cloud metrics
   // eslint-disable-next-line no-console
-  console.log(eventMessage);
+  console.log(JSON.stringify(eventMessage));
   await db.metrics.putMetric(eventMessage);
   await msg.sendMetric(eventMessage);
 }
