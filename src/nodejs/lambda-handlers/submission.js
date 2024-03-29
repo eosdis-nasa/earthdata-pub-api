@@ -283,7 +283,7 @@ async function mapMetadataMethod(event, user) {
     mappedMetadata = await mapEDPubToUmmc(formData.data);
   } catch (e) {
     console.error(e);
-    return { error: 'Invalid form data. Data publication form must be complete' };
+    return { error: 'Invalid form data. Form must be complete.' };
   }
 
   return mappedMetadata;

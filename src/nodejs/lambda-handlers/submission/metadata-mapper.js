@@ -17,11 +17,11 @@ const mapEDPubToUmmc = async (formData) => {
 
   // Previously processing level was mapped to additional attributes but is being
   // remapped to Processing Level since this is where it should exist
-  const dataProcessingLevel = {
+  const dataProcessingLevel = formData.data_processing_level ? {
     ProcessingLevel: {
       Id: formData.data_processing_level === 'Other/Unsure' ? formData.data_processing_other_info : formData.data_processing_level
     }
-  };
+  }: {};
 
   // Previously data producer, POC, and long term contact were mapped to DataCenter
   // but are being remapped to Contact Persons to avoid assumption that person is
@@ -61,7 +61,7 @@ const mapEDPubToUmmc = async (formData) => {
     contactPerson.ContactPersons.push({
       Roles: ['Science Contact'],
       FirstName: pocSplitName[0] || '',
-      LastName: pocSplitName.length > 1 ? pocSplitName.slice(-1) : '',
+      LastName: pocSplitName.length > 1 ? pocSplitName.slice(-1)[0] : '',
       ContactInformation: {
         ContactMechanisms: [
           {
@@ -85,7 +85,7 @@ const mapEDPubToUmmc = async (formData) => {
     contactPerson.ContactPersons.push({
       Roles: ['Science Contact'],
       FirstName: ltsPocSplitName[0] || '',
-      LastName: ltsPocSplitName.length > 1 ? ltsPocSplitName.slice(-1) : '',
+      LastName: ltsPocSplitName.length > 1 ? ltsPocSplitName.slice(-1)[0] : '',
       ContactInformation: {
         ContactMechanisms: [
           {
@@ -107,9 +107,9 @@ const mapEDPubToUmmc = async (formData) => {
     const creatorString = [creator?.producer_first_name, creator.producer_middle_initial || '', creator?.producer_last_name_or_organization].join(' ');
     creatorsString = creatorsString ? [creatorsString, creatorString].join(', ') : creatorString;
   });
-  const dataProducersTableCitations = {
+  const dataProducersTableCitations = creatorsString ? {
     CollectionCitations: [{ Creator: creatorsString }]
-  };
+  } : {};
 
   const abstract = { Abstract: formData.data_product_description };
 
