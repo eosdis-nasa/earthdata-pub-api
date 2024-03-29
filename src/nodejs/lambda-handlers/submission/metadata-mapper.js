@@ -21,7 +21,7 @@ const mapEDPubToUmmc = async (formData) => {
     ProcessingLevel: {
       Id: formData.data_processing_level === 'Other/Unsure' ? formData.data_processing_other_info : formData.data_processing_level
     }
-  }: {};
+  } : {};
 
   // Previously data producer, POC, and long term contact were mapped to DataCenter
   // but are being remapped to Contact Persons to avoid assumption that person is
