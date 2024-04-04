@@ -68,6 +68,15 @@ async function initializeMethod(event, user) {
     step_name: 'init',
     user_id: user.id
   };
+  if (status.workflow_id === '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9') {
+    const staff = await db.user.getUnknownStaffIds();
+    const staffIds = staff.map((usr) => usr.id);
+    await db.note.addUsersToConversation({
+      conversation_id: status.conversation_id,
+      user_list: staffIds
+    });
+    db.submission.addContributors({ id: status.id, contributor_ids: staffIds });
+  }
   await msg.sendEvent(eventMessage);
   return status;
 }
@@ -143,7 +152,7 @@ async function reviewMethod(event, user) {
   const status = await db.submission.getState({ id });
   const stepType = status.step.type;
   let eventType;
-  if (approve === 'false') {
+  if (approve === 'false' || !approve) {
     eventType = 'review_rejected';
   } else if (stepType === 'review') {
     eventType = 'review_approved';
@@ -282,7 +291,8 @@ async function mapMetadataMethod(event, user) {
   try {
     mappedMetadata = await mapEDPubToUmmc(formData.data);
   } catch (e) {
-    return { error: 'Invalid form data. Data publication form must be complete' };
+    console.error(e);
+    return { error: 'Invalid form data. Form must be complete.' };
   }
 
   return mappedMetadata;
