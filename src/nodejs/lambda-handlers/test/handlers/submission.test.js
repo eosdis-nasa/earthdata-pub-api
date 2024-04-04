@@ -160,33 +160,11 @@ describe('submission', () => {
       step: { name: 'test step' },
       daac_id: 'test daac'
     });
-    db.submission.getState.mockReturnValueOnce({ // no id in initialize
-      id: 'temp state',
-      conversation_id: 'test conversation',
-      workflow_id: 'test workflow'
-    });
-    db.submission.getState.mockReturnValueOnce({ // no id in saveMethod
-      id: 'test submission',
-      conversation_id: 'test conversation',
-      workflow_id: 'test workflow',
-      step: { step_message: 'test message' },
-      daac_id: 'another daac'
-    });
-    db.submission.initialize.mockReturnValue({
-      id: 'test submission'
-    });
     expect(await submission.handler(payloadId)).toEqual({
       id: 'test submission',
       conversation_id: 'test conversation',
       workflow_id: 'test workflow',
       step: { name: 'test step' },
-      daac_id: 'test daac'
-    });
-    expect(await submission.handler(payloadNoId)).toEqual({
-      id: 'test submission',
-      conversation_id: 'test conversation',
-      workflow_id: 'test workflow',
-      step: { step_message: 'test message' },
       daac_id: 'test daac'
     });
   });

@@ -157,12 +157,12 @@ INSERT INTO section_question VALUES ('933da7a8-4db6-4b7b-b128-d815fe151d29', '38
 
 -- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))
 
-INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_name', 0, 'Full Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_email', 3, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info_orcid', 4, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_name', 0, 'Full Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'poc_email', 3, 'Email', 'email', '{}', '{}', '[]','[]',  True);
@@ -204,7 +204,7 @@ INSERT INTO input VALUES ('4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 'data_delivery
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_amount', 0, '', 'number', '{}', '{"min": "1"}', '[]','[]',  True);
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_units', 1, '', 'radio', '["KB","MB","GB","TB","PB"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_file_url', 0, '', 'text', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_name', 0, 'First and Last Name', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_name', 0, 'Full Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_department', 2, 'Department', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d332', 'long_term_support_poc_email', 3, 'Email', 'email', '{}', '{}', '[]','[]',  True);
