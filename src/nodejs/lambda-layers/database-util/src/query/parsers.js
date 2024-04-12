@@ -8,6 +8,7 @@ function many({ rows }) {
 
 module.exports.find = many;
 module.exports.findById = one;
+module.exports.updateUsername = one; 
 module.exports.findByName = one;
 module.exports.findAll = many;
 module.exports.findAllEx = many;

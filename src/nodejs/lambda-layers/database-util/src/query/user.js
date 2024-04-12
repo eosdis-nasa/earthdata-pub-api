@@ -394,6 +394,11 @@ detailed = {{detailed}}
 WHERE edpuser.id = {{id}}
 RETURNING *`;
 
+const updateUsername = () => `
+UPDATE edpuser SET
+name = {{name}}
+WHERE edpuser.id = {{id}}
+RETURNING *`;
 
 module.exports.find = find;
 module.exports.findAll = findAll;
@@ -414,3 +419,4 @@ module.exports.getEmails = getEmails;
 module.exports.findByEmail = findByEmail;
 module.exports.getUsers = getUsers;
 module.exports.setDetail = setDetail;
+module.exports.updateUsername = updateUsername;
