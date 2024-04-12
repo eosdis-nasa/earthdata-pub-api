@@ -79,7 +79,7 @@ async function createMethod(params, privileges) {
 
 async function updateUsername(params) {
   const { name, id } = params;
-  const resp = await db.user.updateUsername({  name, id });
+  const resp = await db.user.updateUsername({ name, id });
   return resp;
 }
 
