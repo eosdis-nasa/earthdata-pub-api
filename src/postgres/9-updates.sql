@@ -103,9 +103,3 @@ INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_acce
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form_review', 'assign_a_workflow');
 
 UPDATE daac SET workflow_id = '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', edpgroup_id ='5be24b44-d66b-4396-9266-a9d066000d9e' WHERE id= '1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
-
---4/8/2024 Updating Upload Questions
-UPDATE question SET text = 'Are there any existing documents that you would like to have included in the review of your data product? If "Yes", please upload the document(s).', help = 'For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality. If you have more than 5 documents, please contact the DAAC for assistance. Files must be less than 5 GB and cannot include .exe or .dll extensions.' WHERE id = 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9';
-UPDATE question SET text = 'Please upload a sample file(s).', help = 'Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content. If more than 5 sample data files are necessary to represent the data product, please contact the DAAC for assistance.  Files must be less than 5 GB and cannot include .exe or .dll extensions.' WHERE id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3';
-UPDATE input SET control_id = 'data_product_documentation', type = 'file' WHERE question_id = 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9' and control_id = 'data_product_documentation_url';
-UPDATE input SET control_id = 'example_files', type = 'file' WHERE question_id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3' and control_id = 'example_file_url';
