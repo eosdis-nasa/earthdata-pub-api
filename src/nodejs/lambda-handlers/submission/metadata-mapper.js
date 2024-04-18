@@ -17,11 +17,11 @@ const mapEDPubToUmmc = async (formData) => {
 
   // Previously processing level was mapped to additional attributes but is being
   // remapped to Processing Level since this is where it should exist
-  const dataProcessingLevel = {
+  const dataProcessingLevel = formData.data_processing_level ? {
     ProcessingLevel: {
       Id: formData.data_processing_level === 'Other/Unsure' ? formData.data_processing_other_info : formData.data_processing_level
     }
-  };
+  } : {};
 
   // Previously data producer, POC, and long term contact were mapped to DataCenter
   // but are being remapped to Contact Persons to avoid assumption that person is
@@ -61,7 +61,7 @@ const mapEDPubToUmmc = async (formData) => {
     contactPerson.ContactPersons.push({
       Roles: ['Science Contact'],
       FirstName: pocSplitName[0] || '',
-      LastName: pocSplitName.length > 1 ? pocSplitName.slice(-1) : '',
+      LastName: pocSplitName.length > 1 ? pocSplitName.slice(-1)[0] : '',
       ContactInformation: {
         ContactMechanisms: [
           {
@@ -76,8 +76,8 @@ const mapEDPubToUmmc = async (formData) => {
       NonDataCenterAffiliation: pocAffiliation
     });
   }
-  if (!stringToBool(formData.same_as_long_term_support_poc_name_data_producer_info_name)) {
-    const ltsPocSplitName = formData.long_term_support_poc_name.split(' ') || [];
+  if (!stringToBool(formData.same_as_long_term_support_poc_name_data_producer_info_name) && formData.long_term_support_poc_name) {
+    const ltsPocSplitName = formData.long_term_support_poc_name?.split(' ') || [];
     const ltsPocAffiliation = formData.long_term_support_poc_organization
             && formData.long_term_support_poc_department
       ? `${formData.long_term_support_poc_organization} - ${formData.long_term_support_poc_department}`
@@ -85,7 +85,7 @@ const mapEDPubToUmmc = async (formData) => {
     contactPerson.ContactPersons.push({
       Roles: ['Science Contact'],
       FirstName: ltsPocSplitName[0] || '',
-      LastName: ltsPocSplitName.length > 1 ? ltsPocSplitName.slice(-1) : '',
+      LastName: ltsPocSplitName.length > 1 ? ltsPocSplitName.slice(-1)[0] : '',
       ContactInformation: {
         ContactMechanisms: [
           {
@@ -107,9 +107,9 @@ const mapEDPubToUmmc = async (formData) => {
     const creatorString = [creator?.producer_first_name, creator.producer_middle_initial || '', creator?.producer_last_name_or_organization].join(' ');
     creatorsString = creatorsString ? [creatorsString, creatorString].join(', ') : creatorString;
   });
-  const dataProducersTableCitations = {
+  const dataProducersTableCitations = creatorsString ? {
     CollectionCitations: [{ Creator: creatorsString }]
-  };
+  } : {};
 
   const abstract = { Abstract: formData.data_product_description };
 
@@ -545,17 +545,17 @@ const mapEDPubToUmmc = async (formData) => {
   // with undefined value
   // TODO- Test how CMR handles this in case some are required attributes
   return JSON.parse(JSON.stringify({
-    ...dataProcessingLevel,
-    ...contactPerson,
-    ...dataProducersTableCitations,
-    ...abstract,
-    ...doi,
-    ...entryTitle,
-    ...temporalExtent,
-    ...spatialExtent,
-    ...{ AdditionalAttributes: additionalAttributes },
-    ...metadataDates,
-    ...metadataSpecification
+    ...(dataProcessingLevel || {}),
+    ...(contactPerson || {}),
+    ...(dataProducersTableCitations || {}),
+    ...(abstract || {}),
+    ...(doi || {}),
+    ...(entryTitle || {}),
+    ...(temporalExtent || {}),
+    ...(spatialExtent || {}),
+    ...(additionalAttributes ? { AdditionalAttributes: additionalAttributes } : {}),
+    ...(metadataDates || {}),
+    ...(metadataSpecification || {})
   }));
 };
 
