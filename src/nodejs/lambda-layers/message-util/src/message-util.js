@@ -21,7 +21,7 @@ function marshalAttribute(attribute) {
   } if (typeof attribute === 'string') {
     return { DataType: 'String', StringValue: attribute };
   } if (typeof attribute === 'number') {
-    return { DateType: 'Number', StringValue: `${attribute}` };
+    return { DataType: 'Number', StringValue: `${attribute}` };
   }
   return {};
 }
