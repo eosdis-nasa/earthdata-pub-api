@@ -177,6 +177,8 @@ describe('submission', () => {
       id: 'test id',
       approve: true
     };
+    db.user.findById.mockReturnValue({ id: 'test user', user_roles: [{ short_name: 'REQUEST_REVIEW' }] });
+
     db.submission.getState.mockReturnValue({
       conversation_id: 'test conversation',
       workflow_id: 'test workflow',
