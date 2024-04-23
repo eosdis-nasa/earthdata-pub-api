@@ -30,7 +30,7 @@ const mapEDPubToUmmc = async (formData) => {
   // but are being remapped to Contact Persons to avoid assumption that person is
   // affiliated with a DAAC
   const dataProducerSplitName = formData.data_producer_info_name?.split(' ') || [];
-  delete formData.data_producer_info_name
+  delete formData.data_producer_info_name;
 
   const dataProducerAffiliation = formData.data_producer_info_organization
         && formData.data_producer_info_department
@@ -265,7 +265,6 @@ const mapEDPubToUmmc = async (formData) => {
     Value: formData.data_accession_approval_dependencies_radios
   });
   delete formData.data_accession_approval_dependencies_radios;
-
 
   formData.data_accession_reason_description && additionalAttributes.push({
     Name: 'data_accession_reason_description',
@@ -641,6 +640,17 @@ const mapEDPubToUmmc = async (formData) => {
       Version: '1.17.0'
     }
   };
+
+  // Added to capture DAAC specific questions
+  Object.keys(formData).forEach((extra) => {
+    additionalAttributes.push({
+      Name: extra,
+      Description: `Additional EDPub Form Response with id: ${extra}`,
+      DataType: 'STRING',
+      Value: typeof formData[extra] === 'object' ? JSON.stringify(formData[extra]) : `${formData[extra]}`
+    });
+    delete formData[extra];
+  });
 
   // Stringify then parse to avoid errors with undefined in JSON by removing attributes
   // with undefined value
