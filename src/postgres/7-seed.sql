@@ -390,6 +390,7 @@ INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'G
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_CREATE');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_READ');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'WORKFLOW_UPDATE');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'QUESTION_READ');
 
 --RolePrivilege(edprole_id, privilege) DAAC Data Manager
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_INITIALIZE');
@@ -407,6 +408,7 @@ INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'R
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REMOVEUSER');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'GROUP_UPLOAD');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'WORKFLOW_DELETE');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'QUESTION_READ');
 
 -- UserRole(edpuser_id, edprole_id)
 INSERT INTO edpuser_edprole VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', '75605ac9-bf65-4dec-8458-93e018dcca97');
@@ -418,6 +420,7 @@ INSERT INTO workflow VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'request_fo
 INSERT INTO workflow VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_publication_request_workflow', 1, 'Data Publication Request Workflow', 'This is the default initial workflow for a new data publication request.');
 INSERT INTO workflow VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 1, 'Assign a Workflow', 'This is the default initial workflow.');
 INSERT INTO workflow VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'example_workflow', 1, 'Example Workflow', 'This is an idealize, yet realistic workflow for the purposes of testing and demonstration.');
+INSERT INTO workflow VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'unknown_workflow', 1, 'Unknown DAAC Workflow', 'This is the default workflow for unknown DAACs.');
 
 INSERT INTO workflow VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'ghrc_default_workflow', 1, 'GHRC Default Workflow', 'This is the default workflow for GHRC.');
 INSERT INTO workflow VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'ornl_default_workflow', 1, 'ORNL Default Workflow', 'This is the default workflow for ORNL.');
@@ -447,6 +450,12 @@ INSERT INTO step(step_name, type, form_id) VALUES ('confirmation_form', 'form', 
 INSERT INTO step(step_name, type, action_id, data) VALUES ('map_question_response_to_ummc', 'action', 'f812eb99-7c4a-46a8-8d8f-30ae509fe21c', '{"rollback":"confirmation_form","type": "action"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('d1cbc4a8-ce4c-4734-8e71-a824d30c401a', 'edit_metadata_in_mmt_after_publication_form_review', 'action', '{"rollback":"send_to_mmt_after_publication_form_review","type": "action"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('c628d63b-93b9-45ae-8e7b-a903554b6726', 'send_to_mmt_after_publication_form_review', 'action', '{"rollback":"map_question_response_to_ummc","type": "action"}');
+
+-- Unknown DAAC
+-- StepEdge(workflow_id, step_name, next_step_name)
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form_review', 'assign_a_workflow');
 
 -- GHRC
 -- Step(step_name, type, action_id, form_id, service_id, data)
@@ -559,5 +568,5 @@ INSERT INTO daac VALUES ('15df4fda-ed0d-417f-9124-558fb5e5b561', 'ORNL DAAC', 'O
 INSERT INTO daac VALUES ('6b3ea184-57c5-4fc5-a91b-e49708f91b67', 'PO.DAAC', 'Physical Oceanography Distributed Active Archive Center (PO.DAAC)', 'http://podaac.jpl.nasa.gov/', 'NASA''s Physical Oceanography Distributed Active Archive Center (PO.DAAC) is located at NASA''s Jet Propulsion Laboratory in Pasadena, California. PO.DAAC manages and provides tools and services for NASA''s oceanographic and hydrologic data (satellite, airborne, and in-situ) to enable greater understanding of the physical processes and condition of the global ocean. Measurements include gravity, ocean winds, sea surface temperature, ocean surface topography, sea surface salinity, ocean currents, and circulation. The data support a wide range of applications including climate research, weather prediction, resource management, policy, and the stewardship of ocean data resources. Sample data holdings include Aquarius, Soil Moisture Active Passive (SMAP), Gravity Recovery and Climate Experiment(GRACE), GRACE Follow-on (GRACE-FO), NASA Scatterometer (NSCAT), Quick Scatterometer (QuikSCAT), Rapid Scatterometer (RapidScat), Cyclone Global Navigation Satellite System (CYGNSS), TOPEX/POSEIDON, Jason-1, Group for High Resolution Sea Surface Temperature (GHRSST), Oceans Melting Greenland (OMG), Salinity Processes in the Upper Ocean Regional Study (SPURS), and Making Earth System Data Records for Use in Research Environments (MEaSUREs). Data access services include PO.DAAC Drive, Thematic Real-time Environmental Distributed Data Services (THREDDS), Open-source Project for a Network Data Access Protocol (OPeNDAP), PO.DAAC Web Services, and PO.DAAC GitHub repository. Tools that provide subsetting, extraction, and visualization capabilities include High-level Tool for Interactive Data Extraction (HiTIDE), Live Access Server (LAS), and State of the Ocean (SOTO).', 'Gravity, Ocean Circulation, Ocean Heat Budget, Ocean Surface Topography, Ocean Temperature, Ocean Waves, Ocean Winds, Ocean Salinity, Surface Water', 'a5a14d98-df13-47f2-b86b-1504c7d4360d', 'e847900e-90e2-47f8-85c6-94e06bcbcca0','false');
 INSERT INTO daac VALUES ('00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1', 'SEDAC', 'Socioeconomic Data and Applications Data Center (SEDAC)', 'http://sedac.ciesin.columbia.edu/', 'NASA''s Socioeconomic Data and Applications Center (SEDAC) is operated by the Center for International Earth Science Information Network (CIESIN), a unit of the Earth Institute at Columbia University based at the Lamont-Doherty Earth Observatory in Palisades, New York. SEDAC''s missions are to synthesize Earth science and socioeconomic data and information in ways useful to a wide range of decision makers and other applied users, and to provide an “Information Gateway” between the socioeconomic and Earth science data and information domains. SEDAC datasets can be accessed via the dataset section of the SEDAC web site.', 'Synthesized Earth science and socio-economic data', 'c1690729-b67e-4675-a1a5-b2323f347dff', 'f0a89bc6-707f-4a34-8041-1593934c2e42','true');
 INSERT INTO daac VALUES ('cdccdd71-cbe2-4220-8569-a6355ea24f3f', 'Example', 'Example DAAC', 'https://earthdata.nasa.gov', 'This is an example DAAC for sample and testing purposes.', 'Testing of EDPUB', 'c1690729-b67e-4675-a1a5-b2323f347dff', '8edd07a0-34e1-45c7-a2c1-7fc9ae884030','false');
-INSERT INTO daac VALUES ('1c36f0b9-b7fd-481b-9cab-3bc3cea35413', 'Unknown', 'Unknown DAAC', 'https://earthdata.nasa.gov', 'Choose this if you are not sure where the data product should be archived.', '', '056ca100-107e-4fe5-a54a-e5f2d902a27a', '4daa6b22-f015-4ce2-8dac-8b3510004fca','false');
+INSERT INTO daac VALUES ('1c36f0b9-b7fd-481b-9cab-3bc3cea35413', 'Unknown', 'Unknown DAAC', 'https://earthdata.nasa.gov', 'Choose this if you are not sure where the data product should be archived.', '', '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', '5be24b44-d66b-4396-9266-a9d066000d9e','false');
 
