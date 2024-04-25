@@ -94,3 +94,80 @@ INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'export_me
 UPDATE daac SET hidden=false, workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' WHERE id='6b3ea184-57c5-4fc5-a91b-e49708f91b67';
 update input SET label='Full Name' WHERE label='First and Last Name';
 
+-- Task EDPUB-1244 
+-- Update existing records to reflect changes for mapping to MMT
+UPDATE action SET short_name = 'send_to_mmt', long_name = 'Send To MMT Action', description = 'This action is used to send collection metadata from EDPub to MMT.', source = 'sendToMMT.js' WHERE id = '3fe93672-cd91-45d4-863b-c6d0d63f8c8c';
+
+ALTER TABLE step DISABLE TRIGGER ALL;
+
+UPDATE step
+SET step_name = 'map_to_mmt'
+WHERE step_name = 'map_to_meditor';
+
+UPDATE step
+SET step_name = 'start_mmt_editing',
+    data = '{"rollback":"send_to_mmt","type": "action"}'
+WHERE step_name = 'start_meditor_editing';
+
+UPDATE step
+SET step_name = 'complete_mmt_editing',
+    data = '{"rollback":"start_mmt_editing","type": "action"}'
+WHERE step_name = 'complete_meditor_editing';
+
+UPDATE step
+SET step_name = 'get_from_mmt',
+    data = '{"rollback":"complete_mmt_editing","type": "action"}'
+WHERE step_name = 'get_from_meditor';
+
+UPDATE step
+SET step_name = 'map_from_mmt',
+    data = '{"rollback":"get_from_mmt","type": "action"}'
+WHERE step_name = 'map_from_meditor';
+
+UPDATE step
+SET data = '{"rollback":"map_from_mmt","type": "action"}'
+WHERE step_name = 'publish_to_cmr';
+
+UPDATE step
+SET step_name = 'send_to_mmt'
+WHERE action_id = '3fe93672-cd91-45d4-863b-c6d0d63f8c8c';
+
+UPDATE step
+SET step_name = 'edit_metadata_in_mmt_after_publication_form_review',
+    data = '{"rollback":"send_to_mmt_after_publication_form_review","type": "action"}'
+WHERE step_id = 'd1cbc4a8-ce4c-4734-8e71-a824d30c401a';
+
+UPDATE step
+SET step_name = 'send_to_mmt_after_publication_form_review'
+WHERE step_id = 'c628d63b-93b9-45ae-8e7b-a903554b6726';
+
+ALTER TABLE step ENABLE TRIGGER ALL;
+
+-- StepEdge(workflow_id, step_name, next_step_name)
+UPDATE step_edge
+SET next_step_name = 'map_to_mmt'
+WHERE step_name = 'complete_qa' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'map_to_mmt', next_step_name= 'send_to_mmt'
+WHERE step_name = 'map_to_meditor' and next_step_name = 'send_to_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'send_to_mmt', next_step_name= 'start_mmt_editing'
+WHERE step_name = 'send_to_meditor' and next_step_name = 'start_meditor_editing' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'start_mmt_editing', next_step_name= 'complete_mmt_editing'
+WHERE step_name = 'start_meditor_editing' and next_step_name = 'complete_meditor_editing' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'complete_mmt_editing', next_step_name= 'get_from_mmt'
+WHERE step_name = 'complete_meditor_editing' and next_step_name = 'get_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'get_from_mmt', next_step_name= 'map_from_mmt'
+WHERE step_name = 'get_from_meditor' and next_step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'map_from_mmt'
+WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
