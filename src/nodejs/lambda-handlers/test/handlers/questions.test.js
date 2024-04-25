@@ -25,11 +25,11 @@ describe('questions', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'admin' }] });
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'fail' }] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['ADMIN'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['QUESTION_READ'] });
     db.question.findAll.mockReturnValue({ message: 'Successfully found all questions.' });
     expect(await questions.handler(params)).toEqual({ message: 'Successfully found all questions.' });
-    expect(await questions.handler(params)).toEqual({});
+    expect(await questions.handler(params)).toEqual({ message: 'Successfully found all questions.' });
   });
 
   it('should find a question by name', async () => {
@@ -40,11 +40,11 @@ describe('questions', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'admin' }] });
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'fail' }] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['ADMIN'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['QUESTION_READ'] });
     db.question.findByName.mockReturnValue({ message: 'Successfully found question.' });
     expect(await questions.handler(params)).toEqual({ message: 'Successfully found question.' });
-    expect(await questions.handler(params)).toEqual({});
+    expect(await questions.handler(params)).toEqual({ message: 'Successfully found question.' });
   });
 
   it('should find a question by id', async () => {
@@ -55,11 +55,11 @@ describe('questions', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'admin' }] });
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'fail' }] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['ADMIN'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['QUESTION_READ'] });
     db.question.findById.mockReturnValue({ message: 'Successfully found question.' });
     expect(await questions.handler(params)).toEqual({ message: 'Successfully found question.' });
-    expect(await questions.handler(params)).toEqual({});
+    expect(await questions.handler(params)).toEqual({ message: 'Successfully found question.' });
   });
 
   it('should update a question', async () => {
@@ -70,8 +70,8 @@ describe('questions', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'admin' }] });
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'staff' }] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['ADMIN'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['QUESTION_READ'] });
     db.question.update.mockReturnValue({ message: 'Successfully updated question.' });
     expect(await questions.handler(params)).toEqual({ message: 'Successfully updated question.' });
     expect(await questions.handler(params)).toEqual({});
@@ -85,8 +85,8 @@ describe('questions', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'admin' }] });
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'staff' }] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['ADMIN'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['QUESTION_READ'] });
     db.question.add.mockReturnValue({ message: 'Successfully added question.' });
     expect(await questions.handler(params)).toEqual({ message: 'Successfully added question.' });
     expect(await questions.handler(params)).toEqual({});
@@ -103,8 +103,8 @@ describe('questions', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'admin' }] });
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'staff' }] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['ADMIN'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['QUESTION_READ'] });
     db.question.updateInput.mockReturnValue({ message: 'Successfully updated input.' });
     db.question.findById.mockReturnValueOnce({
       inputs: [
