@@ -115,3 +115,7 @@ INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publ
 
 UPDATE step SET data = '{"rollback":"data_publication_request_form_management_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id = 'c81066db-0566-428d-87e8-94169ce5a9b9';
 UPDATE step_edge SET next_step_name = 'data_publication_request_form_management_review' WHERE workflow_id = '7843dc6d-f56d-488a-9193-bb7c0dc3696d' AND step_name = 'data_publication_request_form_review';
+
+-- 4/22/2024 Adding new previlage REQUEST_REVIEW_MANAGER for the Daac manager task EDPUB-1263
+INSERT INTO privilege VALUES ('REQUEST_REVIEW_MANAGER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REVIEW_MANAGER');
