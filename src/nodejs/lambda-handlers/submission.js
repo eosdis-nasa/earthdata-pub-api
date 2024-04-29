@@ -148,10 +148,13 @@ async function submitMethod(event, user) {
 }
 
 async function reviewMethod(event, user) {
-  const approvedUserRoles = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
   const { id, approve } = event;
   const status = await db.submission.getState({ id });
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+  console.log('made it in')
+  console.log(user.user_privileges)
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    console.log('made it further')
     const stepType = status.step.type;
     let eventType;
     if (approve === 'false' || !approve) {
