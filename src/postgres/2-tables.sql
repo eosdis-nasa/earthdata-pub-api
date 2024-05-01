@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS conversation CASCADE;
 
 DROP TABLE IF EXISTS note CASCADE;
 
-DROP TABLE IF EXISTS note_edpuser CASCADE;
+DROP TABLE IF EXISTS note_scope CASCADE;
 
 DROP TABLE IF EXISTS conversation_edpuser CASCADE;
 
@@ -596,4 +596,12 @@ CREATE TABLE IF NOT EXISTS note (
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
   UNIQUE (id),
   FOREIGN KEY (step_name) REFERENCES step (step_name)
+);
+
+CREATE TABLE IF NOT EXISTS note_scope (
+  note_id UUID NOT NULL,
+  user_ids UUID[],
+  edprole_ids UUID[],
+  PRIMARY KEY (note_id),
+  FOREIGN KEY (note_id) REFERENCES note (id)
 );

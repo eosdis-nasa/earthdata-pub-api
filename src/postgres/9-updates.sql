@@ -197,3 +197,12 @@ WHERE step_name = 'get_from_meditor' and next_step_name = 'map_from_meditor' and
 UPDATE step_edge
 SET step_name = 'map_from_mmt'
 WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+-- 5/1/2024 Adding new table for limiting note visability by user/role task EDPUB-1255
+CREATE TABLE IF NOT EXISTS note_scope (
+  note_id UUID NOT NULL,
+  user_ids UUID[],
+  edprole_ids UUID[],
+  PRIMARY KEY (note_id),
+  FOREIGN KEY (note_id) REFERENCES note (id)
+);
