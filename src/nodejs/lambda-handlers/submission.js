@@ -82,10 +82,10 @@ async function initializeMethod(event, user) {
 }
 
 async function applyMethod(event, user) {
-  const approvedUserRoles = ['admin', 'manager', 'staff'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REASSIGN'];
   const { id, workflow_id: workflowId } = event;
   let status = await db.submission.getState({ id });
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     await db.submission.reassignWorkflow({ id, workflowId });
     await db.submission.promoteStep({ id });
     status = await db.submission.getState({ id });
