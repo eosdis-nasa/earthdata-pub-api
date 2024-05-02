@@ -77,6 +77,12 @@ async function createMethod(params, privileges) {
   return { error: 'No privilege' };
 }
 
+async function updateUsername(params) {
+  const { name, id } = params;
+  const resp = await db.user.updateUsername({ name, id });
+  return resp;
+}
+
 async function findMethod(params, privileges) {
   if (privileges.includes('ADMIN')
     || privileges.includes('USER_READ')) {
@@ -144,7 +150,8 @@ const operations = {
   remove_group: removeGroupMethod,
   add_role: addRoleMethod,
   remove_role: removeRoleMethod,
-  get_users: getUsersMethod
+  get_users: getUsersMethod,
+  update_username: updateUsername
 };
 
 async function handler(event) {
