@@ -21,7 +21,7 @@ const getDMTemplate = (params, envUrl) => {
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
                  <p>You have received a direct message on the Earthdata Pub Dashboard.</p>
-                 <h2>Message:</h2><p>${params.eventMessage.conversation_last_message}</p><br><br>
+                 <h2>Message:</h2><p style="white-space: pre;">${decodeURI(params.eventMessage.conversation_last_message)}</p><br><br>
                  
                  <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                </td>

@@ -394,6 +394,12 @@ detailed = {{detailed}}
 WHERE edpuser.id = {{id}}
 RETURNING *`;
 
+const updateUsername = () => `
+UPDATE edpuser SET
+name = {{name}}
+WHERE edpuser.id = {{id}}
+RETURNING *`;
+
 const getUnknownStaffIds = (params) => sql.select({
   fields: ['id'],
   from: {
@@ -431,4 +437,5 @@ module.exports.getEmails = getEmails;
 module.exports.findByEmail = findByEmail;
 module.exports.getUsers = getUsers;
 module.exports.setDetail = setDetail;
+module.exports.updateUsername = updateUsername;
 module.exports.getUnknownStaffIds = getUnknownStaffIds;
