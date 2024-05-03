@@ -206,3 +206,5 @@ UPDATE step_edge
 SET step_name = 'map_from_mmt'
 WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
 
+--4/23/2024 Fixing daac data manager permissions
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
