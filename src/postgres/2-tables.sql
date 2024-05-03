@@ -292,6 +292,7 @@ CREATE TABLE IF NOT EXISTS workflow (
 CREATE TABLE IF NOT EXISTS step (
   step_id UUID DEFAULT UUID_GENERATE_V4(),
   step_name VARCHAR NOT NULL,
+  step_status_label VARCHAR,
   type VARCHAR NOT NULL,
   action_id UUID,
   form_id UUID,
@@ -305,6 +306,8 @@ CREATE TABLE IF NOT EXISTS step (
   CONSTRAINT step_type_check CHECK (type IN ('init', 'action', 'form', 'review', 'service', 'close')),
   CONSTRAINT step_foreign_key_check CHECK (NUM_NONNULLS(action_id, form_id, service_id) <= 1)
 );
+
+ALTER TABLE step ADD COLUMN step_status_label VARCHAR; 
 
 CREATE TABLE IF NOT EXISTS step_edge (
   workflow_id UUID NOT NULL,
