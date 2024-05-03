@@ -214,3 +214,16 @@ WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'pro
 UPDATE Input
 SET label = 'End Date and Time (UTC)', type = 'datetimePicker'
 WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'product_temporal_coverage_end';
+
+-- 5/1/2024 Adding new table for limiting note visability by user/role task EDPUB-1255
+CREATE TABLE IF NOT EXISTS note_scope (
+  note_id UUID NOT NULL,
+  user_ids UUID[],
+  edprole_ids UUID[],
+  PRIMARY KEY (note_id),
+  FOREIGN KEY (note_id) REFERENCES note (id)
+);
+
+--4/23/2024 Fixing daac data manager permissions
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
+
