@@ -206,5 +206,15 @@ UPDATE step_edge
 SET step_name = 'map_from_mmt'
 WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
 
+-- 5/1/2024 Adding new table for limiting note visability by user/role task EDPUB-1255
+CREATE TABLE IF NOT EXISTS note_scope (
+  note_id UUID NOT NULL,
+  user_ids UUID[],
+  edprole_ids UUID[],
+  PRIMARY KEY (note_id),
+  FOREIGN KEY (note_id) REFERENCES note (id)
+);
+
 --4/23/2024 Fixing daac data manager permissions
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
+
