@@ -214,3 +214,7 @@ CREATE TABLE IF NOT EXISTS note_scope (
   PRIMARY KEY (note_id),
   FOREIGN KEY (note_id) REFERENCES note (id)
 );
+
+--4/23/2024 Fixing daac data manager permissions
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
+
