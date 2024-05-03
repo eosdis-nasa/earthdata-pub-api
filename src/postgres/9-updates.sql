@@ -206,6 +206,15 @@ UPDATE step_edge
 SET step_name = 'map_from_mmt'
 WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
 
+-- EDPUB-1262 update datetimepicker
+UPDATE Input
+SET label = 'Start Date and Time (UTC)', type = 'datetimePicker'
+WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'product_temporal_coverage_start';
+
+UPDATE Input
+SET label = 'End Date and Time (UTC)', type = 'datetimePicker'
+WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'product_temporal_coverage_end';
+
 -- 5/1/2024 Adding new table for limiting note visability by user/role task EDPUB-1255
 CREATE TABLE IF NOT EXISTS note_scope (
   note_id UUID NOT NULL,
