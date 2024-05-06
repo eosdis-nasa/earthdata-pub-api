@@ -29,6 +29,8 @@ module "aws_secrets" {
 
   ses_access_key_id = var.ses_access_key_id
   ses_secret_access_key = var.ses_secret_access_key
+  ornl_endpoint_url = var.ornl_endpoint_url
+  ornl_endpoint_access_token = var.ornl_endpoint_access_token
 }
 
 module "lambda_functions" {
