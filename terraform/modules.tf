@@ -16,6 +16,7 @@ module "iam_roles" {
   lambda_execution_policy_arn = var.lambda_execution_policy_arn
   permissions_boundary_arn = var.permissions_boundary_arn
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
+  ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
 }
 
 module "s3" {
@@ -83,6 +84,7 @@ module "lambda_functions" {
   meditor_service_password = var.meditor_service_password
   ses_from_email = var.ses_from_email
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
+  ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
 }
 
 module "apigateway_endpoints" {
