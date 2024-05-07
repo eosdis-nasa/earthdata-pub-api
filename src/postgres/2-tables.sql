@@ -100,6 +100,8 @@ DROP TABLE IF EXISTS metrics CASCADE;
 
 DROP TABLE IF EXISTS page CASCADE;
 
+DROP TABLE IF EXISTS step_review CASCADE;
+
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
   short_name VARCHAR NOT NULL,
@@ -596,4 +598,15 @@ CREATE TABLE IF NOT EXISTS note (
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
   UNIQUE (id),
   FOREIGN KEY (step_name) REFERENCES step (step_name)
+);
+
+CREATE TABLE IF NOT EXISTS step_review (
+  step_name VARCHAR NOT NULL,
+  submission_id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
+  approved BOOLEAN,
+  PRIMARY KEY (step_name, submission_id, edpuser_id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
 );

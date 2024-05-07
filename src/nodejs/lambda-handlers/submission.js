@@ -288,6 +288,17 @@ async function mapMetadataMethod(event, user) {
   return mappedMetadata;
 }
 
+async function getStepReviewApprovalMethod(event, user) {
+  const { id: id } = event.params;
+  // const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD'];
+  // let mappedMetadata = {};
+  // if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  //   return { error: 'Not Authorized' };
+  // }
+  const formData = await db.submission.getStepReviewApproval({ id });
+  return formData;
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -307,7 +318,8 @@ const operations = {
   removeContributor: removeContributorMethod,
   copySubmission: copySubmissionMethod,
   getDetails: getDetailsMethod,
-  mapMetadata: mapMetadataMethod
+  mapMetadata: mapMetadataMethod,
+  getStepReviewApproval: getStepReviewApprovalMethod
 };
 
 async function handler(event) {

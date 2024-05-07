@@ -636,6 +636,11 @@ const getSubmissionDaac = () => sql.select({
   }
 })
 
+
+const getStepReviewApproval = () => `
+SELECT step_name, submission_id, edpuser_id, approved FROM step_review
+WHERE submission_id = {{id}}`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -674,3 +679,4 @@ module.exports.getCreatorName = getCreatorName;
 module.exports.getStepName = getStepName;
 module.exports.getSubmissionDetailsById = getSubmissionDetailsById;
 module.exports.getSubmissionDaac = getSubmissionDaac;
+module.exports.getStepReviewApproval = getStepReviewApproval;
