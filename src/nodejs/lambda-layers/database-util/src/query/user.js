@@ -394,6 +394,29 @@ detailed = {{detailed}}
 WHERE edpuser.id = {{id}}
 RETURNING *`;
 
+const updateUsername = () => `
+UPDATE edpuser SET
+name = {{name}}
+WHERE edpuser.id = {{id}}
+RETURNING *`;
+
+const getUnknownStaffIds = (params) => sql.select({
+  fields: ['id'],
+  from: {
+    base: 'edpuser',
+    joins:[
+      {type: 'left_join', src: 'edpuser_edpgroup', on: {left: 'edpuser_edpgroup.edpuser_id', right: 'edpuser.id'}},
+      {type: 'left_join', src: 'edpuser_edprole', on: {left: 'edpuser_edprole.edpuser_id', right: 'edpuser.id'}}
+    ]
+  },
+  where: {
+    filters: [
+      { field: 'edpuser_edpgroup.edpgroup_id', literal: '5be24b44-d66b-4396-9266-a9d066000d9e' },
+      { field: 'edpuser_edprole.edprole_id', literal: '2aa89c57-85f1-4611-812d-b6760bb6295c' }
+    ]
+  }
+})
+
 
 module.exports.find = find;
 module.exports.findAll = findAll;
@@ -414,3 +437,5 @@ module.exports.getEmails = getEmails;
 module.exports.findByEmail = findByEmail;
 module.exports.getUsers = getUsers;
 module.exports.setDetail = setDetail;
+module.exports.updateUsername = updateUsername;
+module.exports.getUnknownStaffIds = getUnknownStaffIds;

@@ -7635,7 +7635,7 @@
           "required": true,
           "schema": {
             "type": "string",
-            "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "add_permission", "create", "get_users"]
+            "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "add_permission", "create", "get_users", "update_username"]
           }
         }
       ],

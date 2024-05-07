@@ -68,15 +68,24 @@ async function initializeMethod(event, user) {
     step_name: 'init',
     user_id: user.id
   };
+  if (status.workflow_id === '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9') {
+    const staff = await db.user.getUnknownStaffIds();
+    const staffIds = staff.map((usr) => usr.id);
+    await db.note.addUsersToConversation({
+      conversation_id: status.conversation_id,
+      user_list: staffIds
+    });
+    db.submission.addContributors({ id: status.id, contributor_ids: staffIds });
+  }
   await msg.sendEvent(eventMessage);
   return status;
 }
 
 async function applyMethod(event, user) {
-  const approvedUserRoles = ['admin', 'manager', 'staff'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REASSIGN'];
   const { id, workflow_id: workflowId } = event;
   let status = await db.submission.getState({ id });
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     await db.submission.reassignWorkflow({ id, workflowId });
     await db.submission.promoteStep({ id });
     status = await db.submission.getState({ id });
@@ -139,28 +148,31 @@ async function submitMethod(event, user) {
 }
 
 async function reviewMethod(event, user) {
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
   const { id, approve } = event;
   const status = await db.submission.getState({ id });
-  const stepType = status.step.type;
-  let eventType;
-  if (approve === 'false') {
-    eventType = 'review_rejected';
-  } else if (stepType === 'review') {
-    eventType = 'review_approved';
-  } else {
-    eventType = 'workflow_promote_step';
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const stepType = status.step.type;
+    let eventType;
+    if (approve === 'false' || !approve) {
+      eventType = 'review_rejected';
+    } else if (stepType === 'review') {
+      eventType = 'review_approved';
+    } else {
+      eventType = 'workflow_promote_step';
+    }
+    const eventMessage = {
+      event_type: eventType,
+      submission_id: id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      user_id: user.id,
+      data: status.step.data,
+      step_name: status.step_name
+    };
+    if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+    await msg.sendEvent(eventMessage);
   }
-  const eventMessage = {
-    event_type: eventType,
-    submission_id: id,
-    conversation_id: status.conversation_id,
-    workflow_id: status.workflow_id,
-    user_id: user.id,
-    data: status.step.data,
-    step_name: status.step_name
-  };
-  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
-  await msg.sendEvent(eventMessage);
   return status;
 }
 
@@ -282,7 +294,8 @@ async function mapMetadataMethod(event, user) {
   try {
     mappedMetadata = await mapEDPubToUmmc(formData.data);
   } catch (e) {
-    return { error: 'Invalid form data. Data publication form must be complete' };
+    console.error(e);
+    return { error: 'Invalid form data. Form must be complete.' };
   }
 
   return mappedMetadata;

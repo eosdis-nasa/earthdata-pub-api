@@ -94,3 +94,136 @@ INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'export_me
 UPDATE daac SET hidden=false, workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' WHERE id='6b3ea184-57c5-4fc5-a91b-e49708f91b67';
 update input SET label='Full Name' WHERE label='First and Last Name';
 
+-- 2/18/2024 Update all endpoint to use permissions not roles for access
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'QUESTION_READ');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'QUESTION_READ');
+
+--3/12/2024 Adding unknown daac workflow
+INSERT INTO workflow VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'unknown_workflow', 1, 'Unknown DAAC Workflow', 'This is the default workflow for unknown DAACs.');
+
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form_review', 'assign_a_workflow');
+
+UPDATE daac SET workflow_id = '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', edpgroup_id ='5be24b44-d66b-4396-9266-a9d066000d9e' WHERE id= '1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
+
+--4/15/2024 Updating Upload Questions
+UPDATE question SET text = 'Are there any existing documents that you would like to have included in the review of your data product? If "Yes", please upload the document(s).', help = 'For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality. If you have more than 5 documents, please contact the DAAC for assistance. Files must be less than 5 GB and cannot include .exe or .dll extensions.' WHERE id = 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9';
+UPDATE question SET text = 'Please upload a sample file(s).', help = 'Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content. If more than 5 sample data files are necessary to represent the data product, please contact the DAAC for assistance.  Files must be less than 5 GB and cannot include .exe or .dll extensions.', required = True WHERE id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3';
+UPDATE input SET list_order=1, label= 'Alternatively provide a URL to the document(s)'  WHERE question_id = 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9' and control_id = 'data_product_documentation_url';
+UPDATE input SET list_order=1, label= 'Alternatively provide a URL to a sample file(s)' WHERE question_id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3' and control_id = 'example_file_url';
+INSERT INTO input VALUES ('ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 'data_product_documentation', 0, '', 'file', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_files', 0, '', 'file', '{}', '{}', '[]','[]',  False);
+
+--4/18/2024 Adding management approval step to GES DISC workflow
+INSERT INTO privilege VALUES ('REQUEST_REVIEW_MANAGER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REVIEW_MANAGER');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('e62e9548-b350-40ec-b1bc-21a75e5f0407', 'data_publication_request_form_management_review', 'review', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_management_review', 'data_publication_request_form_uwg_review');
+
+UPDATE step SET data = '{"rollback":"data_publication_request_form_management_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id = 'c81066db-0566-428d-87e8-94169ce5a9b9';
+UPDATE step_edge SET next_step_name = 'data_publication_request_form_management_review' WHERE workflow_id = '7843dc6d-f56d-488a-9193-bb7c0dc3696d' AND step_name = 'data_publication_request_form_review';
+
+-- 4/22/2024 Adding new previlage REQUEST_REVIEW_MANAGER for the Daac manager task EDPUB-1263
+INSERT INTO privilege VALUES ('REQUEST_REVIEW_MANAGER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REVIEW_MANAGER');
+
+-- Task EDPUB-1244
+-- Update existing records to reflect changes for mapping to MMT
+UPDATE action SET short_name = 'send_to_mmt', long_name = 'Send To MMT Action', description = 'This action is used to send collection metadata from EDPub to MMT.', source = 'sendToMMT.js' WHERE id = '3fe93672-cd91-45d4-863b-c6d0d63f8c8c';
+
+ALTER TABLE step DISABLE TRIGGER ALL;
+
+UPDATE step
+SET step_name = 'map_to_mmt'
+WHERE step_name = 'map_to_meditor';
+
+UPDATE step
+SET step_name = 'start_mmt_editing',
+    data = '{"rollback":"send_to_mmt","type": "action"}'
+WHERE step_name = 'start_meditor_editing';
+
+UPDATE step
+SET step_name = 'complete_mmt_editing',
+    data = '{"rollback":"start_mmt_editing","type": "action"}'
+WHERE step_name = 'complete_meditor_editing';
+
+UPDATE step
+SET step_name = 'get_from_mmt',
+    data = '{"rollback":"complete_mmt_editing","type": "action"}'
+WHERE step_name = 'get_from_meditor';
+
+UPDATE step
+SET step_name = 'map_from_mmt',
+    data = '{"rollback":"get_from_mmt","type": "action"}'
+WHERE step_name = 'map_from_meditor';
+
+UPDATE step
+SET data = '{"rollback":"map_from_mmt","type": "action"}'
+WHERE step_name = 'publish_to_cmr';
+
+UPDATE step
+SET step_name = 'send_to_mmt'
+WHERE action_id = '3fe93672-cd91-45d4-863b-c6d0d63f8c8c';
+
+UPDATE step
+SET step_name = 'edit_metadata_in_mmt_after_publication_form_review',
+    data = '{"rollback":"send_to_mmt_after_publication_form_review","type": "action"}'
+WHERE step_id = 'd1cbc4a8-ce4c-4734-8e71-a824d30c401a';
+
+UPDATE step
+SET step_name = 'send_to_mmt_after_publication_form_review'
+WHERE step_id = 'c628d63b-93b9-45ae-8e7b-a903554b6726';
+
+ALTER TABLE step ENABLE TRIGGER ALL;
+
+-- StepEdge(workflow_id, step_name, next_step_name)
+UPDATE step_edge
+SET next_step_name = 'map_to_mmt'
+WHERE step_name = 'complete_qa' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'map_to_mmt', next_step_name= 'send_to_mmt'
+WHERE step_name = 'map_to_meditor' and next_step_name = 'send_to_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'send_to_mmt', next_step_name= 'start_mmt_editing'
+WHERE step_name = 'send_to_meditor' and next_step_name = 'start_meditor_editing' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'start_mmt_editing', next_step_name= 'complete_mmt_editing'
+WHERE step_name = 'start_meditor_editing' and next_step_name = 'complete_meditor_editing' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'complete_mmt_editing', next_step_name= 'get_from_mmt'
+WHERE step_name = 'complete_meditor_editing' and next_step_name = 'get_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'get_from_mmt', next_step_name= 'map_from_mmt'
+WHERE step_name = 'get_from_meditor' and next_step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'map_from_mmt'
+WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+-- EDPUB-1262 update datetimepicker
+UPDATE Input
+SET label = 'Start Date and Time (UTC)', type = 'datetimePicker'
+WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'product_temporal_coverage_start';
+
+UPDATE Input
+SET label = 'End Date and Time (UTC)', type = 'datetimePicker'
+WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'product_temporal_coverage_end';
+
+-- 5/1/2024 Adding new table for limiting note visability by user/role task EDPUB-1255
+CREATE TABLE IF NOT EXISTS note_scope (
+  note_id UUID NOT NULL,
+  user_ids UUID[],
+  edprole_ids UUID[],
+  PRIMARY KEY (note_id),
+  FOREIGN KEY (note_id) REFERENCES note (id)
+);
+
+--4/23/2024 Fixing daac data manager permissions
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
+
