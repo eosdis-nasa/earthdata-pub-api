@@ -211,9 +211,6 @@ WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-
 -- step(step_status_label)
 -- Adding step status label in uwg_review step gesdisc workflow 
 
-ALTER TABLE step
-   ADD COLUMN step_status_label VARCHAR;
-
 UPDATE step
 SET step_status_label = VARCHAR
 

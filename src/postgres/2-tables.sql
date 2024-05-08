@@ -307,8 +307,6 @@ CREATE TABLE IF NOT EXISTS step (
   CONSTRAINT step_foreign_key_check CHECK (NUM_NONNULLS(action_id, form_id, service_id) <= 1)
 );
 
-ALTER TABLE step ADD COLUMN step_status_label VARCHAR; 
-
 CREATE TABLE IF NOT EXISTS step_edge (
   workflow_id UUID NOT NULL,
   step_name VARCHAR NOT NULL,
