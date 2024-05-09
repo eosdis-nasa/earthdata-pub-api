@@ -93,6 +93,62 @@ INSERT INTO question VALUES ('0be3cdbd-da86-4879-bf94-e6a07de7cfe1', 'collection
 INSERT INTO question VALUES ('38cdfe14-6861-4ada-bd70-0545f65eeb03', 'collection_version', 1, 'Collection Version', 'What is the collection version which will be used for this dataset?', 'The Version element indicates the version of the dataset and should be consistent throughout the metadata record. The Short Name and Version Id combination must be unique per provider in the CMR.');
 INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('d3c4f81e-1954-4b6f-9edf-90f240f525a8', 'acknowledgement', 1, 'Additional Acknowledgments', 'If there are people or groups who are not identified in the Data Citation but whose contributions to the data product should be acknowledged, please name them here.', 'The DAAC will work with you to add this information to an Acknowledgements section of the data product user guide.', False, '{"aec3724f-b30b-4b3f-9b9a-e0907d9d14b3"}');
 
+-- GESDISC EXTENDED
+-- Question(id, short_name, version, long_name, text, help, required, daac_ids)
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('e67b0087-9102-476f-846b-8bc22d16bcc0', 'archived_elsewhere', 1, 'Previously Archived', 'Might this data already be or will be archived anywhere else (other than GES DISC)?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('e67b0087-9102-476f-846b-8bc22d16bcc0', 'previously_archived', 0, '', 'text', '{}', '{}', '[]', '[]', True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('1509d216-d3c5-437a-83f6-3a56a3403851', 'relationship_to_data', 1, 'Relation to Data', 'What is this dataset''s relationship to other ESDIS-held data or other publicly available data? If there is a relationship to other data, what is the URL link to that data collection?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('1509d216-d3c5-437a-83f6-3a56a3403851', 'data_relationship', 0, '', 'text', '{}', '{}', '[]', '[]', True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('068afe4e-228a-4170-aea8-0475d8b10d5e', 'data_history', 1, 'Provenance', 'What is the provenance of the product?', '(i.e. - history, related science teams or application groups, etc.)', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('068afe4e-228a-4170-aea8-0475d8b10d5e', 'data_history_provenance', 0, '', 'text', '{}', '{}', '[]', '[]', True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('225a1c2a-e4e5-4264-902d-ba55f56ac7db', 'data_product_proposal', 1, 'Data Product Proposal', 'Existing Publication(s) on the Data Product?', 'Please list the publisher and title of any publication(s) that describe the genesis (or algorithm) and validation of the data product. If there are no publications, consider listing the data product proposal here.', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('225a1c2a-e4e5-4264-902d-ba55f56ac7db', 'existing_publications_proposal', 0, '', 'text', '{}', '{}', '[]', '[]', True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('e0018b76-fef9-42c9-84d0-b74131523646', 'gridded_product', 1, 'Gridded Product', '', 'Please indicate if this a gridded or non-gridded data product.', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('e0018b76-fef9-42c9-84d0-b74131523646', 'gridded_data_product', 0, '', 'radio', '["Yes","No","Other"]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('e0018b76-fef9-42c9-84d0-b74131523646', 'gridded_data_product_explanation', 1, 'If "Other", please specify.', 'text', '{}', '{}', '[{"field": "gridded_data_product","value": "Other"}]','[]',  False);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('a6787163-f214-49e8-a4eb-32da45ac21d7', 'science_focus', 1, 'Discipline', '', 'Please select one of the following NASA Earth Science Focus Areas.', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('a6787163-f214-49e8-a4eb-32da45ac21d7', 'science_focus_areas', 0, '', 'radio', '["Atmospheric Composition","Weather","Climate Variability and Change","Water and Energy Cycle","Carbon Cycle and Ecosystems","Earth Surface","Other"]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('a6787163-f214-49e8-a4eb-32da45ac21d7', 'science_focus_areas_explanation', 1, 'If "Other", please specify.', 'text', '{}', '{}', '[{"field": "science_focus_areas","value": "Other"}]','[]',  False);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('5ab48392-c0fd-4285-8550-368f9df60092', 'future_data', 1, 'Future Data', 'Are you considering submitting a request to archive another similar data product in the future at the GES DISC?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('5ab48392-c0fd-4285-8550-368f9df60092', 'future_data_request', 0, '', 'radio', '["Yes","No","Other"]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('5ab48392-c0fd-4285-8550-368f9df60092', 'future_data_request_explanation', 1, 'If "Other", please specify.', 'text', '{}', '{}', '[{"field": "future_data_request","value": "Other"}]','[]',  False);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('b840820a-2d49-414b-b7d8-27217843904a', 'monthly_metrics', 1, 'Monthly Metrics', 'Would you like monthly data distribution metrics?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('b840820a-2d49-414b-b7d8-27217843904a', 'monthly_metrics_request', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_request', 1, 'Data Service Request', 'The GES DISC offers "Basic Services" for all our Community Data Products, which includes DOI registration and HTTPS access.', 'Please visit <a href="https://www.earthdata.nasa.gov/engage/new-missions/level-of-service" target=_blank>https://www.earthdata.nasa.gov/engage/new-missions/level-of-service <i class="fas fa-external-link-alt"></i></a> for more information.<br><br>However, if GES DISC''s resources allow, which additional data services you would like to have for your product, and why?', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_request_basic', 0, 'Basic Services', 'checkbox', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_request_other', 1, 'Other', 'checkbox', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_request_other_text', 2, 'If "Other" please describe.', 'text', '{}', '{}', '[{"field":"data_service_request_other","value":"true","message":"If ''Other'' please describe."}]','[]',  False);
+
+-- SectionQuestion(section_id, question_id, list_order, required_if, show_if))
+INSERT INTO section_question VALUES ('e169a5b4-da2e-4893-9481-1b9351cd9707', 'e67b0087-9102-476f-846b-8bc22d16bcc0', 3, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '1509d216-d3c5-437a-83f6-3a56a3403851', 6, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '068afe4e-228a-4170-aea8-0475d8b10d5e', 7, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '225a1c2a-e4e5-4264-902d-ba55f56ac7db', 8, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'e0018b76-fef9-42c9-84d0-b74131523646', 11, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'a6787163-f214-49e8-a4eb-32da45ac21d7', 12, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '5ab48392-c0fd-4285-8550-368f9df60092', 13, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'b840820a-2d49-414b-b7d8-27217843904a', 14, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '8c331721-541c-45a4-b95a-4b9b4557eae2', 15, '[]', '[]');
+-- END GESDISC
+
+
 -- SectionQuestion(section_id, question_id, list_order, required_if, show_if))
 INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 0, '[]', '[]');
 INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', 'f3e2eab9-6375-4e53-9cc2-3d16f318d333', 1, '[]', '[]');
