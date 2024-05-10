@@ -84,11 +84,10 @@ async function initializeMethod(event, user) {
 async function applyMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REASSIGN'];
   const { id, workflow_id: workflowId } = event;
-  let status = await db.submission.getState({ id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     await db.submission.reassignWorkflow({ id, workflowId });
     await db.submission.promoteStep({ id });
-    status = await db.submission.getState({ id });
+    const status = await db.submission.getState({ id });
     const eventMessage = {
       event_type: 'workflow_started',
       submission_id: id,
@@ -98,9 +97,9 @@ async function applyMethod(event, user) {
       user_id: user.id
     };
     await msg.sendEvent(eventMessage);
+    return status;
   }
-
-  return status;
+  return { error: 'Not Authorized' };
 }
 
 async function metadataMethod(event, user) {
@@ -150,8 +149,8 @@ async function submitMethod(event, user) {
 async function reviewMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
   const { id, approve } = event;
-  const status = await db.submission.getState({ id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const status = await db.submission.getState({ id });
     const stepType = status.step.type;
     let eventType;
     if (approve === 'false' || !approve) {
@@ -172,8 +171,9 @@ async function reviewMethod(event, user) {
     };
     if (status.step.step_message) eventMessage.step_message = status.step.step_message;
     await msg.sendEvent(eventMessage);
+    return status;
   }
-  return status;
+  return { error: 'Not Authorized' };
 }
 
 async function lockMethod(event, user) {
