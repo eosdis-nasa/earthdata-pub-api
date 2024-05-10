@@ -79,29 +79,96 @@ const refs = {
     type: 'left_join',
     src: sql.select({
       fields: [
-        'note.conversation_id',
+        'note_visability.conversation_id',
         {
           type: 'json_agg',
           src: {
             type: 'json_obj',
             keys: [
-              ['text', 'note.text'],
-              ['sent', 'note.created_at'],
+              ['text', 'note_visability.text'],
+              ['sent', 'note_visability.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }]
             ]
           },
-          sort: 'note.created_at',
+          sort: 'note_visability.created_at',
           order: 'DESC',
           alias: 'notes'
         }
       ],
       from: {
-        base: 'note',
+        base: sql.select({
+          fields: [
+            'note.*'
+          ],
+          from: {
+            base: 'note',
+            joins: [{
+              type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }
+            }]
+          },
+          alias: 'note_visability',
+          where: { 
+            conjunction: 'OR',
+            filters: [
+              ...([{cmd:'(note_scope.user_ids ISNULL AND note_scope.edprole_ids ISNULL)'}]),
+              ...([{cmd: `{{user_id}}=ANY(note_scope.user_ids)` }]),
+              ...([{
+                cmd: `note.id IN (${sql.select({
+                  fields: ['note.id'],
+                  from: {
+                    base: 'note',
+                    joins: [{
+                      type: 'left_join', src: 'note_scope', on: { left: 'note_scope.note_id', right: 'note.id' }
+                    }]
+                  },
+                  where: {
+                    conjunction: 'OR',
+                    filters: [
+                      ...([{cmd:'note_scope.edprole_ids ISNULL'}]),
+                      ...([{
+                        cmd: `note.id IN (${sql.select({
+                          fields: ['note_id'],
+                          from: {
+                            base: sql.select({
+                              fields: [
+                                'note_scope.note_id',
+                                'unnest(note_scope.edprole_ids) as role_id'
+                              ],
+                              from: {
+                                base: 'note_scope'
+                              },
+                              alias: "unraveled"
+                            })
+                          },
+                          where: {
+                            filters: [
+                              ...([{
+                                cmd: `unraveled.role_id IN (${sql.select({
+                                  fields: ['edprole_id'],
+                                  from: {
+                                    base: 'edpuser_edprole'
+                                  },
+                                  where: {
+                                    filters: [{ field: 'edpuser_id', param: 'user_id' }]
+                                  }
+                                })})`
+                              }])
+                            ]
+                          }
+                        })})`
+                      }])
+                    ]
+                  }
+                })})`
+              }])
+            ]
+           }
+        }),
         joins: [{
-          type: 'left_join', src: 'edpuser', on: { left: 'note.sender_edpuser_id', right: 'edpuser.id' }
+          type: 'left_join', src: 'edpuser', on: { left: 'note_visability.sender_edpuser_id', right: 'edpuser.id' }
         }]
       },
-      group: 'note.conversation_id',
+      group: 'note_visability.conversation_id',
       alias: 'note_agg'
     }),
     on: { left: 'note_agg.conversation_id', right: 'conversation.id' }
