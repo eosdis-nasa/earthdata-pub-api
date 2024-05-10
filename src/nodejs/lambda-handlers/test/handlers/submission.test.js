@@ -114,13 +114,11 @@ describe('submission', () => {
     };
     db.user.findById.mockReturnValueOnce({ user_privileges: ['NONE'] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_REASSIGN'] });
-    db.submission.getState.mockReturnValueOnce({ workflow_id: 'pass_no_perms' });
-    db.submission.getState.mockReturnValueOnce({ workflow_id: 'fail_perms' });
     db.submission.getState.mockReturnValueOnce({
       conversation_id: 'test conversation',
       step: { name: 'test step' }
     });
-    expect(await submission.handler(payload)).toEqual({ workflow_id: 'pass_no_perms' });
+    expect(await submission.handler(payload)).toEqual({ error: 'Not Authorized' });
     expect(await submission.handler(payload)).toEqual({
       conversation_id: 'test conversation',
       step: { name: 'test step' }
