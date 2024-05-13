@@ -214,4 +214,4 @@ WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-
 UPDATE step
 SET step_status_label = VARCHAR
 
-INSERT INTO step(step_id, step_name, step_status_label, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'Pending UWG Review', 'review', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(step_id, step_name, step_status_label, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'Pending UWG Review', 'review', '{"rollback":"data_publication_request_form_management_review","type": "review","step_status_label": "Pending UWG Review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
