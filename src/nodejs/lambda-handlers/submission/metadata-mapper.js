@@ -9,7 +9,7 @@ const stringToBool = (inputString) => {
 const stringToBoolString = (inputString) => {
 // The Additional Attributes value property in UMMC v1.17.0 must be a string
 // even if the data type is not a string
-  stringToBool(inputString).toString();
+  return stringToBool(inputString).toString();
 };
 
 const mapEDPubToUmmc = async (formData) => {
