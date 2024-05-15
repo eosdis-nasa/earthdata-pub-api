@@ -7,6 +7,7 @@ INSERT INTO form VALUES ('de7e5c40-584a-493b-919d-8f7f3f1e9e3c', 'confirmation_f
 -- Action(id, short_name, version, long_name, description, source)
 INSERT INTO action VALUES ('3fe93672-cd91-45d4-863b-c6d0d63f8c8c', 'send_to_mmt', 1, 'Send To MMT Action', 'This action is used to send collection metadata from EDPub to MMT.', 'sendToMMT.js');
 INSERT INTO action VALUES ('f812eb99-7c4a-46a8-8d8f-30ae509fe21c', 'map_edpub_to_ummc', 1, 'Map EDPub To UMMC Action', 'This action is map EDPub question reponses to a JSON UMMC format.', 'mapEDPubToUmmc.js');
+INSERT INTO action VALUES ('6d872804-609b-4e5d-a80c-143908051e07', 'push_metadata_to_daac', 1, 'Pushes Metadata to a Daac Endpoint', 'This action is used to push metadata to a DAAC endpoint.', 'pushMetadataToDaac.js');
 
 -- Section(id, form_id, heading, list_order, daac_id)
 INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 0, '[]', '[]', NULL);
@@ -485,15 +486,21 @@ INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'push_coll
 
 -- ORNL 
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)
-INSERT INTO step(step_id, step_name, type, data) VALUES ('83c0a113-ecc8-4719-984c-9b4665655495', 'push_to_ornl_database', 'action', '{"rollback":"data_publication_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('6445f44b-bcda-41b4-86e4-23761edc22bf', 'push_to_ornl_database_f1', 'action', '{"rollback": "map_question_response_to_ummc_f1", "type": "action"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('4791d53b-6c8f-4d5b-9ee9-81cebd4c4b04', 'push_to_ornl_database_f2', 'action', '{"rollback": "map_question_response_to_ummc_f2", "type": "action"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('c6082cae-9c97-4692-b0da-c9334a30c9e0', 'map_question_response_to_ummc_f1', 'action', '{"rollback": "data_accession_request_form_review", "type": "review"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('faf94cca-ea3e-4886-a306-4f7f5acfda1a', 'map_question_response_to_ummc_f2', 'action', '{"rollback": "data_publication_request_form_review", "type": "review"}');
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'init', 'close');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review', 'map_question_response_to_ummc_f1');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'map_question_response_to_ummc_f1', 'push_to_ornl_database_f1');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f1', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form', 'data_publication_request_form_review');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review', 'push_to_ornl_database');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database', 'close');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review', 'map_question_response_to_ummc_f2');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'map_question_response_to_ummc_f2', 'push_to_ornl_database_f2');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f2', 'close');
 
 -- GES DISC 
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)

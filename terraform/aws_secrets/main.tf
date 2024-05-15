@@ -11,3 +11,17 @@ resource "aws_secretsmanager_secret_version" "ses_access_creds" {
         "ses_secret_access_key" = var.ses_secret_access_key
     })
 }
+
+#ORNL enpoint access
+resource "aws_secretsmanager_secret" "ornl_endpoint" {
+  name = "ornl_endpoint"
+  description = "ORNL endpoint and credentials"
+}
+
+resource "aws_secretsmanager_secret_version" "ornl_endpoint" {
+  secret_id = aws_secretsmanager_secret.ornl_endpoint.id
+    secret_string = jsonencode({
+      "ornl_endpoint_url" = var.ornl_endpoint_url
+      "ornl_endpoint_access_token" = var.ornl_endpoint_access_token
+    })
+}

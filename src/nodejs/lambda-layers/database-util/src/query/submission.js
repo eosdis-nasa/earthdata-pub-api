@@ -572,6 +572,7 @@ SELECT step_name FROM submission_status WHERE id = {{id}}
 // TODO - Upate this query's complexity and to use sql builder
 const getSubmissionDetailsById = () => `
 SELECT submission.id id, conversation_id, submission.created_at created_at, daac.long_name daac_name, 
+submission.hidden hidden,
 JSONB_BUILD_OBJECT('name', edpuser1.name, 'id', edpuser1.id) initiator,
 submission_status.last_change last_change,
 submission_form_data_pool.data::json->'data_producer_info_name' data_producer_name, 
