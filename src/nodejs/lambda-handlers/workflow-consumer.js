@@ -146,27 +146,36 @@ async function formSubmittedMethod(eventMessage) {
 }
 
 async function reviewApprovedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
-  if (eventMessage.step_name === 'data_accession_request_form_review') {
-    await db.metrics.setAccessionReversion({
-      id: eventMessage.submission_id,
-      status: 'FALSE'
-    });
+  const { submission_id, step_name } = eventMessage;
+  const stepReview = await db.submission.checkCountStepReviewApproved({ submission_id, step_name });
+
+  if(stepReview.unapproved && parseInt(stepReview.unapproved) == 0){
+    const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
+    if (eventMessage.step_name === 'data_accession_request_form_review') {
+      await db.metrics.setAccessionReversion({
+        id: submission_id,
+        status: 'FALSE'
+      });
+    }
+    await promoteStepMethod(eventMessage);
+    await msg.sendEvent(newEvent);
   }
-  await promoteStepMethod(eventMessage);
-  await msg.sendEvent(newEvent);
 }
 
 async function reviewRejectedMethod(eventMessage) {
-  const { submission_id: id, data: { rollback } } = eventMessage;
-  if (eventMessage.step_name === 'data_accession_request_form_review') {
-    await db.metrics.setAccessionReversion({
-      id: eventMessage.submission_id,
-      status: 'TRUE'
-    });
+  const { submission_id: id, data: { rollback }, step_name, user_id } = eventMessage;
+  const stepReview = await db.submission.checkCountStepReviewRejected({ submission_id : id, step_name, user_id });
+  
+  if(stepReview.unapproved && parseInt(stepReview.unapproved) == 0){
+    if (eventMessage.step_name === 'data_accession_request_form_review') {
+      await db.metrics.setAccessionReversion({
+        id: eventMessage.submission_id,
+        status: 'TRUE'
+      });
+    }
+    await db.submission.rollback({ id, rollback });
+    await promoteStepMethod(eventMessage);
   }
-  await db.submission.rollback({ id, rollback });
-  await promoteStepMethod(eventMessage);
 }
 
 async function workflowResumeMethod(eventMessage) {

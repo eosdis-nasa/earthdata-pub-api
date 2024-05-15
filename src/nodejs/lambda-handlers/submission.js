@@ -148,15 +148,19 @@ async function submitMethod(event, user) {
 }
 
 async function reviewMethod(event, user) {
-  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
   const { id, approve } = event;
+  const { user_id } = event.context;
+
   const status = await db.submission.getState({ id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const stepType = status.step.type;
     let eventType;
     if (approve === 'false' || !approve) {
+      await db.submission.updateStatusStepReviewApproval({ submission_id: id, user_id, approve: 'rejected' });
       eventType = 'review_rejected';
     } else if (stepType === 'review') {
+      await db.submission.updateStatusStepReviewApproval({ submission_id: id, user_id, approve: 'approved' });
       eventType = 'review_approved';
     } else {
       eventType = 'workflow_promote_step';
@@ -170,8 +174,8 @@ async function reviewMethod(event, user) {
       data: status.step.data,
       step_name: status.step_name
     };
-    if (status.step.step_message) eventMessage.step_message = status.step.step_message;
-    await msg.sendEvent(eventMessage);
+     if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+     await msg.sendEvent(eventMessage);
   }
   return status;
 }
@@ -301,14 +305,37 @@ async function mapMetadataMethod(event, user) {
   return mappedMetadata;
 }
 
+async function createStepReviewApprovalMethod(event, user) {
+  const { submission_id, step_name } = event.params;
+  const { user_id } = event.context;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+
+  const formData = await db.submission.createStepReviewApproval({ submission_id, step_name, user_id });
+  return formData;
+}
+
 async function getStepReviewApprovalMethod(event, user) {
   const { id: id } = event.params;
-  // const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD'];
-  // let mappedMetadata = {};
-  // if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-  //   return { error: 'Not Authorized' };
-  // }
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
   const formData = await db.submission.getStepReviewApproval({ id });
+  return formData;
+}
+
+async function deleteStepReviewApprovalMethod(event, user) {  
+  const { submission_id, step_name } = event.params;
+  const { user_id } = event.context;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+  
+  const formData = await db.submission.deleteStepReviewApproval({ submission_id, step_name, user_id });
   return formData;
 }
 
@@ -332,7 +359,9 @@ const operations = {
   copySubmission: copySubmissionMethod,
   getDetails: getDetailsMethod,
   mapMetadata: mapMetadataMethod,
-  getStepReviewApproval: getStepReviewApprovalMethod
+  createStepReviewApproval: createStepReviewApprovalMethod,
+  getStepReviewApproval: getStepReviewApprovalMethod,
+  deleteStepReviewApproval: deleteStepReviewApprovalMethod
 };
 
 async function handler(event) {

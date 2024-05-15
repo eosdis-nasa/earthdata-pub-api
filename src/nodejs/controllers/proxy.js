@@ -1113,11 +1113,42 @@ module.exports.offboardDaac = function offboardDaac(req, res, next) {
   });
 };
 
+module.exports.createStepReviewApproval = function createStepReviewApproval(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+
+  const lambdaEvent = {
+    operation: 'createStepReviewApproval',
+    params: { step_name: payload.value.step_name , submission_id: payload.value.id },
+    context: { user_id: req.user_id }
+  };
+
+  console.log('lambdaEvent', lambdaEvent)
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.getStepReviewApproval = function getStepReviewApproval(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     operation: 'getStepReviewApproval',
     params: { id: params.id.value },
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.deleteStepReviewApproval = function deleteStepReviewApproval(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+
+  const lambdaEvent = {
+    operation: 'deleteStepReviewApproval',
+    params: { submission_id: payload.value.id, step_name: payload.value.step_name },
     context: { user_id: req.user_id }
   };
 

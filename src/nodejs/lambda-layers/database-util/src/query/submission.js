@@ -633,8 +633,56 @@ const getSubmissionDaac = () => sql.select({
 
 
 const getStepReviewApproval = () => `
-SELECT step_name, submission_id, edpuser_id, approved FROM step_review
-WHERE submission_id = {{id}}`;
+SELECT sr.step_name, sr.submission_id, sr.edpuser_id, sr.user_review_status, eu.name
+FROM step_review sr
+INNER JOIN edpuser eu ON sr.edpuser_id = eu.id
+WHERE sr.submission_id = {{id}}
+`;
+
+const createStepReviewApproval = () => `
+INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status)
+VALUES ({{step_name}}, {{submission_id}}, {{user_id}}, 'review_required')
+RETURNING *
+`;
+
+const deleteStepReviewApproval = () => `
+DELETE FROM step_review
+WHERE submission_id = {{submission_id}}
+AND edpuser_id = {{user_id}}
+AND step_name = {{step_name}}
+RETURNING *;
+`;
+
+const checkCountStepReviewApproved = () => `
+SELECT COALESCE(SUM(sr.unapproved_count), 0) AS unapproved
+FROM (
+    SELECT submission_id, step_name, 
+           SUM(CASE WHEN user_review_status IN ('rejected', 'review_required') THEN 1 ELSE 0 END) AS unapproved_count
+    FROM step_review
+    WHERE submission_id = {{submission_id}}
+      AND step_name = {{step_name}}
+    GROUP BY submission_id, step_name
+) AS sr
+LEFT JOIN (SELECT 1) AS dummy ON 1 = 1
+`;
+
+const checkCountStepReviewRejected = () => `
+SELECT COUNT(*) AS unapproved
+FROM step_review
+WHERE submission_id = {{submission_id}}
+  AND step_name = {{step_name}}
+  AND edpuser_id <> {{user_id}}
+`;
+
+
+const updateStatusStepReviewApproval = () => `
+UPDATE step_review
+SET user_review_status = {{approve}}
+WHERE submission_id = {{submission_id}}
+  AND edpuser_id = {{user_id}}
+  AND step_name = {{step_name}}
+RETURNING *
+`;
 
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
@@ -675,3 +723,8 @@ module.exports.getStepName = getStepName;
 module.exports.getSubmissionDetailsById = getSubmissionDetailsById;
 module.exports.getSubmissionDaac = getSubmissionDaac;
 module.exports.getStepReviewApproval = getStepReviewApproval;
+module.exports.createStepReviewApproval = createStepReviewApproval;
+module.exports.deleteStepReviewApproval = deleteStepReviewApproval;
+module.exports.checkCountStepReviewRejected = checkCountStepReviewRejected;
+module.exports.checkCountStepReviewApproved = checkCountStepReviewApproved;
+module.exports.updateStatusStepReviewApproval = updateStatusStepReviewApproval;

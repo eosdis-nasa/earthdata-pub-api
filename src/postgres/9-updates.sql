@@ -227,3 +227,28 @@ CREATE TABLE IF NOT EXISTS note_scope (
 --4/23/2024 Fixing daac data manager permissions
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
 
+
+--EDPUB-1258 Create review requirements tracking on the backend
+INSERT INTO privilege VALUES ('CREATE_STEPREVIEW');
+INSERT INTO privilege VALUES ('REMOVE_STEPREVIEW');
+
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'CREATE_STEPREVIEW');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REMOVE_STEPREVIEW');
+
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'CREATE_STEPREVIEW');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REMOVE_STEPREVIEW');
+
+-- Create a custom ENUM type
+CREATE TYPE review_status AS ENUM ('rejected', 'approved', 'review_required');
+
+-- Create the table using the custom ENUM type
+CREATE TABLE IF NOT EXISTS step_review (
+  step_name VARCHAR NOT NULL,
+  submission_id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
+  user_review_status review_status,
+  PRIMARY KEY (step_name, submission_id, edpuser_id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
+);

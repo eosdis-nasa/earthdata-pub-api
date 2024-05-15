@@ -600,17 +600,20 @@ CREATE TABLE IF NOT EXISTS note (
   FOREIGN KEY (step_name) REFERENCES step (step_name)
 );
 
+-- Create a custom ENUM type
+CREATE TYPE review_status AS ENUM ('rejected', 'approved', 'review_required');
+
+-- Create the table using the custom ENUM type
 CREATE TABLE IF NOT EXISTS step_review (
   step_name VARCHAR NOT NULL,
   submission_id UUID NOT NULL,
   edpuser_id UUID NOT NULL,
-  approved BOOLEAN,
+  user_review_status review_status,
   PRIMARY KEY (step_name, submission_id, edpuser_id),
   FOREIGN KEY (step_name) REFERENCES step (step_name),
   FOREIGN KEY (submission_id) REFERENCES submission (id),
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
 );
-
 
 CREATE TABLE IF NOT EXISTS note_scope (
   note_id UUID NOT NULL,
