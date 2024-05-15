@@ -146,14 +146,13 @@ async function formSubmittedMethod(eventMessage) {
 }
 
 async function reviewApprovedMethod(eventMessage) {
-  const { submission_id, step_name } = eventMessage;
-  const stepReview = await db.submission.checkCountStepReviewApproved({ submission_id, step_name });
-
-  if(stepReview.unapproved && parseInt(stepReview.unapproved) == 0){
+  const param = { submission_id: eventMessage.submission_id, step_name: eventMessage.step_name };
+  const stepReview = await db.submission.checkCountStepReviewApproved(param);
+  if (stepReview.unapproved && parseInt(stepReview.unapproved, 10) === 0) {
     const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
     if (eventMessage.step_name === 'data_accession_request_form_review') {
       await db.metrics.setAccessionReversion({
-        id: submission_id,
+        id: eventMessage.submission_id,
         status: 'FALSE'
       });
     }
@@ -163,10 +162,14 @@ async function reviewApprovedMethod(eventMessage) {
 }
 
 async function reviewRejectedMethod(eventMessage) {
-  const { submission_id: id, data: { rollback }, step_name, user_id } = eventMessage;
-  const stepReview = await db.submission.checkCountStepReviewRejected({ submission_id : id, step_name, user_id });
-  
-  if(stepReview.unapproved && parseInt(stepReview.unapproved) == 0){
+  const { id, data: { rollback } } = eventMessage;
+  // Did this because of lint error. This line has a length of 104. Maximum allowed is 100
+  const StepName = eventMessage.step_name;
+  const submissionId = eventMessage.submission_id;
+  const userId = eventMessage.user_id;
+  const param = { submission_id: submissionId, step_name: StepName, user_id: userId };
+  const stepReview = await db.submission.checkCountStepReviewRejected(param);
+  if (stepReview.unapproved && parseInt(stepReview.unapproved, 10) === 0) {
     if (eventMessage.step_name === 'data_accession_request_form_review') {
       await db.metrics.setAccessionReversion({
         id: eventMessage.submission_id,

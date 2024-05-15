@@ -150,17 +150,30 @@ async function submitMethod(event, user) {
 async function reviewMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
   const { id, approve } = event;
-  const { user_id } = event.context;
+  const userId = user.id;
 
   const status = await db.submission.getState({ id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const stepType = status.step.type;
     let eventType;
+    let param;
     if (approve === 'false' || !approve) {
-      await db.submission.updateStatusStepReviewApproval({ submission_id: id, user_id, approve: 'rejected' });
+      param = {
+        submission_id: id,
+        user_id: userId,
+        approve: 'rejected',
+        step_name: status.step_name
+      };
+      await db.submission.updateStatusStepReviewApproval(param);
       eventType = 'review_rejected';
     } else if (stepType === 'review') {
-      await db.submission.updateStatusStepReviewApproval({ submission_id: id, user_id, approve: 'approved' });
+      param = {
+        submission_id: id,
+        user_id: userId,
+        approve: 'approved',
+        step_name: status.step_name
+      };
+      await db.submission.updateStatusStepReviewApproval(param);
       eventType = 'review_approved';
     } else {
       eventType = 'workflow_promote_step';
@@ -174,8 +187,8 @@ async function reviewMethod(event, user) {
       data: status.step.data,
       step_name: status.step_name
     };
-     if (status.step.step_message) eventMessage.step_message = status.step.step_message;
-     await msg.sendEvent(eventMessage);
+    if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+    await msg.sendEvent(eventMessage);
   }
   return status;
 }
@@ -306,19 +319,19 @@ async function mapMetadataMethod(event, user) {
 }
 
 async function createStepReviewApprovalMethod(event, user) {
-  const { submission_id, step_name } = event.params;
-  const { user_id } = event.context;
+  const { submissionId, stepName } = event.params;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
   }
 
-  const formData = await db.submission.createStepReviewApproval({ submission_id, step_name, user_id });
+  const param = { submission_id: submissionId, step_name: stepName, user_id: user.id };
+  const formData = await db.submission.createStepReviewApproval(param);
   return formData;
 }
 
 async function getStepReviewApprovalMethod(event, user) {
-  const { id: id } = event.params;
+  const { id } = event.params;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
@@ -327,15 +340,14 @@ async function getStepReviewApprovalMethod(event, user) {
   return formData;
 }
 
-async function deleteStepReviewApprovalMethod(event, user) {  
-  const { submission_id, step_name } = event.params;
-  const { user_id } = event.context;
+async function deleteStepReviewApprovalMethod(event, user) {
+  const { submissionId, stepName } = event.params;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
   }
-  
-  const formData = await db.submission.deleteStepReviewApproval({ submission_id, step_name, user_id });
+  const param = { submission_id: submissionId, step_name: stepName, user_id: user.id };
+  const formData = await db.submission.deleteStepReviewApproval(param);
   return formData;
 }
 
