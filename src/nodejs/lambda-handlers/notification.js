@@ -98,7 +98,7 @@ async function conversationMethod(params) {
 }
 
 async function addViewersMethod(event, user) {
-  const { id, viewer_ids: viewerIds } = event;
+  const { note_id, viewer_ids: viewerIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     // TODO figure out if we have to add the person to the conversation...
@@ -107,9 +107,9 @@ async function addViewersMethod(event, user) {
     //   conversation_id: conversationId,
     //   user_list: contributorIds
     // });
-    return db.note.addViewers({ id, viewer_ids: viewerIds });
+    return db.note.addViewers({ note_id, viewer_ids: viewerIds });
   }
-  return db.note.findById({ id });
+  return db.note.findById({ id: note_id });
 }
 
 const operations = {
@@ -123,9 +123,9 @@ const operations = {
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-
+  const user = await db.user.findById({ id: event.context.user_id });
   const operation = operations[event.operation];
-  const data = await operation(event);
+  const data = await operation(event, user);
   return data;
 }
 

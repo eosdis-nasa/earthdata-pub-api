@@ -523,9 +523,8 @@ module.exports.notificationAddViewers = function notificationAddViewers(req, res
   const { params } = req.swagger;
   const lambdaEvent = {
     operation: 'add_viewers',
-    note_id: params.id.value,
-    ...params.payload.value,
-    context: { user_id: req.user_id }
+    context: { user_id: req.user_id },
+    ...params.payload.value
   };
   console.log("notificationAddViewers")
   console.log(lambdaEvent);

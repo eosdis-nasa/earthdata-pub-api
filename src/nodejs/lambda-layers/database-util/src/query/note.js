@@ -426,12 +426,12 @@ const getEmails = (params) => sql.select({
   group: 'edpuser.email, edpuser.name'
 });
 
-const addViewers = ({ viewer_ids }) => `
+const addViewers = ({ note_id, viewer_ids }) => `
 UPDATE note_scope
 SET user_ids = ARRAY(
   SELECT DISTINCT unnest(array_cat(user_ids, ARRAY['${viewer_ids.join('\',\'')}']::UUID[]))
 )
-WHERE id = {{id}}
+WHERE note_id = '${note_id}'
 RETURNING *`;
 
 module.exports.findAll = findAll;

@@ -86,3 +86,4 @@ module.exports.onboard = one;
 module.exports.offboard = one;
 module.exports.getSubmissionDaac = one;
 module.exports.getUnknownStaffIds = many;
+module.exports.addViewers = one;
