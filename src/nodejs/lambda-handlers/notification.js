@@ -97,12 +97,28 @@ async function conversationMethod(params) {
   return response;
 }
 
+async function addViewersMethod(event, user) {
+  const { id, viewer_ids: viewerIds } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    // TODO figure out if we have to add the person to the conversation...
+    // const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
+    // await db.note.addUsersToConversation({
+    //   conversation_id: conversationId,
+    //   user_list: contributorIds
+    // });
+    return db.note.addViewers({ id, viewer_ids: viewerIds });
+  }
+  return db.note.findById({ id });
+}
+
 const operations = {
   send: sendMethod,
   reply: replyMethod,
   add_user: addUserMethod,
   conversations: conversationsMethod,
-  conversation: conversationMethod
+  conversation: conversationMethod,
+  add_viewers: addViewersMethod
 };
 
 async function handler(event) {

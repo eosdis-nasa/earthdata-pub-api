@@ -426,6 +426,14 @@ const getEmails = (params) => sql.select({
   group: 'edpuser.email, edpuser.name'
 });
 
+const addViewers = ({ viewer_ids }) => `
+UPDATE note_scope
+SET user_ids = ARRAY(
+  SELECT DISTINCT unnest(array_cat(user_ids, ARRAY['${viewer_ids.join('\',\'')}']::UUID[]))
+)
+WHERE id = {{id}}
+RETURNING *`;
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getConversationList = getConversationList;
@@ -437,3 +445,4 @@ module.exports.addUsersToConversation = addUsersToConversation;
 module.exports.addUserToConversation = addUserToConversation;
 module.exports.getEmails = getEmails;
 module.exports.removeUserFromConversation = removeUserFromConversation;
+module.exports.addViewers = addViewers;

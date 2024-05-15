@@ -485,6 +485,8 @@ module.exports.notificationAddUser = function notificationAddUser(req, res, next
     ...params.payload.value,
     context: { user_id: req.user_id }
   };
+  console.log("notificationAddUser")
+  console.log(lambdaEvent);
   handlers.notification(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
@@ -512,6 +514,21 @@ module.exports.notificationConversation = function notificationConversation(req,
     },
     context: { user_id: req.user_id }
   };
+  handlers.notification(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.notificationAddViewers = function notificationAddViewers(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'add_viewers',
+    note_id: params.id.value,
+    ...params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  console.log("notificationAddViewers")
+  console.log(lambdaEvent);
   handlers.notification(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
