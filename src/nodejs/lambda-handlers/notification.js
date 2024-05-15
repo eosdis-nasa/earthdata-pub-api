@@ -112,13 +112,23 @@ async function addViewersMethod(event, user) {
   return db.note.findById({ id: noteId });
 }
 
+async function removeViewerMethod(event, user) {
+  const { note_id: noteId, viewer_id: viewerId } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return db.note.removeViewer({ noteId, viewerId });
+  }
+  return db.note.findById({ id: noteId });
+}
+
 const operations = {
   send: sendMethod,
   reply: replyMethod,
   add_user: addUserMethod,
   conversations: conversationsMethod,
   conversation: conversationMethod,
-  add_viewers: addViewersMethod
+  add_viewers: addViewersMethod,
+  remove_viewer: removeViewerMethod
 };
 
 async function handler(event) {

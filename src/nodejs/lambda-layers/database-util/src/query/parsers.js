@@ -87,3 +87,4 @@ module.exports.offboard = one;
 module.exports.getSubmissionDaac = one;
 module.exports.getUnknownStaffIds = many;
 module.exports.addViewers = one;
+module.exports.removeViewer = one;

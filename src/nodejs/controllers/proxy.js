@@ -526,8 +526,18 @@ module.exports.notificationAddViewers = function notificationAddViewers(req, res
     context: { user_id: req.user_id },
     ...params.payload.value
   };
-  console.log("notificationAddViewers")
-  console.log(lambdaEvent);
+  handlers.notification(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.notificationRemoveViewer = function notificationRemoveViewer(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'remove_viewer',
+    context: { user_id: req.user_id },
+    ...params.payload.value
+  };
   handlers.notification(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });

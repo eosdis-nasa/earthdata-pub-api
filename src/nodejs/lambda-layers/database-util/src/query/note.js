@@ -434,6 +434,13 @@ SET user_ids = ARRAY(
 WHERE note_id = '${note_id}'
 RETURNING *`;
 
+const removeViewer = ({ noteId, viewerId }) =>`
+UPDATE note_scope
+SET user_ids = array_remove(user_ids, '${viewerId}')
+WHERE note_id  = '${noteId}'
+RETURNING *`;
+
+
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getConversationList = getConversationList;
@@ -446,3 +453,4 @@ module.exports.addUserToConversation = addUserToConversation;
 module.exports.getEmails = getEmails;
 module.exports.removeUserFromConversation = removeUserFromConversation;
 module.exports.addViewers = addViewers;
+module.exports.removeViewer = removeViewer;
