@@ -634,7 +634,7 @@ const getSubmissionDaac = () => sql.select({
 
 
 const getStepReviewApproval = () => `
-SELECT sr.step_name, sr.submission_id, sr.edpuser_id, sr.user_review_status, eu.name
+SELECT sr.step_name, sr.submission_id, sr.edpuser_id, sr.user_review_status, eu.name, sr.submitted_by
 FROM step_review sr
 INNER JOIN edpuser eu ON sr.edpuser_id = eu.id
 WHERE sr.submission_id = {{id}}
@@ -642,8 +642,8 @@ WHERE sr.submission_id = {{id}}
 
 
 const createStepReviewApproval = (params) => `
-INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status)
-SELECT {{step_name}}, {{submission_id}}, CAST(user_id AS UUID), 'review_required'
+INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status, submitted_by)
+SELECT {{step_name}}, {{submission_id}}, CAST(user_id AS UUID), 'review_required', {{submitted_by}}
 FROM unnest(ARRAY[${params.user_ids.map(id => `'${id}'::UUID`).join(',')}]) AS user_id
 RETURNING *
 `;

@@ -609,10 +609,12 @@ CREATE TABLE IF NOT EXISTS step_review (
   submission_id UUID NOT NULL,
   edpuser_id UUID NOT NULL,
   user_review_status review_status,
+  submitted_by UUID NOT NULL,
   PRIMARY KEY (step_name, submission_id, edpuser_id),
   FOREIGN KEY (step_name) REFERENCES step (step_name),
   FOREIGN KEY (submission_id) REFERENCES submission (id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
+  FOREIGN KEY (submitted_by) REFERENCES edpuser (id)
 );
 
 CREATE TABLE IF NOT EXISTS note_scope (

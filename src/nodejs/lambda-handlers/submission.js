@@ -324,7 +324,7 @@ async function createStepReviewApprovalMethod(event, user) {
     return { error: 'Not Authorized' };
   }
 
-  const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds };
+  const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds, submitted_by: user.id };
   const formData = await db.submission.createStepReviewApproval(param);
   return formData;
 }
