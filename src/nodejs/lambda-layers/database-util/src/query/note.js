@@ -110,7 +110,7 @@ const refs = {
           where: { 
             conjunction: 'OR',
             filters: [
-              ...([{cmd:'(note_scope.user_ids ISNULL AND note_scope.edprole_ids ISNULL)'}]),
+              ...([{cmd:'(array_length(note_scope.user_ids, 1) ISNULL AND array_length(note_scope.edprole_ids, 1) ISNULL)'}]),
               ...([{cmd: `{{user_id}}=ANY(note_scope.user_ids)` }]),
               ...([{
                 cmd: `note.id IN (${sql.select({
@@ -124,7 +124,7 @@ const refs = {
                   where: {
                     conjunction: 'OR',
                     filters: [
-                      ...([{cmd:'note_scope.edprole_ids ISNULL'}]),
+                      ...([{cmd:'array_length(note_scope.edprole_ids, 1) ISNULL'}]),
                       ...([{
                         cmd: `note.id IN (${sql.select({
                           fields: ['note_id'],
