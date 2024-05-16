@@ -97,26 +97,42 @@ async function conversationMethod(params) {
   return response;
 }
 
-async function addViewersMethod(event, user) {
-  const { note_id: noteId, viewer_ids: viewerIds } = event;
+async function addViewersMethod(params) {
+  const { note_id: noteId, viewer_ids: viewerIds } = params;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
+  const user = await db.user.findById({ id: params.context.user_id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    // TODO figure out if we have to add the person to the conversation...
-    // const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
-    // await db.note.addUsersToConversation({
-    //   conversation_id: conversationId,
-    //   user_list: contributorIds
-    // });
     return db.note.addViewers({ note_id: noteId, viewer_ids: viewerIds });
   }
   return db.note.findById({ id: noteId });
 }
 
-async function removeViewerMethod(event, user) {
-  const { note_id: noteId, viewer_id: viewerId } = event;
+async function removeViewerMethod(params) {
+  const { note_id: noteId, viewer_id: viewerId } = params;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
+  const user = await db.user.findById({ id: params.context.user_id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.note.removeViewer({ noteId, viewerId });
+  }
+  return db.note.findById({ id: noteId });
+}
+
+async function addViewerRolesMethod(params) {
+  const { note_id: noteId, viewer_roles: viewerRoles } = params;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
+  const user = await db.user.findById({ id: params.context.user_id });
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return db.note.addViewerRoles({ noteId, viewerRoles });
+  }
+  return db.note.findById({ id: noteId });
+}
+
+async function removeViewerRoleMethod(params) {
+  const { note_id: noteId, viewer_role: viewerRole } = params;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
+  const user = await db.user.findById({ id: params.context.user_id });
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return db.note.removeViewerRole({ noteId, viewerRole });
   }
   return db.note.findById({ id: noteId });
 }
@@ -128,14 +144,15 @@ const operations = {
   conversations: conversationsMethod,
   conversation: conversationMethod,
   add_viewers: addViewersMethod,
-  remove_viewer: removeViewerMethod
+  remove_viewer: removeViewerMethod,
+  add_viewer_roles: addViewerRolesMethod,
+  remove_viewer_role: removeViewerRoleMethod
 };
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  const user = await db.user.findById({ id: event.context.user_id });
   const operation = operations[event.operation];
-  const data = await operation(event, user);
+  const data = await operation(event);
   return data;
 }
 

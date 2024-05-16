@@ -88,3 +88,5 @@ module.exports.getSubmissionDaac = one;
 module.exports.getUnknownStaffIds = many;
 module.exports.addViewers = one;
 module.exports.removeViewer = one;
+module.exports.addViewerRoles = one;
+module.exports.removeViewerRole = one;

@@ -440,6 +440,20 @@ SET user_ids = array_remove(user_ids, '${viewerId}')
 WHERE note_id  = '${noteId}'
 RETURNING *`;
 
+const addViewerRoles = ({ noteId, viewerRoles }) => `
+UPDATE note_scope
+SET edprole_ids = ARRAY(
+  SELECT DISTINCT unnest(array_cat(edprole_ids, ARRAY['${viewerRoles.join('\',\'')}']::UUID[]))
+)
+WHERE note_id = '${noteId}'
+RETURNING *`;
+
+const removeViewerRole = ({ noteId, viewerRole }) =>`
+UPDATE note_scope
+SET edprole_ids = array_remove(edprole_ids, '${viewerRole}')
+WHERE note_id  = '${noteId}'
+RETURNING *`;
+
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
@@ -454,3 +468,5 @@ module.exports.getEmails = getEmails;
 module.exports.removeUserFromConversation = removeUserFromConversation;
 module.exports.addViewers = addViewers;
 module.exports.removeViewer = removeViewer;
+module.exports.addViewerRoles = addViewerRoles;
+module.exports.removeViewerRole = removeViewerRole;
