@@ -1119,7 +1119,7 @@ module.exports.createStepReviewApproval = function createStepReviewApproval(req,
 
   const lambdaEvent = {
     operation: 'createStepReviewApproval',
-    params: { stepName: payload.value.step_name , submissionId: payload.value.id },
+    params: { stepName: payload.value.step_name , submissionId: payload.value.id, userIds: payload.value.user_list },
     context: { user_id: req.user_id }
   };
 
@@ -1147,7 +1147,7 @@ module.exports.deleteStepReviewApproval = function deleteStepReviewApproval(req,
 
   const lambdaEvent = {
     operation: 'deleteStepReviewApproval',
-    params: { stepName: payload.value.step_name , submissionId: payload.value.id },
+    params: { stepName: payload.value.step_name , submissionId: payload.value.id, userIds: payload.value.user_list },
     context: { user_id: req.user_id }
   };
 

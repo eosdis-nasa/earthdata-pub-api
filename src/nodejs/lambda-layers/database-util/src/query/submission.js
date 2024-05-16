@@ -640,17 +640,20 @@ INNER JOIN edpuser eu ON sr.edpuser_id = eu.id
 WHERE sr.submission_id = {{id}}
 `;
 
-const createStepReviewApproval = () => `
+
+const createStepReviewApproval = (params) => `
 INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status)
-VALUES ({{step_name}}, {{submission_id}}, {{user_id}}, 'review_required')
+SELECT {{step_name}}, {{submission_id}}, CAST(user_id AS UUID), 'review_required'
+FROM unnest(ARRAY[${params.user_ids.map(id => `'${id}'::UUID`).join(',')}]) AS user_id
 RETURNING *
 `;
 
-const deleteStepReviewApproval = () => `
+
+const deleteStepReviewApproval = (params) => `
 DELETE FROM step_review
 WHERE submission_id = {{submission_id}}
-AND edpuser_id = {{user_id}}
 AND step_name = {{step_name}}
+AND edpuser_id IN (${params.user_ids.map(id => `'${id}'::UUID`).join(', ')})
 RETURNING *;
 `;
 

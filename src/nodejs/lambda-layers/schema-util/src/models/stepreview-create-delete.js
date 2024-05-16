@@ -4,6 +4,11 @@ module.exports.model = (path) => ({
     properties: {
         id: { $ref: `#${path}UUID` },
         step_name: { type: 'string' },
+        user_list: {
+            description: 'List of UUIDs of Users to notify',
+            type: 'array',
+            items: { $ref: `#${path}UUID` }
+          }
     }
   });
   

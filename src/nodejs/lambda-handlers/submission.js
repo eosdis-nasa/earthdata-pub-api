@@ -318,13 +318,13 @@ async function mapMetadataMethod(event, user) {
 }
 
 async function createStepReviewApprovalMethod(event, user) {
-  const { submissionId, stepName } = event.params;
+  const { submissionId, stepName, userIds } = event.params;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
   }
 
-  const param = { submission_id: submissionId, step_name: stepName, user_id: user.id };
+  const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds };
   const formData = await db.submission.createStepReviewApproval(param);
   return formData;
 }
@@ -340,12 +340,12 @@ async function getStepReviewApprovalMethod(event, user) {
 }
 
 async function deleteStepReviewApprovalMethod(event, user) {
-  const { submissionId, stepName } = event.params;
+  const { submissionId, stepName, userIds } = event.params;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD', 'CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
   }
-  const param = { submission_id: submissionId, step_name: stepName, user_id: user.id };
+  const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds };
   const formData = await db.submission.deleteStepReviewApproval(param);
   return formData;
 }
