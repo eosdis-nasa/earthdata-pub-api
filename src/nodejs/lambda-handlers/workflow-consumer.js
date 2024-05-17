@@ -148,6 +148,7 @@ async function formSubmittedMethod(eventMessage) {
 async function reviewApprovedMethod(eventMessage) {
   const param = { submission_id: eventMessage.submission_id, step_name: eventMessage.step_name };
   const stepReview = await db.submission.checkCountStepReviewApproved(param);
+  // if unapproved is 0 means all assigned users have approved the form
   if (stepReview.unapproved && parseInt(stepReview.unapproved, 10) === 0) {
     const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
     if (eventMessage.step_name === 'data_accession_request_form_review') {
