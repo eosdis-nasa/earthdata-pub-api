@@ -72,6 +72,7 @@ async function conversationMethod(params) {
   if (userInfo.user_privileges.includes('REQUEST_ADMINREAD') || userInfo.user_privileges.includes('ADMIN')
   || userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
     response = await db.note.readConversation({
+      admin: true,
       conversation_id: params.conversation_id,
       ...(stepName && { step_name: stepName })
     });
