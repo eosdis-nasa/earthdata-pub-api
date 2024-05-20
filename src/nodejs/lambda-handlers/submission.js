@@ -68,15 +68,13 @@ async function initializeMethod(event, user) {
     step_name: 'init',
     user_id: user.id
   };
-  if (status.workflow_id === '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9') {
-    const staff = await db.user.getUnknownStaffIds();
-    const staffIds = staff.map((usr) => usr.id);
-    await db.note.addUsersToConversation({
-      conversation_id: status.conversation_id,
-      user_list: staffIds
-    });
-    db.submission.addContributors({ id: status.id, contributor_ids: staffIds });
-  }
+  const staff = await db.user.getStaffIds({ daac_id: event.daac_id });
+  const staffIds = staff.map((usr) => usr.id);
+  await db.note.addUsersToConversation({
+    conversation_id: status.conversation_id,
+    user_list: staffIds
+  });
+  db.submission.addContributors({ id: status.id, contributor_ids: staffIds });
   await msg.sendEvent(eventMessage);
   return status;
 }
