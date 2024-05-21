@@ -254,3 +254,17 @@ CREATE TABLE IF NOT EXISTS step_review (
   FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
   FOREIGN KEY (submitted_by) REFERENCES edpuser (id)
 );
+
+-- EDPUB-1273 Enable use of name field and add a new data producer field
+ALTER TABLE submission
+ADD COLUMN data_producer_name VARCHAR;
+
+
+UPDATE submission
+SET 
+  name = data_pool.data->>'data_product_name_value',
+  data_producer_name = data_pool.data->>'data_producer_info_name'
+FROM submission_form_data_pool AS data_pool
+WHERE submission.id = data_pool.id
+AND data_pool.data ? 'data_product_name_value'
+AND data_pool.data ? 'data_producer_info_name';
