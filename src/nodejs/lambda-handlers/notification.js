@@ -100,42 +100,42 @@ async function conversationMethod(params) {
 
 async function addViewersMethod(params) {
   const { note_id: noteId, viewer_ids: viewerIds } = params;
-  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
+  const approvedUserPrivileges = ['ADMIN', 'NOTE_ADDUSER'];
   const user = await db.user.findById({ id: params.context.user_id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    return db.note.addViewers({ note_id: noteId, viewer_ids: viewerIds });
+    return db.note.addViewers({ noteId, viewerIds });
   }
-  return db.note.findById({ id: noteId });
+  return { error: 'Invalid permissions.' };
 }
 
 async function removeViewerMethod(params) {
   const { note_id: noteId, viewer_id: viewerId } = params;
-  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
+  const approvedUserPrivileges = ['ADMIN', 'NOTE_REMOVEUSER'];
   const user = await db.user.findById({ id: params.context.user_id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.note.removeViewer({ noteId, viewerId });
   }
-  return db.note.findById({ id: noteId });
+  return { error: 'Invalid permissions.' };
 }
 
 async function addViewerRolesMethod(params) {
   const { note_id: noteId, viewer_roles: viewerRoles } = params;
-  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
+  const approvedUserPrivileges = ['ADMIN', 'NOTE_ADDUSER'];
   const user = await db.user.findById({ id: params.context.user_id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.note.addViewerRoles({ noteId, viewerRoles });
   }
-  return db.note.findById({ id: noteId });
+  return { error: 'Invalid permissions.' };
 }
 
 async function removeViewerRoleMethod(params) {
   const { note_id: noteId, viewer_role: viewerRole } = params;
-  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
+  const approvedUserPrivileges = ['ADMIN', 'NOTE_REMOVEUSER'];
   const user = await db.user.findById({ id: params.context.user_id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.note.removeViewerRole({ noteId, viewerRole });
   }
-  return db.note.findById({ id: noteId });
+  return { error: 'Invalid permissions.' };
 }
 
 const operations = {

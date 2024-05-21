@@ -556,12 +556,19 @@ const getEmails = (params) => sql.select({
   group: 'edpuser.email, edpuser.name'
 });
 
-const addViewers = ({ note_id, viewer_ids }) => `
-UPDATE note_scope
-SET user_ids = ARRAY(
-  SELECT DISTINCT unnest(array_cat(user_ids, ARRAY['${viewer_ids.join('\',\'')}']::UUID[]))
+const addViewers = ({ noteId, viewerIds }) => `
+WITH uids as (
+  SELECT DISTINCT user_ids
+  FROM(
+    SELECT unnest(user_ids) as user_ids
+    FROM note_scope
+    WHERE note_id = '${noteId}'
+    UNION SELECT unnest(ARRAY['${viewerIds.join('\',\'')}']::UUID[])
+  )
 )
-WHERE note_id = '${note_id}'
+INSERT INTO note_scope(note_id, user_ids)
+VALUES('${noteId}', ARRAY(SELECT user_ids FROM uids))
+ON CONFLICT(note_id) DO UPDATE SET user_ids = EXCLUDED.user_ids
 RETURNING *`;
 
 const removeViewer = ({ noteId, viewerId }) =>`
@@ -571,11 +578,18 @@ WHERE note_id  = '${noteId}'
 RETURNING *`;
 
 const addViewerRoles = ({ noteId, viewerRoles }) => `
-UPDATE note_scope
-SET edprole_ids = ARRAY(
-  SELECT DISTINCT unnest(array_cat(edprole_ids, ARRAY['${viewerRoles.join('\',\'')}']::UUID[]))
+WITH role_ids as (
+  SELECT DISTINCT edprole_ids
+  FROM(
+    SELECT unnest(edprole_ids) as edprole_ids
+    FROM note_scope
+    WHERE note_id = '${noteId}'
+    UNION SELECT unnest(ARRAY['${viewerRoles.join('\',\'')}']::UUID[])
+  )
 )
-WHERE note_id = '${noteId}'
+INSERT INTO note_scope(note_id, edprole_ids)
+VALUES('${noteId}', ARRAY(SELECT edprole_ids FROM role_ids))
+ON CONFLICT(note_id) DO UPDATE SET edprole_ids = EXCLUDED.edprole_ids
 RETURNING *`;
 
 const removeViewerRole = ({ noteId, viewerRole }) =>`
