@@ -227,3 +227,9 @@ CREATE TABLE IF NOT EXISTS note_scope (
 --4/23/2024 Fixing daac data manager permissions
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
 
+UPDATE edpuser_edprole
+SET edprole_id = '804b335c-f191-4d26-9b98-1ec1cb62b97d'
+WHERE edprole_id = '29ccab4b-65e2-4764-83ec-77375d29af39';
+
+delete from edprole_privilege where edprole_id='29ccab4b-65e2-4764-83ec-77375d29af39';
+delete from edprole where id='29ccab4b-65e2-4764-83ec-77375d29af39'
