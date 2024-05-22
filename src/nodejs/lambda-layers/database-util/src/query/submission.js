@@ -4,7 +4,7 @@ const workflow = require('./workflow.js');
 
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_status', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
@@ -17,6 +17,7 @@ const fieldMap = {
   workflow_id: 'submission_status.workflow_id',
   workflow_name: 'workflow.long_name workflow_name',
   step_name: 'step.step_name',
+  step_status: 'step.step_status_label',
   step_data: 'step.step_data',
   status: 'step.status',
   forms: 'forms',
