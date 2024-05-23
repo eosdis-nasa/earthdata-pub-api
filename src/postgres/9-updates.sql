@@ -227,13 +227,6 @@ CREATE TABLE IF NOT EXISTS note_scope (
 --4/23/2024 Fixing daac data manager permissions
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
 
-UPDATE edpuser_edprole
-SET edprole_id = '804b335c-f191-4d26-9b98-1ec1cb62b97d'
-WHERE edprole_id = '29ccab4b-65e2-4764-83ec-77375d29af39';
-
-delete from edprole_privilege where edprole_id='29ccab4b-65e2-4764-83ec-77375d29af39';
-delete from edprole where id='29ccab4b-65e2-4764-83ec-77375d29af39'
-
 -- GESDISC EXTENDED
 INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('e67b0087-9102-476f-846b-8bc22d16bcc0', 'archived_elsewhere', 1, 'Previously Archived', 'Might this data already be or will be archived anywhere else (other than GES DISC)?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
 
@@ -287,3 +280,11 @@ INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '5a
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'b840820a-2d49-414b-b7d8-27217843904a', 14, '[]', '[]');
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '8c331721-541c-45a4-b95a-4b9b4557eae2', 15, '[]', '[]');
 -- END GESDISC EXTENDED
+
+-- 5/23/2024 Removing Data producer POC
+UPDATE edpuser_edprole
+SET edprole_id = '804b335c-f191-4d26-9b98-1ec1cb62b97d'
+WHERE edprole_id = '29ccab4b-65e2-4764-83ec-77375d29af39';
+
+delete from edprole_privilege where edprole_id='29ccab4b-65e2-4764-83ec-77375d29af39';
+delete from edprole where id='29ccab4b-65e2-4764-83ec-77375d29af39'
