@@ -368,6 +368,13 @@ ON CONFLICT (id, form_id) DO UPDATE SET
 data = EXCLUDED.data;
 END $$`;
 
+const updateSubmissionData = () => `
+update submission 
+set name = {{data_product}}, data_producer_name = {{data_producer}}
+where id = {{id}}
+RETURNING *
+`;
+
 const getActionData = () => `
 SELECT
 submission_form_data.id,
@@ -711,6 +718,7 @@ module.exports.getActionData = getActionData;
 module.exports.updateActionData = updateActionData;
 module.exports.getFormData = getFormData;
 module.exports.updateFormData = updateFormData;
+module.exports.updateSubmissionData = updateSubmissionData;
 module.exports.applyWorkflow = applyWorkflow;
 module.exports.rollback = rollback;
 module.exports.reassignWorkflow = reassignWorkflow;

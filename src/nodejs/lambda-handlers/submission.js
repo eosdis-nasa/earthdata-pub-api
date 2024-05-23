@@ -120,7 +120,10 @@ async function metadataMethod(event, user) {
 async function saveMethod(event) {
   const { form_id: formId, daac_id: daacId, data } = event;
   const { id } = event;
+  const product = data.data_producer_info_name;
+  const producer = data.data_product_name_value;
   await db.submission.updateFormData({ id, form_id: formId, data: JSON.stringify(data) });
+  await db.submission.updateSubmissionData({ id, data_product: product, data_producer: producer });
   const status = await db.submission.getState({ id });
   if (daacId && daacId !== status.daac_id) {
     await db.submission.updateDaac({ id, daac_id: daacId });

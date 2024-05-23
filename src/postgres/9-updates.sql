@@ -312,7 +312,6 @@ CREATE TABLE IF NOT EXISTS step_review (
 ALTER TABLE submission
 ADD COLUMN data_producer_name VARCHAR;
 
-
 UPDATE submission
 SET 
   name = data_pool.data->>'data_product_name_value',
