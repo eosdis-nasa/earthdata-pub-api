@@ -55,7 +55,8 @@ const refs = {
             keys: [
               ['text', 'note_visability.text'],
               ['sent', 'note_visability.created_at'],
-              ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }]
+              ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_ids'], ['roles', 'note_visability.edprole_ids']]}]
             ]
           },
           sort: 'note_visability.created_at',
@@ -66,7 +67,9 @@ const refs = {
       from: {
         base: sql.select({
           fields: [
-            'note.*'
+            'note.*',
+            'note_scope.user_ids',
+            'note_scope.edprole_ids'
           ],
           from: {
             base: 'note',
@@ -154,7 +157,8 @@ const refs = {
             keys: [
               ['text', 'note_visability.text'],
               ['sent', 'note_visability.created_at'],
-              ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }]
+              ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_ids'], ['roles', 'note_visability.edprole_ids']]}]
             ]
           },
           sort: 'note_visability.created_at',
@@ -165,7 +169,9 @@ const refs = {
       from: {
         base: sql.select({
           fields: [
-            'note.*'
+            'note.*',
+            'note_scope.user_ids',
+            'note_scope.edprole_ids'
           ],
           from: {
             base: 'note',
