@@ -16,6 +16,8 @@ db.metrics.getSubmissions = jest.fn();
 db.service.deleteSecret = jest.fn();
 msg.sendEvent = jest.fn();
 msg.parseRecord = jest.fn();
+db.submission.checkCountStepReviewApproved = jest.fn();
+db.submission.checkCountStepReviewRejected = jest.fn();
 
 describe('workflow-consumer', () => {
   beforeEach(() => {
@@ -264,12 +266,19 @@ describe('workflow-consumer', () => {
             submission_id: 'submission_id',
             conversation_id: 'conversation_id',
             workflow_id: 'workflow_id',
-            user_id: 'user_id'
+            user_id: 'user_id',
+            step_name: 'step_name'
           }
         }
       ]
     };
     msg.parseRecord.mockImplementation((record) => record);
+    db.submission.checkCountStepReviewApproved.mockImplementationOnce((params) => {
+      expect(params).toEqual({ step_name: 'step_name', submission_id: 'submission_id' });
+      return Promise.resolve({
+        unapproved: 0
+      });
+    });
     db.submission.getState.mockImplementationOnce((params) => {
       expect(params).toEqual({ id: 'submission_id' });
       return Promise.resolve({
@@ -316,7 +325,9 @@ describe('workflow-consumer', () => {
             submission_id: 'submission_id',
             conversation_id: 'conversation_id',
             workflow_id: 'workflow_id',
-            data: { rollback: 'rollback' }
+            data: { rollback: 'rollback' },
+            step_name: 'step_name',
+            user_id: 'user_id'
           }
         }
       ]
@@ -338,6 +349,12 @@ describe('workflow-consumer', () => {
           name: 'name',
           data: { rollback: 'rollback' }
         }
+      });
+    });
+    db.submission.checkCountStepReviewRejected.mockImplementationOnce((params) => {
+      expect(params).toEqual({ step_name: 'step_name', submission_id: 'submission_id', user_id: 'user_id' });
+      return Promise.resolve({
+        unapproved: 0
       });
     });
     msg.sendEvent.mockImplementationOnce((eventMessage) => {

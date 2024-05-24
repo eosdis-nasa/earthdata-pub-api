@@ -149,13 +149,32 @@ async function submitMethod(event, user) {
 async function reviewMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
   const { id, approve } = event;
+  const userId = user.id;
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const status = await db.submission.getState({ id });
     const stepType = status.step.type;
     let eventType;
+    let param;
     if (approve === 'false' || !approve) {
+      param = {
+        submission_id: id,
+        user_id: userId,
+        approve: 'rejected',
+        step_name: status.step_name
+      };
+      const rejectionCount = await db.submission.updateStatusStepReviewApproval(param);
+      if (!rejectionCount.error) {
+        return status;
+      }
       eventType = 'review_rejected';
     } else if (stepType === 'review') {
+      param = {
+        submission_id: id,
+        user_id: userId,
+        approve: 'approved',
+        step_name: status.step_name
+      };
+      await db.submission.updateStatusStepReviewApproval(param);
       eventType = 'review_approved';
     } else {
       eventType = 'workflow_promote_step';
@@ -301,6 +320,46 @@ async function mapMetadataMethod(event, user) {
   return mappedMetadata;
 }
 
+async function createStepReviewApprovalMethod(event, user) {
+  const { submissionId, stepName, userIds } = event.params;
+  const approvedUserPrivileges = ['CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+  // This line has a length of 104. Maximum allowed is 100 to fix this
+  const subId = submissionId;
+  const ids = userIds;
+  const param = {
+    submission_id: subId,
+    step_name: stepName,
+    user_ids: ids,
+    submitted_by: user.id
+  };
+  const formData = await db.submission.createStepReviewApproval(param);
+  return formData;
+}
+
+async function getStepReviewApprovalMethod(event, user) {
+  const { id } = event.params;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_READ'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+  const formData = await db.submission.getStepReviewApproval({ id });
+  return formData;
+}
+
+async function deleteStepReviewApprovalMethod(event, user) {
+  const { submissionId, stepName, userIds } = event.params;
+  const approvedUserPrivileges = ['REMOVE_STEPREVIEW'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+  const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds };
+  const formData = await db.submission.deleteStepReviewApproval(param);
+  return formData;
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -320,7 +379,10 @@ const operations = {
   removeContributor: removeContributorMethod,
   copySubmission: copySubmissionMethod,
   getDetails: getDetailsMethod,
-  mapMetadata: mapMetadataMethod
+  mapMetadata: mapMetadataMethod,
+  createStepReviewApproval: createStepReviewApprovalMethod,
+  getStepReviewApproval: getStepReviewApprovalMethod,
+  deleteStepReviewApproval: deleteStepReviewApprovalMethod
 };
 
 async function handler(event) {
