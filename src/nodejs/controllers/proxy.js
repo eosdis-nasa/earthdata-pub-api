@@ -1112,3 +1112,46 @@ module.exports.offboardDaac = function offboardDaac(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 };
+
+module.exports.createStepReviewApproval = function createStepReviewApproval(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+
+  const lambdaEvent = {
+    operation: 'createStepReviewApproval',
+    params: { stepName: payload.value.step_name , submissionId: payload.value.id, userIds: payload.value.user_list },
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.getStepReviewApproval = function getStepReviewApproval(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'getStepReviewApproval',
+    params: { id: params.id.value },
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.deleteStepReviewApproval = function deleteStepReviewApproval(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+
+  const lambdaEvent = {
+    operation: 'deleteStepReviewApproval',
+    params: { stepName: payload.value.step_name , submissionId: payload.value.id, userIds: payload.value.user_list },
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
