@@ -1,5 +1,82 @@
 const sql = require('./sql-builder.js');
 
+const note_visability_joins = {
+  user_names: {
+    type: 'left_join',
+    src: sql.select({
+      fields: [
+        'unnested_user_ids.note_id',
+        {
+          type: 'json_agg',
+          src: {
+            type: 'json_obj',
+            keys: [
+              ['name', 'edpuser.name'],
+              ['id', 'edpuser.id']
+            ]
+          },
+          alias: 'user_names'
+        }
+      ],
+      from: {
+        base: sql.select({
+          fields: [
+            'note_id',
+            'unnest(user_ids) AS user_id'
+          ],
+          from: {
+            base: 'note_scope'
+          },
+          alias: 'unnested_user_ids'
+        }),
+        joins: [{ 
+          type: 'left_join', src: 'edpuser', on: { left: 'unnested_user_ids.user_id', right: 'edpuser.id' }
+        }]
+      },
+      group: 'unnested_user_ids.note_id',
+      alias: 'uname_map'
+    }),
+    on: {left: 'note_scope.note_id', right: 'uname_map.note_id'}
+  },
+  role_names: {
+    type: 'left_join',
+    src: sql.select({
+      fields: [
+        'unnested_role_ids.note_id',
+        {
+          type: 'json_agg',
+          src: {
+            type: 'json_obj',
+            keys: [
+              ['name', 'edprole.long_name'],
+              ['id', 'edprole.id']
+            ]
+          },
+          alias: 'role_names'
+        }
+      ],
+      from: {
+        base: sql.select({
+          fields: [
+            'note_id',
+            'unnest(edprole_ids) AS role_id'
+          ],
+          from: {
+            base: 'note_scope'
+          },
+          alias: 'unnested_role_ids'
+        }),
+        joins: [{ 
+          type: 'left_join', src: 'edprole', on: { left: 'unnested_role_ids.role_id', right: 'edprole.id' }
+        }]
+      },
+      group: 'unnested_role_ids.note_id',
+      alias: 'role_map'
+    }),
+    on: {left: 'note_scope.note_id', right: 'role_map.note_id'}
+  }
+}
+
 const refs = {
   conversation_note: {
     type: 'left_join',
@@ -56,7 +133,7 @@ const refs = {
               ['text', 'note_visability.text'],
               ['sent', 'note_visability.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_ids'], ['roles', 'note_visability.edprole_ids']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_names'], ['roles', 'note_visability.role_names']]}]
             ]
           },
           sort: 'note_visability.created_at',
@@ -68,14 +145,16 @@ const refs = {
         base: sql.select({
           fields: [
             'note.*',
-            'note_scope.user_ids',
-            'note_scope.edprole_ids'
+            'uname_map.user_names',
+            'role_map.role_names'
           ],
           from: {
             base: 'note',
-            joins: [{
-              type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }
-            }]
+            joins: [
+              { type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }},
+              note_visability_joins.user_names,
+              note_visability_joins.role_names
+            ]
           },
           alias: 'note_visability',
           where: { 
@@ -158,7 +237,7 @@ const refs = {
               ['text', 'note_visability.text'],
               ['sent', 'note_visability.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_ids'], ['roles', 'note_visability.edprole_ids']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_names'], ['roles', 'note_visability.role_names']]}]
             ]
           },
           sort: 'note_visability.created_at',
@@ -170,14 +249,16 @@ const refs = {
         base: sql.select({
           fields: [
             'note.*',
-            'note_scope.user_ids',
-            'note_scope.edprole_ids'
+            'uname_map.user_names',
+            'role_map.role_names'
           ],
           from: {
             base: 'note',
-            joins: [{
-              type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }
-            }]
+            joins: [
+              { type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }},
+              note_visability_joins.user_names,
+              note_visability_joins.role_names
+            ]
           },
           alias: 'note_visability',
           where: { 
