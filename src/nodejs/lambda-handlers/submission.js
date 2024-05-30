@@ -320,7 +320,7 @@ async function mapMetadataMethod(event, user) {
 
 async function createStepReviewApprovalMethod(event, user) {
   const { submissionId, stepName, userIds } = event.params;
-  const approvedUserPrivileges = ['CREATE_STEPREVIEW', 'REMOVE_STEPREVIEW'];
+  const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
   }
@@ -349,7 +349,7 @@ async function getStepReviewApprovalMethod(event, user) {
 
 async function deleteStepReviewApprovalMethod(event, user) {
   const { submissionId, stepName, userIds } = event.params;
-  const approvedUserPrivileges = ['REMOVE_STEPREVIEW'];
+  const approvedUserPrivileges = ['ADMIN', 'REMOVE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
   }
