@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Unreleased
 
 <!-- Unreleased changes can be added here. -->
+- Update data_poc users to producer and remove data_poc and it's references
 - Added GES DISC extended questions
 - Created note_scope table
 - Updated metadata mapper for DAAC specific questions

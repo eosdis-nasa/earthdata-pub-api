@@ -286,3 +286,38 @@ INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '5a
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'b840820a-2d49-414b-b7d8-27217843904a', 14, '[]', '[]');
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '8c331721-541c-45a4-b95a-4b9b4557eae2', 15, '[]', '[]');
 -- END GESDISC EXTENDED
+
+--EDPUB-1258 Create review requirements tracking on the backend
+INSERT INTO privilege VALUES ('CREATE_STEPREVIEW');
+INSERT INTO privilege VALUES ('REMOVE_STEPREVIEW');
+
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'CREATE_STEPREVIEW');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REMOVE_STEPREVIEW');
+
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'CREATE_STEPREVIEW');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REMOVE_STEPREVIEW');
+
+-- Create a custom ENUM type
+CREATE TYPE review_status AS ENUM ('rejected', 'approved', 'review_required');
+
+-- Create the table using the custom ENUM type
+CREATE TABLE IF NOT EXISTS step_review (
+  step_name VARCHAR NOT NULL,
+  submission_id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
+  user_review_status review_status,
+  submitted_by UUID NOT NULL,
+  PRIMARY KEY (step_name, submission_id, edpuser_id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
+  FOREIGN KEY (submitted_by) REFERENCES edpuser (id)
+);
+
+-- 5/23/2024 Removing Data producer POC
+UPDATE edpuser_edprole
+SET edprole_id = '804b335c-f191-4d26-9b98-1ec1cb62b97d'
+WHERE edprole_id = '29ccab4b-65e2-4764-83ec-77375d29af39';
+
+delete from edprole_privilege where edprole_id='29ccab4b-65e2-4764-83ec-77375d29af39';
+delete from edprole where id='29ccab4b-65e2-4764-83ec-77375d29af39'
