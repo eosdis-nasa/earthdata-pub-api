@@ -15,14 +15,24 @@ const s3 = new S3({ region });
 
 async function getReport({ key }) {
   const params = { Bucket: bucket, Key: `${key}.png` };
-  const data = await s3.getObject(params);
-  return { image: `data:image/png;base64,${data.Body.toString('base64')}` };
+  try {
+    const data = await s3.getObject(params);
+    return { image: `data:image/png;base64,${data.Body.toString('base64')}` };
+  } catch (err) {
+    console.error(`Error getting report for key ${key}:`, err);
+    return { error: 'Error getting report' };
+  }
 }
 
 async function listReports() {
-  const list = await s3.listObjectsV2({ Bucket: bucket });
-  const keys = list.Contents.map((object) => path.parse(object.Key).name);
-  return keys;
+  try {
+    const list = await s3.listObjectsV2({ Bucket: bucket });
+    const keys = list.Contents.map((object) => path.parse(object.Key).name);
+    return keys;
+  } catch (err) {
+    console.error('Error listing reports:', err);
+    return { error: 'Error listing reports' };
+  }
 }
 
 async function search({ filter }) {
