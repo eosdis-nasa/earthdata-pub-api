@@ -12,6 +12,7 @@ resource "aws_secretsmanager_secret_version" "ses_access_creds" {
     })
 }
 
+#ORNL enpoint access
 resource "aws_secretsmanager_secret" "ornl_endpoint" {
   name = "ornl_endpoint"
   description = "ORNL endpoint and credentials"
