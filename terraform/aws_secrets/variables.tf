@@ -13,3 +13,11 @@ variable "ornl_endpoint_url" {
 variable "ornl_endpoint_access_token" {
   type = string
 }
+
+variable "gesdisc_endpoint_url"{
+  type = string
+}
+
+variable "gesdisc_endpoint_access_token"{
+  type = string
+}

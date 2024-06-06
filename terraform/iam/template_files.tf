@@ -22,6 +22,7 @@ data "template_file" "edpub_lambda_policy" {
     edpub_workflow_sqs_arn = var.edpub_workflow_sqs_arn
     ses_access_creds_arn = var.ses_access_creds_arn
     ornl_endpoint_arn = var.ornl_endpoint_arn
+    gesdisc_endpoint_arn = var.gesdisc_endpoint_arn
   }
 }
 
