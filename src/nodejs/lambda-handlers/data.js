@@ -12,7 +12,7 @@ const msg = require('message-util');
 
 async function findById(event) {
   const { resource, params, form_id: formId } = event;
-  if (formId) params['id'] = formId;
+  if (formId) params.id = formId;
   return db[resource].findById(params);
 }
 
