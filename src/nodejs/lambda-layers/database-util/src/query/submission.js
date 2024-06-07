@@ -5,10 +5,11 @@ const workflow = require('./workflow.js');
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
-const reducedFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_name', 'status', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
+const customFields = ['id', 'name', 'data_producer_name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_name', 'status', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
+  data_producer_name: 'submission.data_producer_name',
   initiator: 'initiator_ref.initiator',
   user_id: 'submission.initiator_edpuser_id user_id',
   daac_id: 'submission.daac_id',
@@ -175,7 +176,7 @@ const findById = (params) => sql.select({
 });
 
 const getUsersSubmissions = (params) => sql.select({
-  fields: fields(reducedFields),
+  fields: fields(customFields),
   from: {
     base: table,
     joins: [refs.submission_status, refs.initiator_ref, refs.step, refs.workflow, refs.daac, refs.submission_copy]
@@ -194,7 +195,7 @@ const getDaacSubmissions = (params) => sql.select({
   fields: ['*'],
   from: {
       base: `(${sql.select({
-        fields: fields(reducedFields),
+        fields: fields(customFields),
     from: {
     base: table,
       joins: [refs.submission_status, refs.initiator_ref, refs.step, refs.workflow, refs.daac, refs.submission_copy]
@@ -253,7 +254,7 @@ const getDaacSubmissions = (params) => sql.select({
 });
 
 const getAdminSubmissions = (params) => sql.select({
-  fields: fields(reducedFields),
+  fields: fields(customFields),
   from: {
     base: table,
     joins: [refs.submission_status, refs.initiator_ref, refs.step, refs.workflow, refs.daac, refs.submission_copy]
@@ -365,6 +366,13 @@ INSERT INTO submission_form_data(id, form_id, data) VALUES
 ON CONFLICT (id, form_id) DO UPDATE SET
 data = EXCLUDED.data;
 END $$`;
+
+const updateSubmissionData = () => `
+update submission 
+set name = {{data_product}}, data_producer_name = {{data_producer}}
+where id = {{id}}
+RETURNING *
+`;
 
 const getActionData = () => `
 SELECT
@@ -709,6 +717,7 @@ module.exports.getActionData = getActionData;
 module.exports.updateActionData = updateActionData;
 module.exports.getFormData = getFormData;
 module.exports.updateFormData = updateFormData;
+module.exports.updateSubmissionData = updateSubmissionData;
 module.exports.applyWorkflow = applyWorkflow;
 module.exports.rollback = rollback;
 module.exports.reassignWorkflow = reassignWorkflow;
