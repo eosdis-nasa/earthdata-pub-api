@@ -1167,9 +1167,3 @@ module.exports.verifyMfa = function verifyMfa(req, res, next) {
     message: 'Local placeholder for verify MFA function.'
   });
 }
-
-module.exports.getMFAStatus = function getMFAStatus(req, res, next) {
-  res.send({
-    message: 'Local placeholder for get MFA status function.'
-  });
-}
