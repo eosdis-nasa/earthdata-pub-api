@@ -665,28 +665,28 @@
       }
     },
     "/api/data/form/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "description": "UUID of entity",
-          "required": true,
-          "schema": {
-            "$ref": "#/components/schemas/UUID"
-          }
-        },
-        {
-          "name": "daac_id",
-          "in": "query",
-          "description": "DAAC ID to filter form sections",
-          "schema": {
-            "$ref": "#/components/schemas/UUID"
-          }
-        }
-      ],
       "get": {
         "tags": [
           "data"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of entity",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "daac_id",
+            "in": "query",
+            "description": "DAAC ID to filter form sections",
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
         ],
         "summary": "Get form",
         "description": "Returns a single form by ID",
@@ -734,7 +734,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"params\":{\"id\": \"$req.path.get('id')\", #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
