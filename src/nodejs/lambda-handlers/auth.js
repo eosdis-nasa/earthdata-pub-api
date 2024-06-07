@@ -8,6 +8,7 @@ const auth = require('auth-util');
 
 const {
   CognitoIdentityProviderClient,
+  AssociateSoftwareTokenCommand,
   GetUserCommand
 } = require('@aws-sdk/client-cognito-identity-provider');
 
@@ -21,9 +22,15 @@ async function handler(event) {
     const command = new GetUserCommand({
       AccessToken: access
     });
-    const resp = await idp.send(command);
-    console.log(resp);
-    return { token: access, state: event.state, user };
+    let resp = { token: access, state: event.state, user };
+    if (!('UserMFASettingList' in await idp.send(command))) {
+      const command = new AssociateSoftwareTokenCommand({
+        AccessToken: access
+      });
+      const { SecretCode } = await idp.send(command);
+      resp = {...resp, ...{mfaSecretCode: SecretCode}};
+    }
+    return resp;
   }
   if (event.refresh && event.context) {
     const { refresh_token: refreshToken } = await db.user.getRefreshToken(
