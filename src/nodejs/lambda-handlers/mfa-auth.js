@@ -84,6 +84,7 @@ async function getMFAStatusMethod(event) {
   const command = new GetUserCommand({
     AccessToken: accessToken
   });
+  const idp = new CognitoIdentityProviderClient();
   const resp = await idp.send(command);
   return resp;
 }
