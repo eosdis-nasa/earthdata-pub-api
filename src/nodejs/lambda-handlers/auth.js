@@ -19,16 +19,16 @@ async function handler(event) {
     await db.user.loginUser({ ...decoded, refresh_token: refresh });
     const user = await db.user.findById({ id: decoded.sub });
     const idp = new CognitoIdentityProviderClient();
-    const command = new GetUserCommand({
+    const getUserCommand = new GetUserCommand({
       AccessToken: access
     });
     let resp = { token: access, state: event.state, user };
-    if (!('UserMFASettingList' in await idp.send(command))) {
-      const command = new AssociateSoftwareTokenCommand({
+    if (!('UserMFASettingList' in await idp.send(getUserCommand))) {
+      const AssociateTokenCommand = new AssociateSoftwareTokenCommand({
         AccessToken: access
       });
-      const { SecretCode } = await idp.send(command);
-      resp = {...resp, ...{mfaSecretCode: SecretCode}};
+      const { SecretCode } = await idp.send(AssociateTokenCommand);
+      resp = { ...resp, ...{ mfaSecretCode: SecretCode } };
     }
     return resp;
   }
