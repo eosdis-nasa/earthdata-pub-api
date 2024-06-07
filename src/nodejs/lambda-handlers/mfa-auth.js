@@ -79,10 +79,20 @@ async function verifyTokenMethod(event) {
   return resp;
 }
 
+async function getMFAStatusMethod(event) {
+  const { access_token: accessToken } = event;
+  const command = new GetUserCommand({
+    AccessToken: accessToken
+  });
+  const resp = await idp.send(command);
+  return resp;
+}
+
 const operations = {
   associateToken: associateTokenMethod,
   verifyToken: verifyTokenMethod,
-  setMFAPreference: setMFAPreferenceMethod
+  setMFAPreference: setMFAPreferenceMethod,
+  getMFAStatus: getMFAStatusMethod
 };
 
 async function handler(event) {
