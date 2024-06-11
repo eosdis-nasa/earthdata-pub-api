@@ -18,11 +18,12 @@ async function handler(event) {
     const { access, refresh, decoded } = await auth.getToken(event);
     await db.user.loginUser({ ...decoded, refresh_token: refresh });
     const user = await db.user.findById({ id: decoded.sub });
+	const userResp = {...user, ...{issuer: process.env.AUTH_PROVIDER_URL, username: decoded['cognito:username']}};
     const idp = new CognitoIdentityProviderClient();
     const getUserCommand = new GetUserCommand({
       AccessToken: access
     });
-    let resp = { token: access, state: event.state, user };
+    let resp = { token: access, state: event.state, user: userResp };
     if (!('UserMFASettingList' in await idp.send(getUserCommand))) {
       const AssociateTokenCommand = new AssociateSoftwareTokenCommand({
         AccessToken: access
