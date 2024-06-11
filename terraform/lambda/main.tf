@@ -514,6 +514,46 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_rds_backup" {
   source_arn    = "${aws_cloudwatch_event_rule.rds_backup_daily_cron.arn}"
 }
 
+# Step clean Lambda
+
+resource "aws_lambda_function" "step_cleanup" {
+  filename         = "../artifacts/step-cleanup-lambda.zip"
+  function_name    = "step_cleanup"
+  role             = var.edpub_lambda_role_arn
+  handler          = "step-cleanup.handler"
+  runtime          = "nodejs18.x"
+  source_code_hash = filesha256("../artifacts/step-cleanup-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION = var.region
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_cloudwatch_event_rule" "step_cleanup_monthly_cron" {
+  name                = "step-cleanup-monthly-cron"
+  description         = "Cloudwatch event to trigger step_cleanup lambda to initiate rds backup process daily at 11PM UTC. (Must be after backup window for all environments)"
+  schedule_expression = "cron(0 23 1 * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "check_step_cleanup_trigger_daily" {
+  rule      = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name}"
+  target_id = "lambda"
+  arn       = "${aws_lambda_function.step_cleanup.arn}"
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_step_cleanup" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.step_cleanup.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.arn}"
+}
 
 # Register Lambda
 
