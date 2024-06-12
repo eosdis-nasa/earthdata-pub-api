@@ -18,7 +18,7 @@ async function handler(event) {
     const { access, refresh, decoded } = await auth.getToken(event);
     await db.user.loginUser({ ...decoded, refresh_token: refresh });
     const user = await db.user.findById({ id: decoded.sub });
-	const userResp = {...user, ...{issuer: process.env.AUTH_PROVIDER_URL, username: decoded['cognito:username']}};
+    const userResp = { ...user, ...{ issuer: process.env.AUTH_PROVIDER_URL, username: decoded['cognito:username'] } };
     const idp = new CognitoIdentityProviderClient();
     const getUserCommand = new GetUserCommand({
       AccessToken: access
