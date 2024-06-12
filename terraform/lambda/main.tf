@@ -520,9 +520,6 @@ resource "aws_lambda_function" "step_cleanup" {
   filename         = "../artifacts/step-cleanup-lambda.zip"
   function_name    = "step_cleanup"
   role             = var.edpub_lambda_role_arn
-  layers = [
-    aws_lambda_layer_version.database_util.arn
-  ]
   handler          = "step-cleanup.handler"
   runtime          = "nodejs18.x"
   source_code_hash = filesha256("../artifacts/step-cleanup-lambda.zip")
@@ -530,11 +527,6 @@ resource "aws_lambda_function" "step_cleanup" {
   environment {
     variables = {
       REGION = var.region
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
     }
   }
   vpc_config {
