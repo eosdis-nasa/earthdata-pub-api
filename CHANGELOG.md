@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Creates example group and daac.
 - Updates step promotion to update set event type programmatically.
 - Update cloud metrics logging
+- Reimplemented custom MFA flow
 
 ## 1.0.20
 
