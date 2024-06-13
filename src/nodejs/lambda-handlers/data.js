@@ -10,7 +10,9 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
-async function findById({ resource, params }) {
+async function findById(event) {
+  const { resource, params, form_id: formId } = event;
+  if (formId) params.id = formId;
   return db[resource].findById(params);
 }
 
