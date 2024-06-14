@@ -697,6 +697,17 @@ WHERE submission_id = {{submission_id}}
 RETURNING *
 `;
 
+const stepCleanup = () => `
+WITH step_to_delete AS (
+    SELECT s.step_name
+    FROM Step s
+    LEFT JOIN Step_Edge se1 ON s.step_name = se1.step_name
+    LEFT JOIN Step_Edge se2 ON s.step_name = se2.next_step_name
+    WHERE se1.step_name IS NULL AND se2.next_step_name IS NULL
+)
+DELETE FROM Step
+WHERE step_name IN (SELECT step_name FROM step_to_delete)`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -742,3 +753,4 @@ module.exports.deleteStepReviewApproval = deleteStepReviewApproval;
 module.exports.checkCountStepReviewRejected = checkCountStepReviewRejected;
 module.exports.checkCountStepReviewApproved = checkCountStepReviewApproved;
 module.exports.updateStatusStepReviewApproval = updateStatusStepReviewApproval;
+module.exports.stepCleanup = stepCleanup;

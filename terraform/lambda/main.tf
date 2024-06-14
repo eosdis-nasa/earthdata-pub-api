@@ -514,6 +514,54 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_rds_backup" {
   source_arn    = "${aws_cloudwatch_event_rule.rds_backup_daily_cron.arn}"
 }
 
+# Step clean Lambda
+
+resource "aws_lambda_function" "step_cleanup" {
+  filename         = "../artifacts/step-cleanup-lambda.zip"
+  function_name    = "step_cleanup"
+  role             = var.edpub_lambda_role_arn
+  layers = [
+    aws_lambda_layer_version.database_util.arn
+  ]
+  handler          = "step-cleanup.handler"
+  runtime          = "nodejs18.x"
+  source_code_hash = filesha256("../artifacts/step-cleanup-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION = var.region
+      PG_USER        = var.db_user
+      PG_HOST        = var.db_host
+      PG_DB          = var.db_database
+      PG_PASS        = var.db_password
+      PG_PORT        = var.db_port
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_cloudwatch_event_rule" "step_cleanup_monthly_cron" {
+  name                = "step-cleanup-monthly-cron"
+  description         = "Cloudwatch event to trigger step_cleanup lambda to remove unused stesp monthly at 11PM UTC."
+  schedule_expression = "cron(0 23 1 * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "check_step_cleanup_trigger_monthly" {
+  rule      = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name}"
+  target_id = "lambda"
+  arn       = "${aws_lambda_function.step_cleanup.arn}"
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_step_cleanup" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.step_cleanup.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.arn}"
+}
 
 # Register Lambda
 
