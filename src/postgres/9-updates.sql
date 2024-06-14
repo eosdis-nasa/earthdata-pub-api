@@ -94,6 +94,9 @@ INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'export_me
 UPDATE daac SET hidden=false, workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' WHERE id='6b3ea184-57c5-4fc5-a91b-e49708f91b67';
 update input SET label='Full Name' WHERE label='First and Last Name';
 
+-- 2/18/2024 Update all endpoint to use permissions not roles for access
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'QUESTION_READ');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'QUESTION_READ');
 
 --3/12/2024 Adding unknown daac workflow
 INSERT INTO workflow VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'unknown_workflow', 1, 'Unknown DAAC Workflow', 'This is the default workflow for unknown DAACs.');
@@ -104,6 +107,14 @@ INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_acce
 
 UPDATE daac SET workflow_id = '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', edpgroup_id ='5be24b44-d66b-4396-9266-a9d066000d9e' WHERE id= '1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
 
+--4/15/2024 Updating Upload Questions
+UPDATE question SET text = 'Are there any existing documents that you would like to have included in the review of your data product? If "Yes", please upload the document(s).', help = 'For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality. If you have more than 5 documents, please contact the DAAC for assistance. Files must be less than 5 GB and cannot include .exe or .dll extensions.' WHERE id = 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9';
+UPDATE question SET text = 'Please upload a sample file(s).', help = 'Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content. If more than 5 sample data files are necessary to represent the data product, please contact the DAAC for assistance.  Files must be less than 5 GB and cannot include .exe or .dll extensions.', required = True WHERE id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3';
+UPDATE input SET list_order=1, label= 'Alternatively provide a URL to the document(s)'  WHERE question_id = 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9' and control_id = 'data_product_documentation_url';
+UPDATE input SET list_order=1, label= 'Alternatively provide a URL to a sample file(s)' WHERE question_id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3' and control_id = 'example_file_url';
+INSERT INTO input VALUES ('ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 'data_product_documentation', 0, '', 'file', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 'example_files', 0, '', 'file', '{}', '{}', '[]','[]',  False);
+
 --4/18/2024 Adding management approval step to GES DISC workflow
 INSERT INTO privilege VALUES ('REQUEST_REVIEW_MANAGER');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REVIEW_MANAGER');
@@ -113,10 +124,202 @@ INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publ
 UPDATE step SET data = '{"rollback":"data_publication_request_form_management_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id = 'c81066db-0566-428d-87e8-94169ce5a9b9';
 UPDATE step_edge SET next_step_name = 'data_publication_request_form_management_review' WHERE workflow_id = '7843dc6d-f56d-488a-9193-bb7c0dc3696d' AND step_name = 'data_publication_request_form_review';
 
+-- 4/22/2024 Adding new previlage REQUEST_REVIEW_MANAGER for the Daac manager task EDPUB-1263
+INSERT INTO privilege VALUES ('REQUEST_REVIEW_MANAGER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REVIEW_MANAGER');
+
+-- Task EDPUB-1244
+-- Update existing records to reflect changes for mapping to MMT
+UPDATE action SET short_name = 'send_to_mmt', long_name = 'Send To MMT Action', description = 'This action is used to send collection metadata from EDPub to MMT.', source = 'sendToMMT.js' WHERE id = '3fe93672-cd91-45d4-863b-c6d0d63f8c8c';
+
+ALTER TABLE step DISABLE TRIGGER ALL;
+
+UPDATE step
+SET step_name = 'map_to_mmt'
+WHERE step_name = 'map_to_meditor';
+
+UPDATE step
+SET step_name = 'start_mmt_editing',
+    data = '{"rollback":"send_to_mmt","type": "action"}'
+WHERE step_name = 'start_meditor_editing';
+
+UPDATE step
+SET step_name = 'complete_mmt_editing',
+    data = '{"rollback":"start_mmt_editing","type": "action"}'
+WHERE step_name = 'complete_meditor_editing';
+
+UPDATE step
+SET step_name = 'get_from_mmt',
+    data = '{"rollback":"complete_mmt_editing","type": "action"}'
+WHERE step_name = 'get_from_meditor';
+
+UPDATE step
+SET step_name = 'map_from_mmt',
+    data = '{"rollback":"get_from_mmt","type": "action"}'
+WHERE step_name = 'map_from_meditor';
+
+UPDATE step
+SET data = '{"rollback":"map_from_mmt","type": "action"}'
+WHERE step_name = 'publish_to_cmr';
+
+UPDATE step
+SET step_name = 'send_to_mmt'
+WHERE action_id = '3fe93672-cd91-45d4-863b-c6d0d63f8c8c';
+
+UPDATE step
+SET step_name = 'edit_metadata_in_mmt_after_publication_form_review',
+    data = '{"rollback":"send_to_mmt_after_publication_form_review","type": "action"}'
+WHERE step_id = 'd1cbc4a8-ce4c-4734-8e71-a824d30c401a';
+
+UPDATE step
+SET step_name = 'send_to_mmt_after_publication_form_review'
+WHERE step_id = 'c628d63b-93b9-45ae-8e7b-a903554b6726';
+
+ALTER TABLE step ENABLE TRIGGER ALL;
+
+-- StepEdge(workflow_id, step_name, next_step_name)
+UPDATE step_edge
+SET next_step_name = 'map_to_mmt'
+WHERE step_name = 'complete_qa' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'map_to_mmt', next_step_name= 'send_to_mmt'
+WHERE step_name = 'map_to_meditor' and next_step_name = 'send_to_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'send_to_mmt', next_step_name= 'start_mmt_editing'
+WHERE step_name = 'send_to_meditor' and next_step_name = 'start_meditor_editing' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'start_mmt_editing', next_step_name= 'complete_mmt_editing'
+WHERE step_name = 'start_meditor_editing' and next_step_name = 'complete_meditor_editing' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'complete_mmt_editing', next_step_name= 'get_from_mmt'
+WHERE step_name = 'complete_meditor_editing' and next_step_name = 'get_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'get_from_mmt', next_step_name= 'map_from_mmt'
+WHERE step_name = 'get_from_meditor' and next_step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+UPDATE step_edge
+SET step_name = 'map_from_mmt'
+WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
+
+-- EDPUB-1262 update datetimepicker
+UPDATE Input
+SET label = 'Start Date and Time (UTC)', type = 'datetimePicker'
+WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'product_temporal_coverage_start';
+
+UPDATE Input
+SET label = 'End Date and Time (UTC)', type = 'datetimePicker'
+WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'product_temporal_coverage_end';
+
 --4/23/2024 Adding UWG member as a role
 INSERT INTO edprole VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'uwg_member', 'UWG Member', 'A member of the User Working Group who can review requests in Earthdata Pub.');
 INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'REQUEST_READ');
 INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'REQUEST_REVIEW');
-INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'NOTE_NEW');
-INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'NOTE_REPLY');
-INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'NOTE_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_NEW');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_REPLY');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_ADDUSER');
+
+-- 5/1/2024 Adding new table for limiting note visability by user/role task EDPUB-1255
+CREATE TABLE IF NOT EXISTS note_scope (
+  note_id UUID NOT NULL,
+  user_ids UUID[],
+  edprole_ids UUID[],
+  PRIMARY KEY (note_id),
+  FOREIGN KEY (note_id) REFERENCES note (id)
+);
+
+--4/23/2024 Fixing daac data manager permissions
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
+
+-- GESDISC EXTENDED
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('e67b0087-9102-476f-846b-8bc22d16bcc0', 'archived_elsewhere', 1, 'Previously Archived', 'Might this data already be or will be archived anywhere else (other than GES DISC)?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('e67b0087-9102-476f-846b-8bc22d16bcc0', 'previously_archived', 0, '', 'text', '{}', '{}', '[]', '[]', True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('1509d216-d3c5-437a-83f6-3a56a3403851', 'relationship_to_data', 1, 'Relation to Data', 'What is this dataset''s relationship to other ESDIS-held data or other publicly available data? If there is a relationship to other data, what is the URL link to that data collection?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('1509d216-d3c5-437a-83f6-3a56a3403851', 'data_relationship', 0, '', 'text', '{}', '{}', '[]', '[]', True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('068afe4e-228a-4170-aea8-0475d8b10d5e', 'data_history', 1, 'Provenance', 'What is the provenance of the product?', '(i.e. - history, related science teams or application groups, etc.)', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('068afe4e-228a-4170-aea8-0475d8b10d5e', 'data_history_provenance', 0, '', 'text', '{}', '{}', '[]', '[]', True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('225a1c2a-e4e5-4264-902d-ba55f56ac7db', 'data_product_proposal', 1, 'Data Product Proposal', 'Existing Publication(s) on the Data Product?', 'Please list the publisher and title of any publication(s) that describe the genesis (or algorithm) and validation of the data product. If there are no publications, consider listing the data product proposal here.', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('225a1c2a-e4e5-4264-902d-ba55f56ac7db', 'existing_publications_proposal', 0, '', 'text', '{}', '{}', '[]', '[]', True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('e0018b76-fef9-42c9-84d0-b74131523646', 'gridded_product', 1, 'Gridded Product', '', 'Please indicate if this a gridded or non-gridded data product.', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('e0018b76-fef9-42c9-84d0-b74131523646', 'gridded_data_product', 0, '', 'radio', '["Yes","No","Other"]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('e0018b76-fef9-42c9-84d0-b74131523646', 'gridded_data_product_explanation', 1, 'If "Other", please specify.', 'text', '{}', '{}', '[{"field": "gridded_data_product","value": "Other"}]','[]',  False);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('a6787163-f214-49e8-a4eb-32da45ac21d7', 'science_focus', 1, 'Discipline', '', 'Please select one of the following NASA Earth Science Focus Areas.', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('a6787163-f214-49e8-a4eb-32da45ac21d7', 'science_focus_areas', 0, '', 'radio', '["Atmospheric Composition","Weather","Climate Variability and Change","Water and Energy Cycle","Carbon Cycle and Ecosystems","Earth Surface","Other"]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('a6787163-f214-49e8-a4eb-32da45ac21d7', 'science_focus_areas_explanation', 1, 'If "Other", please specify.', 'text', '{}', '{}', '[{"field": "science_focus_areas","value": "Other"}]','[]',  False);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('5ab48392-c0fd-4285-8550-368f9df60092', 'future_data', 1, 'Future Data', 'Are you considering submitting a request to archive another similar data product in the future at the GES DISC?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('5ab48392-c0fd-4285-8550-368f9df60092', 'future_data_request', 0, '', 'radio', '["Yes","No","Other"]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('5ab48392-c0fd-4285-8550-368f9df60092', 'future_data_request_explanation', 1, 'If "Other", please specify.', 'text', '{}', '{}', '[{"field": "future_data_request","value": "Other"}]','[]',  False);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('b840820a-2d49-414b-b7d8-27217843904a', 'monthly_metrics', 1, 'Monthly Metrics', 'Would you like monthly data distribution metrics?', '', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('b840820a-2d49-414b-b7d8-27217843904a', 'monthly_metrics_request', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
+
+INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_request', 1, 'Data Service Request', 'The GES DISC offers "Basic Services" for all our Community Data Products, which includes DOI registration and HTTPS access.', 'Please visit <a href="https://www.earthdata.nasa.gov/engage/new-missions/level-of-service" target=_blank>https://www.earthdata.nasa.gov/engage/new-missions/level-of-service <i class="fas fa-external-link-alt"></i></a> for more information.<br><br>However, if GES DISC''s resources allow, which additional data services you would like to have for your product, and why?', False, '{"1ea1da68-cb95-431f-8dd8-a2cf16d7ef98"}');
+
+INSERT INTO input VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_request_basic', 0, 'Basic Services', 'checkbox', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_request_other', 1, 'Other', 'checkbox', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_request_other_text', 2, 'If "Other" please describe.', 'text', '{}', '{}', '[{"field":"data_service_request_other","value":"true","message":"If ''Other'' please describe."}]','[]',  False);
+
+-- SectionQuestion(section_id, question_id, list_order, required_if, show_if))
+INSERT INTO section_question VALUES ('e169a5b4-da2e-4893-9481-1b9351cd9707', 'e67b0087-9102-476f-846b-8bc22d16bcc0', 3, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '1509d216-d3c5-437a-83f6-3a56a3403851', 6, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '068afe4e-228a-4170-aea8-0475d8b10d5e', 7, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '225a1c2a-e4e5-4264-902d-ba55f56ac7db', 8, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'e0018b76-fef9-42c9-84d0-b74131523646', 11, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'a6787163-f214-49e8-a4eb-32da45ac21d7', 12, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '5ab48392-c0fd-4285-8550-368f9df60092', 13, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'b840820a-2d49-414b-b7d8-27217843904a', 14, '[]', '[]');
+INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '8c331721-541c-45a4-b95a-4b9b4557eae2', 15, '[]', '[]');
+-- END GESDISC EXTENDED
+
+--EDPUB-1258 Create review requirements tracking on the backend
+INSERT INTO privilege VALUES ('CREATE_STEPREVIEW');
+INSERT INTO privilege VALUES ('REMOVE_STEPREVIEW');
+
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'CREATE_STEPREVIEW');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REMOVE_STEPREVIEW');
+
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'CREATE_STEPREVIEW');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REMOVE_STEPREVIEW');
+
+-- Create a custom ENUM type
+CREATE TYPE review_status AS ENUM ('rejected', 'approved', 'review_required');
+
+-- Create the table using the custom ENUM type
+CREATE TABLE IF NOT EXISTS step_review (
+  step_name VARCHAR NOT NULL,
+  submission_id UUID NOT NULL,
+  edpuser_id UUID NOT NULL,
+  user_review_status review_status,
+  submitted_by UUID NOT NULL,
+  PRIMARY KEY (step_name, submission_id, edpuser_id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
+  FOREIGN KEY (submitted_by) REFERENCES edpuser (id)
+);
+
+-- 5/23/2024 Removing Data producer POC
+UPDATE edpuser_edprole
+SET edprole_id = '804b335c-f191-4d26-9b98-1ec1cb62b97d'
+WHERE edprole_id = '29ccab4b-65e2-4764-83ec-77375d29af39';
+
+delete from edprole_privilege where edprole_id='29ccab4b-65e2-4764-83ec-77375d29af39';
+delete from edprole where id='29ccab4b-65e2-4764-83ec-77375d29af39'

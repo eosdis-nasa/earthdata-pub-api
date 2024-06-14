@@ -7,6 +7,7 @@ jest.mock('message-util', () => jest.fn());
 
 db.user = jest.fn();
 db.user.findById = jest.fn();
+db.user.getStaffIds = jest.fn();
 db.note = jest.fn();
 db.note.addUsersToConversation = jest.fn();
 db.note.removeUserFromConversation = jest.fn();
@@ -47,6 +48,7 @@ describe('submission', () => {
       }
     };
     db.user.findById.mockReturnValue({ id: 'test user' });
+    db.user.getStaffIds.mockReturnValue(['test staff']);
     db.submission.initialize.mockReturnValue({
       id: 'test submission'
     });
@@ -112,15 +114,13 @@ describe('submission', () => {
       workflow_id: 'test workflow'
 
     };
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'no_perms' }] });
-    db.user.findById.mockReturnValueOnce({ user_roles: [{ short_name: 'admin' }] });
-    db.submission.getState.mockReturnValueOnce({ workflow_id: 'pass_no_perms' });
-    db.submission.getState.mockReturnValueOnce({ workflow_id: 'fail_perms' });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['NONE'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_REASSIGN'] });
     db.submission.getState.mockReturnValueOnce({
       conversation_id: 'test conversation',
       step: { name: 'test step' }
     });
-    expect(await submission.handler(payload)).toEqual({ workflow_id: 'pass_no_perms' });
+    expect(await submission.handler(payload)).toEqual({ error: 'Not Authorized' });
     expect(await submission.handler(payload)).toEqual({
       conversation_id: 'test conversation',
       step: { name: 'test step' }
@@ -177,6 +177,7 @@ describe('submission', () => {
       id: 'test id',
       approve: true
     };
+    db.user.findById.mockReturnValue({ id: 'test user', user_privileges: ['REQUEST_REVIEW'] });
     db.submission.getState.mockReturnValue({
       conversation_id: 'test conversation',
       workflow_id: 'test workflow',

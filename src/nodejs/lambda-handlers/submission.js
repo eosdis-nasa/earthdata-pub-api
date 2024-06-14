@@ -68,27 +68,24 @@ async function initializeMethod(event, user) {
     step_name: 'init',
     user_id: user.id
   };
-  if (status.workflow_id === '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9') {
-    const staff = await db.user.getUnknownStaffIds();
-    const staffIds = staff.map((usr) => usr.id);
-    await db.note.addUsersToConversation({
-      conversation_id: status.conversation_id,
-      user_list: staffIds
-    });
-    db.submission.addContributors({ id: status.id, contributor_ids: staffIds });
-  }
+  const staff = await db.user.getStaffIds({ daac_id: event.daac_id });
+  const staffIds = staff.map((usr) => usr.id);
+  await db.note.addUsersToConversation({
+    conversation_id: status.conversation_id,
+    user_list: staffIds
+  });
+  db.submission.addContributors({ id: status.id, contributor_ids: staffIds });
   await msg.sendEvent(eventMessage);
   return status;
 }
 
 async function applyMethod(event, user) {
-  const approvedUserRoles = ['admin', 'manager', 'staff'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REASSIGN'];
   const { id, workflow_id: workflowId } = event;
-  let status = await db.submission.getState({ id });
-  if (user.user_roles.some((role) => approvedUserRoles.includes(role.short_name))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     await db.submission.reassignWorkflow({ id, workflowId });
     await db.submission.promoteStep({ id });
-    status = await db.submission.getState({ id });
+    const status = await db.submission.getState({ id });
     const eventMessage = {
       event_type: 'workflow_started',
       submission_id: id,
@@ -98,9 +95,9 @@ async function applyMethod(event, user) {
       user_id: user.id
     };
     await msg.sendEvent(eventMessage);
+    return status;
   }
-
-  return status;
+  return { error: 'Not Authorized' };
 }
 
 async function metadataMethod(event, user) {
@@ -148,29 +145,52 @@ async function submitMethod(event, user) {
 }
 
 async function reviewMethod(event, user) {
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
   const { id, approve } = event;
-  const status = await db.submission.getState({ id });
-  const stepType = status.step.type;
-  let eventType;
-  if (approve === 'false' || !approve) {
-    eventType = 'review_rejected';
-  } else if (stepType === 'review') {
-    eventType = 'review_approved';
-  } else {
-    eventType = 'workflow_promote_step';
+  const userId = user.id;
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const status = await db.submission.getState({ id });
+    const stepType = status.step.type;
+    let eventType;
+    let param;
+    if (approve === 'false' || !approve) {
+      param = {
+        submission_id: id,
+        user_id: userId,
+        approve: 'rejected',
+        step_name: status.step_name
+      };
+      const rejectionCount = await db.submission.updateStatusStepReviewApproval(param);
+      if (!rejectionCount.error) {
+        return status;
+      }
+      eventType = 'review_rejected';
+    } else if (stepType === 'review') {
+      param = {
+        submission_id: id,
+        user_id: userId,
+        approve: 'approved',
+        step_name: status.step_name
+      };
+      await db.submission.updateStatusStepReviewApproval(param);
+      eventType = 'review_approved';
+    } else {
+      eventType = 'workflow_promote_step';
+    }
+    const eventMessage = {
+      event_type: eventType,
+      submission_id: id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      user_id: user.id,
+      data: status.step.data,
+      step_name: status.step_name
+    };
+    if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+    await msg.sendEvent(eventMessage);
+    return status;
   }
-  const eventMessage = {
-    event_type: eventType,
-    submission_id: id,
-    conversation_id: status.conversation_id,
-    workflow_id: status.workflow_id,
-    user_id: user.id,
-    data: status.step.data,
-    step_name: status.step_name
-  };
-  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
-  await msg.sendEvent(eventMessage);
-  return status;
+  return { error: 'Not Authorized' };
 }
 
 async function lockMethod(event, user) {
@@ -298,6 +318,46 @@ async function mapMetadataMethod(event, user) {
   return mappedMetadata;
 }
 
+async function createStepReviewApprovalMethod(event, user) {
+  const { submissionId, stepName, userIds } = event.params;
+  const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+  // This line has a length of 104. Maximum allowed is 100 to fix this
+  const subId = submissionId;
+  const ids = userIds;
+  const param = {
+    submission_id: subId,
+    step_name: stepName,
+    user_ids: ids,
+    submitted_by: user.id
+  };
+  const formData = await db.submission.createStepReviewApproval(param);
+  return formData;
+}
+
+async function getStepReviewApprovalMethod(event, user) {
+  const { id } = event.params;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_READ'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+  const formData = await db.submission.getStepReviewApproval({ id });
+  return formData;
+}
+
+async function deleteStepReviewApprovalMethod(event, user) {
+  const { submissionId, stepName, userIds } = event.params;
+  const approvedUserPrivileges = ['ADMIN', 'REMOVE_STEPREVIEW'];
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Not Authorized' };
+  }
+  const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds };
+  const formData = await db.submission.deleteStepReviewApproval(param);
+  return formData;
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -317,7 +377,10 @@ const operations = {
   removeContributor: removeContributorMethod,
   copySubmission: copySubmissionMethod,
   getDetails: getDetailsMethod,
-  mapMetadata: mapMetadataMethod
+  mapMetadata: mapMetadataMethod,
+  createStepReviewApproval: createStepReviewApprovalMethod,
+  getStepReviewApproval: getStepReviewApprovalMethod,
+  deleteStepReviewApproval: deleteStepReviewApprovalMethod
 };
 
 async function handler(event) {

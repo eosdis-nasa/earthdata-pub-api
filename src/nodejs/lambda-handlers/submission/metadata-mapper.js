@@ -6,11 +6,9 @@ const stringToBool = (inputString) => {
   return false;
 };
 
-const stringToBoolString = (inputString) => {
 // The Additional Attributes value property in UMMC v1.17.0 must be a string
 // even if the data type is not a string
-  stringToBool(inputString).toString();
-};
+const stringToBoolString = (inputString) => stringToBool(inputString).toString();
 
 const mapEDPubToUmmc = async (formData) => {
   if (typeof formData !== 'object' || formData === null) return {};
@@ -23,14 +21,22 @@ const mapEDPubToUmmc = async (formData) => {
     }
   } : {};
 
+  delete formData.data_processing_level;
+  delete formData.data_processing_other_info;
+
   // Previously data producer, POC, and long term contact were mapped to DataCenter
   // but are being remapped to Contact Persons to avoid assumption that person is
   // affiliated with a DAAC
   const dataProducerSplitName = formData.data_producer_info_name?.split(' ') || [];
+  delete formData.data_producer_info_name;
+
   const dataProducerAffiliation = formData.data_producer_info_organization
         && formData.data_producer_info_department
     ? `${formData.data_producer_info_organization} - ${formData.data_producer_info_department}`
     : formData.data_producer_info_organization || formData.data_producer_info_department;
+  delete formData.data_producer_info_organization;
+  delete formData.data_producer_info_department;
+
   const contactPerson = {
     ContactPersons: [
       {
@@ -52,11 +58,17 @@ const mapEDPubToUmmc = async (formData) => {
       }
     ]
   };
+  delete formData.data_producer_info_email;
+  delete formData.data_producer_info_orcid;
+
   if (!stringToBool(formData.same_as_poc_name_data_producer_info_name)) {
     const pocSplitName = formData.poc_name.split(' ') || [];
+    delete formData.poc_name;
     const pocAffiliation = formData.poc_organization && formData.poc_department
       ? `${formData.poc_organization} - ${formData.poc_department}`
       : formData.poc_organization || formData.poc_department;
+    delete formData.poc_organization;
+    delete formData.poc_department;
 
     contactPerson.ContactPersons.push({
       Roles: ['Science Contact'],
@@ -75,13 +87,22 @@ const mapEDPubToUmmc = async (formData) => {
       },
       NonDataCenterAffiliation: pocAffiliation
     });
+    delete formData.poc_email;
+    delete formData.poc_orcid;
   }
+  delete formData.same_as_poc_name_data_producer_info_name;
+
   if (!stringToBool(formData.same_as_long_term_support_poc_name_data_producer_info_name) && formData.long_term_support_poc_name) {
     const ltsPocSplitName = formData.long_term_support_poc_name?.split(' ') || [];
+    delete formData.long_term_support_poc_name;
+
     const ltsPocAffiliation = formData.long_term_support_poc_organization
             && formData.long_term_support_poc_department
       ? `${formData.long_term_support_poc_organization} - ${formData.long_term_support_poc_department}`
       : formData.long_term_support_poc_organization || formData.long_term_support_poc_department;
+    delete formData.long_term_support_poc_organization;
+    delete formData.long_term_support_poc_department;
+
     contactPerson.ContactPersons.push({
       Roles: ['Science Contact'],
       FirstName: ltsPocSplitName[0] || '',
@@ -99,7 +120,11 @@ const mapEDPubToUmmc = async (formData) => {
       },
       NonDataCenterAffiliation: ltsPocAffiliation
     });
+    delete formData.long_term_support_poc_email;
+    delete formData.long_term_support_poc_orcid;
   }
+  delete formData.same_as_long_term_support_poc_name_data_producer_info_name;
+
   // Previously data producer citations were mapped to additional attributes but
   // is being remapped to Collection Citations since this is where it should exist
   let creatorsString = '';
@@ -107,21 +132,26 @@ const mapEDPubToUmmc = async (formData) => {
     const creatorString = [creator?.producer_first_name, creator.producer_middle_initial || '', creator?.producer_last_name_or_organization].join(' ');
     creatorsString = creatorsString ? [creatorsString, creatorString].join(', ') : creatorString;
   });
+  delete formData.data_producers_table;
+
   const dataProducersTableCitations = creatorsString ? {
     CollectionCitations: [{ Creator: creatorsString }]
   } : {};
 
   const abstract = { Abstract: formData.data_product_description };
+  delete formData.data_product_description;
 
   const doi = formData.data_product_doi_value ? {
     DOI: { DOI: formData.data_product_doi_value }
   } : {
     DOI: { MissingReason: 'Not Applicable' }
   };
+  delete formData.data_product_doi_value;
 
   const entryTitle = {
     EntryTitle: formData.data_product_name_value || 'Entry Title Not Provided'
   };
+  delete formData.data_product_name_value;
 
   const temporalExtent = {
     TemporalExtents: [{
@@ -133,6 +163,8 @@ const mapEDPubToUmmc = async (formData) => {
       }]
     }]
   };
+  delete formData.product_temporal_coverage_start;
+  delete formData.product_temporal_coverage_end;
 
   const spatialExtent = {
     SpatialExtent: {
@@ -151,6 +183,11 @@ const mapEDPubToUmmc = async (formData) => {
       }
     }
   };
+  delete formData.spatial_vertical_answer;
+  delete formData.spatial_horizontal_1_west;
+  delete formData.spatial_horizontal_1_north;
+  delete formData.spatial_horizontal_1_east;
+  delete formData.spatial_horizontal_1_south;
 
   if (formData.spatial_horizontal_2_east || formData.spatial_horizontal_2_north
         || formData.spatial_horizontal_2_south || formData.spatial_horizontal_2_west) {
@@ -161,6 +198,10 @@ const mapEDPubToUmmc = async (formData) => {
       SouthBoundingCoordinate: Number(formData.spatial_horizontal_2_south)
     });
   }
+  delete formData.spatial_horizontal_2_west;
+  delete formData.spatial_horizontal_2_north;
+  delete formData.spatial_horizontal_2_east;
+  delete formData.spatial_horizontal_2_south;
 
   if (formData.spatial_horizontal_3_east || formData.spatial_horizontal_3_north
         || formData.spatial_horizontal_3_south || formData.spatial_horizontal_3_west) {
@@ -171,6 +212,10 @@ const mapEDPubToUmmc = async (formData) => {
       SouthBoundingCoordinate: Number(formData.spatial_horizontal_3_south)
     });
   }
+  delete formData.spatial_horizontal_3_west;
+  delete formData.spatial_horizontal_3_north;
+  delete formData.spatial_horizontal_3_east;
+  delete formData.spatial_horizontal_3_south;
 
   if (spatialExtent.SpatialExtent.SpatialCoverageType === 'HORIZONTAL_VERTICAL') {
     const isDepth = formData.spatial_vertical_details_lower > formData.spatial_vertical_details_upper;
@@ -187,6 +232,10 @@ const mapEDPubToUmmc = async (formData) => {
       }
     ];
   }
+  delete formData.spatial_vertical_details_lower;
+  delete formData.spatial_vertical_details_upper;
+  delete formData.spatial_vertical_details_lower_units;
+  delete formData.spatial_vertical_details_upper_units;
 
   // Additional Attributes
   const additionalAttributes = [];
@@ -197,6 +246,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.browse_images_other
   });
+  delete formData.browse_images_other;
 
   formData.browse_images_provided && additionalAttributes.push({
     Name: 'browse_images_provided',
@@ -204,6 +254,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.browse_images_provided)
   });
+  delete formData.browse_images_provided;
 
   formData.data_accession_approval_dependencies_radios && additionalAttributes.push({
     Name: 'data_accession_approval_dependencies_radios',
@@ -211,6 +262,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.data_accession_approval_dependencies_radios
   });
+  delete formData.data_accession_approval_dependencies_radios;
 
   formData.data_accession_reason_description && additionalAttributes.push({
     Name: 'data_accession_reason_description',
@@ -218,6 +270,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.data_accession_reason_description
   });
+  delete formData.data_accession_reason_description;
 
   formData.data_delivery_frequency && additionalAttributes.push({
     Name: 'data_delivery_frequency',
@@ -225,6 +278,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.data_delivery_frequency
   });
+  delete formData.data_delivery_frequency;
 
   formData.data_file_compression_answer && additionalAttributes.push({
     Name: 'data_file_compression_answer',
@@ -232,6 +286,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_file_compression_answer)
   });
+  delete formData.data_file_compression_answer;
 
   formData.data_format_ascii && additionalAttributes.push({
     Name: 'data_format_ascii',
@@ -239,6 +294,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_format_ascii)
   });
+  delete formData.data_format_ascii;
 
   formData.data_format_geotiff && additionalAttributes.push({
     Name: 'data_format_geotiff',
@@ -246,6 +302,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_format_geotiff)
   });
+  delete formData.data_format_geotiff;
 
   formData.data_format_hdf5 && additionalAttributes.push({
     Name: 'data_format_hdf5',
@@ -253,6 +310,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_format_hdf5)
   });
+  delete formData.data_format_hdf5;
 
   formData.data_format_hdf_eos && additionalAttributes.push({
     Name: 'data_format_hdf_eos',
@@ -260,6 +318,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_format_hdf_eos)
   });
+  delete formData.data_format_hdf_eos;
 
   formData.data_format_ogc_kml && additionalAttributes.push({
     Name: 'data_format_ogc_kml',
@@ -267,6 +326,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_format_ogc_kml)
   });
+  delete formData.data_format_ogc_kml;
 
   formData.data_format_netcdf_4 && additionalAttributes.push({
     Name: 'data_format_netcdf_4',
@@ -274,6 +334,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_format_netcdf_4)
   });
+  delete formData.data_format_netcdf_4;
 
   formData.data_format_netcdf_classic && additionalAttributes.push({
     Name: 'data_format_netcdf_classic',
@@ -281,6 +342,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_format_netcdf_classic)
   });
+  delete formData.data_format_netcdf_classic;
 
   formData.data_format_other && formData.data_format_other_info && additionalAttributes.push({
     Name: 'data_format_other',
@@ -288,6 +350,8 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_format_other)
   });
+  delete formData.data_format_other;
+  delete formData.data_format_other_info;
 
   formData.data_product_documentation_url && additionalAttributes.push({
     Name: 'data_product_documentation_url',
@@ -295,6 +359,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.data_product_documentation_url
   });
+  delete formData.data_product_documentation_url;
 
   // The Additional Attributes value property in UMMC v1.17.0 must be a string
   // even if the data type is not a string
@@ -304,6 +369,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'INT',
     Value: formData.data_product_number_of_files
   });
+  delete formData.data_product_number_of_files;
 
   // Added more context to question in description field
   formData.data_product_restrictions_explanation && additionalAttributes.push({
@@ -312,6 +378,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.data_product_restrictions_explanation
   });
+  delete formData.data_product_restrictions_explanation;
 
   formData.data_product_restrictions_public && additionalAttributes.push({
     Name: 'data_product_restrictions_public',
@@ -319,6 +386,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.data_product_restrictions_public
   });
+  delete formData.data_product_restrictions_public;
 
   formData.data_product_status && additionalAttributes.push({
     Name: 'data_product_status',
@@ -326,6 +394,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_product_status)
   });
+  delete formData.data_product_status;
 
   formData.data_product_type_model && additionalAttributes.push({
     Name: 'data_product_type_model',
@@ -333,6 +402,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_product_type_model)
   });
+  delete formData.data_product_type_model;
 
   formData.data_product_type_observational && additionalAttributes.push({
     Name: 'data_product_type_observational',
@@ -340,6 +410,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.data_product_type_observational)
   });
+  delete formData.data_product_type_observational;
 
   // The Additional Attributes value property in UMMC v1.17.0 must be a string
   // even if the data type is not a string
@@ -350,6 +421,8 @@ const mapEDPubToUmmc = async (formData) => {
     Value: formData.data_product_volume_amount,
     ParameterUnitsOfMeasure: formData.data_product_volume_units
   });
+  delete formData.data_product_volume_amount;
+  delete formData.data_product_volume_units;
 
   formData.data_production_latency_units && additionalAttributes.push({
     Name: 'data_production_latency_units',
@@ -357,6 +430,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.data_production_latency_units
   });
+  delete formData.data_production_latency_units;
 
   formData.example_file_url && additionalAttributes.push({
     Name: 'example_file_url',
@@ -364,6 +438,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.example_file_url
   });
+  delete formData.example_file_url;
 
   // The Additional Attributes value property in UMMC v1.17.0 must be a string
   // even if the data type is not a string
@@ -374,6 +449,8 @@ const mapEDPubToUmmc = async (formData) => {
     Value: formData.file_temporal_coverage_answer,
     ParameterUnitsOfMeasure: formData.file_temporal_coverage_units
   });
+  delete formData.file_temporal_coverage_answer;
+  delete formData.file_temporal_coverage_units;
 
   formData.funding_grant_number && additionalAttributes.push({
     Name: 'funding_grant_number',
@@ -381,6 +458,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.funding_grant_number
   });
+  delete formData.funding_grant_number;
 
   formData.funding_nasa && additionalAttributes.push({
     Name: 'funding_nasa',
@@ -388,6 +466,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.funding_nasa)
   });
+  delete formData.funding_nasa;
 
   formData.funding_noaa && additionalAttributes.push({
     Name: 'funding_noaa',
@@ -395,6 +474,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.funding_noaa)
   });
+  delete formData.funding_noaa;
 
   formData.funding_nsf && additionalAttributes.push({
     Name: 'funding_nsf',
@@ -402,6 +482,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.funding_nsf)
   });
+  delete formData.funding_nsf;
 
   formData.funding_organization_other && additionalAttributes.push({
     Name: 'funding_organization_other',
@@ -409,6 +490,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.funding_organization_other
   });
+  delete formData.funding_organization_other;
 
   formData.funding_other && additionalAttributes.push({
     Name: 'funding_other',
@@ -416,6 +498,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.funding_other)
   });
+  delete formData.funding_other;
 
   formData.funding_program_name && additionalAttributes.push({
     Name: 'funding_program_name',
@@ -423,6 +506,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.funding_program_name
   });
+  delete formData.funding_program_name;
 
   formData.funding_university && additionalAttributes.push({
     Name: 'funding_university',
@@ -430,6 +514,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.funding_university)
   });
+  delete formData.funding_university;
 
   formData.funding_usgs && additionalAttributes.push({
     Name: 'funding_usgs',
@@ -437,6 +522,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'BOOLEAN',
     Value: stringToBoolString(formData.funding_usgs)
   });
+  delete formData.funding_usgs;
 
   formData.model_data_product && additionalAttributes.push({
     Name: 'model_data_product',
@@ -444,6 +530,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.model_data_product
   });
+  delete formData.model_data_product;
 
   formData.platform_instrument && additionalAttributes.push({
     Name: 'platform_instrument',
@@ -451,6 +538,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.platform_instrument
   });
+  delete formData.platform_instrument;
 
   formData.science_value_description && additionalAttributes.push({
     Name: 'science_value_description',
@@ -458,6 +546,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.science_value_description
   });
+  delete formData.science_value_description;
 
   // The Additional Attributes value property in UMMC v1.17.0 must be a string
   // even if the data type is not a string
@@ -468,6 +557,8 @@ const mapEDPubToUmmc = async (formData) => {
     Value: formData.value_temporal_resolution_answer,
     ParameterUnitsOfMeasure: formData.value_temporal_resolution_units
   });
+  delete formData.value_temporal_resolution_answer;
+  delete formData.value_temporal_resolution_units;
 
   formData.variables_text && additionalAttributes.push({
     Name: 'variables_text',
@@ -475,6 +566,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.variables_text
   });
+  delete formData.variables_text;
 
   // The following were mapped to variables which don't actually exist in UMM-C so
   // they have been remapped to the additional attributes section
@@ -484,6 +576,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.data_accession_approval_dependencies_explanation
   });
+  delete formData.data_accession_approval_dependencies_explanation;
 
   formData.spatial_data_file && additionalAttributes.push({
     Name: 'spatial_data_file',
@@ -491,6 +584,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.spatial_data_file
   });
+  delete formData.spatial_data_file;
 
   formData.spatial_general_region && additionalAttributes.push({
     Name: 'spatial_general_region',
@@ -498,6 +592,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.spatial_general_region
   });
+  delete formData.spatial_general_region;
 
   formData.spatial_notes_textarea && additionalAttributes.push({
     Name: 'spatial_notes_textarea',
@@ -505,6 +600,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.spatial_notes_textarea
   });
+  delete formData.spatial_notes_textarea;
 
   formData.spatial_resolution && additionalAttributes.push({
     Name: 'spatial_resolution',
@@ -512,6 +608,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.spatial_resolution
   });
+  delete formData.spatial_resolution;
 
   formData.temporal_coverage_notes_textarea && additionalAttributes.push({
     Name: 'temporal_coverage_notes_textarea',
@@ -519,6 +616,7 @@ const mapEDPubToUmmc = async (formData) => {
     DataType: 'STRING',
     Value: formData.temporal_coverage_notes_textarea
   });
+  delete formData.temporal_coverage_notes_textarea;
 
   const metadataDates = {
     MetadataDates: [
@@ -540,6 +638,17 @@ const mapEDPubToUmmc = async (formData) => {
       Version: '1.17.0'
     }
   };
+
+  // Added to capture DAAC specific questions
+  Object.keys(formData).forEach((extra) => {
+    additionalAttributes.push({
+      Name: extra,
+      Description: `Additional EDPub Form Response with id: ${extra}`,
+      DataType: 'STRING',
+      Value: typeof formData[extra] === 'object' ? JSON.stringify(formData[extra]) : `${formData[extra]}`
+    });
+    delete formData[extra];
+  });
 
   // Stringify then parse to avoid errors with undefined in JSON by removing attributes
   // with undefined value

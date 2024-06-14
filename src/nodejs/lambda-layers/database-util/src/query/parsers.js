@@ -8,6 +8,7 @@ function many({ rows }) {
 
 module.exports.find = many;
 module.exports.findById = one;
+module.exports.updateUsername = one; 
 module.exports.findByName = one;
 module.exports.findAll = many;
 module.exports.findAllEx = many;
@@ -84,4 +85,10 @@ module.exports.getStepMetrics = many;
 module.exports.onboard = one;
 module.exports.offboard = one;
 module.exports.getSubmissionDaac = one;
-module.exports.getUnknownStaffIds = many;
+module.exports.getStaffIds = many;
+module.exports.getStepReviewApproval = many;
+module.exports.createStepReviewApproval = many;
+module.exports.deleteStepReviewApproval = many;
+module.exports.checkCountStepReviewApproved = one;
+module.exports.checkCountStepReviewRejected = one;
+module.exports.updateStatusStepReviewApproval = one;

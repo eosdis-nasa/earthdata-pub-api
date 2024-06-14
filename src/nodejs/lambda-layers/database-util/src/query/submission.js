@@ -572,6 +572,7 @@ SELECT step_name FROM submission_status WHERE id = {{id}}
 // TODO - Upate this query's complexity and to use sql builder
 const getSubmissionDetailsById = () => `
 SELECT submission.id id, conversation_id, submission.created_at created_at, daac.long_name daac_name, 
+submission.hidden hidden,
 JSONB_BUILD_OBJECT('name', edpuser1.name, 'id', edpuser1.id) initiator,
 submission_status.last_change last_change,
 submission_form_data_pool.data::json->'data_producer_info_name' data_producer_name, 
@@ -631,6 +632,62 @@ const getSubmissionDaac = () => sql.select({
   }
 })
 
+
+const getStepReviewApproval = () => `
+SELECT sr.step_name, sr.submission_id, sr.edpuser_id, sr.user_review_status, eu.name, sr.submitted_by
+FROM step_review sr
+INNER JOIN edpuser eu ON sr.edpuser_id = eu.id
+WHERE sr.submission_id = {{id}}
+`;
+
+
+const createStepReviewApproval = (params) => `
+INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status, submitted_by)
+SELECT {{step_name}}, {{submission_id}}, CAST(user_id AS UUID), 'review_required', {{submitted_by}}
+FROM unnest(ARRAY[${params.user_ids.map(id => `'${id}'::UUID`).join(',')}]) AS user_id
+RETURNING *
+`;
+
+
+const deleteStepReviewApproval = (params) => `
+DELETE FROM step_review
+WHERE submission_id = {{submission_id}}
+AND step_name = {{step_name}}
+AND edpuser_id IN (${params.user_ids.map(id => `'${id}'::UUID`).join(', ')})
+RETURNING *;
+`;
+
+const checkCountStepReviewApproved = () => `
+SELECT COALESCE(SUM(sr.unapproved_count), 0) AS unapproved
+FROM (
+    SELECT submission_id, step_name, 
+           SUM(CASE WHEN user_review_status IN ('rejected', 'review_required') THEN 1 ELSE 0 END) AS unapproved_count
+    FROM step_review
+    WHERE submission_id = {{submission_id}}
+      AND step_name = {{step_name}}
+    GROUP BY submission_id, step_name
+) AS sr
+LEFT JOIN (SELECT 1) AS dummy ON 1 = 1
+`;
+
+const checkCountStepReviewRejected = () => `
+SELECT COUNT(*) AS unapproved
+FROM step_review
+WHERE submission_id = {{submission_id}}
+  AND step_name = {{step_name}}
+  AND edpuser_id <> {{user_id}}
+`;
+
+
+const updateStatusStepReviewApproval = () => `
+UPDATE step_review
+SET user_review_status = {{approve}}
+WHERE submission_id = {{submission_id}}
+  AND edpuser_id = {{user_id}}
+  AND step_name = {{step_name}}
+RETURNING *
+`;
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -669,3 +726,9 @@ module.exports.getCreatorName = getCreatorName;
 module.exports.getStepName = getStepName;
 module.exports.getSubmissionDetailsById = getSubmissionDetailsById;
 module.exports.getSubmissionDaac = getSubmissionDaac;
+module.exports.getStepReviewApproval = getStepReviewApproval;
+module.exports.createStepReviewApproval = createStepReviewApproval;
+module.exports.deleteStepReviewApproval = deleteStepReviewApproval;
+module.exports.checkCountStepReviewRejected = checkCountStepReviewRejected;
+module.exports.checkCountStepReviewApproved = checkCountStepReviewApproved;
+module.exports.updateStatusStepReviewApproval = updateStatusStepReviewApproval;
