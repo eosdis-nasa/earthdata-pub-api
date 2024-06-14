@@ -329,3 +329,16 @@ AND next_step_name = 'data_publication_request_form_management_review';
 INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'map_question_response_to_ummc');
 INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'map_question_response_to_ummc', 'send_metadata_to_ges_disc');
 INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'send_metadata_to_ges_disc', 'data_publication_request_form_management_review');
+
+-- EDPUB-1273 Enable use of name field and add a new data producer field
+ALTER TABLE submission
+ADD COLUMN data_producer_name VARCHAR;
+
+UPDATE submission
+SET 
+  name = data_pool.data->>'data_product_name_value',
+  data_producer_name = data_pool.data->>'data_producer_info_name'
+FROM submission_form_data_pool AS data_pool
+WHERE submission.id = data_pool.id
+AND data_pool.data ? 'data_product_name_value'
+AND data_pool.data ? 'data_producer_info_name';

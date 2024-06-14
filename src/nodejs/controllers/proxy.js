@@ -72,8 +72,8 @@ module.exports.formFindById = function formFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'form',
     operation: 'findById',
+    form_id: params.id.value,
     params: {
-      id: params.id.value,
       daac_id: params.daac_id.value
     },
     context: { user_id: req.user_id }
