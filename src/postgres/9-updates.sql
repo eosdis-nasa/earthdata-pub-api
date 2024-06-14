@@ -315,3 +315,16 @@ WHERE edprole_id = '29ccab4b-65e2-4764-83ec-77375d29af39';
 
 delete from edprole_privilege where edprole_id='29ccab4b-65e2-4764-83ec-77375d29af39';
 delete from edprole where id='29ccab4b-65e2-4764-83ec-77375d29af39'
+
+-- EDPUB-1273 Enable use of name field and add a new data producer field
+ALTER TABLE submission
+ADD COLUMN data_producer_name VARCHAR;
+
+UPDATE submission
+SET 
+  name = data_pool.data->>'data_product_name_value',
+  data_producer_name = data_pool.data->>'data_producer_info_name'
+FROM submission_form_data_pool AS data_pool
+WHERE submission.id = data_pool.id
+AND data_pool.data ? 'data_product_name_value'
+AND data_pool.data ? 'data_producer_info_name';
