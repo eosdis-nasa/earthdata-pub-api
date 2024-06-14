@@ -16,14 +16,24 @@ const EXPIRATION_IN_DAYS = 7;
 const rds = new RDS();
 
 async function describeDBSnapshots() {
-  return rds.describeDBClusterSnapshots({});
+  try {
+    return rds.describeDBClusterSnapshots({});
+  } catch (err) {
+    console.error('Error describing DB snapshots:', err);
+    return ({ error: 'Error describing DB snapshots' });
+  }
 }
 
 async function backupDaily(identifier) {
-  return rds.copyDBClusterSnapshot({
-    SourceDBClusterSnapshotIdentifier: identifier,
-    TargetDBClusterSnapshotIdentifier: identifier.replace('rds:', '')
-  });
+  try {
+    return rds.copyDBClusterSnapshot({
+      SourceDBClusterSnapshotIdentifier: identifier,
+      TargetDBClusterSnapshotIdentifier: identifier.replace('rds:', '')
+    });
+  } catch (err) {
+    console.error('Error copying DB cluster snapshot:', err);
+    return ({ error: 'Error copying DB cluster snapshot' });
+  }
 }
 
 async function backupWeekly() {
@@ -33,9 +43,21 @@ async function backupWeekly() {
 }
 
 async function expireDaily(expiredSnapshots) {
-  await Promise.all(expiredSnapshots.map(async (snapshot) => rds.deleteDBClusterSnapshot({
-    DBClusterSnapshotIdentifier: snapshot
-  })));
+  try {
+    await Promise.all(expiredSnapshots.map(async (snapshot) => {
+      try {
+        rds.deleteDBClusterSnapshot({
+          DBClusterSnapshotIdentifier: snapshot
+        });
+      } catch (err) {
+        console.error(`Error deleting snapshot ${snapshot}:`, err);
+      }
+    }));
+    return { success: true };
+  } catch (err) {
+    console.error('Error expiring daily snapshots:', err);
+    return { error: 'Error expiring daily snapshots' };
+  }
 }
 
 async function backupOnPrem() {
