@@ -545,11 +545,11 @@ resource "aws_lambda_function" "step_cleanup" {
 
 resource "aws_cloudwatch_event_rule" "step_cleanup_monthly_cron" {
   name                = "step-cleanup-monthly-cron"
-  description         = "Cloudwatch event to trigger step_cleanup lambda to initiate rds backup process daily at 11PM UTC. (Must be after backup window for all environments)"
+  description         = "Cloudwatch event to trigger step_cleanup lambda to remove unused stesp monthly at 11PM UTC."
   schedule_expression = "cron(0 23 1 * ? *)"
 }
 
-resource "aws_cloudwatch_event_target" "check_step_cleanup_trigger_daily" {
+resource "aws_cloudwatch_event_target" "check_step_cleanup_trigger_monthly" {
   rule      = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name}"
   target_id = "lambda"
   arn       = "${aws_lambda_function.step_cleanup.arn}"
