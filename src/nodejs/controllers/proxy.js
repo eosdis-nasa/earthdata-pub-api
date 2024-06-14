@@ -1155,3 +1155,15 @@ module.exports.deleteStepReviewApproval = function deleteStepReviewApproval(req,
     setTimeout(() => res.send(body), latency);
   });
 };
+
+module.exports.associateMfa = function associateMfa(req, res, next) {
+  res.send({
+    message: 'Local placeholder for associate MFA function.'
+  });
+}
+
+module.exports.verifyMfa = function verifyMfa(req, res, next) {
+  res.send({
+    message: 'Local placeholder for verify MFA function.'
+  });
+}

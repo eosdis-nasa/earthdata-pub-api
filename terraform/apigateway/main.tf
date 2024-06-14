@@ -38,6 +38,7 @@ data "template_file" "edpub_oas" {
     cognito_user_pool_arn         = var.cognito_user_pool_arn
     region                        = var.region
     service_authorizer_lambda_arn = var.service_authorizer_lambda_arn
+    mfa_auth_lambda_arn           = var.mfa_auth_lambda_arn
   }
 }
 
