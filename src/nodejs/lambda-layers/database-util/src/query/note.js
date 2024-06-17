@@ -614,6 +614,12 @@ user_update AS (UPDATE conversation_edpuser SET
  FROM new_note
  WHERE conversation_edpuser.conversation_id = new_note.conversation_id
 RETURNING *)
+${((params.viewer_users && params.viewer_users.length) || (params.viewer_roles && params.viewer_roles.length))?
+  `, note_visability AS (INSERT INTO note_scope
+  SELECT new_note.id, {{viewer_users}}::UUID[], {{viewer_roles}}::UUID[]
+  FROM new_note
+  RETURNING *)` : ''
+}
 SELECT * FROM new_note`;
 
 const sendNote = () => `

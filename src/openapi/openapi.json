@@ -6759,7 +6759,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end #if($body.containsKey('viewer_users'))\"viewer_users\":$input.json('$.viewer_users'),#end #if($body.containsKey('viewer_roles'))\"viewer_roles\":$input.json('$.viewer_roles'),#end\"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {

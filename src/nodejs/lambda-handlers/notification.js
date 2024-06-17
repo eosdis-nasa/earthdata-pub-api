@@ -30,7 +30,9 @@ async function replyMethod(params) {
     event_type: 'direct_message',
     data: {
       conversation_id: params.conversation_id,
-      text: params.text
+      text: params.text,
+      viewer_users: params.viewer_users,
+      viewer_roles: params.viewer_roles
     },
     user_id: params.context.user_id
   };
