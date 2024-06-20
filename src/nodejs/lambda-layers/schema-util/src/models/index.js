@@ -21,6 +21,7 @@ const QuestionList = require('./question-list.js');
 const Input = require('./input.js')
 const Role = require('./role.js');
 const Service = require('./service.js');
+const StepReviewCreateDelete = require('./stepreview-create-delete.js')
 const Submission = require('./submission.js');
 const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
@@ -63,6 +64,7 @@ const models = {
   Input,
   Role,
   Service,
+  StepReviewCreateDelete,
   Submission,
   SubmissionOperationMapMetadata,
   SubmissionOperationRequest,

@@ -185,3 +185,11 @@ variable "ses_from_email" {
 variable "ses_access_creds_arn" {
   type = string
 }
+
+variable "ornl_endpoint_arn" {
+  type = string
+}
+
+variable "gesdisc_endpoint_arn"{
+  type = string
+}

@@ -39,6 +39,7 @@ install_lambda module
 install_lambda notification
 install_lambda notification-consumer
 install_lambda rds-backup
+install_lambda step-cleanup
 install_lambda register
 install_lambda remap-statics
 install_lambda service-authorizer
@@ -50,6 +51,7 @@ install_lambda workflow-consumer
 install_lambda questions
 install_lambda workflow
 install_lambda file-upload
+install_lambda mfa-auth
 #Add more lambda functions here <--
 
 #Change back to root directory and remove temp folder

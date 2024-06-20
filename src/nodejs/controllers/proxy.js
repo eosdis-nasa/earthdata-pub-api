@@ -72,8 +72,8 @@ module.exports.formFindById = function formFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'form',
     operation: 'findById',
+    form_id: params.id.value,
     params: {
-      id: params.id.value,
       daac_id: params.daac_id.value
     },
     context: { user_id: req.user_id }
@@ -399,7 +399,9 @@ module.exports.userFindAll = function userFindAll(req, res, next) {
           sort: params.sort.value,
           order: params.order.value,
           per_page: params.per_page.value,
-          page: params.page.value
+          page: params.page.value,
+          group_id: params.group_id.value,
+          role_id: params.role_id.value
     },
     context: { user_id: req.user_id }
   };
@@ -1112,3 +1114,58 @@ module.exports.offboardDaac = function offboardDaac(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 };
+
+module.exports.createStepReviewApproval = function createStepReviewApproval(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+
+  const lambdaEvent = {
+    operation: 'createStepReviewApproval',
+    params: { stepName: payload.value.step_name , submissionId: payload.value.id, userIds: payload.value.user_list },
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.getStepReviewApproval = function getStepReviewApproval(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'getStepReviewApproval',
+    params: { id: params.id.value },
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.deleteStepReviewApproval = function deleteStepReviewApproval(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+
+  const lambdaEvent = {
+    operation: 'deleteStepReviewApproval',
+    params: { stepName: payload.value.step_name , submissionId: payload.value.id, userIds: payload.value.user_list },
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.associateMfa = function associateMfa(req, res, next) {
+  res.send({
+    message: 'Local placeholder for associate MFA function.'
+  });
+}
+
+module.exports.verifyMfa = function verifyMfa(req, res, next) {
+  res.send({
+    message: 'Local placeholder for verify MFA function.'
+  });
+}

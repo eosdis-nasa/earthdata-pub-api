@@ -71,7 +71,9 @@
         "secretsmanager:GetSecretValue"
       ],
       "Resource":[
-        "${ses_access_creds_arn}"
+        "${ses_access_creds_arn}",
+        "${ornl_endpoint_arn}",
+        "${gesdisc_endpoint_arn}"
       ]
     }
   ]
