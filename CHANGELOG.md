@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updates step promotion to update set event type programmatically.
 - Update cloud metrics logging
 - Reimplemented custom MFA flow
+- Added filter by group and role id to the users endpont
 
 ## 1.0.20
 

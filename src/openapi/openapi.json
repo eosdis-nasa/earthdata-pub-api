@@ -5914,6 +5914,22 @@
             "schema": {
               "type": "number"
             }
+          },
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Group id to filter results on.",
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "role_id",
+            "in": "query",
+            "description": "Role id to filter results on.",
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
           }
         ],
         "responses": {

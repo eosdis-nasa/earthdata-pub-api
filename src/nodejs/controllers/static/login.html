@@ -181,18 +181,6 @@ li label {
             <td>Full Name</td>
             <td id="user-info-name"></td>
           </tr>
-          <tr>
-            <td>Email</td>
-            <td id="user-info-email"></td>
-          </tr>
-          <tr>
-            <td>Last Login</td>
-            <td id="user-info-last-login"></td>
-          </tr>
-          <tr>
-            <td>Registered</td>
-            <td id="user-info-registered"></td>
-          </tr>
         </table>
       </div>
     </div>
@@ -218,10 +206,7 @@ li label {
     const loginButton = document.getElementById('btn-login');
     const info = {
       id: document.getElementById('user-info-id'),
-      name: document.getElementById('user-info-name'),
-      email: document.getElementById('user-info-email'),
-      last_login: document.getElementById('user-info-last-login'),
-      registered: document.getElementById('user-info-registered')
+      name: document.getElementById('user-info-name')
     }
     userInfoPanel.style.display = "none";
     loginButton.style.display = "none";
@@ -286,9 +271,6 @@ li label {
         const user = users[pick];
         info.id.innerText = user.id;
         info.name.innerText = user.name;
-        info.email.innerText = user.email;
-        info.last_login.innerText = user.last_login;
-        info.registered.innerText = user.registered;
       }
     }
 

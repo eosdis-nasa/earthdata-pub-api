@@ -399,7 +399,9 @@ module.exports.userFindAll = function userFindAll(req, res, next) {
           sort: params.sort.value,
           order: params.order.value,
           per_page: params.per_page.value,
-          page: params.page.value
+          page: params.page.value,
+          group_id: params.group_id.value,
+          role_id: params.role_id.value
     },
     context: { user_id: req.user_id }
   };
