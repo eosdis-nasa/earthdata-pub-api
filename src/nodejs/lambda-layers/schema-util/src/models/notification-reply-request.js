@@ -8,12 +8,12 @@ module.exports.model = (path) => ({
       $ref: `#${path}UUID`
     },
     viewer_users:  {
-      description: 'List of UUIDs of Users to have visability on the note',
+      description: 'List of UUIDs of Users to have visibility on the note',
       type: 'array',
       items: { $ref: `#${path}UUID` }
     },
     viewer_roles:  {
-      description: 'List of UUIDs of Roles to have visability on the note',
+      description: 'List of UUIDs of Roles to have visibility on the note',
       type: 'array',
       items: { $ref: `#${path}UUID` }
     }

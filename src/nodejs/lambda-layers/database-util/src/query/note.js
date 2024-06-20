@@ -1,6 +1,6 @@
 const sql = require('./sql-builder.js');
 
-const note_visability_refs = {
+const note_visibility_refs = {
   user_names: {
     type: 'left_join',
     src: sql.select({
@@ -124,20 +124,20 @@ const refs = {
     type: 'left_join',
     src: sql.select({
       fields: [
-        'note_visability.conversation_id',
+        'note_visibility.conversation_id',
         {
           type: 'json_agg',
           src: {
             type: 'json_obj',
             keys: [
-              ['id', 'note_visability.id'],
-              ['text', 'note_visability.text'],
-              ['sent', 'note_visability.created_at'],
+              ['id', 'note_visibility.id'],
+              ['text', 'note_visibility.text'],
+              ['sent', 'note_visibility.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_names'], ['roles', 'note_visability.role_names']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}]
             ]
           },
-          sort: 'note_visability.created_at',
+          sort: 'note_visibility.created_at',
           order: 'DESC',
           alias: 'notes'
         }
@@ -153,11 +153,11 @@ const refs = {
             base: 'note',
             joins: [
               { type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }},
-              note_visability_refs.user_names,
-              note_visability_refs.role_names
+              note_visibility_refs.user_names,
+              note_visibility_refs.role_names
             ]
           },
-          alias: 'note_visability',
+          alias: 'note_visibility',
           where: { 
             conjunction: 'OR',
             filters: [
@@ -216,12 +216,12 @@ const refs = {
            }
         }),
         joins: [{
-          type: 'left_join', src: 'edpuser', on: { left: 'note_visability.sender_edpuser_id', right: 'edpuser.id' }
+          type: 'left_join', src: 'edpuser', on: { left: 'note_visibility.sender_edpuser_id', right: 'edpuser.id' }
         }]
       },
-      group: 'note_visability.conversation_id',
+      group: 'note_visibility.conversation_id',
       alias: 'note_step_agg',
-      where: { filters: [{ field: 'note_visability.step_name', param: 'step_name' }] } 
+      where: { filters: [{ field: 'note_visibility.step_name', param: 'step_name' }] } 
     }),
     on: { left: 'note_step_agg.conversation_id', right: 'conversation.id' }
   },
@@ -229,20 +229,20 @@ const refs = {
     type: 'left_join',
     src: sql.select({
       fields: [
-        'note_visability.conversation_id',
+        'note_visibility.conversation_id',
         {
           type: 'json_agg',
           src: {
             type: 'json_obj',
             keys: [
-              ['id', 'note_visability.id'],
-              ['text', 'note_visability.text'],
-              ['sent', 'note_visability.created_at'],
+              ['id', 'note_visibility.id'],
+              ['text', 'note_visibility.text'],
+              ['sent', 'note_visibility.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_names'], ['roles', 'note_visability.role_names']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}]
             ]
           },
-          sort: 'note_visability.created_at',
+          sort: 'note_visibility.created_at',
           order: 'DESC',
           alias: 'notes'
         }
@@ -258,11 +258,11 @@ const refs = {
             base: 'note',
             joins: [
               { type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }},
-              note_visability_refs.user_names,
-              note_visability_refs.role_names
+              note_visibility_refs.user_names,
+              note_visibility_refs.role_names
             ]
           },
-          alias: 'note_visability',
+          alias: 'note_visibility',
           where: { 
             conjunction: 'OR',
             filters: [
@@ -321,10 +321,10 @@ const refs = {
            }
         }),
         joins: [{
-          type: 'left_join', src: 'edpuser', on: { left: 'note_visability.sender_edpuser_id', right: 'edpuser.id' }
+          type: 'left_join', src: 'edpuser', on: { left: 'note_visibility.sender_edpuser_id', right: 'edpuser.id' }
         }]
       },
-      group: 'note_visability.conversation_id',
+      group: 'note_visibility.conversation_id',
       alias: 'note_agg'
     }),
     on: { left: 'note_agg.conversation_id', right: 'conversation.id' }
@@ -333,20 +333,20 @@ const refs = {
     type: 'left_join',
     src: sql.select({
       fields: [
-        'note_visability.conversation_id',
+        'note_visibility.conversation_id',
         {
           type: 'json_agg',
           src: {
             type: 'json_obj',
             keys: [
-              ['id', 'note_visability.id'],
-              ['text', 'note_visability.text'],
-              ['sent', 'note_visability.created_at'],
+              ['id', 'note_visibility.id'],
+              ['text', 'note_visibility.text'],
+              ['sent', 'note_visibility.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_names'], ['roles', 'note_visability.role_names']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}]
             ]
           },
-          sort: 'note_visability.created_at',
+          sort: 'note_visibility.created_at',
           order: 'DESC',
           alias: 'notes'
         }
@@ -362,19 +362,19 @@ const refs = {
             base: 'note',
             joins: [
               { type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }},
-              note_visability_refs.user_names,
-              note_visability_refs.role_names
+              note_visibility_refs.user_names,
+              note_visibility_refs.role_names
             ]
           },
-          alias: 'note_visability'
+          alias: 'note_visibility'
         }),
         joins: [{
-          type: 'left_join', src: 'edpuser', on: { left: 'note_visability.sender_edpuser_id', right: 'edpuser.id' }
+          type: 'left_join', src: 'edpuser', on: { left: 'note_visibility.sender_edpuser_id', right: 'edpuser.id' }
         }]
       },
-      group: 'note_visability.conversation_id',
+      group: 'note_visibility.conversation_id',
       alias: 'note_step_agg',
-      where: { filters: [{ field: 'note_visability.step_name', param: 'step_name' }] } 
+      where: { filters: [{ field: 'note_visibility.step_name', param: 'step_name' }] } 
     }),
     on: { left: 'note_step_agg.conversation_id', right: 'conversation.id' }
   },
@@ -382,20 +382,20 @@ const refs = {
     type: 'left_join',
     src: sql.select({
       fields: [
-        'note_visability.conversation_id',
+        'note_visibility.conversation_id',
         {
           type: 'json_agg',
           src: {
             type: 'json_obj',
             keys: [
-              ['id', 'note_visability.id'],
-              ['text', 'note_visability.text'],
-              ['sent', 'note_visability.created_at'],
+              ['id', 'note_visibility.id'],
+              ['text', 'note_visibility.text'],
+              ['sent', 'note_visibility.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visability.user_names'], ['roles', 'note_visability.role_names']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}]
             ]
           },
-          sort: 'note_visability.created_at',
+          sort: 'note_visibility.created_at',
           order: 'DESC',
           alias: 'notes'
         }
@@ -411,17 +411,17 @@ const refs = {
             base: 'note',
             joins: [
               { type: 'left_join', src: 'note_scope', on: { left: 'note.id', right: 'note_scope.note_id' }},
-              note_visability_refs.user_names,
-              note_visability_refs.role_names
+              note_visibility_refs.user_names,
+              note_visibility_refs.role_names
             ]
           },
-          alias: 'note_visability'
+          alias: 'note_visibility'
         }),
         joins: [{
-          type: 'left_join', src: 'edpuser', on: { left: 'note_visability.sender_edpuser_id', right: 'edpuser.id' }
+          type: 'left_join', src: 'edpuser', on: { left: 'note_visibility.sender_edpuser_id', right: 'edpuser.id' }
         }]
       },
-      group: 'note_visability.conversation_id',
+      group: 'note_visibility.conversation_id',
       alias: 'note_agg'
     }),
     on: { left: 'note_agg.conversation_id', right: 'conversation.id' }
@@ -615,7 +615,7 @@ user_update AS (UPDATE conversation_edpuser SET
  WHERE conversation_edpuser.conversation_id = new_note.conversation_id
 RETURNING *)
 ${((params.viewer_users && params.viewer_users.length) || (params.viewer_roles && params.viewer_roles.length))?
-  `, note_visability AS (INSERT INTO note_scope
+  `, note_visibility AS (INSERT INTO note_scope
   SELECT new_note.id, {{viewer_users}}::UUID[], {{viewer_roles}}::UUID[]
   FROM new_note
   RETURNING *)` : ''
