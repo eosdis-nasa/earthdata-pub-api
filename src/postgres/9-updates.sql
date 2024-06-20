@@ -318,10 +318,13 @@ delete from edprole where id='29ccab4b-65e2-4764-83ec-77375d29af39'
 
 --6/10/2024 Move management review step after UWG review step in GES DISC community workflow
 
-INSERT INTO step(step_id, step_name, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'review', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
-INSERT INTO step(step_id, step_name, type, data) VALUES ('e62e9548-b350-40ec-b1bc-21a75e5f0407', 'data_publication_request_form_management_review', 'review', '{"rollback":"data_publication_request_form_uwg_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
-INSERT INTO step(step_id, step_name, type, data) VALUES ('7838ed18-4ecd-499e-9a47-91fd181cbfc7', 'data_publication_request_form_esdis_review', 'review',  '{"rollback":"data_publication_request_form_management_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+UPDATE step SET data='{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='c81066db-0566-428d-87e8-94169ce5a9b9';
+UPDATE step SET data='{"rollback":"data_publication_request_form_uwg_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='e62e9548-b350-40ec-b1bc-21a75e5f0407';
+UPDATE step SET data='{"rollback":"data_publication_request_form_management_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='7838ed18-4ecd-499e-9a47-91fd181cbfc7';
 
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'data_publication_request_form_uwg_review');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_uwg_review', 'data_publication_request_form_management_review');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_management_review', 'data_publication_request_form_esdis_review');
+-- INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'data_publication_request_form_uwg_review');
+UPDATE step_edge SET next_step_name='data_publication_request_form_uwg_review' WHERE workflow_id='7843dc6d-f56d-488a-9193-bb7c0dc3696d' AND step_name='data_publication_request_form_review';
+-- INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_uwg_review', 'data_publication_request_form_management_review');
+UPDATE step_edge SET next_step_name='data_publication_request_form_management_review' WHERE workflow_id='7843dc6d-f56d-488a-9193-bb7c0dc3696d' AND step_name='data_publication_request_form_uwg_review';
+-- INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_management_review', 'data_publication_request_form_esdis_review');
+UPDATE step_edge SET next_step_name='data_publication_request_form_esdis_review' WHERE workflow_id='7843dc6d-f56d-488a-9193-bb7c0dc3696d' AND step_name='data_publication_request_form_management_review';
