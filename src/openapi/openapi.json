@@ -7200,7 +7200,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/NoteAddViewers"
               }
             }
           }
@@ -7318,7 +7318,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/NoteRemoveViewer"
               }
             }
           }
@@ -7436,7 +7436,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/NoteAddViewerRoles"
               }
             }
           }
@@ -7554,7 +7554,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/NoteRemoveViewer"
               }
             }
           }

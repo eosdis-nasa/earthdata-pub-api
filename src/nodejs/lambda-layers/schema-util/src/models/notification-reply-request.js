@@ -6,6 +6,16 @@ module.exports.model = (path) => ({
     conversation_id: {
       description: 'UUID of Conversation if replying',
       $ref: `#${path}UUID`
+    },
+    viewer_users:  {
+      description: 'List of UUIDs of Users to have visability on the note',
+      type: 'array',
+      items: { $ref: `#${path}UUID` }
+    },
+    viewer_roles:  {
+      description: 'List of UUIDs of Roles to have visability on the note',
+      type: 'array',
+      items: { $ref: `#${path}UUID` }
     }
   }
 });
