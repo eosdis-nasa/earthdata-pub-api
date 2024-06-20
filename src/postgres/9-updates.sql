@@ -206,6 +206,14 @@ UPDATE step_edge
 SET step_name = 'map_from_mmt'
 WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
 
+-- step(step_status_label)
+-- Adding step status label in uwg_review step gesdisc workflow 
+
+UPDATE step
+SET step_status_label = VARCHAR
+
+INSERT INTO step(step_id, step_name, step_status_label, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'Pending UWG Review', 'review', '{"rollback":"data_publication_request_form_management_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+
 -- EDPUB-1262 update datetimepicker
 UPDATE Input
 SET label = 'Start Date and Time (UTC)', type = 'datetimePicker'

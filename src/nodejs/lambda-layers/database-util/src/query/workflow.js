@@ -14,6 +14,7 @@ const findAll = () => `
           'action_id', step.action_id,
           'form_id', step.form_id,
           'service_id', step.service_id,
+          'step_status_label', step.step_status_label,
           'next_step_name', step_edge_details.next_step_name,
           'prev_step_name', step_edge_details.prev_step_name,
           'step_message', step_edge_details.step_message,

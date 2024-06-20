@@ -294,6 +294,7 @@ CREATE TABLE IF NOT EXISTS workflow (
 CREATE TABLE IF NOT EXISTS step (
   step_id UUID DEFAULT UUID_GENERATE_V4(),
   step_name VARCHAR NOT NULL,
+  step_status_label VARCHAR,
   type VARCHAR NOT NULL,
   action_id UUID,
   form_id UUID,
