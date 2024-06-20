@@ -315,3 +315,37 @@ WHERE edprole_id = '29ccab4b-65e2-4764-83ec-77375d29af39';
 
 delete from edprole_privilege where edprole_id='29ccab4b-65e2-4764-83ec-77375d29af39';
 delete from edprole where id='29ccab4b-65e2-4764-83ec-77375d29af39'
+
+-- EDPUB-1286-MVP 06/20/24   Update GES DISC requested Free Text Fields
+UPDATE input 
+SET type = 'textarea'
+WHERE question_id = '228cb0d6-78fb-449a-8061-b1e6fb3f59d1' and control_id = 'spatial_general_region';
+
+UPDATE input
+SET 
+  required_if = '[{"field":"file_temporal_coverage_units","value":"Minute(s)","message":""}, {"field":"file_temporal_coverage_units","value":"Hour(s)","message":""}, {"field":"file_temporal_coverage_units","value":"Day(s)","message":""}, {"field":"file_temporal_coverage_units","value":"Week(s)","message":""}, {"field":"file_temporal_coverage_units","value":"Month(s)","message":""}, {"field":"file_temporal_coverage_units","value":"Year(s)","message":""}, {"field":"file_temporal_coverage_units","value":"Instantaneous","message":""}]',
+  required = FALSE
+WHERE question_id = '91c123bf-702e-458c-90a1-b26f6498937e' AND control_id = 'file_temporal_coverage_answer';
+
+UPDATE input
+SET 
+  required_if = '[{"field":"value_temporal_resolution_units","value":"Millisecond(s)","message":""}, {"field":"value_temporal_resolution_units","value":"Second(s)","message":""}, {"field":"value_temporal_resolution_units","value":"Minute(s)","message":""}, {"field":"value_temporal_resolution_units","value":"Hour(s)","message":""}, {"field":"value_temporal_resolution_units","value":"Day(s)","message":""}, {"field":"value_temporal_resolution_units","value":"Week(s)","message":""}, {"field":"value_temporal_resolution_units","value":"Month(s)","message":""}, {"field":"value_temporal_resolution_units","value":"Year(s)","message":""}, {"field":"value_temporal_resolution_units","value":"Instantaneous","message":""}]',
+  required = FALSE
+WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f139f' AND control_id = 'value_temporal_resolution_answer';
+
+UPDATE input 
+SET type = 'textarea'
+WHERE question_id = '91577abc-a59c-40f7-b0e6-f954542e6b19' and control_id = 'spatial_data_file';
+
+UPDATE input 
+SET type = 'textarea'
+WHERE question_id = 'a12ccd39-1d94-46a5-8aad-3587fd50c4ad' and control_id = 'spatial_resolution';
+
+UPDATE input 
+SET type = 'textarea'
+WHERE question_id = 'fbd25b6f-2731-4456-882b-ef840c11b671' and control_id = 'variables_text';
+
+INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f129f', 'product_temporal_coverage_varies', 2, 'Varies - If your answer varies or requires additional information, please specify here (e.g. - if your overall data product contains multiple, individual data collections with varying parameters, please list below)', 'textarea', '{}', '{}', '[]','[]', False);
+INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b978f', 'data_product_volume_units_varies', 2, 'Varies - If your answer varies or requires additional information, please specify here (e.g. - if your overall data product contains multiple, individual data collections with varying parameters, please list below)', 'textarea', '{}', '{}', '[]','[]', False);
+INSERT INTO input VALUES ('91c123bf-702e-458c-90a1-b26f6498937e', 'file_temporal_coverage_answer_varies', 2, 'Varies - If your answer varies or requires additional information, please specify here (e.g. - if your overall data product contains multiple, individual data collections with varying parameters, please list below)', 'textarea', '{}', '{}', '[]','[{"field":"file_temporal_coverage_units","value":"Varies","message":""}]',  True);
+INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f139f', 'value_temporal_resolution_answer_varies', 2, 'Varies - If your answer varies or requires additional information, please specify here (e.g. - if your overall data product contains multiple, individual data collections with varying parameters, please list below)', 'textarea', '{}', '{}', '[]','[{"field":"value_temporal_resolution_units","value":"Varies","message":""}]',  True);
