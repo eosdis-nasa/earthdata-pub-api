@@ -344,6 +344,7 @@ CREATE TABLE IF NOT EXISTS submission (
   conversation_id UUID,
   contributor_ids UUID[],
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  data_producer_name VARCHAR,
   hidden BOOLEAN DEFAULT FALSE,
   PRIMARY KEY (id),
   FOREIGN KEY (initiator_edpuser_id) REFERENCES edpuser (id),
