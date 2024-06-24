@@ -1,3 +1,5 @@
+/* eslint-disable max-classes-per-file */
+// Disable this eslint rule to allow for mocking various AWS classes
 const db = require('database-util');
 const auth = require('auth-util');
 const authHandler = require('../../auth.js');
@@ -12,6 +14,20 @@ auth.getToken = jest.fn();
 auth.refreshToken = jest.fn();
 auth.getLoginUrl = jest.fn();
 auth.getLogoutUrl = jest.fn();
+
+jest.mock('@aws-sdk/client-cognito-identity-provider', () => ({
+  CognitoIdentityProviderClient: class {
+    send() {
+      return {};
+    }
+
+    promise() {
+      return Promise.resolve({});
+    }
+  },
+  GetUserCommand: class {},
+  AssociateSoftwareTokenCommand: class { }
+}));
 
 describe('auth', () => {
   beforeEach(() => {

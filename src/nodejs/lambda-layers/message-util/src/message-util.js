@@ -38,48 +38,65 @@ function marshalAttributes(eventMessage) {
 async function getSecretsValues() {
   const secretClient = new SecretsManagerClient();
   const secretCmd = new GetSecretValueCommand({ SecretId: 'ses_access_creds' });
-  return secretClient.send(secretCmd);
+  try {
+    return secretClient.send(secretCmd);
+  } catch (err) {
+    console.error('Error getting secrets:', err);
+    return ({ error: 'Error getting secrets' });
+  }
 }
 
 async function send(user, eventMessage, ses) {
-  const bodyArray = await createEmailHtml({ user, eventMessage });
-  const payload = {
-    Source: sourceEmail,
-    Destination: {
-      ToAddresses: [user.email]
-    },
-    Message: {
-      Subject: {
-        Data: 'EDPUB Notification'
+  try {
+    const bodyArray = await createEmailHtml({ user, eventMessage });
+    const payload = {
+      Source: sourceEmail,
+      Destination: {
+        ToAddresses: [user.email]
       },
-      Body: {
-        Text: {
-          Data: bodyArray[0],
-          Charset: 'UTF-8'
+      Message: {
+        Subject: {
+          Data: 'EDPUB Notification'
         },
-        Html: {
-          Data: bodyArray[1],
-          Charset: 'UTF-8'
+        Body: {
+          Text: {
+            Data: bodyArray[0],
+            Charset: 'UTF-8'
+          },
+          Html: {
+            Data: bodyArray[1],
+            Charset: 'UTF-8'
+          }
         }
       }
-    }
-  };
-  const command = new SendEmailCommand(payload);
-  await ses.send(command);
+    };
+    const command = new SendEmailCommand(payload);
+    await ses.send(command);
+    return { success: true };
+  } catch (err) {
+    console.error(`Error sending email to ${user.email}:`, err);
+    return ({ error: 'Error sending email ' });
+  }
 }
 
 async function sendEmail(users, eventMessage) {
-  const secretsResponse = await getSecretsValues();
-  const sesCreds = JSON.parse(secretsResponse.SecretString);
-  const ses = new SESClient({
-    region: 'us-east-1',
-    credentials: {
-      accessKeyId: sesCreds.ses_access_key_id,
-      secretAccessKey: sesCreds.ses_secret_access_key
-    }
-  });
-  const promises = users.map((user) => send(user, eventMessage, ses));
-  await Promise.all(promises);
+  try {
+    const secretsResponse = await getSecretsValues();
+    const sesCreds = JSON.parse(secretsResponse.SecretString);
+    const ses = new SESClient({
+      region: 'us-east-1',
+      credentials: {
+        accessKeyId: sesCreds.ses_access_key_id,
+        secretAccessKey: sesCreds.ses_secret_access_key
+      }
+    });
+    const promises = users.map((user) => send(user, eventMessage, ses));
+    await Promise.all(promises);
+    return { success: true };
+  } catch (err) {
+    console.error('Error in sendEmail:', err);
+    return ({ error: 'Error sendEmail' });
+  }
 }
 
 function sendEvent(eventMessage) {

@@ -215,6 +215,14 @@ UPDATE Input
 SET label = 'End Date and Time (UTC)', type = 'datetimePicker'
 WHERE question_id = '4f2dd369-d865-47ba-8504-8694493f129f' AND control_id = 'product_temporal_coverage_end';
 
+--4/23/2024 Adding UWG member as a role
+INSERT INTO edprole VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'uwg_member', 'UWG Member', 'A member of the User Working Group who can review requests in Earthdata Pub.');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'REQUEST_READ');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'REQUEST_REVIEW');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_NEW');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_REPLY');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_ADDUSER');
+
 -- 5/1/2024 Adding new table for limiting note visability by user/role task EDPUB-1255
 CREATE TABLE IF NOT EXISTS note_scope (
   note_id UUID NOT NULL,
@@ -328,3 +336,46 @@ UPDATE step_edge SET next_step_name='data_publication_request_form_uwg_review' W
 UPDATE step_edge SET next_step_name='data_publication_request_form_management_review' WHERE workflow_id='7843dc6d-f56d-488a-9193-bb7c0dc3696d' AND step_name='data_publication_request_form_uwg_review';
 -- INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_management_review', 'data_publication_request_form_esdis_review');
 UPDATE step_edge SET next_step_name='data_publication_request_form_esdis_review' WHERE workflow_id='7843dc6d-f56d-488a-9193-bb7c0dc3696d' AND step_name='data_publication_request_form_management_review';
+--06/07/2024 adding push metadata to GES DISC endpoint
+INSERT INTO action VALUES ('09293035-2d31-44d3-a6b0-675f10dc34bf', 'push_metadata_to_gesdisc', 1, 'Push Metadata to GES DISC Endpoint', 'This action is used to push metadata to the GES DISC meditor instance', 'pushMetadataToGesdisc.js');
+
+INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('a9c55c56-8fd7-4bd1-89aa-0cf9e28da07e', 'send_metadata_to_ges_disc', 'action', '09293035-2d31-44d3-a6b0-675f10dc34bf', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+
+DELETE FROM step_edge
+WHERE workflow_id = '7843dc6d-f56d-488a-9193-bb7c0dc3696d' 
+AND step_name = 'data_publication_request_form_review' 
+AND next_step_name = 'data_publication_request_form_management_review';
+
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'map_question_response_to_ummc');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'map_question_response_to_ummc', 'send_metadata_to_ges_disc');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'send_metadata_to_ges_disc', 'data_publication_request_form_management_review');
+
+-- EDPUB-1273 Enable use of name field and add a new data producer field
+ALTER TABLE submission
+ADD COLUMN data_producer_name VARCHAR;
+
+UPDATE submission
+SET 
+  name = data_pool.data->>'data_product_name_value',
+  data_producer_name = data_pool.data->>'data_producer_info_name'
+FROM submission_form_data_pool AS data_pool
+WHERE submission.id = data_pool.id
+AND data_pool.data ? 'data_product_name_value'
+AND data_pool.data ? 'data_producer_info_name';
+
+-- EDPUB-1286 06/24/24 Update GES DISC requested Free Text Fields
+UPDATE input
+SET type = 'textarea'
+WHERE question_id = '228cb0d6-78fb-449a-8061-b1e6fb3f59d1' and control_id = 'spatial_general_region';
+
+UPDATE input
+SET type = 'textarea'
+WHERE question_id = '91577abc-a59c-40f7-b0e6-f954542e6b19' and control_id = 'spatial_data_file';
+
+UPDATE input
+SET type = 'textarea'
+WHERE question_id = 'a12ccd39-1d94-46a5-8aad-3587fd50c4ad' and control_id = 'spatial_resolution';
+
+UPDATE input
+SET type = 'textarea'
+WHERE question_id = 'fbd25b6f-2731-4456-882b-ef840c11b671' and control_id = 'variables_text';

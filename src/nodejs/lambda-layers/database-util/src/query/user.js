@@ -75,10 +75,20 @@ const refs = {
     src: group.userJoin,
     on: { left: fieldMap.id, right: 'group_agg.edpuser_id' }
   },
+  simple_group: {
+    type: 'left_join',
+    src: 'edpuser_edpgroup',
+    on: { left: fieldMap.id, right: 'edpuser_edpgroup.edpuser_id' }
+  },
   role: {
     type: 'left_join',
     src: role.userJoin,
     on: { left: fieldMap.id, right: 'role_agg.edpuser_id' }
+  },
+  simple_role: {
+    type: 'left_join',
+    src: 'edpuser_edprole',
+    on: { left: fieldMap.id, right: 'edpuser_edprole.edpuser_id' }
   },
   user_permission_submission: {
     type: 'left_join',
@@ -220,31 +230,27 @@ const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
   ...(page ? { offset: page } : {})
 });
 
-const findAll = ({name, email, sort, order, per_page, page}) => sql.select({
-    fields: fields(allFields),
-    from: {
-      base: table,
-      joins: [
-        refs.group,
-        refs.role,
-        refs.user_permission_submission,
-        refs.user_subscription_action,
-        refs.user_subscription_form,
-        refs.user_subscription_service,
-        refs.user_subscription_submission,
-        refs.user_subscription_workflow
-      ]
-    },
-    where: {
-      filters: [
-          ...(name ? [{ field: 'edpuser.name', like: 'name' }] : []),
-          ...(email ? [{ field: 'edpuser.email', like: 'email'}] : [])
-      ]
-    },
-    ...(sort ? { sort } : {}),
-    ...(order ? { order } : {}),
-    ...(per_page ? { limit: per_page } : {}),
-    ...(page ? { offset: page } : {})
+const findAll = ({name, email, sort, order, per_page, page, group_id, role_id}) => sql.select({
+  fields: fields(['id', 'name']),
+  from: {
+    base: table,
+    joins: [
+      refs.simple_group,
+      refs.simple_role
+    ]
+  },
+  where: {
+    filters: [
+      ...(name ? [{ field: 'edpuser.name', like: 'name' }] : []),
+      ...(email ? [{ field: 'edpuser.email', like: 'email'}] : []),
+      ...(group_id ? [{ field: 'edpuser_edpgroup.edpgroup_id', param: 'group_id' }] : []),
+      ...(role_id ? [{ field: 'edpuser_edprole.edprole_id', param: 'role_id' }] : []),
+    ]
+  },
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
 });
 
 const findById = () => sql.select({
