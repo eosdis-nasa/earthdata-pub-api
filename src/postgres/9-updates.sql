@@ -384,7 +384,7 @@ WHERE question_id = 'fbd25b6f-2731-4456-882b-ef840c11b671' and control_id = 'var
 INSERT INTO workflow VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'gesdisc_push_workflow', 1, 'GES DISC Push Workflow', 'This is a workflow for testing the push to gesdisc action.');
 
 -- Update community workflow
-DELETE step_edge WHERE workflow_id='7843dc6d-f56d-488a-9193-bb7c0dc3696d';
+DELETE FROM step_edge WHERE workflow_id='7843dc6d-f56d-488a-9193-bb7c0dc3696d';
 INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'init', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'data_publication_request_form_uwg_review');
