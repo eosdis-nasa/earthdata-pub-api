@@ -45,3 +45,10 @@ resource "aws_iam_role_policy_attachment" "edpub_rds_backup_lambda_execution_rol
   role       = aws_iam_role.edpub_rds_backup_lambda_role.id
   policy_arn = var.lambda_execution_policy_arn
 }
+
+resource "aws_iam_role_policy" "edpub_rds_backup_lambda_policy" {
+  name   = "EDPUBRDSBackupLambdaPolicy"
+  role   = aws_iam_role.edpub_rds_backup_lambda_role.id
+  policy = data.template_file.edpub_rds_backup_lambda_policy.rendered
+}
+edpub_step_cleanup_lambda_role_arn
