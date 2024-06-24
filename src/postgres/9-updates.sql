@@ -350,3 +350,20 @@ FROM submission_form_data_pool AS data_pool
 WHERE submission.id = data_pool.id
 AND data_pool.data ? 'data_product_name_value'
 AND data_pool.data ? 'data_producer_info_name';
+
+-- EDPUB-1286 06/24/24 Update GES DISC requested Free Text Fields
+UPDATE input
+SET type = 'textarea'
+WHERE question_id = '228cb0d6-78fb-449a-8061-b1e6fb3f59d1' and control_id = 'spatial_general_region';
+
+UPDATE input
+SET type = 'textarea'
+WHERE question_id = '91577abc-a59c-40f7-b0e6-f954542e6b19' and control_id = 'spatial_data_file';
+
+UPDATE input
+SET type = 'textarea'
+WHERE question_id = 'a12ccd39-1d94-46a5-8aad-3587fd50c4ad' and control_id = 'spatial_resolution';
+
+UPDATE input
+SET type = 'textarea'
+WHERE question_id = 'fbd25b6f-2731-4456-882b-ef840c11b671' and control_id = 'variables_text';
