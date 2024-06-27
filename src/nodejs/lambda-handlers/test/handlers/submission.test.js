@@ -7,7 +7,7 @@ jest.mock('message-util', () => jest.fn());
 
 db.user = jest.fn();
 db.user.findById = jest.fn();
-db.user.getStaffIds = jest.fn();
+db.user.getManagerIds = jest.fn();
 db.note = jest.fn();
 db.note.addUsersToConversation = jest.fn();
 db.note.removeUserFromConversation = jest.fn();
@@ -49,7 +49,7 @@ describe('submission', () => {
       }
     };
     db.user.findById.mockReturnValue({ id: 'test user' });
-    db.user.getStaffIds.mockReturnValue(['test staff']);
+    db.user.getManagerIds.mockReturnValue(['test manager']);
     db.submission.initialize.mockReturnValue({
       id: 'test submission'
     });
