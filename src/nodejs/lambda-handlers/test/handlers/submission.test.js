@@ -33,6 +33,7 @@ db.submission.removeContributor = jest.fn();
 db.submission.copyFormData = jest.fn();
 db.submission.copyActionData = jest.fn();
 db.submission.setSubmissionCopy = jest.fn();
+db.submission.updateSubmissionData = jest.fn();
 
 msg.sendEvent = jest.fn();
 

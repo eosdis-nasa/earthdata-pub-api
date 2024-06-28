@@ -17,6 +17,7 @@ module "iam_roles" {
   permissions_boundary_arn = var.permissions_boundary_arn
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
+  gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
 }
 
 module "s3" {
@@ -32,6 +33,8 @@ module "aws_secrets" {
   ses_secret_access_key = var.ses_secret_access_key
   ornl_endpoint_url = var.ornl_endpoint_url
   ornl_endpoint_access_token = var.ornl_endpoint_access_token
+  gesdisc_endpoint_url = var.gesdisc_endpoint_url
+  gesdisc_endpoint_access_token = var.gesdisc_endpoint_access_token
 }
 
 module "lambda_functions" {
@@ -85,6 +88,7 @@ module "lambda_functions" {
   ses_from_email = var.ses_from_email
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
+  gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
 }
 
 module "apigateway_endpoints" {
@@ -115,6 +119,7 @@ module "apigateway_endpoints" {
   vpc_endpoint_id = var.vpc_endpoint_id
   region = var.region
   service_authorizer_lambda_arn = module.lambda_functions.service_authorizer_lambda_arn
+  mfa_auth_lambda_arn = module.lambda_functions.mfa_auth_lambda_arn
 }
 
 module "rds" {
