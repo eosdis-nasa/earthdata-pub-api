@@ -519,6 +519,54 @@ module.exports.notificationConversation = function notificationConversation(req,
   });
 };
 
+module.exports.notificationAddViewers = function notificationAddViewers(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'add_viewers',
+    context: { user_id: req.user_id },
+    ...params.payload.value
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.notificationRemoveViewer = function notificationRemoveViewer(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'remove_viewer',
+    context: { user_id: req.user_id },
+    ...params.payload.value
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.notificationAddViewerRoles = function notificationAddViewerRoles(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'add_viewer_roles',
+    context: { user_id: req.user_id },
+    ...params.payload.value
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.notificationRemoveViewerRole = function notificationRemoveViewerRole(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'remove_viewer_role',
+    context: { user_id: req.user_id },
+    ...params.payload.value
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.getSubscriptions = function getSubscriptions(req, res, next) {
   const body = { message: 'Not implemented' };
   setTimeout(() => res.send(body), latency);
