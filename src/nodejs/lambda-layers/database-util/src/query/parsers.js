@@ -92,3 +92,5 @@ module.exports.deleteStepReviewApproval = many;
 module.exports.checkCountStepReviewApproved = one;
 module.exports.checkCountStepReviewRejected = one;
 module.exports.updateStatusStepReviewApproval = one;
+module.exports.setStepStartTime = one;
+module.exports.setStepStopTime = one;
