@@ -1,5 +1,6 @@
 const { getDefaultStepPromotion } = require('./templates/default-step-promotion');
 const { getNewSubmissionTemplate } = require('./templates/new-submission');
+const { getNewSubmissionDAACTemplate } = require('./templates/new-submission-daac');
 const { getDMTemplate } = require('./templates/direct-message');
 
 const envUrl = process.env.ROOT_URL;
