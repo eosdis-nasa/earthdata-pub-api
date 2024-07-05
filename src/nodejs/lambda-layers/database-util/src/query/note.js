@@ -330,7 +330,7 @@ WHERE conversation_id = {{conversation_id}} AND edpuser_id = {{user_id}}
 `;
 
 const getEmails = (params) => sql.select({
-  fields: ['email', 'name'],
+  fields: ['id', 'email', 'name'],
   from: {
     base: 'edpuser',
     joins: [{
