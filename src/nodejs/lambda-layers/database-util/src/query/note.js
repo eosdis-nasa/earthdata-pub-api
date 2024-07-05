@@ -356,7 +356,7 @@ const getEmails = (params) => sql.select({
       ...(params.userRole ? [{field: 'edpuser_edprole.edprole_id', any: {values: {param: 'userRole'}}}] : [])
     ]
   },
-  group: 'edpuser.email, edpuser.name'
+  group: 'edpuser.id, edpuser.email, edpuser.name'
 });
 
 module.exports.findAll = findAll;
