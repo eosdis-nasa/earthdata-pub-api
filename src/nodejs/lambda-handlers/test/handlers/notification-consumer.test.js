@@ -67,7 +67,7 @@ describe('notification-consumer', () => {
         event_type: 'review_approved',
         submission_name: 'test product',
         daac_name: 'test daac',
-        user_id: "1b10a09d-d342-4eee-a9eb-c99acd2dde17"
+        user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17'
       });
       return {};
     });
