@@ -92,3 +92,7 @@ module.exports.deleteStepReviewApproval = many;
 module.exports.checkCountStepReviewApproved = one;
 module.exports.checkCountStepReviewRejected = one;
 module.exports.updateStatusStepReviewApproval = one;
+module.exports.addViewers = one;
+module.exports.removeViewer = one;
+module.exports.addViewerRoles = one;
+module.exports.removeViewerRole = one;

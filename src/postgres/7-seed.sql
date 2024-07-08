@@ -255,7 +255,7 @@ INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 'data_format_n
 INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 'data_format_netcdf_classic', 6, 'NetCDF Classic', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 'data_format_other', 7, 'Other', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 'data_format_other_info', 8, 'If Other, please provide the data format(s)', 'text', '{}', '{}', '[{"field":"data_format_other","value":"true"}]','[]',  False);
-INSERT INTO input VALUES ('228cb0d6-78fb-449a-8061-b1e6fb3f59d1', 'spatial_general_region', 0, '', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('228cb0d6-78fb-449a-8061-b1e6fb3f59d1', 'spatial_general_region', 0, '', 'textarea', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f129f', 'product_temporal_coverage_start', 0, 'Start Date and Time (UTC)', 'datetimePicker', '{}', '{}', '[]','[]', True);
 INSERT INTO input VALUES ('4f2dd369-d865-47ba-8504-8694493f129f', 'product_temporal_coverage_end', 1, 'End Date and Time (UTC)', 'datetimePicker', '{}', '{}', '[]','[]', True);
 INSERT INTO input VALUES ('dbf70495-433a-439e-8173-0cb20f972c16', 'data_product_status', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
@@ -285,12 +285,12 @@ INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_verti
 INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_upper_units', 1, '', 'radio', '["km","m","feet","miles","mb","Pa","hPa","Varies"]', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_lower', 2, 'Lower Amount', 'number', '{}', '{"min": "1"}', '[]','[]',  False);
 INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_lower_units', 3, '', 'radio', '["km","m","feet","miles","mb","Pa","hPa","Varies"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('91577abc-a59c-40f7-b0e6-f954542e6b19', 'spatial_data_file', 0, '', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('a12ccd39-1d94-46a5-8aad-3587fd50c4ad', 'spatial_resolution', 0, 'Data Value Spatial Resolution', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('91577abc-a59c-40f7-b0e6-f954542e6b19', 'spatial_data_file', 0, '', 'textarea', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('a12ccd39-1d94-46a5-8aad-3587fd50c4ad', 'spatial_resolution', 0, 'Data Value Spatial Resolution', 'textarea', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('d1ef0a6f-284e-40a7-9248-75dd8f1f0ded', 'spatial_notes_textarea', 0, '', 'textarea', '{}', '{"rows":10,"cols":80}', '[]','[]',  False);
 INSERT INTO input VALUES ('0a2fd2eb-62de-40e1-8143-3e8087a4062d', 'data_processing_level', 0, '', 'radio', '["Level 0","Level 1A","Level 1B","Level 1C","Level 2","Level 2A","Level 3","Level 3A","Level 4","Other/Unsure"]', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('0a2fd2eb-62de-40e1-8143-3e8087a4062d', 'data_processing_other_info', 1, 'If Other', 'text', '{}', '{}', '[{"field":"data_processing_level","value":"Other"}]','[]',  False);
-INSERT INTO input VALUES ('fbd25b6f-2731-4456-882b-ef840c11b671', 'variables_text', 0, '', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('fbd25b6f-2731-4456-882b-ef840c11b671', 'variables_text', 0, '', 'textarea', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_type_observational', 0, 'Observational', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('70274fc6-86e8-4d95-8b2c-60135eff43f5', 'data_product_type_model', 1, 'Model', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('9767336b-a9a9-41d2-8d2d-4fc2858c9b6f', 'platform_instrument', 0, '', 'text', '{}', '{}', '[]','[]',  False);
@@ -332,6 +332,7 @@ INSERT INTO edprole VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'staff', 'DA
 INSERT INTO edprole VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'manager', 'DAAC Data Manager', 'The DAAC staff member who manages all DAAC Requests. Managers assign a Request to Staff. There may be multiple DAAC Data Managers per DAAC. Some DAACs may choose to combine the Manager and Staff roles by assigning staff to both.');
 INSERT INTO edprole VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'observer', 'DAAC Observer', 'A DAAC or ESDIS staff member who is interested in monitoring progress in Earthdata Pub but does not need edit or write permission. This can be a DAAC Data Staff or similar.');
 INSERT INTO edprole VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'admin', 'Administrator', 'An Earthdata Pub admin can see and edit most aspects of Earthdata Pub.');
+INSERT INTO edprole VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'uwg_member', 'UWG Member', 'A member of the User Working Group who can review requests in Earthdata Pub.');
 
 --Privilege(privilege)
 INSERT INTO privilege VALUES ('ADMIN');
@@ -393,6 +394,7 @@ INSERT INTO privilege VALUES ('METRICS_READ');
 INSERT INTO privilege VALUES ('NOTE_NEW');
 INSERT INTO privilege VALUES ('NOTE_REPLY');
 INSERT INTO privilege VALUES ('NOTE_ADDUSER');
+INSERT INTO privilege VALUES ('NOTE_REMOVEUSER');
 INSERT INTO privilege VALUES ('NOTE_ADDGROUP');
 
 INSERT INTO privilege VALUES ('QUESTION_CREATE');
@@ -405,6 +407,13 @@ INSERT INTO privilege VALUES ('REMOVE_STEPREVIEW');
 
 -- RolePrivilege(edprole_id, privilege) Administrator
 INSERT INTO edprole_privilege VALUES ('75605ac9-bf65-4dec-8458-93e018dcca97', 'ADMIN');
+
+-- RolePrivilege(edprole_id, privilege) UWG Member
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'REQUEST_READ');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'REQUEST_REVIEW');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_NEW');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_REPLY');
+INSERT INTO edprole_privilege VALUES ('19ac227b-e96c-46fa-a378-cf82c461b669', 'NOTE_ADDUSER');
 
 -- RolePrivilege(edprole_id, privilege) Data Producer
 INSERT INTO edprole_privilege VALUES ('804b335c-f191-4d26-9b98-1ec1cb62b97d', 'REQUEST_INITIALIZE');
@@ -431,6 +440,7 @@ INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'D
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'NOTE_NEW');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'NOTE_REPLY');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'NOTE_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'NOTE_REMOVEUSER');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'METRICS_READ');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'FORM_CREATE');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'FORM_READ');
@@ -465,6 +475,8 @@ INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'Q
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'CREATE_STEPREVIEW');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REMOVE_STEPREVIEW');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'NOTE_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'NOTE_REMOVEUSER');
 
 -- UserRole(edpuser_id, edprole_id)
 INSERT INTO edpuser_edprole VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', '75605ac9-bf65-4dec-8458-93e018dcca97');
@@ -483,6 +495,7 @@ INSERT INTO workflow VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'ornl_defau
 INSERT INTO workflow VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'referred_workflow', 1, 'Referrer Close', 'Use this to close after referring the Data Producer to another DAAC.');
 INSERT INTO workflow VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'asdc_darkhorse_workflow', 1, 'ASDC Default Workflow (Darkhorse)', 'This is the darkhorse workflow for ASDC.');
 INSERT INTO workflow VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'gesdisc_community_workflow', 1, 'GES DISC Community Workflow', 'This is the default workflow for community products.');
+INSERT INTO workflow VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'gesdisc_push_workflow', 1, 'GES DISC Push Workflow', 'This is a workflow for testing the push to gesdisc action.');
 INSERT INTO workflow VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'podaac_default_workflow', 1, 'PO DAAC Default Workflow', 'This is the default workflow for PO DAAC.');
 
 -- Step(step_name, type, action_id, form_id, service_id, data)
@@ -546,23 +559,30 @@ INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'map_quest
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f2', 'close');
 
 -- GES DISC 
+-- Community Workflow
+-- Step(step_id, step_name, type, action_id, form_id, service_id, data)
+INSERT INTO step(step_id, step_name, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'review', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('e62e9548-b350-40ec-b1bc-21a75e5f0407', 'data_publication_request_form_management_review', 'review', '{"rollback":"data_publication_request_form_uwg_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('7838ed18-4ecd-499e-9a47-91fd181cbfc7', 'data_publication_request_form_esdis_review', 'review',  '{"rollback":"data_publication_request_form_management_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+-- StepEdge(workflow_id, step_name, next_step_name)
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'init', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'data_publication_request_form_uwg_review');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_uwg_review', 'data_publication_request_form_management_review');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_management_review', 'data_publication_request_form_esdis_review');
+INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_esdis_review', 'close');
+
+-- GES DISC Push Worfklow
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('a9c55c56-8fd7-4bd1-89aa-0cf9e28da07e', 'send_metadata_to_ges_disc', 'action', '09293035-2d31-44d3-a6b0-675f10dc34bf', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
-INSERT INTO step(step_id, step_name, type, data) VALUES ('e62e9548-b350-40ec-b1bc-21a75e5f0407', 'data_publication_request_form_management_review', 'review', '{"rollback": "send_metadata_to_gesdisc", "type": "action"}');
-INSERT INTO step(step_id, step_name, step_status_label, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'Pending UWG Review', 'review', '{"rollback":"data_publication_request_form_management_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
-
-INSERT INTO step(step_id, step_name, type, data) VALUES ('7838ed18-4ecd-499e-9a47-91fd181cbfc7', 'data_publication_request_form_esdis_review', 'review', '{"rollback":"data_publication_request_form_uwg_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 -- StepEdge(workflow_id, step_name, next_step_name)
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'init', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_accession_request_form_review', 'data_publication_request_form');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form', 'data_publication_request_form_review');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_review', 'map_question_response_to_ummc');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'map_question_response_to_ummc', 'send_metadata_to_ges_disc');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'send_metadata_to_ges_disc', 'data_publication_request_form_management_review');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_management_review', 'data_publication_request_form_uwg_review');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_uwg_review', 'data_publication_request_form_esdis_review');
-INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_esdis_review', 'close');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form_review', 'map_question_response_to_ummc');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'map_question_response_to_ummc', 'send_metadata_to_ges_disc');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'send_metadata_to_ges_disc', 'close');
 
 -- ASDC 
 -- StepEdge(workflow_id, step_name, next_step_name)
