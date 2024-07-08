@@ -17,22 +17,30 @@ const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 async function fetchAction(key, local) {
   const s3 = new S3Client();
-  const data = await s3.send(
-    new GetObjectCommand({
-      Bucket: process.env.ACTIONS_BUCKET,
-      Key: key
-    })
-  );
-  return new Promise((resolve, reject) => {
-    const body = data.Body;
-    if (body instanceof Readable) {
-      const writeStream = fs.createWriteStream(local);
-      body
-        .pipe(writeStream)
-        .on('error', (err) => reject(err))
-        .on('close', () => resolve(null));
-    }
-  });
+  try {
+    const data = await s3.send(
+      new GetObjectCommand({
+        Bucket: process.env.ACTIONS_BUCKET,
+        Key: key
+      })
+    );
+
+    return new Promise((resolve, reject) => {
+      const body = data.Body;
+      if (body instanceof Readable) {
+        const writeStream = fs.createWriteStream(local);
+        body
+          .pipe(writeStream)
+          .on('error', (err) => reject(err))
+          .on('close', () => resolve(null));
+      } else {
+        reject(new Error('Body is not a readable stream'));
+      }
+    });
+  } catch (err) {
+    console.error(`Error fetching action ${key}:`, err);
+    return { error: 'Error fetching action' };
+  }
 }
 
 async function processRecord(record) {
