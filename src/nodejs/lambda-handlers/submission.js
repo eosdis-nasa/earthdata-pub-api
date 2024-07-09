@@ -220,7 +220,7 @@ async function withdrawMethod(event, user) {
   const submissionMetrics = await db.metrics.getSubmissions({
     submissionId: id
   });
-  
+
   const eventMessage = {
     event_type: 'workflow_completed',
     submission_id: id,

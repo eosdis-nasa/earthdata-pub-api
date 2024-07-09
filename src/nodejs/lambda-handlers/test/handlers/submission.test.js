@@ -202,7 +202,7 @@ describe('submission', () => {
       id: 'test id'
     };
 
-    db.submission.getState.mockReturnValue({ conversation_id: 'test conversation', workflow_id: 'test workflow'});
+    db.submission.getState.mockReturnValue({ conversation_id: 'test conversation', workflow_id: 'test workflow' });
     db.metrics.getSubmissions.mockImplementation(async (args) => {
       expect(args).toEqual({
         submissionId: 'test id'
