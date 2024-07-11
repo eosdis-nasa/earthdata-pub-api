@@ -96,7 +96,7 @@ const getSubmissions = (params) => sql.select({
     'submission.hidden', 
     'submission_status.*',
     'submission_metrics.accession_rejected',
-    `CASE WHEN submission_status.step_name = 'close' 
+    `CASE WHEN (submission_status.step_name = 'close' OR submission.hidden IS TRUE)
       THEN EXTRACT(EPOCH FROM (last_change - created_at)) ELSE NULL END 
       as time_to_publish`
   ],

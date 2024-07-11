@@ -124,6 +124,7 @@ describe('notification', () => {
     db.user.findById.mockResolvedValueOnce({ user_privileges: [], user_groups: [] });
     db.note.readConversation.mockImplementationOnce(async (functPayload) => {
       expect(functPayload).toEqual({
+        admin: true,
         conversation_id: 'test conversation',
         step_name: 'test step'
       });
@@ -131,6 +132,7 @@ describe('notification', () => {
     });
     db.note.readConversation.mockImplementationOnce(async (functPayload) => {
       expect(functPayload).toEqual({
+        admin: true,
         conversation_id: 'test conversation',
         step_name: 'test step'
       });
