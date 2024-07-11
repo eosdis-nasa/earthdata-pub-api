@@ -1,5 +1,5 @@
 const getNewSubmissionDAACTemplate = (params, envUrl) => {
-  const newSubmissionDAACText = `Hello ${params.user.name},\n\nThank you for creating a request to the ${params.eventMessage.daac_name} in Earthdata Pub. On your personal dashboard (${envUrl}/dashboard), your submission has received the following temporary name:\n\n${params.eventMessage.submission_name}\n\nPlease click on the green button on the far right of your submission's row to complete the appropriate form, which will gather information to continue your submission.\n\nThank you for using Earthdata Pub.`;
+  const newSubmissionDAACText = `Hello ${params.user.name},\n\nA request has been submitted to the ${params.eventMessage.daac_name} in Earthdata Pub. The submission has received the following temporary name:\n\n${params.eventMessage.submission_name}\n\nThank you for using Earthdata Pub.`;
   const newSubmissionDAACHTML = `
     <html>
     <body>
