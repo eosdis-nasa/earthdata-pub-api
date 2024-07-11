@@ -216,24 +216,20 @@ async function unlockMethod(event, user) {
 
 async function withdrawMethod(event, user) {
   const { id } = event;
-  const status = await db.submission.getState({ id });
-  const submissionMetrics = await db.metrics.getSubmissions({
-    submissionId: id
-  });
-
-  const eventMessage = {
-    event_type: 'workflow_completed',
-    submission_id: id,
-    conversation_id: status.conversation_id,
-    workflow_id: status.workflow_id,
-    step_name: 'withdrawn',
-    time_to_publish: Math.round(submissionMetrics[0].time_to_publish)
-  };
 
   const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD'];
   if (approvedUserPrivileges.some((privilege) => user.user_privileges.includes(privilege))) {
-    await msg.sendEvent(eventMessage);
-    return db.submission.withdrawSubmission({ id });
+    const submission = await db.submission.withdrawSubmission({ id });
+    const submissionMetrics = await db.metrics.getSubmissions({ submissionId: id });
+    await msg.sendEvent({
+      event_type: 'workflow_completed',
+      submission_id: id,
+      conversation_id: submission.conversation_id,
+      workflow_id: submissionMetrics.workflow_id,
+      step_name: 'withdrawn',
+      time_to_publish: Math.round(submissionMetrics[0].time_to_publish)
+    });
+    return submission;
   }
   return db.submission.findById({ id });
 }
