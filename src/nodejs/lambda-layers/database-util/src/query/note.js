@@ -654,7 +654,7 @@ WHERE conversation_id = {{conversation_id}} AND edpuser_id = {{user_id}}
 `;
 
 const getEmails = (params) => sql.select({
-  fields: ['email', 'name'],
+  fields: ['id', 'email', 'name'],
   from: {
     base: 'edpuser',
     joins: [{
@@ -680,7 +680,7 @@ const getEmails = (params) => sql.select({
       ...(params.userRole ? [{field: 'edpuser_edprole.edprole_id', any: {values: {param: 'userRole'}}}] : [])
     ]
   },
-  group: 'edpuser.email, edpuser.name'
+  group: 'edpuser.id, edpuser.email, edpuser.name'
 });
 
 const addViewers = ({ noteId, viewerIds }) => `
