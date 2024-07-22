@@ -6,7 +6,7 @@ const { getDMTemplate } = require('./templates/direct-message');
 const envUrl = process.env.ROOT_URL;
 
 const createEmailHtml = async (params) => {
-  if (params.customTemplateFunction){
+  if (params.customTemplateFunction) {
     return params.customTemplateFunction(params, envUrl);
   }
   if (params.eventMessage.event_type.match(/direct_message/gi)) {

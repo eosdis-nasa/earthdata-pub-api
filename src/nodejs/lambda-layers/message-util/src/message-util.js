@@ -48,7 +48,7 @@ async function getSecretsValues() {
 
 async function send(user, eventMessage, customTemplateFunction, ses) {
   try {
-    const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction});
+    const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
     const payload = {
       Source: sourceEmail,
       Destination: {
