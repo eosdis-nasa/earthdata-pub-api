@@ -9,6 +9,7 @@ INSERT INTO action VALUES ('3fe93672-cd91-45d4-863b-c6d0d63f8c8c', 'send_to_mmt'
 INSERT INTO action VALUES ('f812eb99-7c4a-46a8-8d8f-30ae509fe21c', 'map_edpub_to_ummc', 1, 'Map EDPub To UMMC Action', 'This action is map EDPub question reponses to a JSON UMMC format.', 'mapEDPubToUmmc.js');
 INSERT INTO action VALUES ('6d872804-609b-4e5d-a80c-143908051e07', 'push_metadata_to_daac', 1, 'Pushes Metadata to a Daac Endpoint', 'This action is used to push metadata to a DAAC endpoint.', 'pushMetadataToDaac.js');
 INSERT INTO action VALUES ('09293035-2d31-44d3-a6b0-675f10dc34bf', 'push_metadata_to_gesdisc', 1, 'Push Metadata to GES DISC Endpoint', 'This action is used to push metadata to the GES DISC meditor instance', 'pushMetadataToGesdisc.js');
+INSERT INTO action VALUES ('50ed996d-22b7-4aa7-a88b-8c4b539fa5df', 'email_daac_staff', 1, 'Send Email to DAAC Staff', 'This action is used to send an email to all DAAC staff', 'emailDaacStaff.js');
 
 -- Section(id, form_id, heading, list_order, daac_id)
 INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 0, '[]', '[]', NULL);
@@ -546,6 +547,8 @@ INSERT INTO step(step_id, step_name, type, data) VALUES ('6445f44b-bcda-41b4-86e
 INSERT INTO step(step_id, step_name, type, data) VALUES ('4791d53b-6c8f-4d5b-9ee9-81cebd4c4b04', 'push_to_ornl_database_f2', 'action', '{"rollback": "map_question_response_to_ummc_f2", "type": "action"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('c6082cae-9c97-4692-b0da-c9334a30c9e0', 'map_question_response_to_ummc_f1', 'action', '{"rollback": "data_accession_request_form_review", "type": "review"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('faf94cca-ea3e-4886-a306-4f7f5acfda1a', 'map_question_response_to_ummc_f2', 'action', '{"rollback": "data_publication_request_form_review", "type": "review"}');
+INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '50ed996d-22b7-4aa7-a88b-8c4b539fa5df', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
+
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'init', 'close');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init', 'data_accession_request_form');
@@ -556,7 +559,8 @@ INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_o
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review', 'map_question_response_to_ummc_f2');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'map_question_response_to_ummc_f2', 'push_to_ornl_database_f2');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f2', 'close');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f2', 'email_daac_staff');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'email_daac_staff', 'close');
 
 -- GES DISC 
 -- Community Workflow
