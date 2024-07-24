@@ -39,3 +39,6 @@ jest.json
 
 # Ignore files made in testing
 .DS_Store
+
+# Ignore any local dashboard dir
+dashboard
