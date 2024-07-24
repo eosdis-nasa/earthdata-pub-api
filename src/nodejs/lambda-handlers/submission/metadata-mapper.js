@@ -13,10 +13,11 @@ const stringToBoolString = (inputString) => stringToBool(inputString).toString()
 function stripNullsFromObject(obj) {
   return Object.fromEntries(
     Object.entries(obj)
-      .filter(([_, v]) => v != null && !isNaN(v))
+      // eslint-disable-next-line no-unused-vars
+      .filter(([_, v]) => v != null && !Number.isNaN(v))
       .map(([k, v]) => [k, v === Object(v) ? stripNullsFromObject(v) : v])
   );
-};
+}
 
 const mapEDPubToUmmc = async (formData) => {
   if (typeof formData !== 'object' || formData === null) return {};
@@ -193,12 +194,12 @@ const mapEDPubToUmmc = async (formData) => {
     NorthBoundingCoordinate: Number(formData.spatial_horizontal_1_north),
     EastBoundingCoordinate: Number(formData.spatial_horizontal_1_east),
     SouthBoundingCoordinate: Number(formData.spatial_horizontal_1_south)
-  },{
+  }, {
     WestBoundingCoordinate: Number(formData.spatial_horizontal_2_west),
     NorthBoundingCoordinate: Number(formData.spatial_horizontal_2_north),
     EastBoundingCoordinate: Number(formData.spatial_horizontal_2_east),
     SouthBoundingCoordinate: Number(formData.spatial_horizontal_2_south)
-  },{
+  }, {
     WestBoundingCoordinate: Number(formData.spatial_horizontal_3_west),
     NorthBoundingCoordinate: Number(formData.spatial_horizontal_3_north),
     EastBoundingCoordinate: Number(formData.spatial_horizontal_3_east),
@@ -206,13 +207,13 @@ const mapEDPubToUmmc = async (formData) => {
   }];
 
   // Strip nulls and empty objects
-  tmpArr = tmpArr.filter(value =>  Object.keys(stripNullsFromObject(value)).length !== 0);
+  tmpArr = tmpArr.filter((value) => Object.keys(stripNullsFromObject(value)).length !== 0);
   spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.concat(tmpArr);
   // Delete spatial extent information
   ['west', 'north', 'east', 'south'].forEach((direction) => {
     [1, 2, 3].forEach((directionSet) => {
-      delete formData[`spatial_horizontal_${directionSet}_${direction}`]
-    })
+      delete formData[`spatial_horizontal_${directionSet}_${direction}`];
+    });
   });
 
   if (spatialExtent?.SpatialExtent?.SpatialCoverageType === 'HORIZONTAL_VERTICAL') {
