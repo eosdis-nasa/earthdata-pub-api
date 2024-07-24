@@ -547,7 +547,7 @@ INSERT INTO step(step_id, step_name, type, data) VALUES ('6445f44b-bcda-41b4-86e
 INSERT INTO step(step_id, step_name, type, data) VALUES ('4791d53b-6c8f-4d5b-9ee9-81cebd4c4b04', 'push_to_ornl_database_f2', 'action', '{"rollback": "map_question_response_to_ummc_f2", "type": "action"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('c6082cae-9c97-4692-b0da-c9334a30c9e0', 'map_question_response_to_ummc_f1', 'action', '{"rollback": "data_accession_request_form_review", "type": "review"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('faf94cca-ea3e-4886-a306-4f7f5acfda1a', 'map_question_response_to_ummc_f2', 'action', '{"rollback": "data_publication_request_form_review", "type": "review"}');
-INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '50ed996d-22b7-4aa7-a88b-8c4b539fa5df', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
 
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'init', 'close');

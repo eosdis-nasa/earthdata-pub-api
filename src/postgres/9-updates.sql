@@ -410,8 +410,7 @@ INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'send_meta
 -- EDPUB 1331 - Example action for emailing DAAC Staff
 INSERT INTO action VALUES ('50ed996d-22b7-4aa7-a88b-8c4b539fa5df', 'email_daac_staff', 1, 'Send Email to DAAC Staff', 'This action is used to send an email to all DAAC staff', 'emailDaacStaff.js');
 INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '50ed996d-22b7-4aa7-a88b-8c4b539fa5df', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'email_daac_staff', 'close');
-
 UPDATE step_edge
 SET next_step_name = 'email_daac_staff'
 WHERE workflow_id = 'a218f99d-cfc1-44e5-b203-3e447e1c1275' and step_name = 'push_to_ornl_database_f2';
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'email_daac_staff', 'close');
