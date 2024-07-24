@@ -40,7 +40,7 @@ const initialize = () =>`
 `;
 
 const createStep = (params) => sql.insert({
-  table: 'step (step_name, type, action_id, form_id, service_id,step_status_label, data)',
+  table: 'step (step_name, type, action_id, form_id, service_id, step_status_label, data)',
   values: {
     type: 'values_list',
     items: [
@@ -48,15 +48,15 @@ const createStep = (params) => sql.insert({
       params.action_id? '{{action_id}}':'null',
       params.form_id? '{{form_id}}':'null',
       params.service_id? '{{service_id}}':'null',
+      params.step_status_label? '{{step_status_label}}':'null',
       params.data? '{{data}}':'null',
-      params.step_status_label? '{{step_status_label}}':'null'
     ]
   },
   conflict:{
     constraints: ['step_name'],
     update:{
       type:'update',
-      set:[{cmd:'type = EXCLUDED.type, action_id = EXCLUDED.action_id, form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id,step_status_label = EXCLUDED.step_status_label, data = EXCLUDED.data'}]
+      set:[{cmd:'type = EXCLUDED.type, action_id = EXCLUDED.action_id, form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id, step_status_label = EXCLUDED.step_status_label, data = EXCLUDED.data'}]
     }
   }
 })
