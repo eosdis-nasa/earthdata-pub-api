@@ -348,7 +348,7 @@ async function createStepReviewApprovalMethod(event, user) {
     submitted_by: user.id
   };
   const formData = await db.submission.createStepReviewApproval(param);
-  await addContributorsMethod({id: submissionId, contributor_ids: userIds}, user);
+  await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
   return formData;
 }
 
@@ -371,7 +371,7 @@ async function deleteStepReviewApprovalMethod(event, user) {
   const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds };
   const formData = await db.submission.deleteStepReviewApproval(param);
   // Only accepts 1 at time; however, this isn't an issue for the current dashboard implementation
-  await removeContributorMethod({id: submissionId, contributor_ids: userIds[0]}, user);
+  await removeContributorMethod({ id: submissionId, contributor_ids: userIds[0] }, user);
   return formData;
 }
 
