@@ -209,10 +209,8 @@ WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-
 -- step(step_status_label)
 -- Adding step status label in uwg_review step gesdisc workflow 
 
-UPDATE step
-SET step_status_label = VARCHAR
-
-INSERT INTO step(step_id, step_name, step_status_label, type, data) VALUES ('c81066db-0566-428d-87e8-94169ce5a9b9', 'data_publication_request_form_uwg_review', 'Pending UWG Review', 'review', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
+ALTER TABLE step ADD step_status_label VARCHAR;
+UPDATE step SET step_status_label='Pending UWG Review' WHERE step_id='c81066db-0566-428d-87e8-94169ce5a9b9';
 
 -- EDPUB-1262 update datetimepicker
 UPDATE Input
