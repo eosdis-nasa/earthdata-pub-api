@@ -34,6 +34,8 @@ db.submission.copyFormData = jest.fn();
 db.submission.copyActionData = jest.fn();
 db.submission.setSubmissionCopy = jest.fn();
 db.submission.updateSubmissionData = jest.fn();
+db.metrics = jest.fn();
+db.metrics.getSubmissions = jest.fn();
 
 msg.sendEvent = jest.fn();
 
@@ -199,6 +201,19 @@ describe('submission', () => {
       },
       id: 'test id'
     };
+
+    db.submission.getState.mockReturnValue({ conversation_id: 'test conversation', workflow_id: 'test workflow' });
+    db.metrics.getSubmissions.mockImplementation(async (args) => {
+      expect(args).toEqual({
+        submissionId: 'test id'
+      });
+      return [
+        {
+          time_to_publish: null
+        }
+      ];
+    });
+
     db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_ADMINREAD'] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['NO_PRIVILEGES'] });
     db.submission.findById.mockReturnValueOnce({ msg: 'test submission' });

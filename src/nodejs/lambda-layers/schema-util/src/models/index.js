@@ -9,6 +9,10 @@ const LogEvent = require('./log-event.js');
 const LogEventList = require('./log-event-list.js');
 const LogEventRequest = require('./log-event-request.js');
 const Note = require('./note.js');
+const NoteAddViewers = require('./note-add-viewers.js');
+const NoteRemoveViewer = require('./note-remove-viewer.js');
+const NoteAddViewerRoles = require('./note-add-viewer-roles.js');
+const NoteRemoveViewerRole = require('./note-remove-viewer-role.js');
 const NotificationReplyRequest = require('./notification-reply-request.js');
 const NotificationSendRequest = require('./notification-send-request.js');
 const MetricsGenerateReport = require('./metrics-generate-report.js');
@@ -52,6 +56,10 @@ const models = {
   LogEventList,
   LogEventRequest,
   Note,
+  NoteAddViewers,
+  NoteRemoveViewer,
+  NoteAddViewerRoles,
+  NoteRemoveViewerRole,
   NotificationReplyRequest,
   NotificationSendRequest,
   MetricsGenerateReport,
