@@ -18,7 +18,7 @@ const serverPort = 8080;
 
 const app = express();
 
-app.use(bodyParser.json({ strict: false }));
+app.use(bodyParser.json({ strict: false, limit: '10MB' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(local.aclAllowAll);
