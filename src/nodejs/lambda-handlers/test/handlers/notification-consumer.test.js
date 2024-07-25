@@ -66,7 +66,8 @@ describe('notification-consumer', () => {
         conversation_last_message: 'Data Accession Request Form review completed; please click on the green button on the far right of your submission’s row to complete the next action, if applicable.',
         event_type: 'review_approved',
         submission_name: 'test product',
-        daac_name: 'test daac'
+        daac_name: 'test daac',
+        user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17'
       });
       return {};
     });
