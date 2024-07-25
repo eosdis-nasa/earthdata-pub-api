@@ -14,6 +14,7 @@ const findAll = () => `
           'action_id', step.action_id,
           'form_id', step.form_id,
           'service_id', step.service_id,
+          'step_status_label', step.step_status_label,
           'next_step_name', step_edge_details.next_step_name,
           'prev_step_name', step_edge_details.prev_step_name,
           'step_message', step_edge_details.step_message,
@@ -39,7 +40,7 @@ const initialize = () =>`
 `;
 
 const createStep = (params) => sql.insert({
-  table: 'step (step_name, type, action_id, form_id, service_id, data)',
+  table: 'step (step_name, type, action_id, form_id, service_id, step_status_label, data)',
   values: {
     type: 'values_list',
     items: [
@@ -47,14 +48,15 @@ const createStep = (params) => sql.insert({
       params.action_id? '{{action_id}}':'null',
       params.form_id? '{{form_id}}':'null',
       params.service_id? '{{service_id}}':'null',
-      params.data? '{{data}}':'null'
+      params.step_status_label? '{{step_status_label}}':'null',
+      params.data? '{{data}}':'null',
     ]
   },
   conflict:{
     constraints: ['step_name'],
     update:{
       type:'update',
-      set:[{cmd:'type = EXCLUDED.type, action_id = EXCLUDED.action_id, form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id, data = EXCLUDED.data'}]
+      set:[{cmd:'type = EXCLUDED.type, action_id = EXCLUDED.action_id, form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id, step_status_label = EXCLUDED.step_status_label, data = EXCLUDED.data'}]
     }
   }
 })
