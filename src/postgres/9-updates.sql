@@ -412,3 +412,12 @@ INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publ
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form_review', 'map_question_response_to_ummc');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'map_question_response_to_ummc', 'send_metadata_to_ges_disc');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'send_metadata_to_ges_disc', 'close');
+
+-- 7/25/24 Fix display of forms for GES DISC extended reviews
+UPDATE step SET data='{"rollback":"data_publication_request_form_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='c81066db-0566-428d-87e8-94169ce5a9b9';
+UPDATE step SET data='{"rollback":"data_publication_request_form_uwg_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='e62e9548-b350-40ec-b1bc-21a75e5f0407';
+UPDATE step SET data='{"rollback":"data_publication_request_form_management_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='7838ed18-4ecd-499e-9a47-91fd181cbfc7';
+
+-- 7/25/24 Update DAAC staff permissions
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REMOVEUSER');
