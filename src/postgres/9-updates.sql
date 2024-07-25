@@ -418,6 +418,10 @@ UPDATE step SET data='{"rollback":"data_publication_request_form_review","type":
 UPDATE step SET data='{"rollback":"data_publication_request_form_uwg_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='e62e9548-b350-40ec-b1bc-21a75e5f0407';
 UPDATE step SET data='{"rollback":"data_publication_request_form_management_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='7838ed18-4ecd-499e-9a47-91fd181cbfc7';
 
--- 7/25/24 Update DAAC staff permissions
+-- 7/25/24 Update missing permissions
+INSERT INTO privilege VALUES ('REQUEST_ADDUSER');
+INSERT INTO privilege VALUES ('REQUEST_REMOVEUSER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REMOVEUSER');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_ADDUSER');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REMOVEUSER');
