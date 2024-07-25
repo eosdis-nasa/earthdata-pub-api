@@ -46,7 +46,7 @@ const mapEDPubToUmmc = async (formData) => {
   delete formData.data_producer_info_organization;
   delete formData.data_producer_info_department;
 
-  const contactPerson = (formData.data_producer_info_name || formData.data_producer_info_email || dataProducerAffiliation) ? {
+  const contactPerson = (dataProducerSplitName || formData.data_producer_info_email || formData.data_producer_info_orcid || dataProducerAffiliation) ? {
     ContactPersons: [
       {
         Roles: ['Science Contact'],
@@ -208,7 +208,7 @@ const mapEDPubToUmmc = async (formData) => {
 
   // Strip nulls and empty objects
   tmpArr = tmpArr.filter((value) => Object.keys(stripNullsFromObject(value)).length !== 0);
-  spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.concat(tmpArr);
+  spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles = spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.concat(tmpArr);
   // Delete spatial extent information
   ['west', 'north', 'east', 'south'].forEach((direction) => {
     [1, 2, 3].forEach((directionSet) => {
