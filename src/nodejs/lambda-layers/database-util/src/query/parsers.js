@@ -103,3 +103,4 @@ module.exports.clearSteps = one;
 module.exports.addStep = one;
 module.exports.addClose = one;
 module.exports.deleteWorkflow = one;
+module.exports.removeUserFromConversation = one;
