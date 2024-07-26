@@ -413,6 +413,13 @@ INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publ
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'map_question_response_to_ummc', 'send_metadata_to_ges_disc');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'send_metadata_to_ges_disc', 'close');
 
+-- EDPUB 1331 - Example action for emailing DAAC Staff
+INSERT INTO action VALUES ('50ed996d-22b7-4aa7-a88b-8c4b539fa5df', 'email_daac_staff', 1, 'Send Email to DAAC Staff', 'This action is used to send an email to all DAAC staff', 'emailDaacStaff.js');
+INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '50ed996d-22b7-4aa7-a88b-8c4b539fa5df', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
+UPDATE step_edge
+SET next_step_name = 'email_daac_staff'
+WHERE workflow_id = 'a218f99d-cfc1-44e5-b203-3e447e1c1275' and step_name = 'push_to_ornl_database_f2';
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'email_daac_staff', 'close');
 -- 7/25/24 Fix display of forms for GES DISC extended reviews
 UPDATE step SET data='{"rollback":"data_publication_request_form_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='c81066db-0566-428d-87e8-94169ce5a9b9';
 UPDATE step SET data='{"rollback":"data_publication_request_form_uwg_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='e62e9548-b350-40ec-b1bc-21a75e5f0407';

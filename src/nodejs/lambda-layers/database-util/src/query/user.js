@@ -230,8 +230,8 @@ const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
   ...(page ? { offset: page } : {})
 });
 
-const findAll = ({name, email, sort, order, per_page, page, group_id, role_id}) => sql.select({
-  fields: fields(['id', 'name']),
+const findAll = ({name, email, sort, order, per_page, page, group_id, role_id, requested_fields=['id', 'name']}) => sql.select({
+  fields: fields(requested_fields),
   from: {
     base: table,
     joins: [
