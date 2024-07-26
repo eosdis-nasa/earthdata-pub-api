@@ -247,6 +247,7 @@ const findAll = ({name, email, sort, order, per_page, page, group_id, role_id}) 
       ...(role_id ? [{ field: 'edpuser_edprole.edprole_id', param: 'role_id' }] : []),
     ]
   },
+  group: 'id',
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
