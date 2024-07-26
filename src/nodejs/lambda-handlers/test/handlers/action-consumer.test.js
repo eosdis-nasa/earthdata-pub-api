@@ -84,7 +84,7 @@ describe('action-consumer', () => {
     expect(MessageUtil.parseRecord).toHaveBeenCalledWith(event.Records[0]);
     expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'action', operation: 'findById' }, { id: 'action-id' });
     expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'findById' }, { id: 'submission-id' });
-    expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'updateActionData' }, { id: 'submission-id', action_id: 'action-id', data: {"output":{"output":"output"},"source":"source"} });
+    expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'updateActionData' }, { id: 'submission-id', action_id: 'action-id', data: { output: { output: 'output' }, source: 'source' } });
     expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'findById' }, { id: 'submission-id' });
     expect(MessageUtil.sendEvent).toHaveBeenCalledWith(newEventMessage);
     expect(Schema.generateId).toHaveBeenCalled();
