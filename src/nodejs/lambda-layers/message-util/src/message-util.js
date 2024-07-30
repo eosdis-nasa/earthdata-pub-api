@@ -46,9 +46,9 @@ async function getSecretsValues() {
   }
 }
 
-async function send(user, eventMessage, ses) {
+async function send(user, eventMessage, customTemplateFunction, ses) {
   try {
-    const bodyArray = await createEmailHtml({ user, eventMessage });
+    const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
     const payload = {
       Source: sourceEmail,
       Destination: {
@@ -79,7 +79,7 @@ async function send(user, eventMessage, ses) {
   }
 }
 
-async function sendEmail(users, eventMessage) {
+async function sendEmail(users, eventMessage, customTemplateFunction) {
   try {
     const secretsResponse = await getSecretsValues();
     const sesCreds = JSON.parse(secretsResponse.SecretString);
@@ -90,7 +90,7 @@ async function sendEmail(users, eventMessage) {
         secretAccessKey: sesCreds.ses_secret_access_key
       }
     });
-    const promises = users.map((user) => send(user, eventMessage, ses));
+    const promises = users.map((user) => send(user, eventMessage, customTemplateFunction, ses));
     await Promise.all(promises);
     return { success: true };
   } catch (err) {
