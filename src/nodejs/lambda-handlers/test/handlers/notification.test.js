@@ -119,8 +119,7 @@ describe('notification', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockResolvedValueOnce({ user_privileges: ['REQUEST_ADMINREAD', 'ADMIN'], user_groups: [] });
-    db.user.findById.mockResolvedValueOnce({ user_privileges: ['REQUEST_ADMINREAD'], user_groups: [] });
+    db.user.findById.mockResolvedValueOnce({ user_privileges: ['ADMIN'], user_groups: [] });
     db.user.findById.mockResolvedValueOnce({ user_privileges: [], user_groups: [] });
     db.note.readConversation.mockImplementationOnce(async (functPayload) => {
       expect(functPayload).toEqual({

@@ -74,7 +74,6 @@ describe('submission', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_ADMINREAD'], user_groups: [] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_DAACREAD'], user_groups: [] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_READ'], user_groups: [] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_WRITE'], user_groups: [] });
@@ -94,7 +93,6 @@ describe('submission', () => {
         user_id: 'test user'
       }
     };
-    db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_ADMINREAD'], user_groups: [] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_DAACREAD'], user_groups: [] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_READ'], user_groups: [] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_WRITE'], user_groups: [] });
@@ -214,7 +212,6 @@ describe('submission', () => {
       ];
     });
 
-    db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_ADMINREAD'] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['NO_PRIVILEGES'] });
     db.submission.findById.mockReturnValueOnce({ msg: 'test submission' });
     db.submission.withdrawSubmission.mockReturnValue({ msg: 'submission withdrawn' });
@@ -230,7 +227,6 @@ describe('submission', () => {
       },
       id: 'test id'
     };
-    db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_ADMINREAD'] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['NO_PRIVILEGES'] });
     db.submission.findById.mockReturnValueOnce({ msg: 'test submission' });
     db.submission.restoreSubmission.mockReturnValue({ msg: 'submission restored' });
@@ -247,7 +243,6 @@ describe('submission', () => {
       id: 'test id',
       step_name: 'test step'
     };
-    db.user.findById.mockReturnValueOnce({ user_privileges: ['REQUEST_ADMINREAD'] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['NO_PRIVILEGES'] });
     db.submission.setStep.mockReturnValueOnce({ msg: 'step changed' });
     db.submission.findById.mockReturnValueOnce({ msg: 'test submission' });
