@@ -373,7 +373,7 @@ END $$`;
 
 const updateSubmissionData = () => `
 update submission 
-set name = {{data_product}}, data_producer_name = {{data_producer}}
+set name = {{dataProduct}}, data_producer_name = {{dataProducer}}
 where id = {{id}}
 RETURNING *
 `;
