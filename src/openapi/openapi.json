@@ -43,8 +43,8 @@
       }
     },
     {
-      "name": "submission",
-      "description": "Manage submissions, fill forms, review.",
+      "name": "service",
+      "description": "Used to manage a submission via the service endpoints & service authorizer.",
       "externalDocs": {
         "description": "Read the docs",
         "url": "http://database.docs/#TODO"
@@ -8613,7 +8613,7 @@
     "/api/submission/apply": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to apply.",
@@ -8731,7 +8731,7 @@
     "/api/submission/metadata": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to submit metadata for a submission.",
@@ -8849,7 +8849,7 @@
     "/api/submission/submit": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to be able to submit a form for review.",
@@ -8967,7 +8967,7 @@
     "/api/submission/save": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to be able to save a request in progress",
@@ -9085,7 +9085,7 @@
     "/api/submission/review": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a submission to be reviewed.",
@@ -9203,7 +9203,7 @@
     "/api/submission/resume": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to resume a submission.",
@@ -9321,7 +9321,7 @@
     "/api/submission/withdraw": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user withdraw a solution that is in progress.",
@@ -9439,7 +9439,7 @@
     "/api/submission/restore": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to restore a withdrawn submission",
@@ -9557,7 +9557,7 @@
     "/api/submission/changeStep": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to change the step a workflow is on",
@@ -9675,7 +9675,7 @@
     "/api/submission/addContributors": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to add contributors to a submission",
@@ -9793,7 +9793,7 @@
     "/api/submission/removeContributor": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to be able to remove a contributor from a submission",
@@ -9911,7 +9911,7 @@
     "/api/submission/createStepReviewApproval": {
       "post": {
         "tags": [
-          "data"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to be able to save a request in progress",
@@ -10029,7 +10029,7 @@
     "/api/submission/deleteStepReviewApproval": {
       "post": {
         "tags": [
-          "data"
+          "service"
         ],
         "summary": "Perform an operation on a Submission.",
         "description": "Allows a user to be able to save a request in progress",
