@@ -46,7 +46,7 @@ exports.handler = async (event, context, callback) => {
   const submissionId = headers.submissionid || '';
 
   if (await validateAuthentication(serviceId, serviceSecret, submissionId)) {
-    callback(null, generateAllow('me', event.methodArn));
+    callback(null, generateAllow(`service-authorizer-${serviceId}`, event.methodArn));
   } else {
     callback('Unauthorized');
   }
