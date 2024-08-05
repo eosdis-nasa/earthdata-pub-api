@@ -82,7 +82,7 @@ async function initializeMethod(event, user) {
 async function applyMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REASSIGN'];
   const { id, workflow_id: workflowId } = event;
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     await db.submission.reassignWorkflow({ id, workflowId });
     await db.submission.promoteStep({ id });
     const status = await db.submission.getState({ id });
@@ -151,7 +151,7 @@ async function reviewMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
   const { id, approve } = event;
   const userId = user.id;
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const status = await db.submission.getState({ id });
     const stepType = status.step.type;
     let eventType;
@@ -218,7 +218,7 @@ async function withdrawMethod(event, user) {
   const { id } = event;
 
   const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD'];
-  if (approvedUserPrivileges.some((privilege) => user.user_privileges.includes(privilege))) {
+  if (user.id.includes('service-authorizer') || approvedUserPrivileges.some((privilege) => user.user_privileges.includes(privilege))) {
     const submission = await db.submission.withdrawSubmission({ id });
     const submissionMetrics = await db.metrics.getSubmissions({ submissionId: id });
     await msg.sendEvent({
@@ -237,7 +237,7 @@ async function withdrawMethod(event, user) {
 async function restoreMethod(event, user) {
   const { id } = event;
   const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD'];
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.submission.restoreSubmission({ id });
   }
   return db.submission.findById({ id });
@@ -248,7 +248,7 @@ async function changeStepMethod(event, user) {
   const { id, step_name } = event;
   const validStep = await db.submission.checkWorkflow({ step_name, id });
   const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD'];
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))
                                                && await validStep.step_name) {
     return db.submission.setStep({ step_name, id });
   }
@@ -258,7 +258,7 @@ async function changeStepMethod(event, user) {
 async function addContributorsMethod(event, user) {
   const { id, contributor_ids: contributorIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
     await db.note.addUsersToConversation({
       conversation_id: conversationId,
@@ -272,7 +272,7 @@ async function addContributorsMethod(event, user) {
 async function removeContributorMethod(event, user) {
   const { id, contributor_id: contributorId } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REMOVEUSER'];
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { conversation_id: conversationId } = await db.submission.getConversationId({ id });
     await db.note.removeUserFromConversation({
       conversation_id: conversationId,
@@ -318,59 +318,58 @@ async function mapMetadataMethod(event, user) {
   const { id: submissionId } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD'];
   let mappedMetadata = {};
-  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    return { error: 'Not Authorized' };
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const formData = await db.submission.getFormData({ id: submissionId });
+    try {
+      mappedMetadata = await mapEDPubToUmmc(formData.data);
+      return mappedMetadata;
+    } catch (e) {
+      console.error(e);
+      return { error: 'Invalid form data. Form must be complete.' };
+    }
   }
-  const formData = await db.submission.getFormData({ id: submissionId });
-  try {
-    mappedMetadata = await mapEDPubToUmmc(formData.data);
-  } catch (e) {
-    console.error(e);
-    return { error: 'Invalid form data. Form must be complete.' };
-  }
-
-  return mappedMetadata;
+  return { error: 'Not Authorized' };
 }
 
 async function createStepReviewApprovalMethod(event, user) {
   const { submissionId, stepName, userIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
-  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    return { error: 'Not Authorized' };
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const formData = await db.submission.createStepReviewApproval({
+      submission_id: submissionId,
+      step_name: stepName,
+      user_ids: userIds,
+      submitted_by: user.id
+    });
+    await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
+    return formData;
   }
-
-  const param = {
-    submission_id: submissionId,
-    step_name: stepName,
-    user_ids: userIds,
-    submitted_by: user.id
-  };
-  const formData = await db.submission.createStepReviewApproval(param);
-  await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
-  return formData;
+  return { error: 'Not Authorized' };
 }
 
 async function getStepReviewApprovalMethod(event, user) {
   const { id } = event.params;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_READ'];
-  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    return { error: 'Not Authorized' };
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return db.submission.getStepReviewApproval({ id });
   }
-  const formData = await db.submission.getStepReviewApproval({ id });
-  return formData;
+  return { error: 'Not Authorized' };
 }
 
 async function deleteStepReviewApprovalMethod(event, user) {
   const { submissionId, stepName, userIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'REMOVE_STEPREVIEW'];
-  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    return { error: 'Not Authorized' };
+  if (user.id.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const formData = await db.submission.deleteStepReviewApproval({
+      submission_id: submissionId,
+      step_name: stepName,
+      user_ids: userIds
+    });
+    // Only accepts 1 at time; however, this isn't an issue for the current dashboard implementation
+    await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
+    return formData;
   }
-  const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds };
-  const formData = await db.submission.deleteStepReviewApproval(param);
-  // Only accepts 1 at time; however, this isn't an issue for the current dashboard implementation
-  await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
-  return formData;
+  return { error: 'Not Authorized' };
 }
 
 const operations = {
@@ -400,7 +399,7 @@ const operations = {
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  const user = await db.user.findById({ id: event.context.user_id });
+  const user = event.context.authorizer ? { id: event.context.authorizer } : await db.user.findById({ id: event.context.user_id });
   const operation = operations[event.operation];
   const data = await operation(event, user);
   return data;
