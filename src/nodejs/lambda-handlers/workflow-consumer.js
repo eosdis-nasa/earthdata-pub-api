@@ -12,6 +12,8 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
+const uuid = require('uuid')
+
 async function actionMethod(status) {
   const eventMessage = {
     event_type: status.step.action_id ? 'action_request' : 'action_request_no_id',
@@ -56,6 +58,21 @@ async function reviewMethod(status) {
 }
 
 async function serviceMethod(status) {
+  const service = await db.service.findById({id: status.step.service_id});
+  const submissionSecret = uuid.v4();
+  await db.service.createSecret({
+    id: service.id,
+    secret: submissionSecret,
+    submission_id: status.id
+  });
+  const resp = await fetch(service.endpoint, {
+    method: service.method,
+    headers: service.headers,
+    body: {...service.payload, ...{ submissionSecret }}
+  });
+  if (!resp.ok) {
+    console.error('Error sending submission secret');
+  }
   const eventMessage = {
     event_type: 'service_call',
     service_id: status.step.service_id,
