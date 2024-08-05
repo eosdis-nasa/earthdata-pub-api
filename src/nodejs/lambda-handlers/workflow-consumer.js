@@ -12,7 +12,7 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
-const uuid = require('uuid')
+const uuid = require('uuid');
 
 async function actionMethod(status) {
   const eventMessage = {
@@ -58,7 +58,7 @@ async function reviewMethod(status) {
 }
 
 async function serviceMethod(status) {
-  const service = await db.service.findById({id: status.step.service_id});
+  const service = await db.service.findById({ id: status.step.service_id });
   const submissionSecret = uuid.v4();
   await db.service.createSecret({
     id: service.id,
@@ -68,7 +68,7 @@ async function serviceMethod(status) {
   const resp = await fetch(service.endpoint, {
     method: service.method,
     headers: service.headers,
-    body: {...service.payload, ...{ submissionSecret }}
+    body: { ...service.payload, ...{ submissionSecret } }
   });
   if (!resp.ok) {
     console.error('Error sending submission secret');
