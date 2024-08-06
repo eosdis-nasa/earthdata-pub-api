@@ -89,6 +89,7 @@ async function serviceMethod(status) {
     body: { ...service.payload, ...{ submissionSecret } }
   });
   if (!resp.ok) {
+    console.error(resp.text())
     console.error('Error sending submission secret');
   }
   const eventMessage = {
