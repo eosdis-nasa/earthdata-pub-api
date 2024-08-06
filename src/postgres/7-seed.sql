@@ -4,6 +4,9 @@ INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_accession
 INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_publication_request', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 INSERT INTO form VALUES ('de7e5c40-584a-493b-919d-8f7f3f1e9e3c', 'confirmation_form', 1, 'Confirmation Form', 'This form is used to confirm request information which might be used for external applications such as collection metadata curation.');
 
+-- Service(id, short_name, long_name, description, endpoint, options, headers, method, code, payload)
+INSERT INTO service(id, short_name, long_name, description, endpoint, options, headers, method, code, payload) VALUES ('f33f9ce5-e402-4823-8847-f380d1b7789b', 'ornl_service', 'ORNL On-Prem Service', 'ORNL Service used for syncing data between EDPub and on-prem systems', 'https://pub.uat.earthdata.nasa.gov/api/data/daac/offboard', '{}', '{"Authorization": "ornl_service_authorization_secret"}', 'POST', 200, false);
+
 -- Action(id, short_name, version, long_name, description, source)
 INSERT INTO action VALUES ('3fe93672-cd91-45d4-863b-c6d0d63f8c8c', 'send_to_mmt', 1, 'Send To MMT Action', 'This action is used to send collection metadata from EDPub to MMT.', 'sendToMMT.js');
 INSERT INTO action VALUES ('f812eb99-7c4a-46a8-8d8f-30ae509fe21c', 'map_edpub_to_ummc', 1, 'Map EDPub To UMMC Action', 'This action is map EDPub question reponses to a JSON UMMC format.', 'mapEDPubToUmmc.js');
@@ -550,10 +553,12 @@ INSERT INTO step(step_id, step_name, type, data) VALUES ('4791d53b-6c8f-4d5b-9ee
 INSERT INTO step(step_id, step_name, type, data) VALUES ('c6082cae-9c97-4692-b0da-c9334a30c9e0', 'map_question_response_to_ummc_f1', 'action', '{"rollback": "data_accession_request_form_review", "type": "review"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('faf94cca-ea3e-4886-a306-4f7f5acfda1a', 'map_question_response_to_ummc_f2', 'action', '{"rollback": "data_publication_request_form_review", "type": "review"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
+INSERT INTO step(step_id, step_name, type, service_id) VALUES ('62c8a133-4af7-4d41-8174-179ffbe81d3f','ornl_service_trigger','service','f33f9ce5-e402-4823-8847-f380d1b7789b');
 
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'init', 'close');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init', 'ornl_service_trigger');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'ornl_service_trigger', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form', 'data_accession_request_form_review');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review', 'map_question_response_to_ummc_f1');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'map_question_response_to_ummc_f1', 'push_to_ornl_database_f1');
