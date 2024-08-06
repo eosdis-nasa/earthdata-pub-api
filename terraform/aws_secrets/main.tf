@@ -39,3 +39,14 @@ resource "aws_secretsmanager_secret_version" "gesdisc_endpoint"{
       "gesdisc_endpoint_access_token" = var.gesdisc_endpoint_access_token
     })
 }
+
+# EDPub Service Test secret
+resource "aws_secretsmanager_secret" "edpub_service_test_secret" {
+  name = "EDPub Service Test Secret"
+  description = "Service authorization secret used for internal testing"
+}
+
+resource "aws_secretsmanager_secret_version" "edpub_service_test_secret_version" {
+  secret_id = aws_secretsmanager_secret.edpub_service_test_secret.id
+  secret_string = var.edpub_service_test_secret
+}
