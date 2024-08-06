@@ -36,6 +36,8 @@ db.submission.setSubmissionCopy = jest.fn();
 db.submission.updateSubmissionData = jest.fn();
 db.metrics = jest.fn();
 db.metrics.getSubmissions = jest.fn();
+db.service = jest.fn();
+db.service.deleteSecret = jest.fn();
 
 msg.sendEvent = jest.fn();
 
@@ -358,7 +360,7 @@ describe('submission', () => {
     const payload = {
       operation: 'resume',
       context: {
-        user_id: 'test user'
+        authorizer: 'service-authorizer-test'
       },
       id: 'test id'
     };

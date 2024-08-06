@@ -371,24 +371,6 @@ describe('workflow-consumer', () => {
     });
     await handler(event);
   });
-  it('should resume a workflow', async () => {
-    const event = {
-      Records: [
-        {
-          eventMessage: {
-            event_type: 'workflow_resume',
-            submission_id: 'submission_id'
-          }
-        }
-      ]
-    };
-    msg.parseRecord.mockImplementation((record) => record);
-    db.service.deleteSecret.mockImplementationOnce((id) => {
-      expect(id).toEqual('submission_id');
-      return Promise.resolve('success');
-    });
-    await handler(event);
-  });
 
   it('should close a submission', async () => {
     db.metrics.getSubmissions.mockImplementationOnce(

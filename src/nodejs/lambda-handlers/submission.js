@@ -39,10 +39,10 @@ async function statusMethod(event, user) {
 }
 
 async function resumeMethod(event, user, silent = false) {
-  const { submission_id: submissionId } = event;
+  const { id } = event;
   const authorizerRegex = /service-authorizer-(.*)/g;
   const serviceId = authorizerRegex.exec(user.id)[1];
-  await db.service.deleteSecret({submissionId, serviceId});
+  await db.service.deleteSecret({ submissionId: id, serviceId });
   const status = await db.submission.getState({ id });
   const eventMessage = {
     event_type: 'request_resumed',
