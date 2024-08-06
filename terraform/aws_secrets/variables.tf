@@ -22,6 +22,6 @@ variable "gesdisc_endpoint_access_token"{
   type = string
 }
 
-variable "edpub_service_test_secret" {
+variable "ornl_service_authorization" {
   type = string
 }

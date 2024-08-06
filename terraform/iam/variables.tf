@@ -66,6 +66,6 @@ variable "gesdisc_endpoint_arn"{
   type = string
 }
 
-variable "edpub_service_test_secret_arn" {
+variable "ornl_service_authorization_arn" {
   type = string
 }

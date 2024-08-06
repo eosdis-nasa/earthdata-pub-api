@@ -40,13 +40,13 @@ resource "aws_secretsmanager_secret_version" "gesdisc_endpoint"{
     })
 }
 
-# EDPub Service Test secret
-resource "aws_secretsmanager_secret" "edpub_service_test_secret" {
-  name = "EDPub Service Test Secret"
-  description = "Service authorization secret used for internal testing"
+# ORNL Service Authorization
+resource "aws_secretsmanager_secret" "ornl_service_authorization" {
+  name = "ORNL Service Authorization Secret"
+  description = "Service authorization secret used for sending ORNL service submission codes"
 }
 
-resource "aws_secretsmanager_secret_version" "edpub_service_test_secret_version" {
-  secret_id = aws_secretsmanager_secret.edpub_service_test_secret.id
-  secret_string = var.edpub_service_test_secret
+resource "aws_secretsmanager_secret_version" "ornl_service_authorization_version" {
+  secret_id = aws_secretsmanager_secret.ornl_service_authorization.id
+  secret_string = var.ornl_service_authorization
 }

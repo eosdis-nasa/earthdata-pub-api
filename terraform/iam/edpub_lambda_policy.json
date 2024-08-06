@@ -74,7 +74,7 @@
         "${ses_access_creds_arn}",
         "${ornl_endpoint_arn}",
         "${gesdisc_endpoint_arn}",
-        "${edpub_service_test_secret_arn}"
+        "${ornl_service_authorization_arn}"
       ]
     }
   ]
