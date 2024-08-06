@@ -31,7 +31,7 @@ const generateAllow = (principalId, resource) => generatePolicy(principalId, 'Al
 
 const validateAuthentication = async (id, secret, submissionId) => {
   if (!uuid.validate(id)) { return false; }
-  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id });
+  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id, submissionId });
   return (dbSecret === secret && (dbSubmissionId === submissionId));
 };
 

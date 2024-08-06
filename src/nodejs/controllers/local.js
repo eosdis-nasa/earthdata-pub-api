@@ -170,9 +170,10 @@ async function checkService(req, secDef, token, next) {
   const splitIndex = authStr.indexOf(':');
   const serviceId = authStr.substring(0, splitIndex);
   const serviceSecret = authStr.substring(splitIndex + 1);
+  const submissionId = req.headers.submissionid;
   if (!uuid.validate(serviceId)) { return next(req.res.sendStatus(403)); }
-  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id: serviceId });
-  if (dbSecret === serviceSecret && (dbSubmissionId ? dbSubmissionId === req.headers.submissionid : true)) { return next(); }
+  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id: serviceId, submissionId });
+  if (dbSecret === serviceSecret && dbSubmissionId === submissionId ) { return next(); }
   return next(req.res.sendStatus(403));
 }
 

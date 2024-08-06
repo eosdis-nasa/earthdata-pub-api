@@ -71,6 +71,19 @@ async function getServiceAuthSecret(secretName) {
   return response.SecretString;
 }
 
+async function sendSecret(service, submissionSecret, submissionId) {
+  await fetch(service.endpoint, {
+    method: service.method,
+    headers: service.headers,
+    body: JSON.stringify({ ...service.payload, ...{ submissionId, submissionSecret } })
+  }).then(async (response) => {
+    if (response.ok) return response;
+    throw new Error(await response.text());
+  }).catch((error) => {
+    console.error(`Error Sending Submission Secret:\n\n${error}`);
+  });
+}
+
 async function serviceMethod(status) {
   const service = await db.service.findById({ id: status.step.service_id });
   const submissionSecret = uuid.v4();
@@ -83,15 +96,7 @@ async function serviceMethod(status) {
   if (headersAuthKey) {
     service.headers[headersAuthKey] = await getServiceAuthSecret(service.headers[headersAuthKey]);
   }
-  const resp = await fetch(service.endpoint, {
-    method: service.method,
-    headers: service.headers,
-    body: { ...service.payload, ...{ submissionSecret } }
-  });
-  if (!resp.ok) {
-    console.error(resp.text())
-    console.error('Error sending submission secret');
-  }
+  await sendSecret(service, submissionSecret, status.id);
   const eventMessage = {
     event_type: 'service_call',
     service_id: status.step.service_id,
