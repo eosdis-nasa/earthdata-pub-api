@@ -322,7 +322,7 @@ async function mapMetadataMethod(event, user) {
   const { id: submissionId } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD'];
   let mappedMetadata = {};
-  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const formData = await db.submission.getFormData({ id: submissionId });
     try {
       mappedMetadata = await mapEDPubToUmmc(formData.data);
