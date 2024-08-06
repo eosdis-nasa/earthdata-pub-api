@@ -39,10 +39,13 @@ async function statusMethod(event, user) {
 }
 
 async function resumeMethod(event, user, silent = false) {
-  const { id } = event;
+  const { submission_id: submissionId } = event;
+  const authorizerRegex = /service-authorizer-(.*)/g;
+  const serviceId = authorizerRegex.exec(user.id)[1];
+  await db.service.deleteSecret({submissionId, serviceId});
   const status = await db.submission.getState({ id });
   const eventMessage = {
-    event_type: 'workflow_resume',
+    event_type: 'request_resumed',
     submission_id: status.id,
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,

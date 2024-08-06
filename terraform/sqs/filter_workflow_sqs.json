@@ -1,3 +1,3 @@
 {
-  "event_type": ["workflow_promote_step", "request_initialized", "workflow_resume", "form_submitted", "review_approved", "review_rejected"]
+  "event_type": ["workflow_promote_step", "request_initialized", "form_submitted", "review_approved", "review_rejected"]
 }
