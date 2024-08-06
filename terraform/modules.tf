@@ -36,7 +36,7 @@ module "aws_secrets" {
   ornl_endpoint_access_token = var.ornl_endpoint_access_token
   gesdisc_endpoint_url = var.gesdisc_endpoint_url
   gesdisc_endpoint_access_token = var.gesdisc_endpoint_access_token
-  ornl_service_authorization = var.ornl_service_authorization
+  ornl_service_authorization = var.ornl_service_authorization_secret
 }
 
 module "lambda_functions" {

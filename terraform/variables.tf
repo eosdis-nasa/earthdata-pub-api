@@ -132,6 +132,6 @@ variable "gesdisc_endpoint_access_token"{
   type = string
 }
 
-variable "ornl_service_authorization" {
+variable "ornl_service_authorization_secret" {
   type = string
 }
