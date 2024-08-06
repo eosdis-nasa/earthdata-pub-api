@@ -42,7 +42,7 @@ resource "aws_secretsmanager_secret_version" "gesdisc_endpoint"{
 
 # ORNL Service Authorization
 resource "aws_secretsmanager_secret" "ornl_service_authorization" {
-  name = "ORNL Service Authorization Secret"
+  name = "ornl_service_authorization_secret"
   description = "Service authorization secret used for sending ORNL service submission codes"
 }
 
