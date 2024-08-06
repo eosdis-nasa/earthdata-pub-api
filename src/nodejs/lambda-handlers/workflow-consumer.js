@@ -13,6 +13,10 @@ const db = require('database-util');
 const msg = require('message-util');
 
 const uuid = require('uuid');
+const {
+  GetSecretValueCommand,
+  SecretsManagerClient,
+} = require("@aws-sdk/client-secrets-manager");
 
 async function actionMethod(status) {
   const eventMessage = {
@@ -57,6 +61,16 @@ async function reviewMethod(status) {
   await msg.sendEvent(eventMessage);
 }
 
+async function getServiceAuthSecret(secretName) {
+  const client = new SecretsManagerClient();
+  const response = await client.send(
+    new GetSecretValueCommand({
+      SecretId: secretName,
+    }),
+  );
+  return response.SecretString
+}
+
 async function serviceMethod(status) {
   const service = await db.service.findById({ id: status.step.service_id });
   const submissionSecret = uuid.v4();
@@ -65,6 +79,8 @@ async function serviceMethod(status) {
     secret: submissionSecret,
     submission_id: status.id
   });
+  const headersAuthKey = Object.keys(service.headers).find(key => key.toLowerCase() === 'authorization')
+  if (headersAuthKey) service.headers[headersAuthKey] = await getServiceAuthSecret(service.headers[headersAuthKey]);
   const resp = await fetch(service.endpoint, {
     method: service.method,
     headers: service.headers,
