@@ -46,7 +46,7 @@ const mapEDPubToUmmc = async (formData) => {
   delete formData.data_producer_info_organization;
   delete formData.data_producer_info_department;
 
-  const contactPerson = (dataProducerSplitName || formData.data_producer_info_email || formData.data_producer_info_orcid || dataProducerAffiliation) ? {
+  const contactPerson = (dataProducerSplitName.length > 0 || formData.data_producer_info_email || formData.data_producer_info_orcid || dataProducerAffiliation) ? {
     ContactPersons: [
       {
         Roles: ['Science Contact'],
