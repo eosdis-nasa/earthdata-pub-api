@@ -334,21 +334,20 @@ async function mapMetadataMethod(event, user) {
 }
 
 async function createStepReviewApprovalMethod(event, user) {
-  const { submissionId, stepName, userIds } = event.params;
+  const { submissionId, stepName, userIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
   }
-  // This line has a length of 104. Maximum allowed is 100 to fix this
-  const subId = submissionId;
-  const ids = userIds;
+
   const param = {
-    submission_id: subId,
+    submission_id: submissionId,
     step_name: stepName,
-    user_ids: ids,
+    user_ids: userIds,
     submitted_by: user.id
   };
   const formData = await db.submission.createStepReviewApproval(param);
+  await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
   return formData;
 }
 
@@ -363,13 +362,15 @@ async function getStepReviewApprovalMethod(event, user) {
 }
 
 async function deleteStepReviewApprovalMethod(event, user) {
-  const { submissionId, stepName, userIds } = event.params;
+  const { submissionId, stepName, userIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'REMOVE_STEPREVIEW'];
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
   }
   const param = { submission_id: submissionId, step_name: stepName, user_ids: userIds };
   const formData = await db.submission.deleteStepReviewApproval(param);
+  // Only accepts 1 at time; however, this isn't an issue for the current dashboard implementation
+  await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
   return formData;
 }
 
