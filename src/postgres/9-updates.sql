@@ -206,6 +206,12 @@ UPDATE step_edge
 SET step_name = 'map_from_mmt'
 WHERE step_name = 'map_from_meditor' and workflow_id = 'c1690729-b67e-4675-a1a5-b2323f347dff';
 
+-- step(step_status_label)
+-- Adding step status label in uwg_review step gesdisc workflow 
+
+ALTER TABLE step ADD step_status_label VARCHAR;
+UPDATE step SET step_status_label='Pending UWG Review' WHERE step_id='c81066db-0566-428d-87e8-94169ce5a9b9';
+
 -- EDPUB-1262 update datetimepicker
 UPDATE Input
 SET label = 'Start Date and Time (UTC)', type = 'datetimePicker'
@@ -406,3 +412,23 @@ INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publ
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form_review', 'map_question_response_to_ummc');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'map_question_response_to_ummc', 'send_metadata_to_ges_disc');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'send_metadata_to_ges_disc', 'close');
+
+-- EDPUB 1331 - Example action for emailing DAAC Staff
+INSERT INTO action VALUES ('50ed996d-22b7-4aa7-a88b-8c4b539fa5df', 'email_daac_staff', 1, 'Send Email to DAAC Staff', 'This action is used to send an email to all DAAC staff', 'emailDaacStaff.js');
+INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '50ed996d-22b7-4aa7-a88b-8c4b539fa5df', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
+UPDATE step_edge
+SET next_step_name = 'email_daac_staff'
+WHERE workflow_id = 'a218f99d-cfc1-44e5-b203-3e447e1c1275' and step_name = 'push_to_ornl_database_f2';
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'email_daac_staff', 'close');
+-- 7/25/24 Fix display of forms for GES DISC extended reviews
+UPDATE step SET data='{"rollback":"data_publication_request_form_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='c81066db-0566-428d-87e8-94169ce5a9b9';
+UPDATE step SET data='{"rollback":"data_publication_request_form_uwg_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='e62e9548-b350-40ec-b1bc-21a75e5f0407';
+UPDATE step SET data='{"rollback":"data_publication_request_form_management_review","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='7838ed18-4ecd-499e-9a47-91fd181cbfc7';
+
+-- 7/25/24 Update missing permissions
+INSERT INTO privilege VALUES ('REQUEST_ADDUSER');
+INSERT INTO privilege VALUES ('REQUEST_REMOVEUSER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REMOVEUSER');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REMOVEUSER');

@@ -5,4 +5,4 @@
 # the repo. Unless a later match takes precedence,
 # all of the below will be requested for review when someone
 # opens a pull request.
-*       @camposeddie @DavisGauntUAH @broughtonkkornl @ckd002
+*       @eosdis-nasa/earthdata-pub-internal

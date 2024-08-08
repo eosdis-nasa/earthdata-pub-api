@@ -56,11 +56,12 @@ async function sendEmailNotification({ note, emailPayload }) {
       userRole = [roles.data_producer, roles.daac_staff, roles.daac_manager];
       break;
   }
-  const users = await db.note.getEmails({
+  let users = await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id,
     userRole
   });
+  if (emailPayload.event_type === 'request_initialized') users = users.map((user) => ({ name: user.name, email: user.email, initiator: user.id === emailPayload.user_id }));
   await msg.sendEmail(users, emailPayload);
 }
 

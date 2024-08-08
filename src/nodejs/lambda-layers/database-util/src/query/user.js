@@ -230,8 +230,8 @@ const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
   ...(page ? { offset: page } : {})
 });
 
-const findAll = ({name, email, sort, order, per_page, page, group_id, role_id}) => sql.select({
-  fields: fields(['id', 'name']),
+const findAll = ({name, email, sort, order, per_page, page, group_id, role_id, requested_fields=['id', 'name']}) => sql.select({
+  fields: fields(requested_fields),
   from: {
     base: table,
     joins: [
@@ -247,6 +247,7 @@ const findAll = ({name, email, sort, order, per_page, page, group_id, role_id}) 
       ...(role_id ? [{ field: 'edpuser_edprole.edprole_id', param: 'role_id' }] : []),
     ]
   },
+  group: 'id',
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
@@ -406,7 +407,7 @@ name = {{name}}
 WHERE edpuser.id = {{id}}
 RETURNING *`;
 
-const getStaffIds = (params) => sql.select({
+const getManagerIds = (params) => sql.select({
   fields: ['id'],
   from: {
     base: 'edpuser',
@@ -418,10 +419,10 @@ const getStaffIds = (params) => sql.select({
   where: {
     filters: [
       { cmd: "edpuser_edpgroup.edpgroup_id = (SELECT edpgroup_id FROM daac WHERE id = {{daac_id}})" },
-      { cmd: "(edpuser_edprole.edprole_id = 'a5b4947a-67d2-434e-9889-59c2fad39676' OR edpuser_edprole.edprole_id = '2aa89c57-85f1-4611-812d-b6760bb6295c')"}
+      { cmd: "edpuser_edprole.edprole_id = '2aa89c57-85f1-4611-812d-b6760bb6295c'"}
     ]
   }
-})
+});
 
 
 module.exports.find = find;
@@ -444,4 +445,4 @@ module.exports.findByEmail = findByEmail;
 module.exports.getUsers = getUsers;
 module.exports.setDetail = setDetail;
 module.exports.updateUsername = updateUsername;
-module.exports.getStaffIds = getStaffIds;
+module.exports.getManagerIds = getManagerIds;

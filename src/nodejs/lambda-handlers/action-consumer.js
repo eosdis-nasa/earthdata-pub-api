@@ -61,7 +61,7 @@ async function processRecord(record) {
   });
   Object.assign(action, { output });
   await DatabaseUtil.execute({ resource: 'submission', operation: 'updateActionData' },
-    { submission, action });
+    { id: submissionId, action_id: actionId, data: action });
   const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'findById' },
     { id: submissionId });
   const newEventMessage = {

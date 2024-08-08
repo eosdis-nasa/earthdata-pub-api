@@ -68,7 +68,8 @@ const getEmailTemplate = async (eventMessage, message) => {
       workflow_name: (await workflowName).long_name,
       conversation_last_message: message.text,
       event_type: eventMessage.event_type,
-      daac_name: daac.short_name
+      daac_name: daac.short_name,
+      user_id: eventMessage.user_id
     };
 
     if (formData?.data_product_name_value) {
