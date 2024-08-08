@@ -163,10 +163,11 @@ async function reviewApprovedMethod(eventMessage) {
 }
 
 async function reviewRejectedMethod(eventMessage) {
-  const { submission_id: id, step_name, user_id } = eventMessage;
+  const { submission_id: id, step_name: stepName, user_id: userId } = eventMessage;
   // Did this because of lint error. This line has a length of 104. Maximum allowed is 100
-  const stepReview = await db.submission.checkCountStepReviewRejected({ submission_id: id,
-    step_name, user_id });
+  const stepReview = await db.submission.checkCountStepReviewRejected({
+    submission_id: id, step_name: stepName, user_id: userId
+  });
   if (stepReview.unapproved && parseInt(stepReview.unapproved, 10) === 0) {
     if (eventMessage.step_name === 'data_accession_request_form_review') {
       await db.metrics.setAccessionReversion({
@@ -174,7 +175,7 @@ async function reviewRejectedMethod(eventMessage) {
         status: 'TRUE'
       });
     }
-    await db.submission.rollback({ id: id, step_name });
+    await db.submission.rollback({ id, step_name: stepName });
   }
 }
 
