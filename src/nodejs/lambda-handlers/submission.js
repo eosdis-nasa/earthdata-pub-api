@@ -24,7 +24,7 @@ function filterObject(base, filter) {
 
 async function statusMethod(event, user) {
   const hidden = event.operation === 'inactive';
-  if (user.user_privileges.includes('REQUEST_ADMINREAD') || user.user_privileges.includes('ADMIN')
+  if (user.user_privileges.includes('ADMIN')
   || user.user_groups.some((group) => group.short_name === 'root_group')) {
     return db.submission.getAdminSubmissions({ hidden });
   }
@@ -218,7 +218,7 @@ async function unlockMethod(event, user) {
 async function withdrawMethod(event, user) {
   const { id } = event;
 
-  const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
   if (approvedUserPrivileges.some((privilege) => user.user_privileges.includes(privilege))) {
     const submission = await db.submission.withdrawSubmission({ id });
     const submissionMetrics = await db.metrics.getSubmissions({ submissionId: id });
@@ -237,7 +237,7 @@ async function withdrawMethod(event, user) {
 
 async function restoreMethod(event, user) {
   const { id } = event;
-  const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.submission.restoreSubmission({ id });
   }
@@ -248,7 +248,7 @@ async function changeStepMethod(event, user) {
   // eslint-disable-next-line
   const { id, step_name } = event;
   const validStep = await db.submission.checkWorkflow({ step_name, id });
-  const approvedUserPrivileges = ['REQUEST_ADMINREAD', 'ADMIN', 'REQUEST_DAACREAD'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))
                                                && await validStep.step_name) {
     return db.submission.setStep({ step_name, id });
@@ -317,7 +317,7 @@ async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-
 
 async function mapMetadataMethod(event, user) {
   const { id: submissionId } = event;
-  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD', 'REQUEST_ADMINREAD'];
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
   let mappedMetadata = {};
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return { error: 'Not Authorized' };
