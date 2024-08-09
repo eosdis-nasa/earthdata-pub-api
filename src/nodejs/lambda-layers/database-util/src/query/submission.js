@@ -472,7 +472,7 @@ step_name = (
   SELECT step_edge.step_name step_name
   FROM step_edge
   WHERE step_edge.workflow_id = submission_status.workflow_id
-  AND step_edge.next_step_name = {{rollback}})
+  AND step_edge.next_step_name = {{step_name}})
 WHERE submission_status.id = {{id}}
 RETURNING *`;
 
