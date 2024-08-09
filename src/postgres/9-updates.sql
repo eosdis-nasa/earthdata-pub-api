@@ -434,11 +434,6 @@ INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'R
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REMOVEUSER');
 
 -- 7/25/24 Remove metadata mapping step
-DELETE FROM action WHERE id='f812eb99-7c4a-46a8-8d8f-30ae509fe21c';
-DELETE FROM step WHERE step_name='map_question_response_to_ummc';
-DELETE FROM step WHERE step_id='d1cbc4a8-ce4c-4734-8e71-a824d30c401a';
-DELETE FROM step WHERE step_id='c628d63b-93b9-45ae-8e7b-a903554b6726';
-
 UPDATE step SET data='{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='d278f01e-1ef7-4677-a350-73ccadeddc22';
 
 DELETE FROM step_edge WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='map_question_response_to_ummc' AND next_step_name='create_skeleton_dataset_record_in_mmt';
@@ -446,17 +441,38 @@ UPDATE step_edge SET next_step_name='create_skeleton_dataset_record_in_mmt' WHER
 
 UPDATE step SET data='{"rollback": "data_accession_request_form_review", "type": "review"}' WHERE step_id='6445f44b-bcda-41b4-86e4-23761edc22bf';
 UPDATE step SET data='{"rollback": "data_publication_request_form_review", "type": "review"}' WHERE step_id='4791d53b-6c8f-4d5b-9ee9-81cebd4c4b04';
+
+DELETE FROM step_edge WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275';
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review', 'push_to_ornl_database_f1');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f1', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review', 'push_to_ornl_database_f2');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f2', 'email_daac_staff');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'email_daac_staff', 'close');
+DELETE FROM step_metrics WHERE step_name='map_question_response_to_ummc_f1';
+DELETE FROM step_metrics WHERE step_name='map_question_response_to_ummc_f2';
+DELETE FROM note WHERE step_name='map_question_response_to_ummc_f1';
+DELETE FROM note WHERE step_name='map_question_response_to_ummc_f2';
+DELETE FROM step_review WHERE step_name='map_question_response_to_ummc_f1';
+DELETE FROM step_review WHERE step_name='map_question_response_to_ummc_f2';
 DELETE FROM step WHERE step_id='c6082cae-9c97-4692-b0da-c9334a30c9e0';
 DELETE FROM step WHERE step_id='faf94cca-ea3e-4886-a306-4f7f5acfda1a';
 
-UPDATE step_edge SET next_step_name='push_to_ornl_database_f1' WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='data_accession_request_form_review';
-DELETE FROM step_edge WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='map_question_response_to_ummc_f1' AND next_step_name='push_to_ornl_database_f1';
-
-UPDATE step_edge SET next_step_name='push_to_ornl_database_f2' WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='data_publication_request_form_review';
-DELETE FROM step_edge WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='map_question_response_to_ummc_f2' AND next_step_name='push_to_ornl_database_f2';
-
-UPDATE step_edge SET next_step_name='send_metadata_to_ges_disc' WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='data_publication_request_form_review';
 DELETE FROM step_edge WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='map_question_response_to_ummc' AND next_step_name='send_metadata_to_ges_disc';
+UPDATE step_edge SET next_step_name='send_metadata_to_ges_disc' WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='data_publication_request_form_review';
 
-UPDATE step_edge SET next_step_name='email_asdc_staff' WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='confirmation_form';
 DELETE FROM step_edge WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='map_question_response_to_ummc' AND next_step_name='email_asdc_staff';
+UPDATE step_edge SET next_step_name='email_asdc_staff' WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='confirmation_form';
+
+DELETE FROM step_metrics WHERE step_name='map_question_response_to_ummc';
+DELETE FROM note WHERE step_name='map_question_response_to_ummc';
+DELETE FROM step_review WHERE step_name='map_question_response_to_ummc';
+
+DELETE FROM step WHERE step_name='map_question_response_to_ummc';
+DELETE FROM step WHERE step_id='d1cbc4a8-ce4c-4734-8e71-a824d30c401a';
+DELETE FROM step WHERE step_id='c628d63b-93b9-45ae-8e7b-a903554b6726';
+
+DELETE FROM submission_action_data WHERE action_id='f812eb99-7c4a-46a8-8d8f-30ae509fe21c';
+DELETE FROM action WHERE id='f812eb99-7c4a-46a8-8d8f-30ae509fe21c';
