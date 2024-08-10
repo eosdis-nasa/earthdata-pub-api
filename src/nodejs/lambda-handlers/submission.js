@@ -95,7 +95,8 @@ async function applyMethod(event, user) {
       conversation_id: status.conversation_id,
       workflow_id: workflowId,
       step_name: status.step.name,
-      user_id: user.id
+      user_id: user.id,
+      status
     };
     await msg.sendEvent(eventMessage);
     return status;

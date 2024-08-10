@@ -157,9 +157,9 @@ async function promoteStepMethod(eventMessage) {
 }
 
 async function workflowStartedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
-  await promoteStepMethod(eventMessage);
-  await msg.sendEvent(newEvent);
+  const { status } = eventMessage;
+  const method = stepMethods[status.step.type];
+  await method(status);
 }
 
 async function requestInitializedMethod(eventMessage) {
