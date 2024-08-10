@@ -10,6 +10,15 @@ const stringToBool = (inputString) => {
 // even if the data type is not a string
 const stringToBoolString = (inputString) => stringToBool(inputString).toString();
 
+function stripNullsFromObject(obj) {
+  return Object.fromEntries(
+    Object.entries(obj)
+      // eslint-disable-next-line no-unused-vars
+      .filter(([_, v]) => v != null && !Number.isNaN(v))
+      .map(([k, v]) => [k, v === Object(v) ? stripNullsFromObject(v) : v])
+  );
+}
+
 const mapEDPubToUmmc = async (formData) => {
   if (typeof formData !== 'object' || formData === null) return {};
 
@@ -37,7 +46,7 @@ const mapEDPubToUmmc = async (formData) => {
   delete formData.data_producer_info_organization;
   delete formData.data_producer_info_department;
 
-  const contactPerson = {
+  const contactPerson = (dataProducerSplitName.length > 0 || formData.data_producer_info_email || formData.data_producer_info_orcid || dataProducerAffiliation) ? {
     ContactPersons: [
       {
         Roles: ['Science Contact'],
@@ -57,11 +66,11 @@ const mapEDPubToUmmc = async (formData) => {
         NonDataCenterAffiliation: dataProducerAffiliation
       }
     ]
-  };
+  } : {};
   delete formData.data_producer_info_email;
   delete formData.data_producer_info_orcid;
 
-  if (!stringToBool(formData.same_as_poc_name_data_producer_info_name)) {
+  if (!stringToBool(formData.same_as_poc_name_data_producer_info_name) && formData.poc_name) {
     const pocSplitName = formData.poc_name.split(' ') || [];
     delete formData.poc_name;
     const pocAffiliation = formData.poc_organization && formData.poc_department
@@ -153,7 +162,7 @@ const mapEDPubToUmmc = async (formData) => {
   };
   delete formData.data_product_name_value;
 
-  const temporalExtent = {
+  const temporalExtent = (formData.product_temporal_coverage_start || formData.product_temporal_coverage_end) ? {
     TemporalExtents: [{
       RangeDateTimes: [{
         BeginningDateTime: formData.product_temporal_coverage_start
@@ -162,7 +171,7 @@ const mapEDPubToUmmc = async (formData) => {
           && new Date(formData.product_temporal_coverage_end)
       }]
     }]
-  };
+  } : {};
   delete formData.product_temporal_coverage_start;
   delete formData.product_temporal_coverage_end;
 
@@ -173,51 +182,41 @@ const mapEDPubToUmmc = async (formData) => {
       HorizontalSpatialDomain: {
         Geometry: {
           CoordinateSystem: 'CARTESIAN',
-          BoundingRectangles: [{
-            WestBoundingCoordinate: Number(formData.spatial_horizontal_1_west),
-            NorthBoundingCoordinate: Number(formData.spatial_horizontal_1_north),
-            EastBoundingCoordinate: Number(formData.spatial_horizontal_1_east),
-            SouthBoundingCoordinate: Number(formData.spatial_horizontal_1_south)
-          }]
+          BoundingRectangles: []
         }
       }
     }
   };
   delete formData.spatial_vertical_answer;
-  delete formData.spatial_horizontal_1_west;
-  delete formData.spatial_horizontal_1_north;
-  delete formData.spatial_horizontal_1_east;
-  delete formData.spatial_horizontal_1_south;
 
-  if (formData.spatial_horizontal_2_east || formData.spatial_horizontal_2_north
-        || formData.spatial_horizontal_2_south || formData.spatial_horizontal_2_west) {
-    spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.push({
-      WestBoundingCoordinate: Number(formData.spatial_horizontal_2_west),
-      NorthBoundingCoordinate: Number(formData.spatial_horizontal_2_north),
-      EastBoundingCoordinate: Number(formData.spatial_horizontal_2_east),
-      SouthBoundingCoordinate: Number(formData.spatial_horizontal_2_south)
+  let tmpArr = [{
+    WestBoundingCoordinate: Number(formData.spatial_horizontal_1_west),
+    NorthBoundingCoordinate: Number(formData.spatial_horizontal_1_north),
+    EastBoundingCoordinate: Number(formData.spatial_horizontal_1_east),
+    SouthBoundingCoordinate: Number(formData.spatial_horizontal_1_south)
+  }, {
+    WestBoundingCoordinate: Number(formData.spatial_horizontal_2_west),
+    NorthBoundingCoordinate: Number(formData.spatial_horizontal_2_north),
+    EastBoundingCoordinate: Number(formData.spatial_horizontal_2_east),
+    SouthBoundingCoordinate: Number(formData.spatial_horizontal_2_south)
+  }, {
+    WestBoundingCoordinate: Number(formData.spatial_horizontal_3_west),
+    NorthBoundingCoordinate: Number(formData.spatial_horizontal_3_north),
+    EastBoundingCoordinate: Number(formData.spatial_horizontal_3_east),
+    SouthBoundingCoordinate: Number(formData.spatial_horizontal_3_south)
+  }];
+
+  // Strip nulls and empty objects
+  tmpArr = tmpArr.filter((value) => Object.keys(stripNullsFromObject(value)).length !== 0);
+  spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles = spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.concat(tmpArr);
+  // Delete spatial extent information
+  ['west', 'north', 'east', 'south'].forEach((direction) => {
+    [1, 2, 3].forEach((directionSet) => {
+      delete formData[`spatial_horizontal_${directionSet}_${direction}`];
     });
-  }
-  delete formData.spatial_horizontal_2_west;
-  delete formData.spatial_horizontal_2_north;
-  delete formData.spatial_horizontal_2_east;
-  delete formData.spatial_horizontal_2_south;
+  });
 
-  if (formData.spatial_horizontal_3_east || formData.spatial_horizontal_3_north
-        || formData.spatial_horizontal_3_south || formData.spatial_horizontal_3_west) {
-    spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.push({
-      WestBoundingCoordinate: Number(formData.spatial_horizontal_3_west),
-      NorthBoundingCoordinate: Number(formData.spatial_horizontal_3_north),
-      EastBoundingCoordinate: Number(formData.spatial_horizontal_3_east),
-      SouthBoundingCoordinate: Number(formData.spatial_horizontal_3_south)
-    });
-  }
-  delete formData.spatial_horizontal_3_west;
-  delete formData.spatial_horizontal_3_north;
-  delete formData.spatial_horizontal_3_east;
-  delete formData.spatial_horizontal_3_south;
-
-  if (spatialExtent.SpatialExtent.SpatialCoverageType === 'HORIZONTAL_VERTICAL') {
+  if (spatialExtent?.SpatialExtent?.SpatialCoverageType === 'HORIZONTAL_VERTICAL') {
     const isDepth = formData.spatial_vertical_details_lower > formData.spatial_vertical_details_upper;
     const upperStr = `${formData.spatial_vertical_details_upper} ${formData.spatial_vertical_details_upper_units}`;
     const lowerStr = `${formData.spatial_vertical_details_lower} ${formData.spatial_vertical_details_lower_units}`;
