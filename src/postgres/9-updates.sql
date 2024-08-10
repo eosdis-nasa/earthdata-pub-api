@@ -495,3 +495,6 @@ INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_acce
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form_review', 'email_daac_staff');
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'email_daac_staff', 'close');
+
+ALTER TABLE submission_workflow DROP CONSTRAINT submission_workflow_pkey;
+ALTER TABLE submission_workflow ADD PRIMARY KEY (id, workflow_id, start_time);
