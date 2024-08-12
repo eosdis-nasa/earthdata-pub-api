@@ -23,7 +23,7 @@ function marshalAttribute(attribute, jsonOverride) {
   } if (typeof attribute === 'number') {
     return { DataType: 'Number', StringValue: `${attribute}` };
   } if (jsonOverride && typeof attribute === 'object') {
-    return { DataType: 'String', StringValue: JSON.stringify(attribute)}
+    return { DataType: 'String', StringValue: JSON.stringify(attribute) };
   }
   return {};
 }
@@ -101,9 +101,9 @@ async function sendEmail(users, eventMessage, customTemplateFunction) {
   }
 }
 
-// Sending the jsonOverride flag as true here implies that you expect to send a JSON and that the message receiver expects to
-// parse the stringified JSON on receipt.
-function sendEvent(eventMessage, jsonOverride=false) {
+// Sending the jsonOverride flag as true here implies that you expect to send a JSON and that the
+// message receiver expects to parse the stringified JSON on receipt.
+function sendEvent(eventMessage, jsonOverride = false) {
   const params = {
     Subject: 'event',
     Message: JSON.stringify(eventMessage),
