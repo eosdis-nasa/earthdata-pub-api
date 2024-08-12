@@ -157,7 +157,7 @@ async function promoteStepMethod(eventMessage) {
 }
 
 async function workflowStartedMethod(eventMessage) {
-  const status = JSON.parse(eventMessage.status);
+  const status = await db.submission.getState({ id: eventMessage.submission_id });
   const method = stepMethods[status.step.type];
   await method(status);
 }

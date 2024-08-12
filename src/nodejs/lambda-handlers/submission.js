@@ -95,10 +95,9 @@ async function applyMethod(event, user) {
       conversation_id: status.conversation_id,
       workflow_id: workflowId,
       step_name: status.step.name,
-      user_id: user.id,
-      status
+      user_id: user.id
     };
-    await msg.sendEvent(eventMessage, true);
+    await msg.sendEvent(eventMessage);
     return status;
   }
   return { error: 'Not Authorized' };

@@ -15,23 +15,21 @@ const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
 });
 
-function marshalAttribute(attribute, jsonOverride) {
+function marshalAttribute(attribute) {
   if (Array.isArray(attribute)) {
     return { DataType: 'String.Array', StringValue: JSON.stringify(attribute) };
   } if (typeof attribute === 'string') {
     return { DataType: 'String', StringValue: attribute };
   } if (typeof attribute === 'number') {
     return { DataType: 'Number', StringValue: `${attribute}` };
-  } if (jsonOverride && typeof attribute === 'object') {
-    return { DataType: 'String', StringValue: JSON.stringify(attribute) };
   }
   return {};
 }
 
-function marshalAttributes(eventMessage, jsonOverride) {
+function marshalAttributes(eventMessage) {
   return Object.entries(eventMessage).reduce((attributes, [key, val]) => {
     if (key !== 'data') {
-      Object.assign(attributes, { [key]: marshalAttribute(val, jsonOverride) });
+      Object.assign(attributes, { [key]: marshalAttribute(val) });
     }
     return attributes;
   }, {});
@@ -101,13 +99,11 @@ async function sendEmail(users, eventMessage, customTemplateFunction) {
   }
 }
 
-// Sending the jsonOverride flag as true here implies that you expect to send a JSON and that the
-// message receiver expects to parse the stringified JSON on receipt.
-function sendEvent(eventMessage, jsonOverride = false) {
+function sendEvent(eventMessage) {
   const params = {
     Subject: 'event',
     Message: JSON.stringify(eventMessage),
-    MessageAttributes: marshalAttributes(eventMessage, jsonOverride),
+    MessageAttributes: marshalAttributes(eventMessage),
     MessageGroupId: eventGroupId,
     MessageDeduplicationId: Date.now().toString(),
     TopicArn: eventSns
