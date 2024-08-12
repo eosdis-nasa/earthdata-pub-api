@@ -157,7 +157,7 @@ async function promoteStepMethod(eventMessage) {
 }
 
 async function workflowStartedMethod(eventMessage) {
-  const { status } = eventMessage;
+  const status = JSON.parse(eventMessage.status);
   const method = stepMethods[status.step.type];
   await method(status);
 }

@@ -98,7 +98,7 @@ async function applyMethod(event, user) {
       user_id: user.id,
       status
     };
-    await msg.sendEvent(eventMessage);
+    await msg.sendEvent(eventMessage, true);
     return status;
   }
   return { error: 'Not Authorized' };
