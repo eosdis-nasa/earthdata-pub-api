@@ -368,7 +368,7 @@ CREATE TABLE IF NOT EXISTS submission_workflow (
   workflow_id UUID NOT NULL,
   start_time TIMESTAMP NOT NULL DEFAULT NOW(),
   complete_time TIMESTAMP,
-  PRIMARY KEY ((id, workflow_id, start_time),
+  PRIMARY KEY (id, workflow_id, start_time),
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (workflow_id) REFERENCES workflow (id)
 );

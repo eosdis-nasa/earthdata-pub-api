@@ -427,8 +427,9 @@ NATURAL JOIN (
 NATURAL JOIN (
   SELECT
     submission_workflow.id,
-    JSONB_OBJECT_AGG(submission_workflow.workflow_id,
+    ARRAY_AGG(
       JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
+        'workflow_id', submission_workflow.workflow_id,
         'start_time', submission_workflow.start_time,
         'complete_time', submission_workflow.complete_time
     ))) workflows
