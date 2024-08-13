@@ -8497,8 +8497,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to apply.",
+        "summary": "Update submission workflow",
+        "description": "Allows a user to update a submission's workflow",
         "operationId": "submissionOperationApply",
         "requestBody": {
           "x-name": "payload",
@@ -8615,8 +8615,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to submit a form for review.",
+        "summary": "Submit form data",
+        "description": "Submits a form's data for review",
         "operationId": "submissionOperationSubmit",
         "requestBody": {
           "x-name": "payload",
@@ -8733,8 +8733,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to save a request in progress",
+        "summary": "Update form data",
+        "description": "Save form data for submission",
         "operationId": "submissionOperationSave",
         "requestBody": {
           "x-name": "payload",
@@ -8851,8 +8851,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a submission to be reviewed.",
+        "summary": "Review a submission",
+        "description": "Approve or reject a submission step",
         "operationId": "submissionOperationReview",
         "requestBody": {
           "x-name": "payload",
@@ -8969,8 +8969,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to resume a submission.",
+        "summary": "Delete service credential",
+        "description": "Initiate removal of temporary service credential when service operations complete.",
         "operationId": "submissionOperationResume",
         "requestBody": {
           "x-name": "payload",
@@ -9087,8 +9087,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user withdraw a solution that is in progress.",
+        "summary": "Withdrawn submission",
+        "description": "Withdraw a submission setting it's default visibility to hidden",
         "operationId": "submissionOperationWithdraw",
         "requestBody": {
           "x-name": "payload",
@@ -9205,8 +9205,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to restore a withdrawn submission",
+        "summary": "Restore a submission",
+        "description": "Restore a submission from a withdrawn status making it visible",
         "operationId": "submissionOperationRestore",
         "requestBody": {
           "x-name": "payload",
@@ -9323,8 +9323,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to change the step a workflow is on",
+        "summary": "Change step of a submission",
+        "description": "Update the step of a submission to another step within the workflow",
         "operationId": "submissionOperationChangeStep",
         "requestBody": {
           "x-name": "payload",
@@ -9441,8 +9441,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to add contributors to a submission",
+        "summary": "Add a contributor to the submission",
+        "description": "Add a contributor to the submission",
         "operationId": "submissionOperationAddContributors",
         "requestBody": {
           "x-name": "payload",
@@ -9559,8 +9559,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to remove a contributor from a submission",
+        "summary": "Remove contributor from submission",
+        "description": "Removes contributor from submission",
         "operationId": "submissionOperationRemoveContributor",
         "requestBody": {
           "x-name": "payload",
@@ -9677,8 +9677,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to save a request in progress",
+        "summary": "Create step review approval",
+        "description": "Create review step approval requirements for specified step. i.e. add reviewers",
         "operationId": "createStepReviewApproval",
         "requestBody": {
           "x-name": "payload",
@@ -9795,8 +9795,8 @@
         "tags": [
           "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to save a request in progress",
+        "summary": "Delete step review approval",
+        "description": "Delete review step approval requirements for specified step. i.e. remove reviewers",
         "operationId": "deleteStepReviewApproval",
         "requestBody": {
           "x-name": "payload",
