@@ -690,7 +690,7 @@ WITH uids as (
     SELECT unnest(user_ids) as user_ids
     FROM note_scope
     WHERE note_id = '${noteId}'
-    UNION SELECT unnest(ARRAY['${viewerIds.join('\',\'')}']::UUID[])
+    UNION SELECT unnest(ARRAY['${viewerIds.join('\',\'')}']::UUID[]) subquery
   )
 )
 INSERT INTO note_scope(note_id, user_ids)
@@ -711,7 +711,7 @@ WITH role_ids as (
     SELECT unnest(edprole_ids) as edprole_ids
     FROM note_scope
     WHERE note_id = '${noteId}'
-    UNION SELECT unnest(ARRAY['${viewerRoles.join('\',\'')}']::UUID[])
+    UNION SELECT unnest(ARRAY['${viewerRoles.join('\',\'')}']::UUID[]) subquery
   )
 )
 INSERT INTO note_scope(note_id, edprole_ids)
