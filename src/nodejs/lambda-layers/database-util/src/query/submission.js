@@ -504,7 +504,8 @@ RETURNING *`;
 const checkWorkflow = () => `
 SELECT step_edge.step_name
 FROM step_edge
-WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}})`;
+WHERE step_edge.step_name = {{step_name}} 
+AND step_edge.workflow_id = (SELECT DISTINCT submission_workflow.workflow_id from submission_workflow WHERE id={{id}})`;
 
 const addContributors = ({ contributor_ids }) => `
 UPDATE submission
