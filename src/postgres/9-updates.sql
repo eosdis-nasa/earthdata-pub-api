@@ -479,3 +479,22 @@ DELETE FROM step WHERE step_id='c628d63b-93b9-45ae-8e7b-a903554b6726';
 
 DELETE FROM submission_action_data WHERE action_id='f812eb99-7c4a-46a8-8d8f-30ae509fe21c';
 DELETE FROM action WHERE id='f812eb99-7c4a-46a8-8d8f-30ae509fe21c';
+
+-- 8/6/24 Add ORNL service trigger to ORNL workflow
+INSERT INTO service(id, short_name, long_name, description, endpoint, options, headers, method, code, payload) VALUES ('f33f9ce5-e402-4823-8847-f380d1b7789b', 'ornl_service', 'ORNL On-Prem Service', 'ORNL Service used for syncing data between EDPub and on-prem systems', 'https://pub.uat.earthdata.nasa.gov/api/data/daac/offboard', '{}', '{"Authorization": "ornl_service_authorization_secret"}', 'POST', 200, false);
+INSERT INTO step(step_id, step_name, type, service_id) VALUES ('62c8a133-4af7-4d41-8174-179ffbe81d3f','ornl_service_trigger','service','f33f9ce5-e402-4823-8847-f380d1b7789b');
+
+ALTER TABLE service_secret DROP CONSTRAINT service_secret_pkey;
+ALTER TABLE service_secret ADD PRIMARY KEY (id, submission_id);
+
+INSERT INTO workflow VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_test_workflow', 1, 'ORNL Test Workflow', 'This is a workflow for demoing requested functionality for the ORNL workflow.');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'init', 'ornl_service_trigger');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_service_trigger', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_accession_request_form_review','data_publication_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form_review', 'email_daac_staff');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'email_daac_staff', 'close');
+
+ALTER TABLE submission_workflow DROP CONSTRAINT submission_workflow_pkey;
+ALTER TABLE submission_workflow ADD PRIMARY KEY (id, workflow_id, start_time);

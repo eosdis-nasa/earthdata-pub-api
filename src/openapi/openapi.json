@@ -43,8 +43,8 @@
       }
     },
     {
-      "name": "submission",
-      "description": "Manage submissions, fill forms, review.",
+      "name": "service",
+      "description": "Used to manage a submission via the service endpoints & service authorizer.",
       "externalDocs": {
         "description": "Read the docs",
         "url": "http://database.docs/#TODO"
@@ -4416,124 +4416,6 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/operation/resume": {
-      "post": {
-        "tags": [
-          "data"
-        ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to resume a submission.",
-        "operationId": "submissionOperationResume",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Cognito_Authorizer": ["openid"]
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${submission_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"resume\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubmission",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
     "/api/data/submission/operation/lock": {
       "post": {
         "tags": [
@@ -8610,367 +8492,13 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/submission/initialize": {
-      "post": {
-        "tags": [
-          "submission"
-        ],
-        "summary": "Initializes a submission",
-        "description": "Allows a user to initialize a submission.",
-        "operationId": "submissionOperationInitialize",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Service_Authorizer": []
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${submission_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"initialize\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubmission",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
-    "/api/submission/active": {
-      "post": {
-        "tags": [
-          "submission"
-        ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Lets a user make a submission active.",
-        "operationId": "submissionOperationActive",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Service_Authorizer": []
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${submission_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"active\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubmission",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
-    "/api/submission/inactive": {
-      "post": {
-        "tags": [
-          "submission"
-        ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to make a submission inactive.",
-        "operationId": "submissionOperationInactive",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Service_Authorizer": []
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${submission_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"inactive\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubmission",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
     "/api/submission/apply": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to apply.",
+        "summary": "Update submission workflow",
+        "description": "Allows a user to update a submission's workflow",
         "operationId": "submissionOperationApply",
         "requestBody": {
           "x-name": "payload",
@@ -9015,125 +8543,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubmission",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
-    "/api/submission/metadata": {
-      "post": {
-        "tags": [
-          "submission"
-        ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to submit metadata for a submission.",
-        "operationId": "submissionOperationMetadata",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Service_Authorizer": []
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${submission_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"metadata\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9203,10 +8613,10 @@
     "/api/submission/submit": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to submit a form for review.",
+        "summary": "Submit form data",
+        "description": "Submits a form's data for review",
         "operationId": "submissionOperationSubmit",
         "requestBody": {
           "x-name": "payload",
@@ -9251,7 +8661,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9321,10 +8731,10 @@
     "/api/submission/save": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to save a request in progress",
+        "summary": "Update form data",
+        "description": "Save form data for submission",
         "operationId": "submissionOperationSave",
         "requestBody": {
           "x-name": "payload",
@@ -9369,7 +8779,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9439,10 +8849,10 @@
     "/api/submission/review": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a submission to be reviewed.",
+        "summary": "Review a submission",
+        "description": "Approve or reject a submission step",
         "operationId": "submissionOperationReview",
         "requestBody": {
           "x-name": "payload",
@@ -9487,7 +8897,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"review\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"review\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9557,10 +8967,10 @@
     "/api/submission/resume": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to resume a submission.",
+        "summary": "Delete service credential",
+        "description": "Initiate removal of temporary service credential when service operations complete.",
         "operationId": "submissionOperationResume",
         "requestBody": {
           "x-name": "payload",
@@ -9605,243 +9015,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"resume\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubmission",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
-    "/api/submission/lock": {
-      "post": {
-        "tags": [
-          "submission"
-        ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to lock a submission.",
-        "operationId": "submissionOperationLock",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Service_Authorizer": []
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${submission_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"lock\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubmission",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
-    "/api/submission/unlock": {
-      "post": {
-        "tags": [
-          "submission"
-        ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user unlock submission.",
-        "operationId": "submissionOperationUnlock",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Service_Authorizer": []
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${submission_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"unlock\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"resume\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9911,10 +9085,10 @@
     "/api/submission/withdraw": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user withdraw a solution that is in progress.",
+        "summary": "Withdrawn submission",
+        "description": "Withdraw a submission setting it's default visibility to hidden",
         "operationId": "submissionOperationWithdraw",
         "requestBody": {
           "x-name": "payload",
@@ -9959,7 +9133,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10029,10 +9203,10 @@
     "/api/submission/restore": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to restore a withdrawn submission",
+        "summary": "Restore a submission",
+        "description": "Restore a submission from a withdrawn status making it visible",
         "operationId": "submissionOperationRestore",
         "requestBody": {
           "x-name": "payload",
@@ -10077,7 +9251,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"restore\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"restore\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10147,10 +9321,10 @@
     "/api/submission/changeStep": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to change the step a workflow is on",
+        "summary": "Change step of a submission",
+        "description": "Update the step of a submission to another step within the workflow",
         "operationId": "submissionOperationChangeStep",
         "requestBody": {
           "x-name": "payload",
@@ -10195,7 +9369,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10265,10 +9439,10 @@
     "/api/submission/addContributors": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to add contributors to a submission",
+        "summary": "Add a contributor to the submission",
+        "description": "Add a contributor to the submission",
         "operationId": "submissionOperationAddContributors",
         "requestBody": {
           "x-name": "payload",
@@ -10313,7 +9487,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10383,10 +9557,10 @@
     "/api/submission/removeContributor": {
       "post": {
         "tags": [
-          "submission"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to remove a contributor from a submission",
+        "summary": "Remove contributor from submission",
+        "description": "Removes contributor from submission",
         "operationId": "submissionOperationRemoveContributor",
         "requestBody": {
           "x-name": "payload",
@@ -10431,125 +9605,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubmission",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
-    "/api/submission/copySubmission": {
-      "post": {
-        "tags": [
-          "submission"
-        ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to copy an existing submission",
-        "operationId": "submissionOperationCopySubmission",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Service_Authorizer": []
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${submission_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"copySubmission\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10619,10 +9675,10 @@
     "/api/submission/createStepReviewApproval": {
       "post": {
         "tags": [
-          "data"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to save a request in progress",
+        "summary": "Create step review approval",
+        "description": "Create review step approval requirements for specified step. i.e. add reviewers",
         "operationId": "createStepReviewApproval",
         "requestBody": {
           "x-name": "payload",
@@ -10667,7 +9723,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"createStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"createStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10737,10 +9793,10 @@
     "/api/submission/deleteStepReviewApproval": {
       "post": {
         "tags": [
-          "data"
+          "service"
         ],
-        "summary": "Perform an operation on a Submission.",
-        "description": "Allows a user to be able to save a request in progress",
+        "summary": "Delete step review approval",
+        "description": "Delete review step approval requirements for specified step. i.e. remove reviewers",
         "operationId": "deleteStepReviewApproval",
         "requestBody": {
           "x-name": "payload",
@@ -10785,7 +9841,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"deleteStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"deleteStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {

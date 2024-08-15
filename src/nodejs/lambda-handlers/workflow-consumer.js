@@ -12,6 +12,12 @@ const db = require('database-util');
 
 const msg = require('message-util');
 
+const uuid = require('uuid');
+const {
+  GetSecretValueCommand,
+  SecretsManagerClient
+} = require('@aws-sdk/client-secrets-manager');
+
 async function actionMethod(status) {
   const eventMessage = {
     event_type: status.step.action_id ? 'action_request' : 'action_request_no_id',
@@ -55,7 +61,42 @@ async function reviewMethod(status) {
   await msg.sendEvent(eventMessage);
 }
 
+async function getServiceAuthSecret(secretName) {
+  const client = new SecretsManagerClient();
+  const response = await client.send(
+    new GetSecretValueCommand({
+      SecretId: secretName
+    })
+  );
+  return response.SecretString;
+}
+
+async function sendSecret(service, submissionSecret, submissionId) {
+  await fetch(service.endpoint, {
+    method: service.method,
+    headers: service.headers,
+    body: JSON.stringify({ ...service.payload, ...{ submissionId, submissionSecret } })
+  }).then(async (response) => {
+    if (response.ok) return response;
+    throw new Error(await response.text());
+  }).catch((error) => {
+    console.error(`Error Sending Submission Secret:\n\n${error}`);
+  });
+}
+
 async function serviceMethod(status) {
+  const service = await db.service.findById({ id: status.step.service_id });
+  const submissionSecret = uuid.v4();
+  await db.service.createSecret({
+    id: service.id,
+    secret: submissionSecret,
+    submission_id: status.id
+  });
+  const headersAuthKey = Object.keys(service.headers).find((key) => key.toLowerCase() === 'authorization');
+  if (headersAuthKey) {
+    service.headers[headersAuthKey] = await getServiceAuthSecret(service.headers[headersAuthKey]);
+  }
+  await sendSecret(service, submissionSecret, status.id);
   const eventMessage = {
     event_type: 'service_call',
     service_id: status.step.service_id,
@@ -67,6 +108,8 @@ async function serviceMethod(status) {
   };
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   await msg.sendEvent(eventMessage);
+  // eslint-disable-next-line no-use-before-define
+  await promoteStepMethod(eventMessage);
 }
 
 async function closeMethod(status) {
@@ -116,9 +159,9 @@ async function promoteStepMethod(eventMessage) {
 }
 
 async function workflowStartedMethod(eventMessage) {
-  const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
-  await promoteStepMethod(eventMessage);
-  await msg.sendEvent(newEvent);
+  const status = await db.submission.getState({ id: eventMessage.submission_id });
+  const method = stepMethods[status.step.type];
+  await method(status);
 }
 
 async function requestInitializedMethod(eventMessage) {
@@ -179,19 +222,13 @@ async function reviewRejectedMethod(eventMessage) {
   }
 }
 
-async function workflowResumeMethod(eventMessage) {
-  const { submission_id: id } = eventMessage;
-  await db.service.deleteSecret(id);
-}
-
 const eventMethods = {
   workflow_promote_step: promoteStepMethod,
   workflow_started: workflowStartedMethod,
   request_initialized: requestInitializedMethod,
   form_submitted: formSubmittedMethod,
   review_approved: reviewApprovedMethod,
-  review_rejected: reviewRejectedMethod,
-  workflow_resume: workflowResumeMethod
+  review_rejected: reviewRejectedMethod
 };
 
 async function processRecord(record) {
