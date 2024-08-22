@@ -4,9 +4,11 @@ INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_accession
 INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_publication_request', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 INSERT INTO form VALUES ('de7e5c40-584a-493b-919d-8f7f3f1e9e3c', 'confirmation_form', 1, 'Confirmation Form', 'This form is used to confirm request information which might be used for external applications such as collection metadata curation.');
 
+-- Service(id, short_name, long_name, description, endpoint, options, headers, method, code, payload)
+INSERT INTO service(id, short_name, long_name, description, endpoint, options, headers, method, code, payload) VALUES ('f33f9ce5-e402-4823-8847-f380d1b7789b', 'ornl_service', 'ORNL On-Prem Service', 'ORNL Service used for syncing data between EDPub and on-prem systems', 'https://pub.uat.earthdata.nasa.gov/api/data/daac/offboard', '{}', '{"Authorization": "ornl_service_authorization_secret"}', 'POST', 200, false);
+
 -- Action(id, short_name, version, long_name, description, source)
 INSERT INTO action VALUES ('3fe93672-cd91-45d4-863b-c6d0d63f8c8c', 'send_to_mmt', 1, 'Send To MMT Action', 'This action is used to send collection metadata from EDPub to MMT.', 'sendToMMT.js');
-INSERT INTO action VALUES ('f812eb99-7c4a-46a8-8d8f-30ae509fe21c', 'map_edpub_to_ummc', 1, 'Map EDPub To UMMC Action', 'This action is map EDPub question reponses to a JSON UMMC format.', 'mapEDPubToUmmc.js');
 INSERT INTO action VALUES ('6d872804-609b-4e5d-a80c-143908051e07', 'push_metadata_to_daac', 1, 'Pushes Metadata to a Daac Endpoint', 'This action is used to push metadata to a DAAC endpoint.', 'pushMetadataToDaac.js');
 INSERT INTO action VALUES ('09293035-2d31-44d3-a6b0-675f10dc34bf', 'push_metadata_to_gesdisc', 1, 'Push Metadata to GES DISC Endpoint', 'This action is used to push metadata to the GES DISC meditor instance', 'pushMetadataToGesdisc.js');
 INSERT INTO action VALUES ('50ed996d-22b7-4aa7-a88b-8c4b539fa5df', 'email_daac_staff', 1, 'Send Email to DAAC Staff', 'This action is used to send an email to all DAAC staff', 'emailDaacStaff.js');
@@ -340,11 +342,8 @@ INSERT INTO privilege VALUES ('ADMIN');
 
 INSERT INTO privilege VALUES ('REQUEST_READ');
 INSERT INTO privilege VALUES ('REQUEST_DAACREAD');
-INSERT INTO privilege VALUES ('REQUEST_ADMINREAD');
 INSERT INTO privilege VALUES ('REQUEST_INITIALIZE');
-INSERT INTO privilege VALUES ('REQUEST_RESUME');
 INSERT INTO privilege VALUES ('REQUEST_SUBMIT');
-INSERT INTO privilege VALUES ('REQUEST_APPLY');
 INSERT INTO privilege VALUES ('REQUEST_REVIEW');
 INSERT INTO privilege VALUES ('REQUEST_REVIEW_MANAGER');
 INSERT INTO privilege VALUES ('REQUEST_REASSIGN');
@@ -359,26 +358,10 @@ INSERT INTO privilege VALUES ('USER_ADDGROUP');
 INSERT INTO privilege VALUES ('USER_REMOVEGROUP');
 INSERT INTO privilege VALUES ('USER_ADDROLE');
 INSERT INTO privilege VALUES ('USER_REMOVEROLE');
-INSERT INTO privilege VALUES ('USER_ADDPERMISSION');
-INSERT INTO privilege VALUES ('USER_DELETE');
 
-INSERT INTO privilege VALUES ('GROUP_CREATE');
-INSERT INTO privilege VALUES ('GROUP_READ');
-INSERT INTO privilege VALUES ('GROUP_UPDATE');
-INSERT INTO privilege VALUES ('GROUP_DELETE');
-INSERT INTO privilege VALUES ('GROUP_ADDPERMISSION');
 INSERT INTO privilege VALUES ('GROUP_UPLOAD');
 
-INSERT INTO privilege VALUES ('ROLE_CREATE');
-INSERT INTO privilege VALUES ('ROLE_READ');
-INSERT INTO privilege VALUES ('ROLE_UPDATE');
-INSERT INTO privilege VALUES ('ROLE_DELETE');
-INSERT INTO privilege VALUES ('ROLE_ADDPRIVILEGE');
-
-INSERT INTO privilege VALUES ('DAAC_CREATE');
 INSERT INTO privilege VALUES ('DAAC_READ');
-INSERT INTO privilege VALUES ('DAAC_UPDATE');
-INSERT INTO privilege VALUES ('DAAC_DELETE');
 
 INSERT INTO privilege VALUES ('FORM_CREATE');
 INSERT INTO privilege VALUES ('FORM_READ');
@@ -396,12 +379,8 @@ INSERT INTO privilege VALUES ('NOTE_NEW');
 INSERT INTO privilege VALUES ('NOTE_REPLY');
 INSERT INTO privilege VALUES ('NOTE_ADDUSER');
 INSERT INTO privilege VALUES ('NOTE_REMOVEUSER');
-INSERT INTO privilege VALUES ('NOTE_ADDGROUP');
 
-INSERT INTO privilege VALUES ('QUESTION_CREATE');
 INSERT INTO privilege VALUES ('QUESTION_READ');
-INSERT INTO privilege VALUES ('QUESTION_UPDATE');
-INSERT INTO privilege VALUES ('QUESTION_DELETE');
 
 INSERT INTO privilege VALUES ('CREATE_STEPREVIEW');
 INSERT INTO privilege VALUES ('REMOVE_STEPREVIEW');
@@ -500,6 +479,7 @@ INSERT INTO workflow VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'asdc_darkh
 INSERT INTO workflow VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'gesdisc_community_workflow', 1, 'GES DISC Community Workflow', 'This is the default workflow for community products.');
 INSERT INTO workflow VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'gesdisc_push_workflow', 1, 'GES DISC Push Workflow', 'This is a workflow for testing the push to gesdisc action.');
 INSERT INTO workflow VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'podaac_default_workflow', 1, 'PO DAAC Default Workflow', 'This is the default workflow for PO DAAC.');
+INSERT INTO workflow VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_test_workflow', 1, 'ORNL Test Workflow', 'This is a workflow for demoing requested functionality for the ORNL workflow.');
 
 -- Step(step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_name, type) VALUES ('init', 'init');
@@ -519,9 +499,6 @@ INSERT INTO step(step_name, type, data) VALUES ('map_from_mmt', 'action', '{"rol
 INSERT INTO step(step_name, type, data) VALUES ('publish_to_cmr', 'action', '{"rollback":"map_from_mmt","type": "action"}');
 INSERT INTO step(step_name, type, action_id) VALUES ('send_to_mmt', 'action', '3fe93672-cd91-45d4-863b-c6d0d63f8c8c');
 INSERT INTO step(step_name, type, form_id) VALUES ('confirmation_form', 'form', 'de7e5c40-584a-493b-919d-8f7f3f1e9e3c');
-INSERT INTO step(step_name, type, action_id, data) VALUES ('map_question_response_to_ummc', 'action', 'f812eb99-7c4a-46a8-8d8f-30ae509fe21c', '{"rollback":"confirmation_form","type": "action"}');
-INSERT INTO step(step_id, step_name, type, data) VALUES ('d1cbc4a8-ce4c-4734-8e71-a824d30c401a', 'edit_metadata_in_mmt_after_publication_form_review', 'action', '{"rollback":"send_to_mmt_after_publication_form_review","type": "action"}');
-INSERT INTO step(step_id, step_name, type, data) VALUES ('c628d63b-93b9-45ae-8e7b-a903554b6726', 'send_to_mmt_after_publication_form_review', 'action', '{"rollback":"map_question_response_to_ummc","type": "action"}');
 
 -- Unknown DAAC
 -- StepEdge(workflow_id, step_name, next_step_name)
@@ -531,38 +508,42 @@ INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_acce
 
 -- GHRC
 -- Step(step_name, type, action_id, form_id, service_id, data)
-INSERT INTO step(step_id, step_name, type, data) VALUES ('d278f01e-1ef7-4677-a350-73ccadeddc22', 'create_skeleton_dataset_record_in_mmt', 'action', '{"rollback":"map_question_response_to_ummc","type": "action"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('d278f01e-1ef7-4677-a350-73ccadeddc22', 'create_skeleton_dataset_record_in_mmt', 'action', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('9549666c-94ff-4ff5-accc-1df834fde963', 'push_collection_metadata_to_cmr_via_mmt', 'action', '{"rollback":"create_skeleton_dataset_record_in_mmt","type": "action"}');
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_accession_request_form', 'data_accession_request_form_review');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_accession_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_publication_request_form', 'data_publication_request_form_review');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_publication_request_form_review', 'map_question_response_to_ummc');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'map_question_response_to_ummc', 'create_skeleton_dataset_record_in_mmt');
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_publication_request_form_review', 'create_skeleton_dataset_record_in_mmt');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'create_skeleton_dataset_record_in_mmt', 'push_collection_metadata_to_cmr_via_mmt');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'push_collection_metadata_to_cmr_via_mmt', 'close');
 
 -- ORNL 
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)
-INSERT INTO step(step_id, step_name, type, data) VALUES ('6445f44b-bcda-41b4-86e4-23761edc22bf', 'push_to_ornl_database_f1', 'action', '{"rollback": "map_question_response_to_ummc_f1", "type": "action"}');
-INSERT INTO step(step_id, step_name, type, data) VALUES ('4791d53b-6c8f-4d5b-9ee9-81cebd4c4b04', 'push_to_ornl_database_f2', 'action', '{"rollback": "map_question_response_to_ummc_f2", "type": "action"}');
-INSERT INTO step(step_id, step_name, type, data) VALUES ('c6082cae-9c97-4692-b0da-c9334a30c9e0', 'map_question_response_to_ummc_f1', 'action', '{"rollback": "data_accession_request_form_review", "type": "review"}');
-INSERT INTO step(step_id, step_name, type, data) VALUES ('faf94cca-ea3e-4886-a306-4f7f5acfda1a', 'map_question_response_to_ummc_f2', 'action', '{"rollback": "data_publication_request_form_review", "type": "review"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('6445f44b-bcda-41b4-86e4-23761edc22bf', 'push_to_ornl_database_f1', 'action', '{"rollback": "data_accession_request_form_review", "type": "review"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('4791d53b-6c8f-4d5b-9ee9-81cebd4c4b04', 'push_to_ornl_database_f2', 'action', '{"rollback": "data_publication_request_form_review", "type": "review"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
+INSERT INTO step(step_id, step_name, type, service_id) VALUES ('62c8a133-4af7-4d41-8174-179ffbe81d3f','ornl_service_trigger','service','f33f9ce5-e402-4823-8847-f380d1b7789b');
 
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'init', 'close');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init','data_accession_request_form');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review', 'map_question_response_to_ummc_f1');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'map_question_response_to_ummc_f1', 'push_to_ornl_database_f1');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review','push_to_ornl_database_f1');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f1', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form', 'data_publication_request_form_review');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review', 'map_question_response_to_ummc_f2');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'map_question_response_to_ummc_f2', 'push_to_ornl_database_f2');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f2', 'email_daac_staff');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'email_daac_staff', 'close');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review','push_to_ornl_database_f2');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f2', 'close');
+
+-- ORNL Test Workflow
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'init', 'ornl_service_trigger');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_service_trigger', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_accession_request_form_review','data_publication_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form_review', 'email_daac_staff');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'email_daac_staff', 'close');
 
 -- GES DISC 
 -- Community Workflow
@@ -586,8 +567,7 @@ INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'init', 'd
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_accession_request_form', 'data_accession_request_form_review');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_accession_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form', 'data_publication_request_form_review');
-INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form_review', 'map_question_response_to_ummc');
-INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'map_question_response_to_ummc', 'send_metadata_to_ges_disc');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form_review', 'send_metadata_to_ges_disc');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'send_metadata_to_ges_disc', 'close');
 
 -- ASDC 
@@ -599,8 +579,7 @@ INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_acce
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_accession_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_publication_request_form_review', 'confirmation_form');
-INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'confirmation_form', 'map_question_response_to_ummc');
-INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'map_question_response_to_ummc', 'email_asdc_staff');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'confirmation_form', 'email_asdc_staff');
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'email_asdc_staff', 'close');
 
 INSERT INTO step_edge VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'close');

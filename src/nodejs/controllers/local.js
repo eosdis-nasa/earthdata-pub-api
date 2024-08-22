@@ -11,7 +11,7 @@ const redirectEndpoint = process.env.AUTH_CALLBACK_URL;
 const respectExp = process.env.AUTH_RESPECT_EXP === 'true';
 const codes = {};
 
-const workflowEventFilter = ['request_initialized', 'workflow_resume', 'form_submitted', 'review_approved', 'review_rejected', 'workflow_promote_step'];
+const workflowEventFilter = ['request_initialized', 'form_submitted', 'review_approved', 'review_rejected', 'workflow_promote_step', 'workflow_started'];
 
 function aclAllowAll(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -170,9 +170,10 @@ async function checkService(req, secDef, token, next) {
   const splitIndex = authStr.indexOf(':');
   const serviceId = authStr.substring(0, splitIndex);
   const serviceSecret = authStr.substring(splitIndex + 1);
+  const submissionId = req.headers.submissionid;
   if (!uuid.validate(serviceId)) { return next(req.res.sendStatus(403)); }
-  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id: serviceId });
-  if (dbSecret === serviceSecret && (dbSubmissionId ? dbSubmissionId === req.headers.submissionid : true)) { return next(); }
+  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id: serviceId, submissionId });
+  if (dbSecret === serviceSecret && dbSubmissionId === submissionId ) { return next(); }
   return next(req.res.sendStatus(403));
 }
 

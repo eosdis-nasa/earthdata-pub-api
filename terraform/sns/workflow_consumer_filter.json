@@ -1,3 +1,3 @@
 {
-  "event_type": ["workflow_promote_step"]
+  "event_type": ["workflow_promote_step", "workflow_started"]
 }

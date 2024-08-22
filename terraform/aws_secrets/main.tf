@@ -39,3 +39,14 @@ resource "aws_secretsmanager_secret_version" "gesdisc_endpoint"{
       "gesdisc_endpoint_access_token" = var.gesdisc_endpoint_access_token
     })
 }
+
+# ORNL Service Authorization
+resource "aws_secretsmanager_secret" "ornl_service_authorization" {
+  name = "ornl_service_authorization_secret"
+  description = "Service authorization secret used for sending ORNL service submission codes"
+}
+
+resource "aws_secretsmanager_secret_version" "ornl_service_authorization_version" {
+  secret_id = aws_secretsmanager_secret.ornl_service_authorization.id
+  secret_string = var.ornl_service_authorization
+}

@@ -9,3 +9,7 @@ output "ornl_endpoint_arn"{
 output "gesdisc_endpoint_arn"{
   value = aws_secretsmanager_secret.gesdisc_endpoint.arn
 }
+
+output "ornl_service_authorization_arn" {
+  value = aws_secretsmanager_secret.ornl_service_authorization.arn
+}

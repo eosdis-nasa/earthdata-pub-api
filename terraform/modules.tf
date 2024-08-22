@@ -18,6 +18,7 @@ module "iam_roles" {
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
   gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
+  ornl_service_authorization_arn = module.aws_secrets.ornl_service_authorization_arn
 }
 
 module "s3" {
@@ -35,6 +36,7 @@ module "aws_secrets" {
   ornl_endpoint_access_token = var.ornl_endpoint_access_token
   gesdisc_endpoint_url = var.gesdisc_endpoint_url
   gesdisc_endpoint_access_token = var.gesdisc_endpoint_access_token
+  ornl_service_authorization = var.ornl_service_authorization_secret
 }
 
 module "lambda_functions" {

@@ -21,3 +21,7 @@ variable "gesdisc_endpoint_url"{
 variable "gesdisc_endpoint_access_token"{
   type = string
 }
+
+variable "ornl_service_authorization" {
+  type = string
+}

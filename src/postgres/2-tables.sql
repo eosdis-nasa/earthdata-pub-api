@@ -368,7 +368,7 @@ CREATE TABLE IF NOT EXISTS submission_workflow (
   workflow_id UUID NOT NULL,
   start_time TIMESTAMP NOT NULL DEFAULT NOW(),
   complete_time TIMESTAMP,
-  PRIMARY KEY (id, workflow_id),
+  PRIMARY KEY (id, workflow_id, start_time),
   FOREIGN KEY (id) REFERENCES submission (id),
   FOREIGN KEY (workflow_id) REFERENCES workflow (id)
 );
@@ -454,7 +454,7 @@ CREATE TABLE IF NOT EXISTS service_secret (
   id UUID NOT NULL,
   secret VARCHAR NOT NULL,
   submission_id UUID,
-  PRIMARY KEY (id),
+  PRIMARY KEY (id, submission_id),
   FOREIGN KEY (id) REFERENCES service (id),
   FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
