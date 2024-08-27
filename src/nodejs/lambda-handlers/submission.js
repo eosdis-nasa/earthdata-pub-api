@@ -347,6 +347,18 @@ async function createStepReviewApprovalMethod(event, user) {
       submitted_by: user.id
     });
     await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
+
+    event.event_type = 'review_required';  
+
+    let users = await db.user.getEmails({
+      user_list: userIds
+     });
+
+    //users.email = 'deepak.acharya@uah.edu';
+    
+    //missing info ->  submission_name, form_id
+
+    await msg.sendEmail(users, event);
     return formData;
   }
   return { error: 'Not Authorized' };
