@@ -354,7 +354,7 @@ async function createStepReviewApprovalMethod(event, user) {
       stepName,
       submissionId,
       // Have to use string here because SNS doesn't support boolean type
-      emailPayloadProvided: "true"
+      emailPayloadProvided: 'true'
     };
     await msg.sendEvent(eventMessage);
     return formData;

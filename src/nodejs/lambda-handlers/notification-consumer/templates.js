@@ -40,7 +40,7 @@ const templates = {
     text: `The Collection level metadata for Request ID ${e.submission_id} has been updated.`
   }),
   review_required: (e) => ({
-    text:  `Your review is required for Request ID ${e.submission_id}`
+    text: `Your review is required for Request ID ${e.submission_id}`
   })
 };
 
