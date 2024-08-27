@@ -354,7 +354,9 @@ async function createStepReviewApprovalMethod(event, user) {
     const users = await db.user.getEmails({
       user_list: userIds
     });
-    await msg.sendEmail(users, event);
+    event.users = users;
+
+    await msg.sendEvent(event);
     return formData;
   }
   return { error: 'Not Authorized' };
