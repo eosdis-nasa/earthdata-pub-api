@@ -62,8 +62,6 @@ async function sendEmailNotification({ note, emailPayload }) {
     userRole
   });
 
- 
-
   if (emailPayload.event_type === 'request_initialized') users = users.map((user) => ({ name: user.name, email: user.email, initiator: user.id === emailPayload.user_id }));
   await msg.sendEmail(users, emailPayload);
 }

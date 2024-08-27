@@ -656,10 +656,16 @@ WHERE sr.submission_id = {{id}}
 
 
 const createStepReviewApproval = (params) => `
-INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status, submitted_by)
-SELECT {{step_name}}, {{submission_id}}, CAST(user_id AS UUID), 'review_required', {{submitted_by}}
-FROM unnest(ARRAY[${params.user_ids.map(id => `'${id}'::UUID`).join(',')}]) AS user_id
-RETURNING *
+WITH inserted AS (
+  INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status, submitted_by)
+  SELECT s.step_name, {{submission_id}}, CAST(user_id AS UUID), 'review_required', {{submitted_by}}
+  FROM unnest(ARRAY[${params.user_ids.map(id => `'${id}'::UUID`).join(',')}]) AS user_id
+  JOIN step s ON s.step_name = {{step_name}}
+  RETURNING *
+)
+SELECT i.*, s.data->>'form_id' AS form_id
+FROM inserted i
+JOIN step s ON i.step_name = s.step_name;
 `;
 
 

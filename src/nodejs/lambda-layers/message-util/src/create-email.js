@@ -15,8 +15,8 @@ const createEmailHtml = async (params) => {
   } if (params.eventMessage.event_type.match(/request_initialized/gi)) {
     return (params.user.initiator
       ? getNewSubmissionTemplate(params, envUrl) : getNewSubmissionDAACTemplate(params, envUrl));
-  } if(params.eventMessage.event_type === 'review_required') {
-      return getReviewerAddedTemplate(params, envUrl);
+  } if (params.eventMessage.event_type === 'review_required') {
+    return getReviewerAddedTemplate(params, envUrl);
   }
   return getDefaultStepPromotion(params, envUrl);
 };

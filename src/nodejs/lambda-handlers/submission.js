@@ -348,16 +348,12 @@ async function createStepReviewApprovalMethod(event, user) {
     });
     await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
 
-    event.event_type = 'review_required';  
+    event.event_type = 'review_required';
+    event.formId = formData && formData.length > 0 ? formData[0].form_id : '';
 
-    let users = await db.user.getEmails({
+    const users = await db.user.getEmails({
       user_list: userIds
-     });
-
-    //users.email = 'deepak.acharya@uah.edu';
-    
-    //missing info ->  submission_name, form_id
-
+    });
     await msg.sendEmail(users, event);
     return formData;
   }
