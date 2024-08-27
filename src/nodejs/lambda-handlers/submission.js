@@ -347,16 +347,16 @@ async function createStepReviewApprovalMethod(event, user) {
       submitted_by: user.id
     });
     await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
-
-    event.event_type = 'review_required';
-    event.formId = formData && formData.length > 0 ? formData[0].form_id : '';
-
-    const users = await db.user.getEmails({
-      user_list: userIds
-    });
-    event.users = users;
-
-    await msg.sendEvent(event);
+    const eventMessage = {
+      event_type: 'review_required',
+      formId: formData && formData.length > 0 ? formData[0].form_id : '',
+      userIds,
+      stepName,
+      submissionId,
+      // Have to use string here because SNS doesn't support boolean type
+      emailPayloadProvided: "true"
+    };
+    await msg.sendEvent(eventMessage);
     return formData;
   }
   return { error: 'Not Authorized' };

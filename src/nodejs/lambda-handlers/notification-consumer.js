@@ -55,7 +55,7 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
       userRole = [roles.data_producer, roles.daac_staff, roles.daac_manager];
       break;
   }
-  let users = usersList || await db.note.getEmails({
+  let users = usersList ? await db.user.getEmails({ user_list: usersList }) : await db.note.getEmails({
     conversationId: note.conversation_id,
     senderId: note.sender_edpuser_id,
     userRole
@@ -80,8 +80,8 @@ async function processRecord(record) {
       }
       const note = await db.note[operation](message);
       if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
-        const emailPayload = await getEmailTemplate(eventMessage, message);
-        await sendEmailNotification({ note, emailPayload, usersList: eventMessage.users });
+        const emailPayload = eventMessage.emailPayloadProvided ? eventMessage : await getEmailTemplate(eventMessage, message);
+        await sendEmailNotification({ note, emailPayload, usersList: eventMessage.userIds });
       }
     }
   }
