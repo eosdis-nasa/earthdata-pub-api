@@ -667,18 +667,24 @@ WITH inserted AS (
   JOIN step s ON s.step_name = {{step_name}}
   RETURNING *
 )
-SELECT i.*, s.data->>'form_id' AS form_id
+SELECT i.*, s.data->>'form_id' AS form_id, submission.name as submission_name
 FROM inserted i
-JOIN step s ON i.step_name = s.step_name;
+JOIN step s ON i.step_name = s.step_name
+JOIN submission ON i.submission_id = submission.id;
 `;
 
 
 const deleteStepReviewApproval = (params) => `
-DELETE FROM step_review
+WITH deleted AS (DELETE FROM step_review
 WHERE submission_id = {{submission_id}}
 AND step_name = {{step_name}}
 AND edpuser_id IN (${params.user_ids.map(id => `'${id}'::UUID`).join(', ')})
-RETURNING *;
+RETURNING *
+)
+SELECT d.*, submission.initiator_edpuser_id AS initiator
+FROM deleted d
+JOIN submission ON d.submission_id = submission.id;
+;
 `;
 
 const checkCountStepReviewApproved = () => `

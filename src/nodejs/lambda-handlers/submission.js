@@ -347,9 +347,9 @@ async function createStepReviewApprovalMethod(event, user) {
     await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
     const eventMessage = {
       event_type: 'review_required',
-      formId: formData && formData.length > 0 ? formData[0].form_id : '',
+      formId: formData?.length > 0 ? formData[0].form_id : '',
       userIds,
-      stepName,
+      submissionName: formData?.length > 0 ? formData[0]?.submission_name : '',
       submissionId,
       // Have to use string here because SNS doesn't support boolean type
       emailPayloadProvided: 'true'
@@ -379,7 +379,7 @@ async function deleteStepReviewApprovalMethod(event, user) {
       user_ids: userIds
     });
     // Only accepts 1 at time; however, this isn't an issue for the current dashboard implementation
-    await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
+    if(formData[0].initiator != userIds[0]) await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
     return formData;
   }
   return { error: 'Not Authorized' };
