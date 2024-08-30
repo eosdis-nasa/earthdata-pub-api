@@ -667,10 +667,9 @@ WITH inserted AS (
   JOIN step s ON s.step_name = {{step_name}}
   RETURNING *
 )
-SELECT i.*, s.data->>'form_id' AS form_id, submission.name as submission_name
+SELECT i.*, s.data->>'form_id' AS form_id
 FROM inserted i
 JOIN step s ON i.step_name = s.step_name
-JOIN submission ON i.submission_id = submission.id;
 `;
 
 

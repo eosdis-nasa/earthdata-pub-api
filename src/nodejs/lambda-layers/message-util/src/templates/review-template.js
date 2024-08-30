@@ -1,5 +1,5 @@
 const getReviewerAddedTemplate = (params, envUrl) => {
-  const text = `Hello ${params.user.name},\n\nYou have been added as a reviewer to the ${params.eventMessage.submission_name} request.\nYour review can be added at ${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}.`;
+  const text = `Hello ${params.user.name},\n\nYou have been added as a reviewer to an Earthdata Pub request.\nYour review can be added at ${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}.`;
   const html = `
     <html>
        <body style="background: white">
@@ -20,7 +20,7 @@ const getReviewerAddedTemplate = (params, envUrl) => {
              <tr>
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
-                 <p>You have been added as a reviewer to the ${params.eventMessage.submission_name} request.</p>
+                 <p>You have been added as a reviewer to an Earthdata Pub request.</p>
                  <p>Your review can be added at <a aria-label="Visit Earthdata Pub Request Review Page" href="${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}">${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}</a>.</p><br>
                  <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                </td>
