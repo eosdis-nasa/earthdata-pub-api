@@ -123,9 +123,7 @@ async function saveMethod(event) {
   const { id } = event;
   const { data_product_name_value: dataProduct, data_producer_info_name: dataProducer } = data;
   await db.submission.updateFormData({ id, form_id: formId, data: JSON.stringify(data) });
-  if (dataProduct && dataProducer) {
-    await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
-  }
+  await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
   await db.submission.updateMetadata({ id, metadata: JSON.stringify(await mapEDPubToUmmc(data)) });
   const status = await db.submission.getState({ id });
   if (daacId && daacId !== status.daac_id) {
@@ -347,6 +345,15 @@ async function createStepReviewApprovalMethod(event, user) {
       submitted_by: user.id
     });
     await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
+    const eventMessage = {
+      event_type: 'review_required',
+      formId: formData?.length > 0 ? formData[0].form_id : '',
+      userIds,
+      submissionId,
+      // Have to use string here because SNS doesn't support boolean type
+      emailPayloadProvided: 'true'
+    };
+    await msg.sendEvent(eventMessage);
     return formData;
   }
   return { error: 'Not Authorized' };
@@ -371,7 +378,9 @@ async function deleteStepReviewApprovalMethod(event, user) {
       user_ids: userIds
     });
     // Only accepts 1 at time; however, this isn't an issue for the current dashboard implementation
-    await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
+    if (formData[0].initiator !== userIds[0]) {
+      await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
+    }
     return formData;
   }
   return { error: 'Not Authorized' };

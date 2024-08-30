@@ -371,12 +371,17 @@ ON CONFLICT (id, form_id) DO UPDATE SET
 data = EXCLUDED.data;
 END $$`;
 
-const updateSubmissionData = () => `
-update submission 
-set name = {{dataProduct}}, data_producer_name = {{dataProducer}}
-where id = {{id}}
-RETURNING *
-`;
+const updateSubmissionData = () => sql.update({
+  table: 'submission',
+  set: [
+    ...( [{ field: 'name', param: 'dataProduct' }]),
+    ...( [{ field: 'data_producer_name', param: 'dataProducer' }])
+  ],
+  where: {
+    filters: [ { field: 'id', param: 'id' } ]
+  },
+  returning: ['*']
+});
 
 const getActionData = () => `
 SELECT
@@ -644,8 +649,7 @@ const getSubmissionDaac = () => sql.select({
   where: {
     filters: [{ field: 'submission.id', param: 'id' }]
   }
-})
-
+});
 
 const getStepReviewApproval = () => `
 SELECT sr.step_name, sr.submission_id, sr.edpuser_id, sr.user_review_status, eu.name, sr.submitted_by
@@ -656,19 +660,30 @@ WHERE sr.submission_id = {{id}}
 
 
 const createStepReviewApproval = (params) => `
-INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status, submitted_by)
-SELECT {{step_name}}, {{submission_id}}, CAST(user_id AS UUID), 'review_required', {{submitted_by}}
-FROM unnest(ARRAY[${params.user_ids.map(id => `'${id}'::UUID`).join(',')}]) AS user_id
-RETURNING *
+WITH inserted AS (
+  INSERT INTO step_review (step_name, submission_id, edpuser_id, user_review_status, submitted_by)
+  SELECT s.step_name, {{submission_id}}, CAST(user_id AS UUID), 'review_required', {{submitted_by}}
+  FROM unnest(ARRAY[${params.user_ids.map(id => `'${id}'::UUID`).join(',')}]) AS user_id
+  JOIN step s ON s.step_name = {{step_name}}
+  RETURNING *
+)
+SELECT i.*, s.data->>'form_id' AS form_id
+FROM inserted i
+JOIN step s ON i.step_name = s.step_name
 `;
 
 
 const deleteStepReviewApproval = (params) => `
-DELETE FROM step_review
+WITH deleted AS (DELETE FROM step_review
 WHERE submission_id = {{submission_id}}
 AND step_name = {{step_name}}
 AND edpuser_id IN (${params.user_ids.map(id => `'${id}'::UUID`).join(', ')})
-RETURNING *;
+RETURNING *
+)
+SELECT d.*, submission.initiator_edpuser_id AS initiator
+FROM deleted d
+JOIN submission ON d.submission_id = submission.id;
+;
 `;
 
 const checkCountStepReviewApproved = () => `
