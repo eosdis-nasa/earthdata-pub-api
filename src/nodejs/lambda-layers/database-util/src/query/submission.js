@@ -371,12 +371,17 @@ ON CONFLICT (id, form_id) DO UPDATE SET
 data = EXCLUDED.data;
 END $$`;
 
-const updateSubmissionData = () => `
-update submission 
-set name = {{dataProduct}}, data_producer_name = {{dataProducer}}
-where id = {{id}}
-RETURNING *
-`;
+const updateSubmissionData = () => sql.update({
+  table: 'submission',
+  set: [
+    ...( [{ field: 'name', param: 'dataProduct' }]),
+    ...( [{ field: 'data_producer_name', param: 'dataProducer' }])
+  ],
+  where: {
+    filters: [ { field: 'id', param: 'id' } ]
+  },
+  returning: ['*']
+});
 
 const getActionData = () => `
 SELECT
@@ -644,8 +649,7 @@ const getSubmissionDaac = () => sql.select({
   where: {
     filters: [{ field: 'submission.id', param: 'id' }]
   }
-})
-
+});
 
 const getStepReviewApproval = () => `
 SELECT sr.step_name, sr.submission_id, sr.edpuser_id, sr.user_review_status, eu.name, sr.submitted_by
