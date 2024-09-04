@@ -108,6 +108,7 @@ CREATE TABLE IF NOT EXISTS form (
   version SMALLINT,
   long_name VARCHAR NOT NULL,
   description VARCHAR,
+  daac_only BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   UNIQUE (short_name, version)

@@ -74,6 +74,28 @@ async function offboardDaac({ id, context }) {
   return response;
 }
 
+async function findAllForms({ resource, params, context }) {
+  const privileges = await getPrivileges(context);
+  if (privileges.includes('ADMIN') || privileges.includes('DAAC_READ')) {
+    params.privileged_user = true;
+  }
+  return db[resource].findAll(params);
+}
+
+async function findFormById(event) {
+  const { resource, params, form_id: formId, context } = event;
+  if (formId) params.id = formId;
+
+  // Handle daac_only forms
+  // Query will return empty if the form exists but user doesn't have right privileges
+  const privileges = await getPrivileges(context);
+  if (privileges.includes('ADMIN') || privileges.includes('DAAC_READ')) {
+    params.privileged_user = true;
+  }
+
+  return db[resource].findById(params);
+}
+
 const operations = {
   findById,
   findAll,
@@ -82,7 +104,9 @@ const operations = {
   add,
   updateInputs,
   onboardDaac,
-  offboardDaac
+  offboardDaac,
+  findAllForms,
+  findFormById
 };
 
 async function handler(event) {
