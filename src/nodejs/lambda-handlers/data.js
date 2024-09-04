@@ -83,7 +83,12 @@ async function findAllForms({ resource, params, context }) {
 }
 
 async function findFormById(event) {
-  const { resource, params, form_id: formId, context } = event;
+  const {
+    resource,
+    params,
+    form_id: formId,
+    context
+  } = event;
   if (formId) params.id = formId;
 
   // Handle daac_only forms
