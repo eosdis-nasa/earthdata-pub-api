@@ -80,37 +80,6 @@ const refs = {
       alias: 'submission_action_data'
     }
   },
-  submission_form_data: {
-    type: 'natural_left_join',
-    src: {
-      type: 'select',
-      fields: [
-        'submission_form_data.id',
-        {
-          type: 'json_agg',
-          src: {
-            type: 'json_obj',
-            keys: [
-              ['id', 'form.id'],
-              ['short_name', 'form.short_name'],
-              ['long_name', 'form.long_name'],
-              ['submitted_at', 'submission_form_data.submitted_at']
-            ]
-          },
-          alias: 'forms'
-        }],
-      from: {
-        base: 'submission_form_data',
-        joins: [{
-          type: 'left_join',
-          src: 'form',
-          on: { left: 'submission_form_data.form_id', right: 'form.id' }
-        }]
-      },
-      group: 'submission_form_data.id',
-      alias: 'submission_form_data'
-    }
-  },
   step: {
     type: 'natural_join',
     src: {
@@ -175,13 +144,50 @@ const refs = {
   }
 };
 
+const submission_form_data = (privileged_user) => ({
+  type: 'natural_left_join',
+  src: {
+    type: 'select',
+    fields: [
+      'submission_form_data.id',
+      {
+        type: 'json_agg',
+        src: {
+          type: 'json_obj',
+          keys: [
+            ['id', 'form.id'],
+            ['short_name', 'form.short_name'],
+            ['long_name', 'form.long_name'],
+            ['submitted_at', 'submission_form_data.submitted_at']
+          ]
+        },
+        alias: 'forms'
+      }],
+    from: {
+      base: 'submission_form_data',
+      joins: [{
+        type: 'left_join',
+        src: 'form',
+        on: { left: 'submission_form_data.form_id', right: 'form.id' }
+      }]
+    },
+    where: {
+      filters: [
+        ...(privileged_user ? [] : [{ field: 'form.daac_only',  op: 'eq', value: "FALSE" }])
+      ]
+    },
+    group: 'submission_form_data.id',
+    alias: 'submission_form_data'
+  }
+});
+
 const fields = (list) => list.map((field) => fieldMap[field]);
 
 const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.daac, refs.submission_form_data_pool, refs.submission_copy]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, submission_form_data(params.privileged_user), refs.step, refs.workflow, refs.daac, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [{ field: fieldMap.id, param: 'id' }]

@@ -71,7 +71,7 @@ module.exports.formFindById = function formFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'form',
-    operation: 'findFormById',
+    operation: 'findById',
     form_id: params.id.value,
     params: {
       daac_id: params.daac_id.value
@@ -92,7 +92,7 @@ module.exports.formFindAll = function formFindAll(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'form',
-    operation: 'findAllForms',
+    operation: 'findAll',
     params: {
       short_name: params.short_name.value,
       version: params.version.value,
