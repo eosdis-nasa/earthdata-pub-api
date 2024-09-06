@@ -314,7 +314,13 @@ async function copySubmissionMethod(event, user) {
 
 async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-vars
   const { params: { id } } = event;
-  return db.submission.getSubmissionDetailsById({ id });
+  let privilegedUser = false;
+  const approvedUserPrivileges = ['ADMIN', 'DAAC_READ'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    privilegedUser = true;
+  }
+
+  return db.submission.getSubmissionDetailsById({ id, privilegedUser });
 }
 
 async function mapMetadataMethod(event, user) {

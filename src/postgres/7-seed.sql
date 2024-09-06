@@ -1,5 +1,5 @@
 
--- Form(id, short_name, version, long_name, description, text)
+-- Form(id, short_name, version, long_name, description, daac_only)
 INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_accession_request', 1, 'Data Accession Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_publication_request', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 INSERT INTO form VALUES ('de7e5c40-584a-493b-919d-8f7f3f1e9e3c', 'confirmation_form', 1, 'Confirmation Form', 'This form is used to confirm request information which might be used for external applications such as collection metadata curation.');
