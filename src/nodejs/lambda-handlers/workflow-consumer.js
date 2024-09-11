@@ -72,16 +72,13 @@ async function getServiceAuthSecret(secretName) {
 }
 
 async function sendSecret(service, submissionSecret, submissionId) {
-  await fetch(service.endpoint, {
+  const response = await fetch(service.endpoint, {
     method: service.method,
     headers: service.headers,
     body: JSON.stringify({ ...service.payload, ...{ submissionId, submissionSecret } })
-  }).then(async (response) => {
-    if (response.ok) return response;
-    throw new Error(await response.text());
-  }).catch((error) => {
-    console.error(`Error Sending Submission Secret:\n\n${error}`);
   });
+  if (response.ok) return response.text();
+  console.error(`Error Sending Submission Secret:\n\n${await response.text()}`);
 }
 
 async function serviceMethod(status) {
