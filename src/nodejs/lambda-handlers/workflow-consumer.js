@@ -78,7 +78,7 @@ async function sendSecret(service, submissionSecret, submissionId) {
     body: JSON.stringify({ ...service.payload, ...{ submissionId, submissionSecret } })
   });
   if (response.ok) return response.text();
-  console.error(`Error Sending Submission Secret:\n\n${await response.text()}`);
+  throw new Error(`Error Sending Submission Secret:\n\nResponse Status Code: ${response.status}\nResponse Text: ${await response.text()}`);
 }
 
 async function serviceMethod(status) {
