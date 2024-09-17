@@ -54,4 +54,4 @@ RAISE;
 ALTER TABLE form ADD daac_only BOOLEAN DEFAULT False;
 
 -- 09/3/24 removes DAAC_READ priviledge from Data Producer
-DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='DAAC_READ'
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='DAAC_READ';
