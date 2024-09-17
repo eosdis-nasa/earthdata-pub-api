@@ -57,8 +57,8 @@ ALTER TABLE form ADD daac_only BOOLEAN DEFAULT False;
 DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='DAAC_READ'
 
 -- 09/13/24 additions for showcasing daac_only forms in the ornl test workflow
-INSERT INTO form VALUES ('3f77385f-7087-4d22-81c1-5c29b95d3295', 'ornl_submission', 1, 'ORNL Submission Form', 'This form is used by ORNL DAAC staff to enter pieces of information needed by the DAAC that the Data Provider will not have when submitting the Data Accession Request Form', true);
-DELETE  FROM step_edge WHERE workflow_id = '0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce'
+INSERT INTO form(id, short_name, version, long_name, description, daac_only) VALUES ('3f77385f-7087-4d22-81c1-5c29b95d3295', 'ornl_submission', 1, 'ORNL Submission Form', 'This form is used by ORNL DAAC staff to enter pieces of information needed by the DAAC that the Data Provider will not have when submitting the Data Accession Request Form', true);
+DELETE  FROM step_edge WHERE workflow_id = '0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce';
 INSERT INTO section VALUES ('b1a965c8-9b35-40b7-83e5-a2acf3dde04c', '3f77385f-7087-4d22-81c1-5c29b95d3295', 'Submission Information', 0, '[]', '[]', NULL);
 INSERT INTO question VALUES ('2a7c2760-acf2-498f-b63b-cae25ee0c71d', 'dataset_title', 1, 'Dataset Title', '', '');
 INSERT INTO input VALUES ('2a7c2760-acf2-498f-b63b-cae25ee0c71d', 'dataset_title', 0, '', 'text', '{}', '{}', '[]','[]',  True);
