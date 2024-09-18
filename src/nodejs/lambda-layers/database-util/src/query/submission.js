@@ -373,7 +373,7 @@ END $$`;
 
 const updateSubmissionData = () => `
 update submission 
-set name = {{data_product}}, data_producer_name = {{data_producer}}
+set name = {{dataProduct}}, data_producer_name = {{dataProducer}}
 where id = {{id}}
 RETURNING *
 `;
@@ -427,8 +427,9 @@ NATURAL JOIN (
 NATURAL JOIN (
   SELECT
     submission_workflow.id,
-    JSONB_OBJECT_AGG(submission_workflow.workflow_id,
+    ARRAY_AGG(
       JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
+        'workflow_id', submission_workflow.workflow_id,
         'start_time', submission_workflow.start_time,
         'complete_time', submission_workflow.complete_time
     ))) workflows
@@ -504,7 +505,7 @@ RETURNING *`;
 const checkWorkflow = () => `
 SELECT step_edge.step_name
 FROM step_edge
-WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}})`;
+WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}} AND submission_workflow.complete_time IS NULL)`;
 
 const addContributors = ({ contributor_ids }) => `
 UPDATE submission

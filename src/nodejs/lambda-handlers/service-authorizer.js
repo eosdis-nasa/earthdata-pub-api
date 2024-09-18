@@ -31,8 +31,10 @@ const generateAllow = (principalId, resource) => generatePolicy(principalId, 'Al
 
 const validateAuthentication = async (id, secret, submissionId) => {
   if (!uuid.validate(id)) { return false; }
-  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret({ id });
-  return (dbSecret === secret && (dbSubmissionId ? dbSubmissionId === submissionId : true));
+  const { secret: dbSecret, submission_id: dbSubmissionId } = await db.service.findSecret(
+    { id, submissionId }
+  );
+  return (dbSecret === secret && (dbSubmissionId === submissionId));
 };
 
 exports.handler = async (event, context, callback) => {
@@ -46,7 +48,7 @@ exports.handler = async (event, context, callback) => {
   const submissionId = headers.submissionid || '';
 
   if (await validateAuthentication(serviceId, serviceSecret, submissionId)) {
-    callback(null, generateAllow('me', event.methodArn));
+    callback(null, generateAllow(`service-authorizer-${serviceId}`, event.methodArn));
   } else {
     callback('Unauthorized');
   }

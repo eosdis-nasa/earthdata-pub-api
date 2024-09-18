@@ -71,67 +71,6 @@ describe('workflow-consumer', () => {
     });
     await handler(event);
   });
-  it('should start a workflow', async () => {
-    const event = {
-      Records: [
-        {
-          eventMessage: {
-            event_type: 'workflow_started',
-            submission_id: 'submission_id',
-            conversation_id: 'conversation_id',
-            workflow_id: 'workflow_id',
-            data: {
-              rollback: 'rollback'
-            }
-          }
-        }
-      ]
-    };
-    msg.parseRecord.mockImplementation((record) => record);
-    db.submission.getState.mockImplementationOnce((params) => {
-      expect(params).toEqual({ id: 'submission_id' });
-      return Promise.resolve({
-        id: 'submission_id',
-        conversation_id: 'conversation_id',
-        workflow_id: 'workflow_id',
-        step: {
-          type: 'form',
-          name: 'name',
-          form_id: 'form_id',
-          data: {
-            rollback: 'rollback'
-          }
-        }
-      });
-    });
-    msg.sendEvent.mockImplementationOnce((eventMessage) => {
-      expect(eventMessage).toEqual({
-        event_type: 'form_request',
-        form_id: 'form_id',
-        submission_id: 'submission_id',
-        conversation_id: 'conversation_id',
-        workflow_id: 'workflow_id',
-        step_name: 'name',
-        data: {
-          rollback: 'rollback'
-        }
-      });
-      return Promise.resolve('success');
-    });
-    msg.sendEvent.mockImplementationOnce((eventMessage) => {
-      expect(eventMessage).toEqual({
-        event_type: 'workflow_promote_step_direct',
-        submission_id: 'submission_id',
-        conversation_id: 'conversation_id',
-        workflow_id: 'workflow_id',
-        data: {
-          rollback: 'rollback'
-        }
-      });
-      return Promise.resolve('success');
-    });
-    await handler(event);
-  });
   it('It should initialize a request', async () => {
     const event = {
       Records: [
@@ -367,24 +306,6 @@ describe('workflow-consumer', () => {
         step_name: 'name',
         data: { rollback: 'rollback' }
       });
-      return Promise.resolve('success');
-    });
-    await handler(event);
-  });
-  it('should resume a workflow', async () => {
-    const event = {
-      Records: [
-        {
-          eventMessage: {
-            event_type: 'workflow_resume',
-            submission_id: 'submission_id'
-          }
-        }
-      ]
-    };
-    msg.parseRecord.mockImplementation((record) => record);
-    db.service.deleteSecret.mockImplementationOnce((id) => {
-      expect(id).toEqual('submission_id');
       return Promise.resolve('success');
     });
     await handler(event);

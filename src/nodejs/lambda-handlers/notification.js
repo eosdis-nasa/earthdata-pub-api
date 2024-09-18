@@ -71,7 +71,7 @@ async function conversationMethod(params) {
   const { params: { detailed, step_name: stepName } } = params;
   let response = {};
   const userInfo = await db.user.findById({ id: params.context.user_id });
-  if (userInfo.user_privileges.includes('REQUEST_ADMINREAD') || userInfo.user_privileges.includes('ADMIN')
+  if (userInfo.user_privileges.includes('ADMIN')
   || userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
     response = await db.note.readConversation({
       admin: true,

@@ -432,3 +432,69 @@ INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'R
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'REQUEST_REMOVEUSER');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_ADDUSER');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'REQUEST_REMOVEUSER');
+
+-- 07/30/24 EDPUB-1266 Remove Unused Privileges from EDPub API & Dashboard
+DELETE FROM privilege WHERE privilege IN ('REQUEST_ADMINREAD', 'REQUEST_RESUME', 'REQUEST_APPLY', 'USER_ADDPERMISSION', 'USER_DELETE', 'GROUP_CREATE', 'GROUP_READ', 'GROUP_UPDATE', 'GROUP_DELETE', 'GROUP_ADDPERMISSION', 'ROLE_CREATE', 'ROLE_READ', 'ROLE_UPDATE', 'ROLE_DELETE', 'ROLE_ADDPRIVILEGE', 'DAAC_CREATE', 'DAAC_UPDATE', 'DAAC_DELETE', 'NOTE_ADDGROUP', 'QUESTION_CREATE', 'QUESTION_UPDATE', 'QUESTION_DELETE');
+
+-- 7/25/24 Remove metadata mapping step
+UPDATE step SET data='{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_id='d278f01e-1ef7-4677-a350-73ccadeddc22';
+
+DELETE FROM step_edge WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='map_question_response_to_ummc' AND next_step_name='create_skeleton_dataset_record_in_mmt';
+UPDATE step_edge SET next_step_name='create_skeleton_dataset_record_in_mmt' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_publication_request_form_review';
+
+UPDATE step SET data='{"rollback": "data_accession_request_form_review", "type": "review"}' WHERE step_id='6445f44b-bcda-41b4-86e4-23761edc22bf';
+UPDATE step SET data='{"rollback": "data_publication_request_form_review", "type": "review"}' WHERE step_id='4791d53b-6c8f-4d5b-9ee9-81cebd4c4b04';
+
+DELETE FROM step_edge WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275';
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review', 'push_to_ornl_database_f1');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f1', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review', 'push_to_ornl_database_f2');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f2', 'email_daac_staff');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'email_daac_staff', 'close');
+DELETE FROM step_metrics WHERE step_name='map_question_response_to_ummc_f1';
+DELETE FROM step_metrics WHERE step_name='map_question_response_to_ummc_f2';
+DELETE FROM note WHERE step_name='map_question_response_to_ummc_f1';
+DELETE FROM note WHERE step_name='map_question_response_to_ummc_f2';
+DELETE FROM step_review WHERE step_name='map_question_response_to_ummc_f1';
+DELETE FROM step_review WHERE step_name='map_question_response_to_ummc_f2';
+DELETE FROM step WHERE step_id='c6082cae-9c97-4692-b0da-c9334a30c9e0';
+DELETE FROM step WHERE step_id='faf94cca-ea3e-4886-a306-4f7f5acfda1a';
+
+DELETE FROM step_edge WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='map_question_response_to_ummc' AND next_step_name='send_metadata_to_ges_disc';
+UPDATE step_edge SET next_step_name='send_metadata_to_ges_disc' WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='data_publication_request_form_review';
+
+DELETE FROM step_edge WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='map_question_response_to_ummc' AND next_step_name='email_asdc_staff';
+UPDATE step_edge SET next_step_name='email_asdc_staff' WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='confirmation_form';
+
+DELETE FROM step_metrics WHERE step_name='map_question_response_to_ummc';
+DELETE FROM note WHERE step_name='map_question_response_to_ummc';
+DELETE FROM step_review WHERE step_name='map_question_response_to_ummc';
+
+DELETE FROM step WHERE step_name='map_question_response_to_ummc';
+DELETE FROM step WHERE step_id='d1cbc4a8-ce4c-4734-8e71-a824d30c401a';
+DELETE FROM step WHERE step_id='c628d63b-93b9-45ae-8e7b-a903554b6726';
+
+DELETE FROM submission_action_data WHERE action_id='f812eb99-7c4a-46a8-8d8f-30ae509fe21c';
+DELETE FROM action WHERE id='f812eb99-7c4a-46a8-8d8f-30ae509fe21c';
+
+-- 8/6/24 Add ORNL service trigger to ORNL workflow
+INSERT INTO service(id, short_name, long_name, description, endpoint, options, headers, method, code, payload) VALUES ('f33f9ce5-e402-4823-8847-f380d1b7789b', 'ornl_service', 'ORNL On-Prem Service', 'ORNL Service used for syncing data between EDPub and on-prem systems', 'https://pub.uat.earthdata.nasa.gov/api/data/daac/offboard', '{}', '{"Authorization": "ornl_service_authorization_secret"}', 'POST', 200, false);
+INSERT INTO step(step_id, step_name, type, service_id) VALUES ('62c8a133-4af7-4d41-8174-179ffbe81d3f','ornl_service_trigger','service','f33f9ce5-e402-4823-8847-f380d1b7789b');
+
+ALTER TABLE service_secret DROP CONSTRAINT service_secret_pkey;
+ALTER TABLE service_secret ADD PRIMARY KEY (id, submission_id);
+
+INSERT INTO workflow VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_test_workflow', 1, 'ORNL Test Workflow', 'This is a workflow for demoing requested functionality for the ORNL workflow.');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'init', 'ornl_service_trigger');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_service_trigger', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_accession_request_form', 'data_accession_request_form_review');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_accession_request_form_review','data_publication_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form_review', 'email_daac_staff');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'email_daac_staff', 'close');
+
+ALTER TABLE submission_workflow DROP CONSTRAINT submission_workflow_pkey;
+ALTER TABLE submission_workflow ADD PRIMARY KEY (id, workflow_id, start_time);
