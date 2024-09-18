@@ -54,7 +54,7 @@ RAISE;
 ALTER TABLE form ADD daac_only BOOLEAN DEFAULT False;
 
 -- 09/3/24 removes DAAC_READ priviledge from Data Producer
-DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='DAAC_READ'
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='DAAC_READ';
 
 -- 09/13/24 additions for showcasing daac_only forms in the ornl test workflow
 INSERT INTO form(id, short_name, version, long_name, description, daac_only) VALUES ('3f77385f-7087-4d22-81c1-5c29b95d3295', 'ornl_submission', 1, 'ORNL Submission Form', 'This form is used by ORNL DAAC staff to enter pieces of information needed by the DAAC that the Data Provider will not have when submitting the Data Accession Request Form', true);
