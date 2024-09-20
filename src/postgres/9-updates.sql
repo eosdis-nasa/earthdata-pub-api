@@ -49,3 +49,9 @@ RAISE;
 --this should not be run until after the db's have been cleaned of duplicate entries as document in the closing of EDPUB-785
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
+
+-- 08/30/24 updates form table to include daac_only column for limiting a forms visability
+ALTER TABLE form ADD daac_only BOOLEAN DEFAULT False;
+
+-- 09/3/24 removes DAAC_READ priviledge from Data Producer
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='DAAC_READ';
