@@ -10,9 +10,18 @@ const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
 async function generateUploadUrl(params) {
-  const { key, checksumValue, fileType } = params;
+  const {
+    key,
+    checksumValue,
+    fileType,
+    fileCategory
+  } = params;
   const checksumAlgo = 'SHA256';
+  const categoryEnums = ['documentation', 'sample'];
   if (!fileType) return ({ error: 'invalid file type' });
+  if (!fileCategory || !categoryEnums.includes(fileCategory)) {
+    return ({ error: 'Invalid file category' });
+  }
   const s3Client = new S3Client({
     region
   });
@@ -44,6 +53,7 @@ async function generateUploadUrl(params) {
 
 async function getPostUrlMethod(event, user) {
   const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
+  const { file_category: fileCategory } = event;
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
@@ -63,16 +73,18 @@ async function getPostUrlMethod(event, user) {
       || userDaacs.includes(daacId)
     ) {
       return generateUploadUrl({
-        key: `${daacId}/${submissionId}/${user}/${fileName}`,
+        key: `${daacId}/${submissionId}/${fileCategory}/${user}/${fileName}`,
         checksumValue,
-        fileType
+        fileType,
+        fileCategory
       });
     }
   }
   return generateUploadUrl({
-    key: `${user}/${fileName}`,
+    key: `${fileCategory}/${user}/${fileName}`,
     checksumValue,
-    fileType
+    fileType,
+    fileCategory
   });
 }
 
@@ -114,6 +126,16 @@ async function getChecksum(key, s3Client) {
   }
 }
 
+function getFileCategory(s3Key) {
+  const categoryRegex = /\/(?<category>documentation|sample)\//;
+  const matches = s3Key.match(categoryRegex);
+  if (matches) {
+    return matches.groups.category;
+  }
+
+  return 'unknown';
+}
+
 async function processFile(item, s3Client) {
   const sha256Checksum = item.ChecksumAlgorithm ? (await getChecksum(item.Key, s3Client)) : null;
   const fileMetaData = {
@@ -121,6 +143,7 @@ async function processFile(item, s3Client) {
     size: item.Size,
     lastModified: item.LastModified,
     file_name: item.Key.split('/').pop(),
+    category: getFileCategory(item.Key),
     ...(sha256Checksum && { sha256Checksum })
   };
   return fileMetaData;
