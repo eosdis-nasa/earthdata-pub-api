@@ -31,4 +31,3 @@ module.exports.model = (path) => ({
     ]
   });
   
-  module.exports.refs = ['UUID'];
