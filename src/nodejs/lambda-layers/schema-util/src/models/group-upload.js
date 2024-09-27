@@ -15,19 +15,18 @@ module.exports.model = (path) => ({
             description: 'Checksum value for the file',
             type: 'string',
         },
-        file_category: {
-            description: 'Category of the file to be uploaded.',
-            type: 'string', 
-            enum: ['documentation', 'sample']
-        },
         prefix: {
             description: 'Name of the group subfolder if applicable',
             type: 'string', 
+        },
+        group_id: {
+            description: 'UUID of the group the file will be associated with',
+            $ref: `#${path}UUID` 
         }
     },
     required: [
         'file_type',
-        'file_category'
     ]
   });
-  
+
+  module.exports.refs = ['UUID'];

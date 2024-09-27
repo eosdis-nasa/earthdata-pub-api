@@ -9,19 +9,12 @@ const db = require('database-util');
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
+const categoryEnums = ['documentation', 'sample'];
+
 async function generateUploadUrl(params) {
-  const {
-    key,
-    checksumValue,
-    fileType,
-    fileCategory
-  } = params;
+  const { key, checksumValue, fileType } = params;
   const checksumAlgo = 'SHA256';
-  const categoryEnums = ['documentation', 'sample'];
   if (!fileType) return ({ error: 'invalid file type' });
-  if (!fileCategory || !categoryEnums.includes(fileCategory)) {
-    return ({ error: 'Invalid file category' });
-  }
   const s3Client = new S3Client({
     region
   });
@@ -58,6 +51,10 @@ async function getPostUrlMethod(event, user) {
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
 
+  if (!fileCategory || !categoryEnums.includes(fileCategory)) {
+    return ({ error: 'Invalid file category' });
+  }
+
   if (submissionId) {
     const {
       daac_id: daacId,
@@ -90,11 +87,7 @@ async function getPostUrlMethod(event, user) {
 
 async function getGroupUploadUrlMethod(event, user) {
   const {
-    file_name: fileName,
-    file_type: fileType,
-    checksum_value: checksumValue,
-    prefix,
-    file_category: fileCategory
+    file_name: fileName, file_type: fileType, checksum_value: checksumValue, prefix
   } = event;
   const { group_id: groupId } = event;
   const userInfo = await db.user.findById({ id: user });
@@ -106,12 +99,11 @@ async function getGroupUploadUrlMethod(event, user) {
     return ({ error: 'Not Authorized' });
   }
   const groupShortName = (await db.group.findById({ id: groupId })).short_name;
-  const key = prefix ? `group/${groupShortName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileCategory}/${fileName}` : `group/${groupShortName}/${fileCategory}/${fileName}`;
+  const key = prefix ? `group/${groupShortName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileName}` : `group/${groupShortName}/${fileName}`;
   return generateUploadUrl({
     key,
     checksumValue,
-    fileType,
-    fileCategory
+    fileType
   });
 }
 

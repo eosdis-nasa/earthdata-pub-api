@@ -98,7 +98,6 @@ describe('file-upload', () => {
       file_name: 'test.txt',
       file_type: 'text/plain',
       checksum_value: '1234567890',
-      file_category: 'sample',
       context: { user_id: 'user_id' },
       operation: 'getGroupUploadUrl',
       group_id: 'daac_id'
@@ -113,7 +112,7 @@ describe('file-upload', () => {
     createPresignedPost.mockImplementationOnce((client, functPayload) => {
       expect(functPayload).toEqual({
         Bucket: 'TEST_BUCKET',
-        Key: 'group/daac_name/sample/test.txt',
+        Key: 'group/daac_name/test.txt',
         Conditions: [
           { 'x-amz-meta-checksumalgorithm': 'SHA256' },
           { 'x-amz-meta-checksumvalue': '1234567890' },
