@@ -90,7 +90,11 @@ async function getPostUrlMethod(event, user) {
 
 async function getGroupUploadUrlMethod(event, user) {
   const {
-    file_name: fileName, file_type: fileType, checksum_value: checksumValue, prefix
+    file_name: fileName,
+    file_type: fileType,
+    checksum_value: checksumValue,
+    prefix,
+    file_category: fileCategory
   } = event;
   const { group_id: groupId } = event;
   const userInfo = await db.user.findById({ id: user });
@@ -102,11 +106,12 @@ async function getGroupUploadUrlMethod(event, user) {
     return ({ error: 'Not Authorized' });
   }
   const groupShortName = (await db.group.findById({ id: groupId })).short_name;
-  const key = prefix ? `group/${groupShortName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileName}` : `group/${groupShortName}/${fileName}`;
+  const key = prefix ? `group/${groupShortName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileCategory}/${fileName}` : `group/${groupShortName}/${fileCategory}/${fileName}`;
   return generateUploadUrl({
     key,
     checksumValue,
-    fileType
+    fileType,
+    fileCategory
   });
 }
 

@@ -11707,7 +11707,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/GroupUpload"
               }
             }
           }
