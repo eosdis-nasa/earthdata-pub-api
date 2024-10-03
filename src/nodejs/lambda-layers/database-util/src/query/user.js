@@ -379,8 +379,10 @@ WHERE edpuser.id = {{${sub ? `sub` : `id`}}}
 RETURNING *`;
 
 const getEmails = (params) => sql.select({
-  fields: ['edpuser.email'],
-  from: 'edpuser',
+  fields: ['edpuser.email', 'edpuser.name', 'edpuser.id'],
+  from: {
+    base: 'edpuser'
+  },
   where: {
     filters: [{ field: 'edpuser.id', any: { values: { param: 'user_list' } } }]
   }
