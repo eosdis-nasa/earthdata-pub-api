@@ -80,37 +80,6 @@ const refs = {
       alias: 'submission_action_data'
     }
   },
-  submission_form_data: {
-    type: 'natural_left_join',
-    src: {
-      type: 'select',
-      fields: [
-        'submission_form_data.id',
-        {
-          type: 'json_agg',
-          src: {
-            type: 'json_obj',
-            keys: [
-              ['id', 'form.id'],
-              ['short_name', 'form.short_name'],
-              ['long_name', 'form.long_name'],
-              ['submitted_at', 'submission_form_data.submitted_at']
-            ]
-          },
-          alias: 'forms'
-        }],
-      from: {
-        base: 'submission_form_data',
-        joins: [{
-          type: 'left_join',
-          src: 'form',
-          on: { left: 'submission_form_data.form_id', right: 'form.id' }
-        }]
-      },
-      group: 'submission_form_data.id',
-      alias: 'submission_form_data'
-    }
-  },
   step: {
     type: 'natural_join',
     src: {
@@ -119,6 +88,7 @@ const refs = {
         'step.step_name',
         'step.type',
         'step.step_status_label',
+        'form.daac_only',
         {
           type: 'case',
           when: [
@@ -139,13 +109,21 @@ const refs = {
             ['action_id', 'step.action_id'],
             ['form_id', 'step.form_id'],
             ['service_id', 'step.service_id'],
-            ['data', 'step.data']
+            ['data', 'step.data'],
+            ['daac_only', 'form.daac_only']
           ],
           strip: true,
           alias: 'step_data'
         }
       ],
-      from: { base: 'step' },
+      from: { 
+        base: 'step', 
+        joins: [{
+          type: 'left_join',
+          src: 'form',
+          on: { left: 'step.form_id', right: 'form.id' }
+        }]
+      },
       alias: 'step'
     }
   },
@@ -166,13 +144,50 @@ const refs = {
   }
 };
 
+const submission_form_data = (privileged_user) => ({
+  type: 'natural_left_join',
+  src: {
+    type: 'select',
+    fields: [
+      'submission_form_data.id',
+      {
+        type: 'json_agg',
+        src: {
+          type: 'json_obj',
+          keys: [
+            ['id', 'form.id'],
+            ['short_name', 'form.short_name'],
+            ['long_name', 'form.long_name'],
+            ['submitted_at', 'submission_form_data.submitted_at']
+          ]
+        },
+        alias: 'forms'
+      }],
+    from: {
+      base: 'submission_form_data',
+      joins: [{
+        type: 'left_join',
+        src: 'form',
+        on: { left: 'submission_form_data.form_id', right: 'form.id' }
+      }]
+    },
+    where: {
+      filters: [
+        ...(privileged_user ? [] : [{ field: 'form.daac_only',  op: 'eq', value: "FALSE" }])
+      ]
+    },
+    group: 'submission_form_data.id',
+    alias: 'submission_form_data'
+  }
+});
+
 const fields = (list) => list.map((field) => fieldMap[field]);
 
 const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, refs.submission_form_data, refs.step, refs.workflow, refs.daac, refs.submission_form_data_pool, refs.submission_copy]
+    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, submission_form_data(params.privileged_user), refs.step, refs.workflow, refs.daac, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [{ field: fieldMap.id, param: 'id' }]
@@ -589,7 +604,9 @@ SELECT step_name FROM submission_status WHERE id = {{id}}
 `;
 
 // TODO - Upate this query's complexity and to use sql builder
-const getSubmissionDetailsById = () => `
+const getSubmissionDetailsById = (params) => `
+WITH step_visibility AS (SELECT step.*, form.daac_only FROM step LEFT JOIN form ON step.form_id = form.id),
+filteredForm AS (SELECT * FROM form ${params.privilegedUser === false ? `WHERE form.daac_only=false`: ``})
 SELECT submission.id id, conversation_id, submission.created_at created_at, daac.long_name daac_name, 
 submission.hidden hidden,
 JSONB_BUILD_OBJECT('name', edpuser1.name, 'id', edpuser1.id) initiator,
@@ -599,15 +616,15 @@ submission_form_data_pool.data::json->'data_product_name_value' data_product_nam
 array_agg(DISTINCT JSONB_BUILD_OBJECT('id', edpuser2.id, 'name', edpuser2.name)) as contributors,
 JSONB_BUILD_OBJECT('id', workflow.id, 'name', workflow.long_name, 'steps',
 array_agg(DISTINCT step_edge.step_name)) workflow,
-JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('type', step.type, 'name', step.step_name,'action_id', step.action_id, 
-'form_id', step.form_id,'service_id', step.service_id, 'data', step.data)) step_data,
+JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('type', step_visibility.type, 'name', step_visibility.step_name,'action_id', step_visibility.action_id, 
+'form_id', step_visibility.form_id,'service_id', step_visibility.service_id, 'data', step_visibility.data, 'daac_only', step_visibility.daac_only)) step_data,
 CASE 
-  WHEN form.id is null THEN '[]'
-  WHEN form.long_name is null THEN '[]' 
+  WHEN filteredForm.id is null THEN '[]'
+  WHEN filteredForm.long_name is null THEN '[]' 
   WHEN submission_form_data.submitted_at is null THEN '[]' 
   ELSE
-    JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('id', form.id,
-      'long_name', form.long_name,'submitted_at', submission_form_data.submitted_at))) 
+    JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('id', filteredForm.id,
+      'long_name', filteredForm.long_name, 'daac_only', filteredForm.daac_only, 'submitted_at', submission_form_data.submitted_at))) 
 END forms, submission_metadata.metadata metadata
 FROM submission
 JOIN daac
@@ -624,20 +641,20 @@ JOIN edpuser edpuser2
 ON edpuser2.id = ANY(submission.contributor_ids)
 JOIN step_edge
 ON submission_status.workflow_id = step_edge.workflow_id
-JOIN step
-ON submission_status.step_name = step.step_name
+JOIN step_visibility
+ON submission_status.step_name = step_visibility.step_name
 LEFT JOIN submission_form_data
 ON submission.id = submission_form_data.id
-LEFT JOIN form
-ON submission_form_data.form_id = form.id
+LEFT JOIN filteredForm
+ON submission_form_data.form_id = filteredForm.id
 JOIN submission_metadata
 ON submission.id = submission_metadata.id
 WHERE submission.id= {{id}}
 GROUP BY submission.id, daac.long_name, edpuser1.name, edpuser1.id,
 submission_status.last_change, workflow.long_name, workflow.id,
-submission_form_data_pool.data, step.type, step.step_name, step.action_id,
-step.form_id, step.service_id, step.data, form.id, form.long_name,
-submission_form_data.submitted_at, submission_metadata.metadata;
+submission_form_data_pool.data, step_visibility.type, step_visibility.step_name, step_visibility.action_id,
+step_visibility.form_id, step_visibility.service_id, step_visibility.data, step_visibility.daac_only, filteredForm.id, 
+filteredForm.long_name, submission_form_data.submitted_at, submission_metadata.metadata;
 `;
 
 const getSubmissionDaac = () => sql.select({
