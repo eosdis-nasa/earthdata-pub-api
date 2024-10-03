@@ -6189,7 +6189,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"createStep\",\"params\":{\"data\": \"$req.path.get('data')\", \"type\": \"$req.path.get('type')\", \"step_name\": \"$req.path.get('step_name')\" },\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"createStep\",\"params\":{\"data\": \"$req.path.get('data')\", \"type\": \"$req.path.get('type')\", \"step_name\": \"$req.path.get('step_name')\", \"service_id\": \"$req.path.get('service_id')\", \"form_id\": \"$req.path.get('form_id')\", \"action_id\": \"$req.path.get('action_id')\", \"step_status_label\": \"$req.path.get('step_status_label')\" },\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
