@@ -19,6 +19,38 @@ async function createStep(step, stepName, rollbackInfo) {
   });
 }
 
+async function createNewStep(params, user) {
+  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    try {
+      const step = {
+        step_name: params.step_name,
+        data: params.data,
+        type: params.type,
+        step_status_label: params.step_status_label,
+        action_id: params.action_id,
+        form_id: params.form_id,
+        service_id: params.service_id
+      };
+
+      const result = await createStep(step, step.step_name, step.data);
+
+      if (!result) {
+        return { error: 'No results' };
+      }
+      if (result && result.statusCode === 503) {
+        return { statusCode: 503, body: 'Internal Database Error' };
+      }
+      return { status: `Workflow step created: ${step.step_name}` };
+    } catch (error) {
+      return { status: 'Error occurred while creating workflow step', error: error.message };
+    }
+  }
+
+  return { status: 'Invalid Permissions' };
+}
+
 async function addSteps(steps, workflowId) {
   const STEP_MAX = 100;
   let activeStepName = 'init';
@@ -107,7 +139,8 @@ async function editWorkflowMethod(params, user) {
 
 const operations = {
   editWorkflow: editWorkflowMethod,
-  createWorkflow: createWorkflowMethod
+  createWorkflow: createWorkflowMethod,
+  createStep: createNewStep
 };
 
 async function handler(event) {
