@@ -6128,7 +6128,7 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/workflowcreate/step": {
+    "/api/data/steps": {
       "post": {
         "tags": [
           "data"
