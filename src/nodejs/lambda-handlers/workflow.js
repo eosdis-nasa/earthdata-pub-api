@@ -34,7 +34,7 @@ async function createNewStep(params, user) {
         service_id: params.service_id
       };
 
-      const result = await createStep(step, step.step_name, {});
+      const result = await createStep(step, step.step_name, step.data);
 
       if (!result) {
         return { error: 'No results' };
