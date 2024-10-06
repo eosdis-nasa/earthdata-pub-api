@@ -6328,7 +6328,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"createStep\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end \"data\": \"$req.path.get('data')\", \"type\": \"$req.path.get('type')\", \"step_name\": \"$req.path.get('step_name')\", \"service_id\": \"$req.path.get('service_id')\", \"form_id\": \"$req.path.get('form_id')\", \"action_id\": \"$req.path.get('action_id')\", \"step_status_label\": \"$req.path.get('step_status_label')\" },\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"createStep\",\"params\":{\"step_id\":\"$req.path.get('step_id')\", #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('type'))\"type\":\"$body.get('type')\",#end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\",#end #if($body.containsKey('service_id'))\"service_id\":\"$body.get('service_id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('action_id'))\"action_id\":\"$body.get('action_id')\",#end #if($body.containsKey('step_status_label'))\"step_status_label\":\"$body.get('step_status_label')\",#end },\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
