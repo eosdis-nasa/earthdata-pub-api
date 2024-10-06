@@ -6134,14 +6134,14 @@
           "data"
         ],
         "summary": "Create step",
-        "description": "Returns status of step creatiom",
+        "description": "Returns status of step creation",
         "operationId": "createStep",
         "requestBody": {
           "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Workflow"
+                "$ref": "#/components/schemas/Step"
               }
             }
           }
@@ -6169,7 +6169,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Workflow"
+                  "$ref": "#/components/schemas/Step"
                 }
               }
             }
@@ -6184,7 +6184,7 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${workflow_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
@@ -6210,7 +6210,146 @@
         ],
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
-        "operationId": "optionsDataWorkflow",
+        "operationId": "optionsDataStep",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/steps/{step_id}": {
+      "parameters": [
+        {
+          "name": "step_id",
+          "in": "path",
+          "description": "UUID of step to update.",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Updates step",
+        "description": "Returns status of step update",
+        "operationId": "editStep",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Step"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Step"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${workflow_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"workflow\",\"operation\":\"createStep\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end \"data\": \"$req.path.get('data')\", \"type\": \"$req.path.get('type')\", \"step_name\": \"$req.path.get('step_name')\", \"service_id\": \"$req.path.get('service_id')\", \"form_id\": \"$req.path.get('form_id')\", \"action_id\": \"$req.path.get('action_id')\", \"step_status_label\": \"$req.path.get('step_status_label')\" },\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataStep",
         "responses": {
           "200": {
             "description": "OK",

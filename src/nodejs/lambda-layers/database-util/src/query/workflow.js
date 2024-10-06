@@ -40,24 +40,30 @@ const initialize = () =>`
 `;
 
 const createStep = (params) => sql.insert({
-  table: 'step (step_name, type, action_id, form_id, service_id, step_status_label, data)',
-  values: {
-    type: 'values_list',
-    items: [
-      '{{step_name}}', '{{type}}', 
-      params.action_id? '{{action_id}}':'null',
-      params.form_id? '{{form_id}}':'null',
-      params.service_id? '{{service_id}}':'null',
-      params.step_status_label? '{{step_status_label}}':'null',
-      params.data? '{{data}}':'null',
-    ]
+  ...{
+    table: `step (${params.step_id ? 'step_id,': ''} step_name, type, action_id, form_id, service_id, step_status_label, data)`,
+    values: {
+      type: 'values_list',
+      items: [
+        ...(params.step_id ? ['{{step_id}}'] : []),
+        '{{step_name}}', '{{type}}',
+        params.action_id? '{{action_id}}':'null',
+        params.form_id? '{{form_id}}':'null',
+        params.service_id? '{{service_id}}':'null',
+        params.step_status_label? '{{step_status_label}}':'null',
+        params.data? '{{data}}':'null',
+      ]
+    }
   },
-  conflict:{
-    constraints: ['step_name'],
+  ...(params.step_id ? {conflict:{
+    constraints: ['step_id'],
     update:{
       type:'update',
-      set:[{cmd:'type = EXCLUDED.type, action_id = EXCLUDED.action_id, form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id, step_status_label = EXCLUDED.step_status_label, data = EXCLUDED.data'}]
+      set:[{cmd:'step_name = EXCLUDED.step_name, type = EXCLUDED.type, action_id = EXCLUDED.action_id, form_id = EXCLUDED.form_id, service_id = EXCLUDED.service_id, step_status_label = EXCLUDED.step_status_label, data = EXCLUDED.data'}]
     }
+  }} : {}),
+  ...{
+    returning: ['*']
   }
 })
 

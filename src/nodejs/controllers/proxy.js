@@ -1176,6 +1176,20 @@ module.exports.createStep = function createStep(req, res, next){
   });
 }
 
+module.exports.editStep = function editStep(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'workflow',
+    operation: 'createStep',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  lambdaEvent.params.step_id = params.step_id.value;
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
+
 module.exports.createStepReviewApproval = function createStepReviewApproval(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
