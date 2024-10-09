@@ -653,7 +653,14 @@ DELETE FROM conversation_edpuser
 WHERE conversation_id = {{conversation_id}} AND edpuser_id = {{user_id}}
 `;
 
-const getEmails = (params) => sql.select({
+const getEmails = (params) => `
+WITH scope AS (
+	SELECT conversation_id, user_ids, edprole_ids
+	FROM note
+	LEFT JOIN note_scope ON note.id = note_scope.note_id
+	WHERE id= {{noteId}}
+)
+${sql.select({
   fields: ['id', 'email', 'name'],
   from: {
     base: 'edpuser',
@@ -670,6 +677,13 @@ const getEmails = (params) => sql.select({
         left: 'edpuser.id',
         right: 'edpuser_edprole.edpuser_id'
       }
+    },
+    {
+      type: 'inner_join', src: 'scope',
+      on:{
+        left: 'conversation_edpuser.conversation_id',
+        right: 'scope.conversation_id'
+      }
     }
   ]
    },
@@ -677,11 +691,15 @@ const getEmails = (params) => sql.select({
     filters: [
       ...([{field: 'conversation_edpuser.conversation_id', param: 'conversationId'}]),
       ...(params.senderId ? [{field: 'conversation_edpuser.edpuser_id', op: 'ne', param: 'senderId'}] : []),
-      ...(params.userRole ? [{field: 'edpuser_edprole.edprole_id', any: {values: {param: 'userRole'}}}] : [])
+      ...([{cmd: `((array_length(scope.user_ids, 1) ISNULL AND array_length(edprole_ids, 1) ISNULL AND edpuser_edprole.edprole_id = ${sql.any({values: {param: 'userRole'}})}) 
+        OR (array_length(scope.user_ids, 1) ISNULL AND array_length(edprole_ids, 1) IS NOT NULL AND edpuser_edprole.edprole_id =  ANY(scope.edprole_ids)) 
+        OR (array_length(edprole_ids, 1) ISNULL AND array_length(scope.user_ids, 1) IS NOT NULL AND edpuser_edprole.edpuser_id = ANY(scope.user_ids))
+        OR (edpuser_edprole.edpuser_id = ANY(scope.user_ids) OR edpuser_edprole.edprole_id =  ANY(scope.edprole_ids)))
+      `}])
     ]
   },
   group: 'edpuser.id, edpuser.email, edpuser.name'
-});
+})}`;
 
 const addViewers = ({ noteId, viewerIds }) => `
 WITH uids as (
