@@ -45,6 +45,7 @@ const UMMC = require('./umm-c.js');
 const UMMCMN = require('./umm-cmn.js');
 const Upload = require('./upload.js');
 const GroupUpload = require('./group-upload.js');
+const Step = require('./step.js');
 
 const models = {
   Action,
@@ -91,7 +92,8 @@ const models = {
   WorkflowReviewStep,
   WorkflowServiceStep,
   Upload,
-  GroupUpload
+  GroupUpload,
+  Step
 };
 
 function collectionMetadata() {
