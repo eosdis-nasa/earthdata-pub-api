@@ -1166,7 +1166,7 @@ module.exports.offboardDaac = function offboardDaac(req, res, next) {
 module.exports.createStep = function createStep(req, res, next){
   const { params } = req.swagger;
   const lambdaEvent = {
-    resource: 'workflow',
+    resource: 'step',
     operation: 'createStep',
     params: params.payload.value,
     context:  { user_id: req.user_id }
@@ -1179,7 +1179,7 @@ module.exports.createStep = function createStep(req, res, next){
 module.exports.editStep = function editStep(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
-    resource: 'workflow',
+    resource: 'step',
     operation: 'createStep',
     params: params.payload.value,
     context:  { user_id: req.user_id }
@@ -1189,6 +1189,39 @@ module.exports.editStep = function editStep(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 }
+
+module.exports.stepFindAll = function stepFindAll(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'step',
+    operation: 'stepFindAll',
+    params: {
+      query: {
+        sort: params.sort.value,
+        order: params.order.value,
+        per_page: params.per_page.value,
+        page: params.page.value
+      }
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.stepFindById = function stepFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'step',
+    operation: 'stepFindById',
+    params: { id: params.id.value },
+    context: { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
 
 module.exports.createStepReviewApproval = function createStepReviewApproval(req, res, next) {
   const { params } = req.swagger;
