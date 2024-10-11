@@ -140,7 +140,7 @@ const operations = {
   createWorkflow: createWorkflowMethod,
   createStep: createNewStep,
   stepFindAll,
-  stepFindById,
+  stepFindById
 };
 
 async function handler(event) {
