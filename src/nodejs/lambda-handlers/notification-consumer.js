@@ -59,6 +59,7 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
   }
   let users = usersList ? await db.user.getEmails({ user_list: usersList })
     : await db.note.getEmails({
+      noteId: note.id,
       conversationId: note.conversation_id,
       senderId: note.sender_edpuser_id,
       userRole

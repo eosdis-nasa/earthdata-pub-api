@@ -134,7 +134,8 @@ const complexTypes = {
   json_agg: jsonAgg,
   json_merge_agg: jsonMergeAgg,
   json_obj: jsonObj,
-  literal: strLiteral
+  literal: strLiteral,
+  any: anyClause
 };
 
 module.exports = complexTypes;
