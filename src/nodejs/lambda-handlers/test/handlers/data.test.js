@@ -22,8 +22,10 @@ describe('find by id', () => {
     const testEvent = {
       operation: 'findById',
       resource: 'question',
-      params: { id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc' }
+      params: { id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc' },
+      context: { user_id: '1234' }
     };
+    db.user.findById.mockResolvedValue({ user_privileges: ['ADMIN'] });
     db.question.findById.mockImplementation((params) => ({ id: params.id }));
     const response = await data.handler(testEvent);
     expect(response.id).toEqual(testEvent.params.id);
@@ -34,8 +36,11 @@ describe('find all', () => {
   it('should return a list of records record', async () => {
     const testEvent = {
       operation: 'findAll',
-      resource: 'question'
+      resource: 'question',
+      params: {},
+      context: { user_id: '1234' }
     };
+    db.user.findById.mockResolvedValue({ user_privileges: ['ADMIN'] });
     db.question.findAll.mockResolvedValue([{ id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc' }]);
     const response = await data.handler(testEvent);
     expect(response).toEqual([{ id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc' }]);
