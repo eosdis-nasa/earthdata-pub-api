@@ -1107,11 +1107,11 @@ module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   });
 };
 
-// module.exports.getOverviewAppSubpath = function getOverviewAppSubpath(req, res, next) {
-//   res.send({
-//     message: 'Placeholder for overview app subpath endpoint.'
-//   });
-// };
+module.exports.getOverviewAppSubpath = function getOverviewAppSubpath(req, res, next) {
+  res.send({
+    message: 'Placeholder for overview app subpath endpoint.'
+  });
+};
 
 module.exports.getOverviewAppGettingStarted = function getOverviewAppGettingStarted(req, res, next) {
   res.send({
