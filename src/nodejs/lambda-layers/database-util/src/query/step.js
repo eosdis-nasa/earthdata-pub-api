@@ -17,7 +17,7 @@ const findById = () => sql.select({
         base: 'step',
     },
     where: {
-        filters: [{ field: 'form.id', param: 'id' }]
+        filters: [{ field: 'step_id' }]
     }
 });
 

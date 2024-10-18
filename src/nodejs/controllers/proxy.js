@@ -1227,7 +1227,7 @@ module.exports.stepFindById = function stepFindById(req, res, next) {
   const lambdaEvent = {
     resource: 'step',
     operation: 'stepFindById',
-    params: { id: params.id.value },
+    params: { step_id: params.step_id.value },
     context: { user_id: req.user_id }
   };
   handlers.workflow(lambdaEvent).then((body) => {
