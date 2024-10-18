@@ -11563,6 +11563,54 @@
         "x-router-controller": "proxy"
       }
     },
+    "/{key+}": {
+      "get": {
+        "tags": [
+          "applications"
+        ],
+        "summary": "Serve the overview app.",
+        "description": "Serves the static files for the overview single page app.",
+        "operationId": "getOverviewAppSubpath",
+        "parameters": [{
+          "name": "key",
+          "in": "path",
+          "required": true,
+          "schema": { "type": "string" }
+        }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_overview_s3_bucket}/{key}",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "requestParameters": {},
+          "requestTemplates": {
+            "application/json": "#set($mappings = {\"default\": \"index.html\", \"index.html\": \"index.html\"}) #set($key = $method.request.path.key) #if ($mappings.containsKey($key)) #set($context.requestOverride.path.key = $mappings.get($key)) #else #set($context.requestOverride.path.key = $mappings.get('default')) #end"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      }
+    },
     "/dashboard": {
       "get": {
         "tags": [
