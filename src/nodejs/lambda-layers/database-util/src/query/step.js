@@ -12,12 +12,12 @@ const findAll = ({ order, sort, per_page, page }) => sql.select({
   });
   
 const findById = () => sql.select({
-    field: fields(allFields),
+    field: ['*'],
     from: {
         base: 'step',
     },
     where: {
-        filters: [{ field: 'step_id' }]
+        filters: [{ field: 'step_id', param: 'step_id' }]
     }
 });
 
