@@ -1113,6 +1113,18 @@ module.exports.getOverviewAppSubpath = function getOverviewAppSubpath(req, res, 
   });
 };
 
+module.exports.getOverviewAppGettingStarted = function getOverviewAppGettingStarted(req, res, next) {
+  res.send({
+    message: 'Placeholder for overview app getting_started subpath endpoint.'
+  });
+};
+
+module.exports.getOverviewAppDataPublicationGuidelines = function getOverviewAppDataPublicationGuidelines(req, res, next) {
+  res.send({
+    message: 'Placeholder for overview app data_publication_guidelines subpath endpoint.'
+  });
+};
+
 module.exports.getDashboardApp = function getDashboardApp(req, res, next) {
   res.send({
     message: 'Placeholder for dashboard app root endpoint.'
@@ -1166,7 +1178,7 @@ module.exports.offboardDaac = function offboardDaac(req, res, next) {
 module.exports.createStep = function createStep(req, res, next){
   const { params } = req.swagger;
   const lambdaEvent = {
-    resource: 'workflow',
+    resource: 'step',
     operation: 'createStep',
     params: params.payload.value,
     context:  { user_id: req.user_id }
@@ -1179,7 +1191,7 @@ module.exports.createStep = function createStep(req, res, next){
 module.exports.editStep = function editStep(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
-    resource: 'workflow',
+    resource: 'step',
     operation: 'createStep',
     params: params.payload.value,
     context:  { user_id: req.user_id }
@@ -1189,6 +1201,39 @@ module.exports.editStep = function editStep(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 }
+
+module.exports.stepFindAll = function stepFindAll(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'step',
+    operation: 'stepFindAll',
+    params: {
+      query: {
+        sort: params.sort.value,
+        order: params.order.value,
+        per_page: params.per_page.value,
+        page: params.page.value
+      }
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.stepFindById = function stepFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'step',
+    operation: 'stepFindById',
+    params: { step_id: params.step_id.value },
+    context: { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
 
 module.exports.createStepReviewApproval = function createStepReviewApproval(req, res, next) {
   const { params } = req.swagger;
