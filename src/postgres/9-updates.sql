@@ -97,3 +97,12 @@ INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'N
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_REPLY');
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_ADDUSER');
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_REMOVEUSER');
+
+-- 10/21/24 EDPUB-1372 Repurpose DAAC Selection Page to DAAC Assignment Page
+UPDATE daac SET hidden = 'false' WHERE id = 'c606afba-725b-4ae4-9557-1fd33260ae12';
+UPDATE daac SET hidden = 'false' WHERE id = 'd551380f-8813-40e4-9763-2a5bb6007cd0';
+UPDATE daac SET hidden = 'false' WHERE id = '9e0628f1-0dde-4ed2-b1e3-690c70326f25';
+UPDATE daac SET hidden = 'false' WHERE id = 'de6d5ec9-4728-4f2b-9d43-ae2f0fdac96a';
+UPDATE daac SET hidden = 'false' WHERE id = 'aec3724f-b30b-4b3f-9b9a-e0907d9d14b3';
+UPDATE daac SET hidden = 'false' WHERE id = 'fe75c306-ac04-4689-a702-073d9cb071fe';
+UPDATE daac SET hidden = 'false' WHERE id = '00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1';
