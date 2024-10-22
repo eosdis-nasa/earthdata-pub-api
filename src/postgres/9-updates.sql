@@ -97,3 +97,14 @@ INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'N
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_REPLY');
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_ADDUSER');
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_REMOVEUSER');
+
+-- 10/22/24 Add table for token generation
+CREATE TABLE IF NOT EXISTS token (
+  token UUID DEFAULT UUID_GENERATE_V4(),
+  submission_id UUID NOT NULL,
+  daac_id UUID NOT NULL,
+  PRIMARY KEY (token),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (daac_id) REFERENCES daac (id),
+  UNIQUE (submission_id, daac_id)
+);

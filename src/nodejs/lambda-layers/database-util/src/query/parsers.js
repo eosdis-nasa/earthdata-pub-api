@@ -115,3 +115,5 @@ module.exports.copyActionData = one;
 module.exports.copyFormData = one;
 module.exports.setSubmissionCopy = one;
 module.exports.stepCleanup = one;
+module.exports.checkToken = one;
+module.exports.createToken = one;

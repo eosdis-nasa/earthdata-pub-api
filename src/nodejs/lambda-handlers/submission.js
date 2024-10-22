@@ -392,6 +392,20 @@ async function deleteStepReviewApprovalMethod(event, user) {
   return { error: 'Not Authorized' };
 }
 
+async function validateTokenMethod(event) {
+  const { token } = event.params;
+
+  const tokenData = await db.submission.checkToken({ token });
+  const validationResponse = { isValid: false };
+
+  // If we get anything but the expected return of daac_id and submission_id the validation failed
+  if (tokenData.daac_id) {
+    validationResponse.isValid = true;
+  }
+
+  return validationResponse;
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -414,7 +428,8 @@ const operations = {
   mapMetadata: mapMetadataMethod,
   createStepReviewApproval: createStepReviewApprovalMethod,
   getStepReviewApproval: getStepReviewApprovalMethod,
-  deleteStepReviewApproval: deleteStepReviewApprovalMethod
+  deleteStepReviewApproval: deleteStepReviewApprovalMethod,
+  validateToken: validateTokenMethod
 };
 
 async function handler(event) {
