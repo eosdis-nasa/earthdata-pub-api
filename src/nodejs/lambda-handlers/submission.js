@@ -392,14 +392,14 @@ async function deleteStepReviewApprovalMethod(event, user) {
   return { error: 'Not Authorized' };
 }
 
-async function validateTokenMethod(event) {
-  const { token } = event.params;
+async function validateCodeMethod(event) {
+  const { code } = event.params;
 
-  const tokenData = await db.submission.checkToken({ token });
+  const codeData = await db.submission.checkCode({ code });
   const validationResponse = { isValid: false };
 
   // If we get anything but the expected return of daac_id and submission_id the validation failed
-  if (tokenData.daac_id) {
+  if (codeData.daac_id) {
     validationResponse.isValid = true;
   }
 
@@ -429,7 +429,7 @@ const operations = {
   createStepReviewApproval: createStepReviewApprovalMethod,
   getStepReviewApproval: getStepReviewApprovalMethod,
   deleteStepReviewApproval: deleteStepReviewApprovalMethod,
-  validateToken: validateTokenMethod
+  validateCode: validateCodeMethod
 };
 
 async function handler(event) {

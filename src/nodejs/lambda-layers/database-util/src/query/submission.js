@@ -745,14 +745,14 @@ WITH step_to_delete AS (
 DELETE FROM Step
 WHERE step_name IN (SELECT step_name FROM step_to_delete)`;
 
-const checkToken = () =>`
-SELECT token.submission_id, token.daac_id
-FROM token
-WHERE token = {{token}}
+const checkCode = () =>`
+SELECT code.submission_id, code.daac_id
+FROM code
+WHERE code = {{code}}
 `;
 
-const createToken = () => `
-INSERT INTO token(submission_id, daac_id)
+const createCode = () => `
+INSERT INTO code(submission_id, daac_id)
 Values({{submissionId}}, {{daacID}})
 RETURNING *
 `
@@ -803,5 +803,5 @@ module.exports.checkCountStepReviewRejected = checkCountStepReviewRejected;
 module.exports.checkCountStepReviewApproved = checkCountStepReviewApproved;
 module.exports.updateStatusStepReviewApproval = updateStatusStepReviewApproval;
 module.exports.stepCleanup = stepCleanup;
-module.exports.checkToken = checkToken;
-module.exports.createToken = createToken;
+module.exports.checkCode = checkCode;
+module.exports.createCode = createCode;

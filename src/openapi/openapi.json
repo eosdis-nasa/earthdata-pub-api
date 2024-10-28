@@ -3236,10 +3236,10 @@
         "x-router-controller": "cors"
       }
     },
-    "/api/data/submission/validateToken/{token}": {
+    "/api/data/submission/validateCode/{code}": {
       "parameters": [
         {
-          "name": "token",
+          "name": "code",
           "in": "path",
           "description": "UUID of entity",
           "required": true,
@@ -3252,9 +3252,9 @@
         "tags": [
           "data"
         ],
-        "summary": "Check the validity of a token",
-        "description": "Returns an indication of whether a token is valid",
-        "operationId": "validateToken",
+        "summary": "Check the validity of a code",
+        "description": "Returns an indication of whether a code is valid",
+        "operationId": "validateCode",
         "responses": {
           "200": {
             "description": "OK",
@@ -3291,7 +3291,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"validateToken\",\"params\":{\"token\": \"$req.path.get('token')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"submission\",\"operation\":\"validateCode\",\"params\":{\"code\": \"$req.path.get('code')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
