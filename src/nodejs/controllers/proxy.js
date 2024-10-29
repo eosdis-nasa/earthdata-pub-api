@@ -84,8 +84,16 @@ module.exports.formFindById = function formFindById(req, res, next) {
 };
 
 module.exports.formPut = function formPut(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'form',
+    operation: 'createForm',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
 };
 
 module.exports.formFindAll = function formFindAll(req, res, next) {
