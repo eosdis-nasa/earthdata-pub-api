@@ -8,8 +8,6 @@
 
 const db = require('database-util');
 
-const msg = require('message-util');
-
 const formEditPerms = { privilege: ['ADMIN', 'FORM_UPDATE'] };
 
 async function hasPerms(uid, perms) {
@@ -21,23 +19,22 @@ async function hasPerms(uid, perms) {
 }
 
 async function editSection({ params, context }) {
-    
-    if (hasPerms(context.user_id, formEditPerms)){ 
-      const response = await db.section.createSection(params);
-      return response;
-    }
-    return { error: 'Not Authorized' };
+  if (hasPerms(context.user_id, formEditPerms)) {
+    const response = await db.section.createSection(params);
+    return response;
   }
+  return { error: 'Not Authorized' };
+}
 
 const operations = {
   editSection
 };
 
 async function handler(event) {
-    console.info(`[EVENT]\n${JSON.stringify(event)}`);
-    const operation = operations[event.operation];
-    const data = await operation(event);
-    return data;
-  }
+  console.info(`[EVENT]\n${JSON.stringify(event)}`);
+  const operation = operations[event.operation];
+  const data = await operation(event);
+  return data;
+}
 
 module.exports.handler = handler;

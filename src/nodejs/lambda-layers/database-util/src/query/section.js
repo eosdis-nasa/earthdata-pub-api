@@ -62,8 +62,8 @@ const createSection = (params) => sql.insert({
       items: [
         ...(params.id ? ['{{id}}'] : []),
         '{{form_id}}', '{{heading}}', '{{list_order}}',
-        params.required_if? '{{required_if}}': [],
-        params.show_if? '{{show_if}}':[],
+        params.required_if && params.required_if.length >0 ? '{{required_if}}': "'[]'::JSONB",
+        params.show_if && params.show_if.length >0 ? '{{show_if}}': "'[]'::JSONB",
         params.daac_id? '{{daac_id}}':'null',
       ]
     }
