@@ -54,4 +54,31 @@ const formJoin = () => sql.select({
   alias: 'section_agg'
 });
 
+const createSection = (params) => sql.insert({
+  ...{
+    table: `section (${params.id ? 'id,': ''} form_id, heading, list_order, required_if, show_if, daac_id)`,
+    values: {
+      type: 'values_list',
+      items: [
+        ...(params.id ? ['{{id}}'] : []),
+        '{{form_id}}', '{{heading}}', '{{list_order}}',
+        params.required_if? '{{required_if}}': [],
+        params.show_if? '{{show_if}}':[],
+        params.daac_id? '{{daac_id}}':'null',
+      ]
+    }
+  },
+  ...(params.id ? {conflict:{
+    constraints: ['id'],
+    update:{
+      type:'update',
+      set:[{cmd:'form_id = EXCLUDED.form_id, heading = EXCLUDED.heading, list_order = EXCLUDED.list_order, required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if, daac_id = EXCLUDED.daac_id'}]
+    }
+  }} : {}),
+  ...{
+    returning: ['*']
+  }
+})
+
 module.exports.formJoin = formJoin;
+module.exports.createSection = createSection;

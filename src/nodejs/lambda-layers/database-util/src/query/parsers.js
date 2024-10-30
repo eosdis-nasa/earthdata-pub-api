@@ -117,3 +117,4 @@ module.exports.setSubmissionCopy = one;
 module.exports.stepCleanup = one;
 module.exports.checkCode = one;
 module.exports.createCode = one;
+module.exports.createSection = one;
