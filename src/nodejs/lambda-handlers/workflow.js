@@ -19,6 +19,16 @@ async function createStep(step, stepName, rollbackInfo) {
   });
 }
 
+async function createNewStep(params, user) {
+  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const result = await db.workflow.createStep(params);
+    return result;
+  }
+  return { status: 'Invalid Permissions' };
+}
+
 async function addSteps(steps, workflowId) {
   const STEP_MAX = 100;
   let activeStepName = 'init';
@@ -107,7 +117,8 @@ async function editWorkflowMethod(params, user) {
 
 const operations = {
   editWorkflow: editWorkflowMethod,
-  createWorkflow: createWorkflowMethod
+  createWorkflow: createWorkflowMethod,
+  createStep: createNewStep
 };
 
 async function handler(event) {

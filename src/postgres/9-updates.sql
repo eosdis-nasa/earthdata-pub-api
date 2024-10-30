@@ -71,3 +71,12 @@ INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'push_to_o
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form', 'submission_form');
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'submission_form', 'email_daac_staff');
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'email_daac_staff', 'close');
+
+
+
+-- 09/30/24 EDPUB-1384 Create Add Step API Endpoint
+DELETE FROM edprole_privilege
+WHERE edprole_id = 'a5b4947a-67d2-434e-9889-59c2fad39676'
+AND privilege = 'WORKFLOW_CREATE';
+
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'WORKFLOW_CREATE');

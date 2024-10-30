@@ -44,3 +44,4 @@ module.exports.optionsModel = optionsHeaders;
 module.exports.optionsToken = optionsHeaders;
 module.exports.optionsVersion = optionsHeaders;
 module.exports.optionsFileUpload = optionsHeaders;
+module.exports.optionsDataStep = optionsHeaders;

@@ -18,7 +18,8 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
     daac_staff: 'a5b4947a-67d2-434e-9889-59c2fad39676',
     daac_manager: '2aa89c57-85f1-4611-812d-b6760bb6295c',
     daac_observer: '4be6ca4d-6362-478b-8478-487a668314b1',
-    admin: '75605ac9-bf65-4dec-8458-93e018dcca97'
+    admin: '75605ac9-bf65-4dec-8458-93e018dcca97',
+    uwg_member: '19ac227b-e96c-46fa-a378-cf82c461b669'
   };
 
   let userRole = null;
@@ -48,7 +49,8 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
         roles.daac_staff,
         roles.daac_manager,
         roles.admin,
-        roles.daac_observer
+        roles.daac_observer,
+        roles.uwg_member
       ];
       break;
     default:

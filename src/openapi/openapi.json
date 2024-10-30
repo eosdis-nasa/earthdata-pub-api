@@ -6128,6 +6128,273 @@
         "x-router-controller": "cors"
       }
     },
+    "/api/data/steps": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Create step",
+        "description": "Returns status of step creation",
+        "operationId": "createStep",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Step"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Step"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${workflow_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"createStep\",\"params\":{\"type\":\"$body.get('type')\", \"step_name\":\"$body.get('step_name')\" #if($body.containsKey('service_id')), \"service_id\":\"$body.get('service_id')\"#end #if($body.containsKey('form_id')), \"form_id\":\"$body.get('form_id')\"#end #if($body.containsKey('action_id')), \"action_id\":\"$body.get('action_id')\"#end #if($body.containsKey('step_status_label')), \"step_status_label\":\"$body.get('step_status_label')\"#end #if ($body.containsKey('data')), \"data\":$input.json('$.data') #end },\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataStep",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/steps/{step_id}": {
+      "parameters": [
+        {
+          "name": "step_id",
+          "in": "path",
+          "description": "UUID of step to update.",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Updates step",
+        "description": "Returns status of step update",
+        "operationId": "editStep",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Step"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Step"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${workflow_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) {\"operation\":\"createStep\",\"params\":{\"step_id\":\"$req.path.get('step_id')\", \"type\":\"$body.get('type')\", \"step_name\":\"$body.get('step_name')\" #if($body.containsKey('service_id')), \"service_id\":\"$body.get('service_id')\"#end #if($body.containsKey('form_id')), \"form_id\":\"$body.get('form_id')\"#end #if($body.containsKey('action_id')), \"action_id\":\"$body.get('action_id')\"#end #if($body.containsKey('step_status_label')), \"step_status_label\":\"$body.get('step_status_label')\"#end #if ($body.containsKey('data')), \"data\":$input.json('$.data')#end },\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataStep",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
     "/api/data/workflows": {
       "get": {
         "tags": [
@@ -11589,7 +11856,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/Upload"
               }
             }
           }
@@ -11627,7 +11894,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getPostUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getPostUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_category'))\"file_category\":\"$body.get('file_category')\",#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -11707,7 +11974,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/GroupUpload"
               }
             }
           }
