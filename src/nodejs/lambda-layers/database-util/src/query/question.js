@@ -133,8 +133,9 @@ const add = (params) => `
     ),
   new_section_question AS (INSERT INTO section_question (section_id, question_id, list_order, required_if, show_if)
   SELECT {{payload.section_question.section_id}}, new_question.id, 
-  {{payload.section_question.list_order}}, {{payload.section_question.required_if}}, 
-  {{payload.section_question.show_if}} FROM new_question ON CONFLICT(section_id, question_id) DO UPDATE SET
+  {{payload.section_question.list_order}}, ${params.payload.section_question.required_if ? `'${JSON.stringify(params.payload.section_question.required_if)}'::JSONB`: "'[]'::JSONB"}, 
+  ${params.payload.section_question.show_if ? `'${JSON.stringify(params.payload.section_question.show_if)}'::JSONB`: "'[]'::JSONB"}
+  FROM new_question ON CONFLICT(section_id, question_id) DO UPDATE SET
   section_id = EXCLUDED.section_id, question_id = EXCLUDED.question_id, list_order = EXCLUDED.list_order,
   required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if
   RETURNING *)
