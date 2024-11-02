@@ -1090,6 +1090,20 @@ module.exports.groupFileUpload = function groupFileUpload(req, res, next) {
   });
 };
 
+module.exports.attachmentUploadUrl = function attachmentUploadUrl(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: 'getAttachmentUploadUrl',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.listFiles = function listFiles(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
