@@ -148,6 +148,33 @@ const deleteInput = (params) => `
     WHERE control_id IN ('${params.toDelete.join("','")}')
     RETURNING *`;
 
+
+const createOrUpdateInput = () => `
+  INSERT INTO input (question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required)
+  VALUES (
+    {{input.question_id}}, 
+    {{input.control_id}}, 
+    {{input.list_order}}, 
+    {{input.label}}, 
+    {{input.type}},
+    {{input.enums}}::JSONB, 
+    {{input.attributes}}::JSONB, 
+    {{input.required_if}}::JSONB, 
+    {{input.show_if}}::JSONB, 
+    {{input.required}}
+  )
+  ON CONFLICT (question_id, control_id) DO UPDATE SET
+    list_order = EXCLUDED.list_order,
+    label = EXCLUDED.label,
+    type = EXCLUDED.type,
+    enums = EXCLUDED.enums,
+    attributes = EXCLUDED.attributes,
+    required_if = EXCLUDED.required_if,
+    show_if = EXCLUDED.show_if,
+    required = EXCLUDED.required
+  RETURNING *;
+`;
+
 module.exports.sectionJoin = sectionJoin;
 
 module.exports.findAll = findAll;
@@ -158,3 +185,4 @@ module.exports.update = update;
 module.exports.add = add;
 module.exports.updateInput = updateInput;
 module.exports.deleteInput = deleteInput;
+module.exports.createOrUpdateInput = createOrUpdateInput;
