@@ -293,11 +293,24 @@ module.exports.questionInputUpdate = function questionInputUpdate(req, res, next
   });
 };
 
-module.exports.createOrUpdateInput = function createOrUpdateInput(req, res, next) {
+module.exports.createInput = function createInput(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'question',
-    operation: 'createOrUpdateInput',
+    operation: 'createInput',
+    params: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
+module.exports.updateInput = function updateInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'updateInput',
     params: params.payload.value,
     context: { user_id: req.user_id }
   };

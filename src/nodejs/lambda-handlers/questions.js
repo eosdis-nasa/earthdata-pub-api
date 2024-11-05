@@ -8,8 +8,8 @@ const db = require('database-util');
 
 const editPerms = { privilege: ['ADMIN'] };
 const readPerms = { privilege: ['ADMIN', 'QUESTION_READ'] };
-const inputPerms = { privilege: ['ADMIN', 'FORM_CREATE'] };
-
+const inputCreatePerms = { privilege: ['ADMIN', 'FORM_CREATE'] };
+const inputUpdatePerms = { privilege: ['ADMIN', 'FORM_UPDATE'] };
 
 async function hasPerms(uid, perms) {
   const userInfo = await db.user.findById({ id: uid });
@@ -68,13 +68,24 @@ async function updateInputsMethod({ params, context }) {
   return {};
 }
 
-async function createOrUpdateInputMethod({ params, context }) {
-  if (await hasPerms(context.user_id, inputPerms)) {
+async function createInputMethod({ params, context }) {
+  if (await hasPerms(context.user_id, inputCreatePerms)) {
     return db.question.createOrUpdateInput(
       {
         input: params
       }
-    )
+    );
+  }
+  return {};
+}
+
+async function updateInputMethod({ params, context }) {
+  if (await hasPerms(context.user_id, inputUpdatePerms)) {
+    return db.question.createOrUpdateInput(
+      {
+        input: params
+      }
+    );
   }
   return {};
 }
@@ -86,7 +97,8 @@ const operations = {
   updateInputs: updateInputsMethod,
   add: addMethod,
   update: updateMethod,
-  createOrUpdateInput: createOrUpdateInputMethod
+  createInput: createInputMethod,
+  updateInput: updateInputMethod
 };
 
 async function handler(event) {
