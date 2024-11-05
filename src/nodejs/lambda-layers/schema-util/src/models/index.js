@@ -22,6 +22,8 @@ const Page = require('./page.js');
 const Permission = require('./permission.js');
 const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
+const QuestionAdd = require('./question-add.js');
+const QuestionInputs = require('./question-inputs.js');
 const Input = require('./input.js')
 const Role = require('./role.js');
 const Service = require('./service.js');
@@ -72,6 +74,8 @@ const models = {
   Permission,
   Question,
   QuestionList,
+  QuestionAdd,
+  QuestionInputs,
   Input,
   Role,
   Service,

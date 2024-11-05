@@ -124,12 +124,18 @@ const update = ({ daac_ids }) => `
   long_name = EXCLUDED.long_name, text = EXCLUDED.text, help = EXCLUDED.help,
   required = EXCLUDED.required, created_at = EXCLUDED.created_at, EXCLUDED.daac_ids
   RETURNING *`;
-const add = ({ daac_ids }) => `
-  WITH new_question AS (${update({ daac_ids })}),
+const add = (params) => `
+  WITH new_question AS (INSERT INTO question (${params.payload.id ? 'id,': ''} short_name, version, long_name, text, 
+  help, required, ${params.payload.created_at ? 'created_at,': ''} daac_ids)
+  VALUES (${params.payload.id ? '{{payload.id}},': ''} {{payload.short_name}}, {{payload.version}}, {{payload.long_name}}, {{payload.text}}, {{payload.help}}, 
+  {{payload.required}}, ${params.payload.created_at ? '{{payload.created_at}},': ''} ${params.payload.daac_ids && params.payload.daac_ids.length > 0 ? `ARRAY['${params.payload.daac_ids.join('\',\'')}']::UUID[]` : `ARRAY[]::UUID[]`} 
+  ) RETURNING *
+    ),
   new_section_question AS (INSERT INTO section_question (section_id, question_id, list_order, required_if, show_if)
-  VALUES ({{payload.section_question.section_id}}, {{payload.section_question.question_id}}, 
-  {{payload.section_question.list_order}}, {{payload.section_question.required_if}}, 
-  {{payload.section_question.show_if}}) ON CONFLICT(section_id, question_id) DO UPDATE SET
+  SELECT {{payload.section_question.section_id}}, new_question.id, 
+  {{payload.section_question.list_order}}, ${params.payload.section_question.required_if ? `'${JSON.stringify(params.payload.section_question.required_if)}'::JSONB`: "'[]'::JSONB"}, 
+  ${params.payload.section_question.show_if ? `'${JSON.stringify(params.payload.section_question.show_if)}'::JSONB`: "'[]'::JSONB"}
+  FROM new_question ON CONFLICT(section_id, question_id) DO UPDATE SET
   section_id = EXCLUDED.section_id, question_id = EXCLUDED.question_id, list_order = EXCLUDED.list_order,
   required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if
   RETURNING *)
