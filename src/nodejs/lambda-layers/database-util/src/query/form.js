@@ -24,8 +24,8 @@ const refs = {
 const fields = (list) => list.map((field) => fieldMap[field]);
 
 const createForm = (params) => `
-INSERT INTO form (short_name, version, long_name, description, daac_only)
-VALUES ('${params.short_name}', ${params.version}, '${params.long_name}', ${params.description ? `'${params.description}'` : 'NULL'}, ${params.daac_only || false})
+INSERT INTO form (short_name, version, long_name${params.description ? ', description' : ''}${params.daac_only ? ', daac_only' : ''})
+VALUES ('${params.short_name}', ${params.version}, '${params.long_name}'${params.description ? `, '${params.description}'` : ''}${params.daac_only ? `, ${params.daac_only}` : ''})
 RETURNING *;
 `;
 
