@@ -2304,7 +2304,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Form"
+                "$ref": "#/components/schemas/Input"
               }
             }
           }
@@ -2426,7 +2426,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Form"
+                "$ref": "#/components/schemas/Input"
               }
             }
           }
