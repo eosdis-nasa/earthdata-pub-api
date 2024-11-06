@@ -56,15 +56,15 @@ const formJoin = () => sql.select({
 
 const createSection = (params) => sql.insert({
   ...{
-    table: `section (${params.id ? 'id,': ''} form_id, heading, list_order, required_if, show_if, daac_id)`,
+    table: `section (${params.id ? 'id,': ''} form_id, heading, list_order${params.required_if ? ', required_if' : ''}${params.show_if ? ', show_if' : ''}${params.daac_id ? ', daac_id' : ''})`,
     values: {
       type: 'values_list',
       items: [
         ...(params.id ? ['{{id}}'] : []),
         '{{form_id}}', '{{heading}}', '{{list_order}}',
-        params.required_if ? `'${JSON.stringify(params.required_if)}'::JSONB`: "'[]'::JSONB",
-        params.show_if ? `'${JSON.stringify(params.show_if)}'::JSONB`: "'[]'::JSONB",
-        params.daac_id? '{{daac_id}}':'null',
+        ...(params.required_if ? [`'${JSON.stringify(params.required_if)}'::JSONB`] : []),
+        ...(params.show_if ? [`'${JSON.stringify(params.show_if)}'::JSONB`] : []),
+        ...(params.daac_id ? ['{{daac_id}}']: []),
       ]
     }
   },
