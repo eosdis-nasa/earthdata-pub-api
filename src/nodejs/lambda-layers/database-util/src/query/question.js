@@ -114,16 +114,22 @@ const findAllEx = () => `
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
 const findById = () => `${findAllEx()} WHERE question.id = {{id}}`;
 const findByName = () => `${findAllEx()} WHERE question.short_name = {{short_name}}`;
-const update = ({ daac_ids }) => `
-  INSERT INTO question (id, short_name, version, long_name, text, help, required, created_at, daac_ids)
-  VALUES ({{payload.id}}, {{payload.short_name}}, {{payload.version}}, {{payload.long_name}}, {{payload.text}},
-  {{payload.help}}, {{payload.required}}, {{payload.created_at}}, ARRAY(
-    SELECT DISTINCT unnest(array_cat(daac_ids, ARRAY['${daac_ids.join('\',\'')}']::UUID[]))
-  ))
-  ON CONFLICT(short_name, version) DO UPDATE SET
-  long_name = EXCLUDED.long_name, text = EXCLUDED.text, help = EXCLUDED.help,
-  required = EXCLUDED.required, created_at = EXCLUDED.created_at, EXCLUDED.daac_ids
-  RETURNING *`;
+const update = (params) => 
+  `INSERT INTO question (id, short_name, version, long_name, text, help, required, created_at, daac_ids)
+VALUES ({{payload.id}}, {{payload.short_name}}, {{payload.version}}, {{payload.long_name}}, {{payload.text}},
+{{payload.help}}, {{payload.required}}, {{payload.created_at}}, ARRAY[${params.payload.daac_ids.map(id => `'${id}'`).join(',')}]::UUID[])
+  ON CONFLICT (short_name, version) DO UPDATE 
+  SET 
+      long_name = EXCLUDED.long_name,
+      text = EXCLUDED.text,
+      help = EXCLUDED.help,
+      required = EXCLUDED.required,
+      created_at = EXCLUDED.created_at,
+      daac_ids = ARRAY(
+          SELECT DISTINCT unnest(array_cat(question.daac_ids, EXCLUDED.daac_ids))
+      )
+  RETURNING *;`
+
 const add = (params) => `
   WITH new_question AS (INSERT INTO question (${params.payload.id ? 'id,': ''} short_name, version, long_name, text, 
   help, required, ${params.payload.created_at ? 'created_at,': ''} daac_ids)
