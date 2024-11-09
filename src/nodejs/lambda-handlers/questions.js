@@ -70,7 +70,7 @@ async function updateInputsMethod({ params, context }) {
 
 async function createInputMethod({ params, context }) {
   if (await hasPerms(context.user_id, inputCreatePerms)) {
-    return db.question.createOrUpdateInput(
+    return db.question.createOneInput(
       {
         input: params
       }
@@ -81,7 +81,29 @@ async function createInputMethod({ params, context }) {
 
 async function updateInputMethod({ params, context }) {
   if (await hasPerms(context.user_id, inputUpdatePerms)) {
-    return db.question.createOrUpdateInput(
+    return db.question.updateOneInput(
+      {
+        input: params
+      }
+    );
+  }
+  return {};
+}
+
+async function inputFindByIdMethod({ params, context }) {
+  if (await hasPerms(context.user_id, inputCreatePerms)) {
+    return db.question.inputFindById(
+      {
+        input: params
+      }
+    );
+  }
+  return {};
+}
+
+async function inputFindAllMethod({ params, context }) {
+  if (await hasPerms(context.user_id, inputCreatePerms)) {
+    return db.question.inputFindAll(
       {
         input: params
       }
@@ -98,7 +120,9 @@ const operations = {
   add: addMethod,
   update: updateMethod,
   createInput: createInputMethod,
-  updateInput: updateInputMethod
+  updateInput: updateInputMethod,
+  inputFindById: inputFindByIdMethod,
+  inputFindAll: inputFindAllMethod
 };
 
 async function handler(event) {

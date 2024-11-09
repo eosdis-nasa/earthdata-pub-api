@@ -124,8 +124,6 @@ const update = (params) =>
      )
    WHERE short_name = {{payload.short_name}} and version = {{payload.version}}
    RETURNING *`;
-
-
 const add = (params) => `
   WITH new_question AS (INSERT INTO question (${params.payload.id ? 'id,': ''} short_name, version, long_name, text, 
   help, required, ${params.payload.created_at ? 'created_at,': ''} daac_ids)
@@ -157,7 +155,7 @@ const deleteInput = (params) => `
     RETURNING *`;
 
 
-const createOrUpdateInput = () => `
+const createOneInput = () => `
   INSERT INTO input (question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required)
   VALUES (
     {{input.question_id}}, 
@@ -171,15 +169,24 @@ const createOrUpdateInput = () => `
     {{input.show_if}}::JSONB, 
     {{input.required}}
   )
-  ON CONFLICT (question_id, control_id) DO UPDATE SET
-    list_order = EXCLUDED.list_order,
-    label = EXCLUDED.label,
-    type = EXCLUDED.type,
-    enums = EXCLUDED.enums,
-    attributes = EXCLUDED.attributes,
-    required_if = EXCLUDED.required_if,
-    show_if = EXCLUDED.show_if,
-    required = EXCLUDED.required
+  RETURNING *;
+`;
+
+const updateOneInput = () => `
+  UPDATE input
+  SET 
+    control_id = {{input.control_id}},
+    list_order = {{input.list_order}},
+    label = {{input.label}},
+    type = {{input.type}},
+    enums = {{input.enums}}::JSONB,
+    attributes = {{input.attributes}}::JSONB,
+    required_if = {{input.required_if}}::JSONB,
+    show_if = {{input.show_if}}::JSONB,
+    required = {{input.required}}
+  WHERE 
+    question_id = {{input.question_id}} 
+    AND control_id = {{input.edit_control_id}}
   RETURNING *;
 `;
 
@@ -196,7 +203,8 @@ module.exports.update = update;
 module.exports.add = add;
 module.exports.updateInput = updateInput;
 module.exports.deleteInput = deleteInput;
-module.exports.createOrUpdateInput = createOrUpdateInput;
+module.exports.createOneInput = createOneInput;
+module.exports.updateOneInput = updateOneInput;
 module.exports.inputFindById = inputFindById;
 module.exports.inputFindAll = inputFindAll;
 
