@@ -114,21 +114,17 @@ const findAllEx = () => `
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
 const findById = () => `${findAllEx()} WHERE question.id = {{id}}`;
 const findByName = () => `${findAllEx()} WHERE question.short_name = {{short_name}}`;
+
 const update = (params) => 
-  `INSERT INTO question (id, short_name, version, long_name, text, help, required, created_at, daac_ids)
-VALUES ({{payload.id}}, {{payload.short_name}}, {{payload.version}}, {{payload.long_name}}, {{payload.text}},
-{{payload.help}}, {{payload.required}}, {{payload.created_at}}, ARRAY[${params.payload.daac_ids.map(id => `'${id}'`).join(',')}]::UUID[])
-  ON CONFLICT (short_name, version) DO UPDATE 
-  SET 
-      long_name = EXCLUDED.long_name,
-      text = EXCLUDED.text,
-      help = EXCLUDED.help,
-      required = EXCLUDED.required,
-      created_at = EXCLUDED.created_at,
-      daac_ids = ARRAY(
-          SELECT DISTINCT unnest(array_cat(question.daac_ids, EXCLUDED.daac_ids))
-      )
-  RETURNING *;`
+  `UPDATE question
+   SET 
+     long_name = {{payload.long_name}}, text = {{payload.text}}, help = {{payload.help}}, required = {{payload.required}}, created_at = {{payload.created_at}},
+     daac_ids = ARRAY(
+       SELECT DISTINCT unnest(array_cat(daac_ids, ARRAY[${params.payload.daac_ids.map(id => `'${id}'`).join(',')}]::UUID[]))
+     )
+   WHERE short_name = {{payload.short_name}} and version = {{payload.version}}
+   RETURNING *`;
+
 
 const add = (params) => `
   WITH new_question AS (INSERT INTO question (${params.payload.id ? 'id,': ''} short_name, version, long_name, text, 
@@ -187,6 +183,9 @@ const createOrUpdateInput = () => `
   RETURNING *;
 `;
 
+const inputFindById = () => `SELECT input.* FROM input where question_id={{input.id}} and control_id={{input.control_id}}`;
+const inputFindAll = () => `SELECT input.* FROM input`;
+
 module.exports.sectionJoin = sectionJoin;
 
 module.exports.findAll = findAll;
@@ -198,3 +197,6 @@ module.exports.add = add;
 module.exports.updateInput = updateInput;
 module.exports.deleteInput = deleteInput;
 module.exports.createOrUpdateInput = createOrUpdateInput;
+module.exports.inputFindById = inputFindById;
+module.exports.inputFindAll = inputFindAll;
+
