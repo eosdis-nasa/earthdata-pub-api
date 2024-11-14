@@ -375,6 +375,19 @@ module.exports.getSubmissionDetailsById = function getSubmissionDetailsById(req,
   });
 };
 
+module.exports.validateCode = function validateCode(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'submission',
+    operation: 'validateCode',
+    context: { user_id: req.user_id },
+    params: { code: params.code.value }
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.userFindById = function userFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

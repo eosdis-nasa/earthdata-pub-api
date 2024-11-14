@@ -745,6 +745,18 @@ WITH step_to_delete AS (
 DELETE FROM Step
 WHERE step_name IN (SELECT step_name FROM step_to_delete)`;
 
+const checkCode = () =>`
+SELECT code.submission_id, code.daac_id
+FROM code
+WHERE code = {{code}}
+`;
+
+const createCode = () => `
+INSERT INTO code(submission_id, daac_id)
+Values({{submissionId}}, {{daacID}})
+RETURNING *
+`
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -791,3 +803,5 @@ module.exports.checkCountStepReviewRejected = checkCountStepReviewRejected;
 module.exports.checkCountStepReviewApproved = checkCountStepReviewApproved;
 module.exports.updateStatusStepReviewApproval = updateStatusStepReviewApproval;
 module.exports.stepCleanup = stepCleanup;
+module.exports.checkCode = checkCode;
+module.exports.createCode = createCode;
