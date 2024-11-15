@@ -176,6 +176,7 @@ const updateOneInput = () => `
   UPDATE input
   SET 
     control_id = {{input.control_id}},
+    question_id = {{input.question_id}}, 
     list_order = {{input.list_order}},
     label = {{input.label}},
     type = {{input.type}},
@@ -185,8 +186,8 @@ const updateOneInput = () => `
     show_if = {{input.show_if}}::JSONB,
     required = {{input.required}}
   WHERE 
-    question_id = {{input.question_id}} 
-    AND control_id = {{input.edit_control_id}}
+    question_id = {{input.old_question_id}} 
+    AND control_id = {{input.old_control_id}}
   RETURNING *;
 `;
 
