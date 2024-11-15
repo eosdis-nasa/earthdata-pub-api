@@ -128,6 +128,47 @@ resource "aws_lambda_permission" "data" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
+# Form Lambda
+
+resource "aws_lambda_function" "form" {
+  filename      = "../artifacts/form-lambda.zip"
+  function_name = "form"
+  role          = var.edpub_lambda_role_arn
+  handler       = "form.handler"
+  layers = [
+    aws_lambda_layer_version.database_util.arn,
+    aws_lambda_layer_version.message_util.arn,
+    aws_lambda_layer_version.schema_util.arn
+  ]
+  runtime          = "nodejs18.x"
+  source_code_hash = filesha256("../artifacts/form-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION          = var.region
+      EVENT_SNS       = var.edpub_event_sns_arn
+      METRICS_SNS     = var.edpub_metrics_sns_arn
+      PG_USER         = var.db_user
+      PG_HOST         = var.db_host
+      PG_DB           = var.db_database
+      PG_PASS         = var.db_password
+      PG_PORT         = var.db_port
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "form" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.form.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
+}
+
 # Inbound Consumer Lambda
 
 resource "aws_lambda_function" "inbound_consumer" {
