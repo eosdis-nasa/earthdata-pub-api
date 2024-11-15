@@ -51,6 +51,15 @@ async function createForm({ resource, params, context }) {
   return db[resource].createForm(params);
 }
 
+async function updateForm({ resource, params, context }) {
+  const privileges = await getPrivileges(context);
+  if (privileges.includes('ADMIN') || privileges.includes('FORM_UPDATE')) {
+    params.privileged_user = true;
+  }
+
+  return db[resource].updateForm(params);
+}
+
 async function seed() {
   const response = await db.seed();
   return response;
@@ -109,7 +118,8 @@ const operations = {
   updateInputs,
   onboardDaac,
   offboardDaac,
-  createForm
+  createForm,
+  updateForm
 };
 
 async function handler(event) {
