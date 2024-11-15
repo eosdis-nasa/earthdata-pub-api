@@ -34,8 +34,8 @@ UPDATE form
 SET
   short_name = '${params.short_name}',
   version = ${params.version},
-  long_name = '${params.long_name}'
-  description = '${params.description}'
+  long_name = '${params.long_name}',
+  description = '${params.description}',
   daac_only = '${params.daac_only}'
 WHERE short_name = '${params.original_shortname}' AND version = ${params.original_version}
 RETURNING *;
