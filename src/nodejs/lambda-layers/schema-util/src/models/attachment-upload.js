@@ -2,8 +2,8 @@ module.exports.model = (path) => ({
     description: 'Request body sent to attachment upload',
     type: 'object',
     properties: {
-        submission_id: {
-            description: 'UUID of the Submission the file will be associated with',
+        conversation_id: {
+            description: 'UUID of the conversation the file will be associated with',
             $ref: `#${path}UUID`
         },
         file_name: {
