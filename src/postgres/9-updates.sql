@@ -110,4 +110,4 @@ CREATE TABLE IF NOT EXISTS code (
 );
 
 -- 11/15/24 Add attachments column to notes and add default
-ALTER TABLE notes ADD attachments VARCHAR[] DEFAULT '{}';
+ALTER TABLE note ADD attachments VARCHAR[] DEFAULT '{}';
