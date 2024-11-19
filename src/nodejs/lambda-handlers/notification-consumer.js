@@ -73,7 +73,7 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
   await msg.sendEmail(users, emailPayload);
 }
 
-async function moveDraftAttachments(conversationId, attachmentNames, userId, noteId) {
+async function moveDraftAttachments({conversationId, attachmentNames, userId, noteId}) {
   const draftPrefix = `drafts/${conversationId}/${userId}`;
   const s3Client = new S3Client({
     region
@@ -118,7 +118,7 @@ async function processRecord(record) {
       if (process.env.AWS_EXECUTION_ENV && message.attachments) {
         const attachments = await moveDraftAttachments({
           conversationId: message.conversation_id,
-          attachmentNames: eventMessage.data.attachments,
+          attachmentNames: message.attachments,
           userId: eventMessage.data.user_id,
           noteId: note.id
         });

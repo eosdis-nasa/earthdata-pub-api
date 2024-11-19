@@ -50,12 +50,10 @@ const getTemplate = async (message) => {
     template.conversation_id = template.conversation_id || message.conversation_id;
     if (message.event_type !== 'request_initialized') {
       template.text = `${template.text}`;
-      // template.attachments = message.data.attachments;
       if (message.step_message) {
         template.text += `\n${message.step_message}`;
       }
     }
-    console.log('template at end of getTemplate', template);
     return template;
   }
   return false;
