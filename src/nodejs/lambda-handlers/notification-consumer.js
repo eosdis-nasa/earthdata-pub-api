@@ -122,6 +122,7 @@ async function processRecord(record) {
           userId: eventMessage.data.user_id,
           noteId: note.id
         });
+        await db.note.addAttachments({noteId: note.id, attachments});
       }
       if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
         const emailPayload = eventMessage.emailPayloadProvided ? eventMessage

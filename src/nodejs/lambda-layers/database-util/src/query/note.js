@@ -134,7 +134,8 @@ const refs = {
               ['text', 'note_visibility.text'],
               ['sent', 'note_visibility.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}],
+              ['attachments', 'note_visibility.attachments']
             ]
           },
           sort: 'note_visibility.created_at',
@@ -238,7 +239,8 @@ const refs = {
               ['text', 'note_visibility.text'],
               ['sent', 'note_visibility.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}],
+              ['attachments', 'note_visibility.attachments']
             ]
           },
           sort: 'note_visibility.created_at',
@@ -341,7 +343,8 @@ const refs = {
               ['text', 'note_visibility.text'],
               ['sent', 'note_visibility.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}],
+              ['attachments', 'note_visibility.attachments']
             ]
           },
           sort: 'note_visibility.created_at',
@@ -390,7 +393,8 @@ const refs = {
               ['text', 'note_visibility.text'],
               ['sent', 'note_visibility.created_at'],
               ['from', { type: 'json_obj', keys: [['id', 'edpuser.id'], ['name', 'edpuser.name'], ['email', 'edpuser.email']] }],
-              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}]
+              ['viewers', { type: 'json_obj', keys: [['users', 'note_visibility.user_names'], ['roles', 'note_visibility.role_names']]}],
+              ['attachments', 'note_visibility.attachments']
             ]
           },
           sort: 'note_visibility.created_at',
@@ -743,6 +747,13 @@ SET edprole_ids = array_remove(edprole_ids, '${viewerRole}')
 WHERE note_id  = '${noteId}'
 RETURNING *`;
 
+const addAttachments = ({noteId, attachments}) => `
+UPDATE note
+SET attachments = '{${attachments.join(", ")}}'
+WHERE id = ${noteId}
+RETURNING *
+`;
+
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
@@ -759,3 +770,4 @@ module.exports.addViewers = addViewers;
 module.exports.removeViewer = removeViewer;
 module.exports.addViewerRoles = addViewerRoles;
 module.exports.removeViewerRole = removeViewerRole;
+module.exports.addAttachments = addAttachments;
