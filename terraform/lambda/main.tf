@@ -442,6 +442,7 @@ resource "aws_lambda_function" "notification_consumer" {
   environment {
     variables = {
       REGION                = var.region
+      INGEST_BUCKET         = var.edpub_upload_s3_bucket
       EMAIL_SNS             = var.edpub_email_sns_arn
       EVENT_SNS             = var.edpub_event_sns_arn
       METRICS_SNS           = var.edpub_metrics_sns_arn
