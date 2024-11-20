@@ -8,7 +8,7 @@
 
 const db = require('database-util');
 
-const formEditPerms = { privilege: ['ADMIN', 'FORM_UPDATE'] };
+const formEditPerms = { privilege: ['ADMIN', 'FORM_UPDATE', 'FORM_CREATE'] };
 
 async function hasPerms(uid, perms) {
   const userInfo = await db.user.findById({ id: uid });
@@ -26,8 +26,17 @@ async function editSection({ params, context }) {
   return { error: 'Not Authorized' };
 }
 
+async function addSection({ params, context }) {
+  if (hasPerms(context.user_id, formEditPerms)) {
+    const response = await db.section.createSection(params);
+    return response;
+  }
+  return { error: 'Not Authorized' };
+}
+
 const operations = {
-  editSection
+  editSection,
+  addSection
 };
 
 async function handler(event) {

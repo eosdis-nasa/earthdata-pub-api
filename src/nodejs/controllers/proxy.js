@@ -1274,3 +1274,17 @@ module.exports.editSection = function editSection(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 }
+
+module.exports.addSection = function addSection(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'addSection',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+
+  handlers.form(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
+
