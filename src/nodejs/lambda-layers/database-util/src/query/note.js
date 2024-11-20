@@ -750,7 +750,7 @@ RETURNING *`;
 const addAttachments = ({noteId, attachments}) => `
 UPDATE note
 SET attachments = '{${attachments.join(", ")}}'
-WHERE id = ${noteId}
+WHERE id = '${noteId}'
 RETURNING *
 `;
 

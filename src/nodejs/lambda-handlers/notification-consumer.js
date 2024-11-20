@@ -87,7 +87,7 @@ async function moveDraftAttachments({conversationId, attachmentNames, userId, no
         Key: `attachments/${noteId}/${attachmentName}`
       });
       await s3Client.send(copyCommand);
-      attachments.push({name: attachmentName, key: `attachments/${noteId}/${attachmentName}`})
+      attachments.push(attachmentName);
       const deleteCommand = new DeleteObjectCommand({
         Bucket: ingestBucket,
         Key: `${draftPrefix}/${attachmentName}`
