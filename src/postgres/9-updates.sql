@@ -109,5 +109,12 @@ CREATE TABLE IF NOT EXISTS code (
   UNIQUE (submission_id, daac_id)
 );
 
+-- 10/28/24 EDPUB-1391: Create API Endpoint for adding a form
+DELETE FROM edprole_privilege
+WHERE privilege = 'FORM_CREATE' AND edprole_id IN ('a5b4947a-67d2-434e-9889-59c2fad39676', '804b335c-f191-4d26-9b98-1ec1cb62b97d');
+
+-- The FORM_CREATE privilege should only be assigned to DAAC Data Managers.
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'FORM_CREATE');
+
 -- 11/15/24 Add attachments column to notes and add default
 ALTER TABLE note ADD attachments VARCHAR[] DEFAULT '{}';

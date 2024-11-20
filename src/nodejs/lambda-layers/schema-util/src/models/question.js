@@ -3,48 +3,21 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
+    short_name: { type: 'string' },
     version: { type: 'number' },
-    question_name: { type: 'string' },
-    title: { type: 'string' },
+    long_name: { type: 'string'},
     text: { type: 'string' },
     help: { type: 'string' },
-    inputs: {
+    required: { type: 'boolean' },
+    created_at: { type: 'string'},
+    daac_ids: {
       type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          type: { type: 'string' },
-          id: { type: 'string' },
-          label: { type: 'string' },
-          required: { type: 'boolean' },
-          required_if: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                field: { type: 'string' },
-                value: { type: 'string' },
-                message: { type: 'string' }
-              }
-            }
-          },
-          show_if: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                field: { type: 'string' },
-                value: { type: 'string' },
-                message: { type: 'string' }
-              }
-            }
-          },
-          attributes: { type: 'object' },
-          enums: { type: 'array' }
+        items: {
+          $ref: `#${path}UUID`
         }
-      }
     }
   }
+
 });
 
 module.exports.refs = ['UUID'];
