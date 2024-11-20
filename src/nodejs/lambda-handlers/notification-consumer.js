@@ -79,7 +79,7 @@ async function moveDraftAttachments({conversationId, attachmentNames, userId, no
     region
   });
   const attachments = []
-  attachmentNames.forEach(async(attachmentName) => {
+  await Promise.all(attachmentNames.map(async(attachmentName) => {
     try {
       const copyCommand = new CopyObjectCommand({
         CopySource: `${ingestBucket}/${draftPrefix}/${attachmentName}`,
@@ -97,7 +97,7 @@ async function moveDraftAttachments({conversationId, attachmentNames, userId, no
       console.log(`Failed to move object: ${attachmentName}`)
       console.log(error)
     }
-  });
+  }));
   return attachments;
 }
 
@@ -119,7 +119,7 @@ async function processRecord(record) {
         const attachments = await moveDraftAttachments({
           conversationId: message.conversation_id,
           attachmentNames: message.attachments,
-          userId: eventMessage.data.user_id,
+          userId: message.user_id,
           noteId: note.id
         });
         await db.note.addAttachments({noteId: note.id, attachments});
