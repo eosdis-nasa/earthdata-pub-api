@@ -73,13 +73,15 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
   await msg.sendEmail(users, emailPayload);
 }
 
-async function moveDraftAttachments({conversationId, attachmentNames, userId, noteId}) {
+async function moveDraftAttachments({
+  conversationId, attachmentNames, userId, noteId
+}) {
   const draftPrefix = `drafts/${conversationId}/${userId}`;
   const s3Client = new S3Client({
     region
   });
-  const attachments = []
-  await Promise.all(attachmentNames.map(async(attachmentName) => {
+  const attachments = [];
+  await Promise.all(attachmentNames.map(async (attachmentName) => {
     try {
       const copyCommand = new CopyObjectCommand({
         CopySource: `${ingestBucket}/${draftPrefix}/${attachmentName}`,
@@ -94,8 +96,8 @@ async function moveDraftAttachments({conversationId, attachmentNames, userId, no
       });
       await s3Client.send(deleteCommand);
     } catch (error) {
-      console.log(`Failed to move object: ${attachmentName}`)
-      console.log(error)
+      // eslint-disable-next-line
+      console.log(`Failed to move object: ${attachmentName}\n${error}`);
     }
   }));
   return attachments;
@@ -122,7 +124,7 @@ async function processRecord(record) {
           userId: message.user_id,
           noteId: note.id
         });
-        await db.note.addAttachments({noteId: note.id, attachments});
+        await db.note.addAttachments({ noteId: note.id, attachments });
       }
       if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
         const emailPayload = eventMessage.emailPayloadProvided ? eventMessage
