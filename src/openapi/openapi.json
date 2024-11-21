@@ -12985,7 +12985,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "{\"operation\":\"editSection\"}"
+            "application/json": "{\"operation\":\"editSection\",\"params\": $input.json(\"$\")},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
