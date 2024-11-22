@@ -96,19 +96,6 @@ module.exports.formPut = function formPut(req, res, next) {
   });
 };
 
-module.exports.updateForm = function updateForm(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'form',
-    operation: 'updateForm',
-    params: params.payload.value,
-    context:  { user_id: req.user_id }
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.formFindAll = function formFindAll(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
