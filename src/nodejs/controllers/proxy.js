@@ -1288,3 +1288,35 @@ module.exports.addSection = function addSection(req, res, next) {
   });
 }
 
+module.exports.sectionFindAll = function sectionFindAll(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'section',
+    operation: 'findAll',
+    params: {
+      query: {
+        sort: params.sort.value,
+        order: params.order.value,
+        per_page: params.per_page.value,
+        page: params.page.value
+      }
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.sectionFindById = function sectionFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'section',
+    operation: 'findById',
+    params: { id: params.id.value },
+    context: { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
