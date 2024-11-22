@@ -116,3 +116,15 @@ WHERE privilege = 'FORM_CREATE' AND edprole_id IN ('a5b4947a-67d2-434e-9889-59c2
 
 -- The FORM_CREATE privilege should only be assigned to DAAC Data Managers.
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'FORM_CREATE');
+
+-- EDPUB-1412: Remove Confirmation Form from ASDC Workflow
+DELETE FROM step_edge
+WHERE workflow_id = 'a8d22c43-7814-4609-ac04-66fb50228bf7'
+  AND step_name = 'confirmation_form'
+  AND next_step_name = 'email_asdc_staff';
+
+UPDATE step_edge
+SET next_step_name = 'email_asdc_staff'
+WHERE workflow_id = 'a8d22c43-7814-4609-ac04-66fb50228bf7'
+  AND step_name = 'data_publication_request_form_review'
+  AND next_step_name = 'confirmation_form';
