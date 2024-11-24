@@ -125,7 +125,7 @@ resource "aws_lambda_permission" "data" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.data.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
 }
 
 # Form Lambda
@@ -166,7 +166,7 @@ resource "aws_lambda_permission" "form" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.form.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
 }
 
 # Inbound Consumer Lambda
@@ -1065,7 +1065,7 @@ resource "aws_lambda_permission" "questions" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.questions.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
 }
 
 resource "aws_lambda_function" "file_upload" {
