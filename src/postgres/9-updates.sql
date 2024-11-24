@@ -50,9 +50,86 @@ RAISE;
 --ALTER TABLE edpuser
 --ADD CONSTRAINT email_unique UNIQUE (email);
 
--- 8/19/24 Remove confirmation form from ASDC workflow
-UPDATE step_edge SET next_step_name='email_asdc_staff' WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='data_publication_request_form_review';
-DELETE FROM step_edge WHERE step_name='confirmation_form' AND worflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7';
+-- 08/30/24 updates form table to include daac_only column for limiting a forms visability
+ALTER TABLE form ADD daac_only BOOLEAN DEFAULT False;
+
+-- 09/3/24 removes DAAC_READ priviledge from Data Producer
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='DAAC_READ';
+
+-- 09/13/24 additions for showcasing daac_only forms in the ornl test workflow
+INSERT INTO form(id, short_name, version, long_name, description, daac_only) VALUES ('3f77385f-7087-4d22-81c1-5c29b95d3295', 'ornl_submission', 1, 'ORNL Submission Form', 'This form is used by ORNL DAAC staff to enter pieces of information needed by the DAAC that the Data Provider will not have when submitting the Data Accession Request Form', true);
+DELETE  FROM step_edge WHERE workflow_id = '0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce';
+INSERT INTO section VALUES ('b1a965c8-9b35-40b7-83e5-a2acf3dde04c', '3f77385f-7087-4d22-81c1-5c29b95d3295', 'Submission Information', 0, '[]', '[]', NULL);
+INSERT INTO question VALUES ('2a7c2760-acf2-498f-b63b-cae25ee0c71d', 'md_entry_id', 1, 'MD Entry ID', '', '');
+INSERT INTO input VALUES ('2a7c2760-acf2-498f-b63b-cae25ee0c71d', 'md_entry_id', 0, '', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO section_question VALUES ('b1a965c8-9b35-40b7-83e5-a2acf3dde04c', '2a7c2760-acf2-498f-b63b-cae25ee0c71d', 0, '[]', '[]');
+INSERT INTO step(step_id, step_name, type, form_id) VALUES ('37e41513-4c2c-49eb-9bb9-b7429a9de2d6', 'submission_form', 'form', '3f77385f-7087-4d22-81c1-5c29b95d3295');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'init', 'ornl_service_trigger');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_service_trigger', 'data_accession_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_accession_request_form', 'push_to_ornl_database_f1');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'push_to_ornl_database_f1', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form', 'submission_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'submission_form', 'email_daac_staff');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'email_daac_staff', 'close');
+
+
+-- 09/30/24 EDPUB-1384 Create Add Step API Endpoint
+DELETE FROM edprole_privilege
+WHERE edprole_id = 'a5b4947a-67d2-434e-9889-59c2fad39676'
+AND privilege = 'WORKFLOW_CREATE';
+
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'WORKFLOW_CREATE');
+
+-- 10/15/24 EDPUB-1382 Update DAAC Observer Role
+UPDATE edprole 
+SET long_name = 'Observer'
+WHERE id = '4be6ca4d-6362-478b-8478-487a668314b1';
+
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_DAACREAD');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_REVIEW');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_REASSIGN');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_LOCK');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_REMOVEUSER');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'DAAC_READ');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'METRICS_READ');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_NEW');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_REPLY');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'NOTE_REMOVEUSER');
+
+-- 10/22/24 Add table for code generation
+CREATE TABLE IF NOT EXISTS code (
+  code UUID DEFAULT UUID_GENERATE_V4(),
+  submission_id UUID NOT NULL,
+  daac_id UUID NOT NULL,
+  PRIMARY KEY (code),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (daac_id) REFERENCES daac (id),
+  UNIQUE (submission_id, daac_id)
+);
+
+
+-- 10/28/24 EDPUB-1391: Create API Endpoint for adding a form
+DELETE FROM edprole_privilege
+WHERE privilege = 'FORM_CREATE' AND edprole_id IN ('a5b4947a-67d2-434e-9889-59c2fad39676', '804b335c-f191-4d26-9b98-1ec1cb62b97d');
+
+-- The FORM_CREATE privilege should only be assigned to DAAC Data Managers.
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'FORM_CREATE');
+
+-- EDPUB-1412: Remove Confirmation Form from ASDC Workflow
+DELETE FROM step_edge
+WHERE workflow_id = 'a8d22c43-7814-4609-ac04-66fb50228bf7'
+  AND step_name = 'confirmation_form'
+  AND next_step_name = 'email_asdc_staff';
+
+UPDATE step_edge
+SET next_step_name = 'email_asdc_staff'
+WHERE workflow_id = 'a8d22c43-7814-4609-ac04-66fb50228bf7'
+  AND step_name = 'data_publication_request_form_review'
+  AND next_step_name = 'confirmation_form';
+
+-- 11/24/24 Remove confirmation form from repo
 DELETE FROM step WHERE step_name='confirmation_form';
 DELETE FROM input WHERE question_id='0be3cdbd-da86-4879-bf94-e6a07de7cfe1' AND control_id='collection_short_name';
 DELETE FROM input WHERE question_id='38cdfe14-6861-4ada-bd70-0545f65eeb03' AND control_id='collection_version';

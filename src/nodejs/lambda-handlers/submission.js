@@ -123,9 +123,7 @@ async function saveMethod(event) {
   const { id } = event;
   const { data_product_name_value: dataProduct, data_producer_info_name: dataProducer } = data;
   await db.submission.updateFormData({ id, form_id: formId, data: JSON.stringify(data) });
-  if (dataProduct && dataProducer) {
-    await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
-  }
+  await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
   await db.submission.updateMetadata({ id, metadata: JSON.stringify(await mapEDPubToUmmc(data)) });
   const status = await db.submission.getState({ id });
   if (daacId && daacId !== status.daac_id) {
@@ -316,7 +314,13 @@ async function copySubmissionMethod(event, user) {
 
 async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-vars
   const { params: { id } } = event;
-  return db.submission.getSubmissionDetailsById({ id });
+  let privilegedUser = false;
+  const approvedUserPrivileges = ['ADMIN', 'DAAC_READ'];
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    privilegedUser = true;
+  }
+
+  return db.submission.getSubmissionDetailsById({ id, privilegedUser });
 }
 
 async function mapMetadataMethod(event, user) {
@@ -347,6 +351,15 @@ async function createStepReviewApprovalMethod(event, user) {
       submitted_by: user.id
     });
     await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
+    const eventMessage = {
+      event_type: 'review_required',
+      formId: formData?.length > 0 ? formData[0].form_id : '',
+      userIds,
+      submissionId,
+      // Have to use string here because SNS doesn't support boolean type
+      emailPayloadProvided: 'true'
+    };
+    await msg.sendEvent(eventMessage);
     return formData;
   }
   return { error: 'Not Authorized' };
@@ -371,10 +384,26 @@ async function deleteStepReviewApprovalMethod(event, user) {
       user_ids: userIds
     });
     // Only accepts 1 at time; however, this isn't an issue for the current dashboard implementation
-    await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
+    if (formData[0].initiator !== userIds[0]) {
+      await removeContributorMethod({ id: submissionId, contributor_id: userIds[0] }, user);
+    }
     return formData;
   }
   return { error: 'Not Authorized' };
+}
+
+async function validateCodeMethod(event) {
+  const { code } = event.params;
+
+  const codeData = await db.submission.checkCode({ code });
+  const validationResponse = { isValid: false };
+
+  // If we get anything but the expected return of daac_id and submission_id the validation failed
+  if (codeData.daac_id) {
+    validationResponse.isValid = true;
+  }
+
+  return validationResponse;
 }
 
 const operations = {
@@ -399,7 +428,8 @@ const operations = {
   mapMetadata: mapMetadataMethod,
   createStepReviewApproval: createStepReviewApprovalMethod,
   getStepReviewApproval: getStepReviewApprovalMethod,
-  deleteStepReviewApproval: deleteStepReviewApprovalMethod
+  deleteStepReviewApproval: deleteStepReviewApprovalMethod,
+  validateCode: validateCodeMethod
 };
 
 async function handler(event) {

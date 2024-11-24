@@ -2,13 +2,14 @@ const sql = require('./sql-builder.js');
 const section = require('./section.js');
 
 const table = 'form';
-const allFields = ['id', 'short_name', 'version', 'long_name', 'description', 'created_at', 'sections'];
+const allFields = ['id', 'short_name', 'version', 'long_name', 'description', 'daac_only', 'created_at', 'sections'];
 const fieldMap = {
   id: 'form.id',
   short_name: 'form.short_name',
   version: 'form.version',
   long_name: 'form.long_name',
   description: 'form.description',
+  daac_only: 'form.daac_only',
   created_at: 'form.created_at',
   sections: 'sections'
 };
@@ -22,10 +23,16 @@ const refs = {
 
 const fields = (list) => list.map((field) => fieldMap[field]);
 
+const createForm = (params) => `
+INSERT INTO form (short_name, version, long_name${params.description ? ', description' : ''}${params.daac_only ? ', daac_only' : ''})
+VALUES ('${params.short_name}', ${params.version}, '${params.long_name}'${params.description ? `, '${params.description}'` : ''}${params.daac_only ? `, ${params.daac_only}` : ''})
+RETURNING *;
+`;
+
 const findAll = ({
-  short_name, version, long_name, created_after, created_before, order, sort, per_page, page
+  short_name, version, long_name, created_after, created_before, privileged_user, order, sort, per_page, page
 }) => sql.select({
-  fields: fields(['id', 'short_name', 'version', 'long_name', 'description', 'created_at']),
+  fields: fields(['id', 'short_name', 'version', 'long_name', 'description', 'daac_only', 'created_at']),
   from: {
     base: table
   },
@@ -35,7 +42,8 @@ const findAll = ({
       ...(version ? [{ field: 'form.version', param: 'version' }] : []),
       ...(long_name ? [{ field: 'form.long_name', like: 'long_name' }] : []),
       ...(created_after ? [{ field: 'form.created_at', op: 'gte', param: 'created_after' }] : []),
-      ...(created_before ? [{ field: 'form.created_at', op: 'lte', param: 'created_before' }] : [])
+      ...(created_before ? [{ field: 'form.created_at', op: 'lte', param: 'created_before' }] : []),
+      ...(privileged_user ? [] : [{ field: 'form.daac_only',  op: 'eq', value: "FALSE" }])
     ]
   },
   ...(sort ? { sort } : {}),
@@ -51,10 +59,14 @@ const findById = (params) => sql.select({
     joins: [refs.section]
   },
   where: {
-    filters: [{ field: 'form.id', param: 'id' }]
+    filters: [
+      { field: 'form.id', param: 'id' },
+      ...(params.privileged_user ? [] : [{ field: 'form.daac_only',  op: 'eq', value: "FALSE" }])
+    ]
   }
 });
 
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
+module.exports.createForm = createForm;

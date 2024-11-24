@@ -102,12 +102,15 @@ DROP TABLE IF EXISTS page CASCADE;
 
 DROP TABLE IF EXISTS step_review CASCADE;
 
+DROP TABLE IF EXISTS code CASCADE;
+
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
   short_name VARCHAR NOT NULL,
   version SMALLINT,
   long_name VARCHAR NOT NULL,
   description VARCHAR,
+  daac_only BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   PRIMARY KEY (id),
   UNIQUE (short_name, version)
@@ -625,4 +628,14 @@ CREATE TABLE IF NOT EXISTS note_scope (
   edprole_ids UUID[],
   PRIMARY KEY (note_id),
   FOREIGN KEY (note_id) REFERENCES note (id)
+);
+
+CREATE TABLE IF NOT EXISTS code (
+  code UUID DEFAULT UUID_GENERATE_V4(),
+  submission_id UUID NOT NULL,
+  daac_id UUID NOT NULL,
+  PRIMARY KEY (code),
+  FOREIGN KEY (submission_id) REFERENCES submission (id),
+  FOREIGN KEY (daac_id) REFERENCES daac (id),
+  UNIQUE (submission_id, daac_id)
 );

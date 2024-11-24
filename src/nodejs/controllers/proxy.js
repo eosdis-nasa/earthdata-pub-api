@@ -84,8 +84,16 @@ module.exports.formFindById = function formFindById(req, res, next) {
 };
 
 module.exports.formPut = function formPut(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'form',
+    operation: 'createForm',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
 };
 
 module.exports.formFindAll = function formFindAll(req, res, next) {
@@ -369,6 +377,19 @@ module.exports.getSubmissionDetailsById = function getSubmissionDetailsById(req,
     operation: 'getDetails',
     context: { user_id: req.user_id },
     params: { id: params.id.value }
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.validateCode = function validateCode(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'submission',
+    operation: 'validateCode',
+    context: { user_id: req.user_id },
+    params: { code: params.code.value }
   };
   handlers.submission(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
@@ -1162,6 +1183,33 @@ module.exports.offboardDaac = function offboardDaac(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 };
+
+module.exports.createStep = function createStep(req, res, next){
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'workflow',
+    operation: 'createStep',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
+
+module.exports.editStep = function editStep(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'workflow',
+    operation: 'createStep',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  lambdaEvent.params.step_id = params.step_id.value;
+  handlers.workflow(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
 
 module.exports.createStepReviewApproval = function createStepReviewApproval(req, res, next) {
   const { params } = req.swagger;

@@ -1,6 +1,6 @@
 {
   "name": "earthdata-pub-api",
-  "version": "1.0.20",
+  "version": "1.1.0",
   "description": "Collection of lambda functions and layers for Earthdata Pub",
   "scripts": {
     "clean-modules": "rm -rf package-lock.json node_modules/ src/*/package-lock.json src/*/node_modules/",
