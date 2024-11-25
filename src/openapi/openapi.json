@@ -2573,7 +2573,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"inputFindAll\",\"params\":{\"id\": \"$req.path.get('id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"inputFindAll\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -2645,7 +2645,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "{\"resource\":\"question\",\"operation\":\"createInput\",\"params\":{\"payload\": $input.json(\"$\")},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "{\"resource\":\"question\",\"operation\":\"createInput\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
@@ -2855,7 +2855,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"createInput\",\"params\":{\"inputs\": $input.json(\"$\")\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"updateInput\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {
