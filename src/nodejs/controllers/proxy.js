@@ -96,19 +96,6 @@ module.exports.formPut = function formPut(req, res, next) {
   });
 };
 
-module.exports.updateForm = function updateForm(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'form',
-    operation: 'updateForm',
-    params: params.payload.value,
-    context:  { user_id: req.user_id }
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.formFindAll = function formFindAll(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -299,6 +286,62 @@ module.exports.questionInputUpdate = function questionInputUpdate(req, res, next
       questionId: params.id.value,
       inputs: params.payload.value
     },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
+module.exports.inputFindById = function inputFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'inputFindById',
+    params: { id: params.id.value, control_id: params.controlId.value },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.inputFindAll = function inputFindAll(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'inputFindAll',
+    params: {
+      query: {  
+      }
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+
+module.exports.createInput = function createInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'createInput',
+    params: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
+module.exports.updateInput = function updateInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'updateInput',
+    params: params.payload.value,
     context: { user_id: req.user_id }
   };
   handlers.questions(lambdaEvent).then((body) => {
@@ -1280,5 +1323,18 @@ module.exports.associateMfa = function associateMfa(req, res, next) {
 module.exports.verifyMfa = function verifyMfa(req, res, next) {
   res.send({
     message: 'Local placeholder for verify MFA function.'
+  });
+}
+
+module.exports.editSection = function editSection(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'editSection',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  lambdaEvent.params.id = params.id.value;
+  handlers.form(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
   });
 }

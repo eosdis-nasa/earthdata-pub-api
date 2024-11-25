@@ -8,6 +8,8 @@ const db = require('database-util');
 
 const editPerms = { privilege: ['ADMIN', 'FORM_CREATE'] };
 const readPerms = { privilege: ['ADMIN', 'QUESTION_READ'] };
+const inputCreatePerms = { privilege: ['ADMIN', 'FORM_CREATE'] };
+const inputUpdatePerms = { privilege: ['ADMIN', 'FORM_UPDATE'] };
 
 async function hasPerms(uid, perms) {
   const userInfo = await db.user.findById({ id: uid });
@@ -66,13 +68,61 @@ async function updateInputsMethod({ params, context }) {
   return {};
 }
 
+async function createInputMethod({ params, context }) {
+  if (await hasPerms(context.user_id, inputCreatePerms)) {
+    return db.question.createOneInput(
+      {
+        input: params
+      }
+    );
+  }
+  return {};
+}
+
+async function updateInputMethod({ params, context }) {
+  if (await hasPerms(context.user_id, inputUpdatePerms)) {
+    return db.question.updateOneInput(
+      {
+        input: params
+      }
+    );
+  }
+  return {};
+}
+
+async function inputFindByIdMethod({ params, context }) {
+  if (await hasPerms(context.user_id, inputCreatePerms)) {
+    return db.question.inputFindById(
+      {
+        input: params
+      }
+    );
+  }
+  return {};
+}
+
+async function inputFindAllMethod({ params, context }) {
+  if (await hasPerms(context.user_id, inputCreatePerms)) {
+    return db.question.inputFindAll(
+      {
+        input: params
+      }
+    );
+  }
+  return {};
+}
+
 const operations = {
   findAll: findAllMethod,
   findByName: findByNameMethod,
   findById: findByIdMethod,
   updateInputs: updateInputsMethod,
   add: addMethod,
-  update: updateMethod
+  update: updateMethod,
+  createInput: createInputMethod,
+  updateInput: updateInputMethod,
+  inputFindById: inputFindByIdMethod,
+  inputFindAll: inputFindAllMethod
 };
 
 async function handler(event) {

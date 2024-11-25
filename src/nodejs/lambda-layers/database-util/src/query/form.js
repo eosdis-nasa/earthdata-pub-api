@@ -83,4 +83,3 @@ const findById = (params) => sql.select({
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.createForm = createForm;
-module.exports.updateForm = updateForm;
