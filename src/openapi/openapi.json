@@ -13552,7 +13552,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "{\"operation\":\"addSection\",\"params\":{\"payload\": $input.json(\"$\")},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+            "application/json": "{\"operation\":\"addSection\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
 
           },
           "responses": {
