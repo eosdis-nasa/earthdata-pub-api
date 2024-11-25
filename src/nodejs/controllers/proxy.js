@@ -293,6 +293,62 @@ module.exports.questionInputUpdate = function questionInputUpdate(req, res, next
   });
 };
 
+module.exports.inputFindById = function inputFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'inputFindById',
+    params: { id: params.id.value, control_id: params.controlId.value },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.inputFindAll = function inputFindAll(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'inputFindAll',
+    params: {
+      query: {  
+      }
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+
+module.exports.createInput = function createInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'createInput',
+    params: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
+module.exports.updateInput = function updateInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'updateInput',
+    params: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
 module.exports.serviceFindById = function serviceFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
