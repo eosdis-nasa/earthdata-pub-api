@@ -30,6 +30,7 @@ install_lambda action-consumer
 install_lambda api-proxy
 install_lambda auth
 install_lambda data
+install_lambda form
 install_lambda inbound-consumer
 install_lambda invoke
 install_lambda metrics
