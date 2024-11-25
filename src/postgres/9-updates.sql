@@ -137,4 +137,5 @@ DELETE FROM section_question WHERE section_id='933da7a8-4db6-4b7b-b128-d815fe151
 DELETE FROM question WHERE id='0be3cdbd-da86-4879-bf94-e6a07de7cfe1';
 DELETE FROM question WHERE id='38cdfe14-6861-4ada-bd70-0545f65eeb03';
 DELETE FROM section WHERE id='933da7a8-4db6-4b7b-b128-d815fe151d29';
+DELETE FROM submission_form_data WHERE form_id = 'de7e5c40-584a-493b-919d-8f7f3f1e9e3c';
 DELETE FROM form WHERE id='de7e5c40-584a-493b-919d-8f7f3f1e9e3c';
