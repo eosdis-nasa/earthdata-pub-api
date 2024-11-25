@@ -144,9 +144,9 @@ INSERT INTO input VALUES ('8c331721-541c-45a4-b95a-4b9b4557eae2', 'data_service_
 
 -- SectionQuestion(section_id, question_id, list_order, required_if, show_if))
 INSERT INTO section_question VALUES ('e169a5b4-da2e-4893-9481-1b9351cd9707', 'e67b0087-9102-476f-846b-8bc22d16bcc0', 3, '[]', '[]');
-INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '1509d216-d3c5-437a-83f6-3a56a3403851', 6, '[]', '[]');
-INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '068afe4e-228a-4170-aea8-0475d8b10d5e', 7, '[]', '[]');
-INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '225a1c2a-e4e5-4264-902d-ba55f56ac7db', 8, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '1509d216-d3c5-437a-83f6-3a56a3403851', 7, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '068afe4e-228a-4170-aea8-0475d8b10d5e', 8, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '225a1c2a-e4e5-4264-902d-ba55f56ac7db', 9, '[]', '[]');
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'e0018b76-fef9-42c9-84d0-b74131523646', 11, '[]', '[]');
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'a6787163-f214-49e8-a4eb-32da45ac21d7', 12, '[]', '[]');
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '5ab48392-c0fd-4285-8550-368f9df60092', 13, '[]', '[]');
@@ -189,6 +189,7 @@ INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'c3
 INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '8a364184-42ac-48fe-b831-acb2eb08c729', 3, '[]', '[]');
 INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'd3c4f81e-1954-4b6f-9edf-90f240f525a8', 4, '[]', '[]');
 INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 5, '[]', '[]');
+INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 6, '[]', '[]');
 INSERT INTO section_question VALUES ('f1fbc110-a6d0-4830-8a34-85992e693fda', '4f2dd369-d865-47ba-8504-8694493f129f', 0, '[]', '[]');
 INSERT INTO section_question VALUES ('f1fbc110-a6d0-4830-8a34-85992e693fda', 'dbf70495-433a-439e-8173-0cb20f972c16', 1, '[]', '[]');
 INSERT INTO section_question VALUES ('f1fbc110-a6d0-4830-8a34-85992e693fda', '4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 2, '[]', '[{"field":"data_product_status","value":"Yes"}]');
