@@ -186,8 +186,8 @@ const updateOneInput = () => `
     show_if = {{input.show_if}}::JSONB,
     required = {{input.required}}
   WHERE 
-    question_id = {{input.id}}
-    AND control_id = {{input.control_id}}
+    question_id = {{input.old_question_id}}
+    AND control_id = {{input.old_control_id}}
   RETURNING *;
 `;
 
