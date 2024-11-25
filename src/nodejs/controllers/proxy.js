@@ -83,7 +83,7 @@ module.exports.formFindById = function formFindById(req, res, next) {
   });
 };
 
-module.exports.formPut = function formPut(req, res, next) {
+module.exports.createForm = function createForm(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'form',
