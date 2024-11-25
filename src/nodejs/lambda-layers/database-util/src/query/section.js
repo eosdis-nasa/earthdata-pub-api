@@ -54,6 +54,9 @@ const formJoin = () => sql.select({
   alias: 'section_agg'
 });
 
+const findAll = () => 'SELECT section.* FROM section';
+const findById = () => `${findAll()} WHERE section.id = {{id}}`;
+
 const createSection = (params) => sql.insert({
   ...{
     table: `section (${params.id ? 'id,': ''} form_id, heading, list_order${params.required_if ? ', required_if' : ''}${params.show_if ? ', show_if' : ''}${params.daac_id ? ', daac_id' : ''})`,
@@ -82,3 +85,5 @@ const createSection = (params) => sql.insert({
 
 module.exports.formJoin = formJoin;
 module.exports.createSection = createSection;
+module.exports.findAll = findAll;
+module.exports.findById = findById;

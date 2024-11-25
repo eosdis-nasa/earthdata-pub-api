@@ -17,7 +17,15 @@ async function hasPerms(uid, perms) {
 }
 
 async function editSection({ params, context }) {
-  if (hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
+  if (await hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
+    const response = await db.section.createSection(params);
+    return response;
+  }
+  return { error: 'Not Authorized' };
+}
+
+async function addSection({ params, context }) {
+  if (await hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
     const response = await db.section.createSection(params);
     return response;
   }
@@ -25,14 +33,14 @@ async function editSection({ params, context }) {
 }
 
 async function createForm({ params, context }) {
-  if (hasPerms(context.user_id, ['ADMIN', 'FORM_CREATE'])) {
+  if (await hasPerms(context.user_id, ['ADMIN', 'FORM_CREATE'])) {
     params.privileged_user = true;
   }
   return db.form.createForm(params);
 }
 
 async function updateForm({ params, context }) {
-  if (hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
+  if (await hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
     params.privileged_user = true;
   }
   return db.form.updateForm(params);
@@ -40,14 +48,14 @@ async function updateForm({ params, context }) {
 
 async function formFindById({ params, form_id: formId, context }) {
   params.id = formId;
-  if (hasPerms(context.user_id, ['ADMIN', 'DAAC_READ'])) {
+  if (await hasPerms(context.user_id, ['ADMIN', 'DAAC_READ'])) {
     params.privileged_user = true;
   }
   return db.form.findById(params);
 }
 
 async function formFindAll({ params, context }) {
-  if (hasPerms(context.user_id, ['ADMIN', 'DAAC_READ'])) {
+  if (await hasPerms(context.user_id, ['ADMIN', 'DAAC_READ'])) {
     params.privileged_user = true;
   }
   return db.form.findAll(params);
@@ -55,6 +63,7 @@ async function formFindAll({ params, context }) {
 
 const operations = {
   editSection,
+  addSection,
   createForm,
   updateForm,
   formFindById,
