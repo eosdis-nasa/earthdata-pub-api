@@ -31,23 +31,23 @@ async function createForm({ params, context }) {
   return db.question.createForm(params);
 }
 
-async function updateForm({params, form_id: formId, context}) {
+async function updateForm({ params, form_id: formId, context }) {
+  params.id = formId;
   if (hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
     params.privileged_user = true;
   }
   return db.question.updateForm(params);
 }
 
-async function formFindById({params, form_id: formId, context}) {
-  if (formId) params.id = formId;
-
+async function formFindById({ params, form_id: formId, context }) {
+  params.id = formId;
   if (hasPerms(context.user_id, ['ADMIN', 'DAAC_READ'])) {
     params.privileged_user = true;
   }
   return db.form.findById(params);
 }
 
-async function formFindAll({params, context}) {
+async function formFindAll({ params, context }) {
   if (hasPerms(context.user_id, ['ADMIN', 'DAAC_READ'])) {
     params.privileged_user = true;
   }
