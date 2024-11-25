@@ -10,6 +10,10 @@ output "data_lambda_arn" {
   value = aws_lambda_function.data.invoke_arn
 }
 
+output "form_lambda_arn" {
+  value = aws_lambda_function.form.invoke_arn
+}
+
 output "invoke_lambda_arn" {
   value = aws_lambda_function.invoke.invoke_arn
 }
