@@ -2,7 +2,6 @@
 -- Form(id, short_name, version, long_name, description, daac_only)
 INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_accession_request', 1, 'Data Accession Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_publication_request', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
-INSERT INTO form VALUES ('de7e5c40-584a-493b-919d-8f7f3f1e9e3c', 'confirmation_form', 1, 'Confirmation Form', 'This form is used to confirm request information which might be used for external applications such as collection metadata curation.');
 INSERT INTO form VALUES ('3f77385f-7087-4d22-81c1-5c29b95d3295', 'ornl_submission', 1, 'ORNL Submission Form', 'This form is used by ORNL DAAC staff to enter pieces of information needed by the DAAC that the Data Provider will not have when submitting the Data Accession Request Form', true);
 
 -- Service(id, short_name, long_name, description, endpoint, options, headers, method, code, payload)
@@ -49,7 +48,6 @@ INSERT INTO section VALUES ('36d021d3-c527-419b-9b77-a48d535c12a8', '19025579-99
 INSERT INTO section VALUES ('f1a2136a-7245-4462-a175-40164db59c7b', '19025579-99ca-4344-8610-704dae626343', 'ORNL DAAC Additional Questions', 15, '[]', '[]', '15df4fda-ed0d-417f-9124-558fb5e5b561');
 INSERT INTO section VALUES ('0f6771e5-a6e4-4f19-ac85-cc48f526c146', '19025579-99ca-4344-8610-704dae626343', 'PO.DAAC Additional Questions', 16, '[]', '[]', '6b3ea184-57c5-4fc5-a91b-e49708f91b67');
 INSERT INTO section VALUES ('e9675ba5-e494-4275-8778-cd3fa68371e3', '19025579-99ca-4344-8610-704dae626343', 'SEDAC Additional Questions', 17, '[]', '[]', '00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1');
-INSERT INTO section VALUES ('933da7a8-4db6-4b7b-b128-d815fe151d29', 'de7e5c40-584a-493b-919d-8f7f3f1e9e3c', 'Metadata Information', 0, '[]', '[]', NULL);
 
 -- Question(id, short_name, version, long_name, text, help, required, created_at)
 INSERT INTO question VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info', 1, 'Primary Data Producer', 'Who is the primary person responsible for the collection or creation of this data product?', 'The Primary Data Producer is often the Principal Investigator, Project Scientist, or Project Manager.');
@@ -95,8 +93,6 @@ INSERT INTO question VALUES ('ab57f5e8-9ec5-46c9-978e-d06125346d36', 'model', 1,
 INSERT INTO question VALUES ('f1d8ab9d-0959-41b8-8449-430986ddfe84', 'data_file_compression', 1, 'Data File Compression', 'Is internal compression applied to the data files in this data product?', 'Internal compression is a feature of netCDF and HDF file formats that enables optimized storage and organization of data files. Internal compression is recommended when using these file formats.');
 INSERT INTO question VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b979e', 'data_product_files', 1, 'Number of Data Files', 'What is the estimated or actual total number of files in this data product?', 'If the final data product is not complete, please provide your best estimate of the total number of data files.');
 INSERT INTO question VALUES ('f2d8ab9d-0959-41b8-8449-430986ddfe84', 'browse_images', 1, 'Browse Images', 'Will browse images representing the data be provided as part of this data product?', 'A browse image provides a visual preview of the data which can assist users in assessing and selecting a data product.');
-INSERT INTO question VALUES ('0be3cdbd-da86-4879-bf94-e6a07de7cfe1', 'collection_short_name', 1, 'Collection Short Name', 'What is the collection short name which will be used for this dataset?', 'The Short Name is an abbreviated or shortened name used to identify a dataset. The Short Name and Version Id combination must be unique per provider in the CMR.');
-INSERT INTO question VALUES ('38cdfe14-6861-4ada-bd70-0545f65eeb03', 'collection_version', 1, 'Collection Version', 'What is the collection version which will be used for this dataset?', 'The Version element indicates the version of the dataset and should be consistent throughout the metadata record. The Short Name and Version Id combination must be unique per provider in the CMR.');
 INSERT INTO question(id, short_name, version, long_name, text, help, required, daac_ids) VALUES ('d3c4f81e-1954-4b6f-9edf-90f240f525a8', 'acknowledgement', 1, 'Additional Acknowledgments', 'If there are people or groups who are not identified in the Data Citation but whose contributions to the data product should be acknowledged, please name them here.', 'The DAAC will work with you to add this information to an Acknowledgements section of the data product user guide.', False, '{"aec3724f-b30b-4b3f-9b9a-e0907d9d14b3"}');
 
 -- GESDISC EXTENDED
@@ -215,8 +211,6 @@ INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'f1
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '40672516-2220-4edc-8c1b-fd9f7e0b979e', 8, '[]', '[]');
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 9, '[]', '[]');
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'f2d8ab9d-0959-41b8-8449-430986ddfe84', 10, '[]', '[]');
-INSERT INTO section_question VALUES ('933da7a8-4db6-4b7b-b128-d815fe151d29', '0be3cdbd-da86-4879-bf94-e6a07de7cfe1', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('933da7a8-4db6-4b7b-b128-d815fe151d29', '38cdfe14-6861-4ada-bd70-0545f65eeb03', 1, '[]', '[]');
 
 -- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))
 
@@ -304,8 +298,6 @@ INSERT INTO input VALUES ('f1d8ab9d-0959-41b8-8449-430986ddfe84', 'data_file_com
 INSERT INTO input VALUES ('40672516-2220-4edc-8c1b-fd9f7e0b979e', 'data_product_number_of_files', 0, '', 'number', '{}', '{"min": "1"}', '[]','[]',  True);
 INSERT INTO input VALUES ('f2d8ab9d-0959-41b8-8449-430986ddfe84', 'browse_images_provided', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('f2d8ab9d-0959-41b8-8449-430986ddfe84', 'browse_images_other', 1, 'Additional information about browse images', 'text', '{}', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('0be3cdbd-da86-4879-bf94-e6a07de7cfe1', 'collection_short_name', 0, 'Collection Short Name', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('38cdfe14-6861-4ada-bd70-0545f65eeb03', 'collection_version', 0, 'Collection Version', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('d3c4f81e-1954-4b6f-9edf-90f240f525a8', 'acknowledgement', 0, 'Acknowledgement', 'text', '{}', '{}', '[]', '[]');
 
 -- User(id, name, email, registered, last_login)
@@ -511,7 +503,6 @@ INSERT INTO step(step_name, type, data) VALUES ('get_from_mmt', 'action', '{"rol
 INSERT INTO step(step_name, type, data) VALUES ('map_from_mmt', 'action', '{"rollback":"get_from_mmt","type": "action"}');
 INSERT INTO step(step_name, type, data) VALUES ('publish_to_cmr', 'action', '{"rollback":"map_from_mmt","type": "action"}');
 INSERT INTO step(step_name, type, action_id) VALUES ('send_to_mmt', 'action', '3fe93672-cd91-45d4-863b-c6d0d63f8c8c');
-INSERT INTO step(step_name, type, form_id) VALUES ('confirmation_form', 'form', 'de7e5c40-584a-493b-919d-8f7f3f1e9e3c');
 
 -- Unknown DAAC
 -- StepEdge(workflow_id, step_name, next_step_name)

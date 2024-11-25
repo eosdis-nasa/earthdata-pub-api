@@ -132,6 +132,16 @@ WHERE workflow_id = 'a8d22c43-7814-4609-ac04-66fb50228bf7'
   AND step_name = 'data_publication_request_form_review'
   AND next_step_name = 'confirmation_form';
 
+-- 11/24/24 Remove confirmation form from repo
+DELETE FROM step WHERE step_name='confirmation_form';
+DELETE FROM input WHERE question_id='0be3cdbd-da86-4879-bf94-e6a07de7cfe1' AND control_id='collection_short_name';
+DELETE FROM input WHERE question_id='38cdfe14-6861-4ada-bd70-0545f65eeb03' AND control_id='collection_version';
+DELETE FROM section_question WHERE section_id='933da7a8-4db6-4b7b-b128-d815fe151d29';
+DELETE FROM question WHERE id='0be3cdbd-da86-4879-bf94-e6a07de7cfe1';
+DELETE FROM question WHERE id='38cdfe14-6861-4ada-bd70-0545f65eeb03';
+DELETE FROM section WHERE id='933da7a8-4db6-4b7b-b128-d815fe151d29';
+DELETE FROM submission_form_data WHERE form_id = 'de7e5c40-584a-493b-919d-8f7f3f1e9e3c';
+DELETE FROM form WHERE id='de7e5c40-584a-493b-919d-8f7f3f1e9e3c';
 -- EDPUB-1408: Documentation Added to DPR
 UPDATE section_question SET list_order=7 WHERE section_id='768a6b51-4864-458c-b20d-fb8b4c7dc606' AND question_id='1509d216-d3c5-437a-83f6-3a56a3403851'; 
 UPDATE section_question SET list_order=8 WHERE section_id='768a6b51-4864-458c-b20d-fb8b4c7dc606' AND question_id='068afe4e-228a-4170-aea8-0475d8b10d5e'; 
