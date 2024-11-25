@@ -2783,7 +2783,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"inputFindById\",\"params\":{\"id\": \"$req.path.get('id')\", \"controlId\": \"$req.path.get('controlId')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"inputFindById\",\"params\":{\"id\": \"$req.path.get('id')\", \"control_id\": \"$req.path.get('controlId')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
