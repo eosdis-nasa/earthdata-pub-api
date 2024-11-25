@@ -15,15 +15,7 @@ async function getPrivileges(context) {
   return user.user_privileges;
 }
 
-async function findById(event) {
-  const {
-    resource,
-    params,
-    form_id: formId,
-    context
-  } = event;
-  if (formId) params.id = formId;
-
+async function findById({resource, params, context}) {
   // Handle items that require daac privileges
   const privileges = await getPrivileges(context);
   if (privileges.includes('ADMIN') || privileges.includes('DAAC_READ')) {
@@ -40,15 +32,6 @@ async function findAll({ resource, params, context }) {
   }
 
   return db[resource].findAll(params);
-}
-
-async function createForm({ resource, params, context }) {
-  const privileges = await getPrivileges(context);
-  if (privileges.includes('ADMIN') || privileges.includes('FORM_CREATE')) {
-    params.privileged_user = true;
-  }
-
-  return db[resource].createForm(params);
 }
 
 async function seed() {
@@ -108,8 +91,7 @@ const operations = {
   add,
   updateInputs,
   onboardDaac,
-  offboardDaac,
-  createForm
+  offboardDaac
 };
 
 async function handler(event) {

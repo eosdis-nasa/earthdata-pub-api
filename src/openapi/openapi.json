@@ -729,12 +729,12 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${form_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"form_id\":\"$req.path.get('id')\", \"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"formFindById\",\"form_id\":\"$req.path.get('id')\", \"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -753,7 +753,7 @@
         "tags": [
           "data"
         ],
-        "summary": "Update an exisitng form",
+        "summary": "Update an existing form",
         "description": "Update an existing form",
         "operationId": "updateForm",
         "requestBody": {
@@ -801,12 +801,12 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${form_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"updateForm\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"updateForm\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1000,12 +1000,12 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${form_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"formFindAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -1026,7 +1026,7 @@
         ],
         "summary": "Create or update an form",
         "description": "Create a new form or update an existing form",
-        "operationId": "formPut",
+        "operationId": "createForm",
         "requestBody": {
           "x-name": "payload",
           "content": {
@@ -1072,10 +1072,13 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${form_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
+          "requestTemplates": {
+            "application/json": "{\"resource\":\"form\",\"operation\":\"createForm\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
           "responses": {
             "default": {
               "statusCode": "200",
