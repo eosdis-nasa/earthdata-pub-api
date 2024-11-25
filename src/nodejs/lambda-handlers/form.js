@@ -19,7 +19,7 @@ async function hasPerms(uid, perms) {
 }
 
 async function editSection({ params, context }) {
-  if (hasPerms(context.user_id, formEditPerms)) {
+  if (await hasPerms(context.user_id, formEditPerms)) {
     const response = await db.section.createSection(params);
     return response;
   }
@@ -27,7 +27,7 @@ async function editSection({ params, context }) {
 }
 
 async function addSection({ params, context }) {
-  if (hasPerms(context.user_id, formEditPerms)) {
+  if (await hasPerms(context.user_id, formEditPerms)) {
     const response = await db.section.createSection(params);
     return response;
   }
