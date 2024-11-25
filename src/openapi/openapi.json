@@ -806,7 +806,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"updateForm\", \"form_id\":\"$req.path.get('id')\", \"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"updateForm\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {

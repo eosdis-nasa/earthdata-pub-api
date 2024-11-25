@@ -28,15 +28,14 @@ async function createForm({ params, context }) {
   if (hasPerms(context.user_id, ['ADMIN', 'FORM_CREATE'])) {
     params.privileged_user = true;
   }
-  return db.question.createForm(params);
+  return db.form.createForm(params);
 }
 
-async function updateForm({ params, form_id: formId, context }) {
-  params.id = formId;
+async function updateForm({ params, context }) {
   if (hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
     params.privileged_user = true;
   }
-  return db.question.updateForm(params);
+  return db.form.updateForm(params);
 }
 
 async function formFindById({ params, form_id: formId, context }) {
