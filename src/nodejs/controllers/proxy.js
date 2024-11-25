@@ -1269,3 +1269,16 @@ module.exports.verifyMfa = function verifyMfa(req, res, next) {
     message: 'Local placeholder for verify MFA function.'
   });
 }
+
+module.exports.editSection = function editSection(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'editSection',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  lambdaEvent.params.id = params.id.value;
+  handlers.form(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
