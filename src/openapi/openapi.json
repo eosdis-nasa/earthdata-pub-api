@@ -729,12 +729,84 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${form_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findById\",\"form_id\":\"$req.path.get('id')\", \"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"formFindById\",\"form_id\":\"$req.path.get('id')\", \"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Update an existing form",
+        "description": "Update an existing form",
+        "operationId": "updateForm",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Form"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${form_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"updateForm\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -928,12 +1000,12 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${form_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"form\",\"operation\":\"formFindAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -954,7 +1026,7 @@
         ],
         "summary": "Create or update an form",
         "description": "Create a new form or update an existing form",
-        "operationId": "formPut",
+        "operationId": "createForm",
         "requestBody": {
           "x-name": "payload",
           "content": {
@@ -1000,10 +1072,13 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${form_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
+          "requestTemplates": {
+            "application/json": "{\"resource\":\"form\",\"operation\":\"createForm\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
           "responses": {
             "default": {
               "statusCode": "200",
@@ -2090,6 +2165,237 @@
         "x-router-controller": "cors"
       }
     },
+    "/api/data/questions": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get questions",
+        "description": "Returns list of questions",
+        "operationId": "questionFindAll",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "What field to sort results on.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "Order of results, 'asc' for ascending, 'desc' for descending.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Number of results per page for pagination.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number to start at for pagination.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Question"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${questions_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Creates a question",
+        "description": "Creates a new question.",
+        "operationId": "questionAdd",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionAdd"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Question"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${questions_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "{\"resource\":\"question\",\"operation\":\"add\",\"params\":{\"payload\": $input.json(\"$\")},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataQuestions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
     "/api/data/question/{id}": {
       "parameters": [
         {
@@ -2132,7 +2438,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Question"
+                  "$ref": "#/components/schemas/QuestionInputs"
                 }
               }
             }
@@ -2246,6 +2552,406 @@
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsDataQuestion",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/inputs": {
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get all input details",
+        "description": "Returns all input details",
+        "operationId": "inputFindAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Input"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${questions_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"inputFindAll\",\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Create Input",
+        "description": "Create a new Input",
+        "operationId": "createInput",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${questions_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "{\"resource\":\"question\",\"operation\":\"createInput\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataService",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/input/{id}/{controlId}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/UUID"
+          }
+        },
+        {
+          "name": "controlId",
+          "in": "path",
+          "description": "UUID of entity",
+          "required": true,
+         "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Get input details",
+        "description": "Returns a single input by ID",
+        "operationId": "inputFindById",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Input"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Bad request"
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${questions_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"inputFindById\",\"params\":{\"id\": \"$req.path.get('id')\", \"control_id\": \"$req.path.get('controlId')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Update Input",
+        "description": "Update an Input",
+        "operationId": "updateInput",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${questions_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"updateInput\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsDataService",
         "responses": {
           "200": {
             "description": "OK",
@@ -11734,237 +12440,6 @@
         "x-router-controller": "proxy"
       }
     },
-    "/api/data/questions": {
-      "get": {
-        "tags": [
-          "data"
-        ],
-        "summary": "Get questions",
-        "description": "Returns list of questions",
-        "operationId": "questionFindAll",
-        "parameters": [
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "What field to sort results on.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "description": "Order of results, 'asc' for ascending, 'desc' for descending.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
-            }
-          },
-          {
-            "name": "per_page",
-            "in": "query",
-            "description": "Number of results per page for pagination.",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number to start at for pagination.",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Question"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Bad Request"
-          }
-        },
-        "security": [
-          {
-            "Cognito_Authorizer": ["openid"]
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${questions_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"question\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "post": {
-        "tags": [
-          "data"
-        ],
-        "summary": "Creates a question",
-        "description": "Creates a new question.",
-        "operationId": "questionAdd",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Question"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Cognito_Authorizer": ["openid"]
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${questions_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "{\"resource\":\"question\",\"operation\":\"add\",\"params\":{\"payload\": $input.json(\"$\")},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsDataQuestions",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
     "/api/data/upload/getPostUrl": {
       "post": {
         "tags": [
@@ -13282,8 +13757,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "{\"operation\":\"editSection\",\"params\":{\"payload\": $input.json(\"$\")},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
-
+            "application/json": "{\"operation\":\"editSection\",\"params\": $input.json(\"$\"),\"context\":{\"user_id\": \"$context.authorizer.claims.sub\"}}"
           },
           "responses": {
             "default": {

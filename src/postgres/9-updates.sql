@@ -108,3 +108,26 @@ CREATE TABLE IF NOT EXISTS code (
   FOREIGN KEY (daac_id) REFERENCES daac (id),
   UNIQUE (submission_id, daac_id)
 );
+
+
+-- 10/28/24 EDPUB-1391: Create API Endpoint for adding a form
+DELETE FROM edprole_privilege
+WHERE privilege = 'FORM_CREATE' AND edprole_id IN ('a5b4947a-67d2-434e-9889-59c2fad39676', '804b335c-f191-4d26-9b98-1ec1cb62b97d');
+
+DELETE FROM edprole_privilege
+WHERE privilege = 'FORM_UPDATE' AND edprole_id IN ('a5b4947a-67d2-434e-9889-59c2fad39676', '804b335c-f191-4d26-9b98-1ec1cb62b97d');
+
+-- The FORM_CREATE and FORM_UPDATE privilege should only be assigned to DAAC Data Managers.
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'FORM_CREATE');
+
+-- EDPUB-1412: Remove Confirmation Form from ASDC Workflow
+DELETE FROM step_edge
+WHERE workflow_id = 'a8d22c43-7814-4609-ac04-66fb50228bf7'
+  AND step_name = 'confirmation_form'
+  AND next_step_name = 'email_asdc_staff';
+
+UPDATE step_edge
+SET next_step_name = 'email_asdc_staff'
+WHERE workflow_id = 'a8d22c43-7814-4609-ac04-66fb50228bf7'
+  AND step_name = 'data_publication_request_form_review'
+  AND next_step_name = 'confirmation_form';

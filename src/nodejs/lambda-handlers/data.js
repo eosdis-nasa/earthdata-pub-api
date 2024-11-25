@@ -15,15 +15,7 @@ async function getPrivileges(context) {
   return user.user_privileges;
 }
 
-async function findById(event) {
-  const {
-    resource,
-    params,
-    form_id: formId,
-    context
-  } = event;
-  if (formId) params.id = formId;
-
+async function findById({ resource, params, context }) {
   // Handle items that require daac privileges
   const privileges = await getPrivileges(context);
   if (privileges.includes('ADMIN') || privileges.includes('DAAC_READ')) {

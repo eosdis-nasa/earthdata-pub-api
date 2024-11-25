@@ -83,9 +83,17 @@ module.exports.formFindById = function formFindById(req, res, next) {
   });
 };
 
-module.exports.formPut = function formPut(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
+module.exports.createForm = function createForm(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'form',
+    operation: 'createForm',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
 };
 
 module.exports.formFindAll = function formFindAll(req, res, next) {
@@ -278,6 +286,62 @@ module.exports.questionInputUpdate = function questionInputUpdate(req, res, next
       questionId: params.id.value,
       inputs: params.payload.value
     },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
+module.exports.inputFindById = function inputFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'inputFindById',
+    params: { id: params.id.value, control_id: params.controlId.value },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.inputFindAll = function inputFindAll(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'inputFindAll',
+    params: {
+      query: {  
+      }
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+
+module.exports.createInput = function createInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'createInput',
+    params: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
+module.exports.updateInput = function updateInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'updateInput',
+    params: params.payload.value,
     context: { user_id: req.user_id }
   };
   handlers.questions(lambdaEvent).then((body) => {
