@@ -151,8 +151,8 @@ INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'ad
 -- 11/25/24 EDPUB-1375: Update DAAC specific workflows
 UPDATE workflow SET short_name='accession_workflow', long_name='Accession Workflow', description='This is the default workflow for data accession.' WHERE id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9';
 --  Migrate any submission currently in the DAR form/review step to the accession workflow; also migrate pushing of the accession form action to DAR review step
-UPDATE submission_status SET workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' WHERE step_name = ANY('{data_accession_request_form, data_accession_request_form_review}');
-UPDATE submission_status SET workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', step_name='data_accession_request_form_review' WHERE step_name='push_to_ornl_database_f1';
+UPDATE submission_status SET workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', last_change=now() WHERE step_name = ANY('{data_accession_request_form, data_accession_request_form_review}');
+UPDATE submission_status SET workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', step_name='data_accession_request_form_review', last_change=now() WHERE step_name='push_to_ornl_database_f1';
 
 UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='init';
 DELETE FROM step_edge WHERE worfklow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_accession_request_form';
