@@ -22,6 +22,8 @@ const Page = require('./page.js');
 const Permission = require('./permission.js');
 const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
+const QuestionAdd = require('./question-add.js');
+const QuestionInputs = require('./question-inputs.js');
 const Input = require('./input.js')
 const Role = require('./role.js');
 const Service = require('./service.js');
@@ -46,6 +48,7 @@ const UMMCMN = require('./umm-cmn.js');
 const Upload = require('./upload.js');
 const GroupUpload = require('./group-upload.js');
 const Step = require('./step.js');
+const Section = require('./section.js');
 
 const models = {
   Action,
@@ -72,6 +75,8 @@ const models = {
   Permission,
   Question,
   QuestionList,
+  QuestionAdd,
+  QuestionInputs,
   Input,
   Role,
   Service,
@@ -93,7 +98,8 @@ const models = {
   WorkflowServiceStep,
   Upload,
   GroupUpload,
-  Step
+  Step,
+  Section
 };
 
 function collectionMetadata() {

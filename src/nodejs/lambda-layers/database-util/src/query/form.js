@@ -23,6 +23,25 @@ const refs = {
 
 const fields = (list) => list.map((field) => fieldMap[field]);
 
+const createForm = (params) => `
+INSERT INTO form (short_name, version, long_name${params.description ? ', description' : ''}${params.daac_only ? ', daac_only' : ''})
+VALUES ('${params.short_name}', ${params.version}, '${params.long_name}'${params.description ? `, '${params.description}'` : ''}${params.daac_only ? `, ${params.daac_only}` : ''})
+RETURNING *;
+`;
+
+const updateForm = (params) => `
+UPDATE form
+SET
+  short_name = '${params.short_name}',
+  version = ${params.version},
+  long_name = '${params.long_name}',
+  description = '${params.description}',
+  daac_only = '${params.daac_only}'
+WHERE short_name = '${params.original_shortname}' AND version = ${params.original_version}
+RETURNING *;
+`;
+
+
 const findAll = ({
   short_name, version, long_name, created_after, created_before, privileged_user, order, sort, per_page, page
 }) => sql.select({
@@ -63,3 +82,5 @@ const findById = (params) => sql.select({
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
+module.exports.createForm = createForm;
+module.exports.updateForm = updateForm;

@@ -71,28 +71,49 @@ module.exports.formFindById = function formFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'form',
-    operation: 'findById',
+    operation: 'formFindById',
     form_id: params.id.value,
     params: {
       daac_id: params.daac_id.value
     },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.form(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
 
-module.exports.formPut = function formPut(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
+module.exports.createForm = function createForm(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'form',
+    operation: 'createForm',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.form(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.updateForm = function updateForm(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'form',
+    operation: 'updateForm',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.form(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
 };
 
 module.exports.formFindAll = function formFindAll(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'form',
-    operation: 'findAll',
+    operation: 'formFindAll',
     params: {
       short_name: params.short_name.value,
       version: params.version.value,
@@ -106,7 +127,7 @@ module.exports.formFindAll = function formFindAll(req, res, next) {
     },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.form(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
@@ -285,6 +306,62 @@ module.exports.questionInputUpdate = function questionInputUpdate(req, res, next
   });
 };
 
+module.exports.inputFindById = function inputFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'inputFindById',
+    params: { id: params.id.value, control_id: params.controlId.value },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.inputFindAll = function inputFindAll(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'inputFindAll',
+    params: {
+      query: {  
+      }
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+
+module.exports.createInput = function createInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'createInput',
+    params: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
+module.exports.updateInput = function updateInput(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'question',
+    operation: 'updateInput',
+    params: params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.questions(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency)
+  });
+};
+
 module.exports.serviceFindById = function serviceFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -369,6 +446,19 @@ module.exports.getSubmissionDetailsById = function getSubmissionDetailsById(req,
     operation: 'getDetails',
     context: { user_id: req.user_id },
     params: { id: params.id.value }
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.validateCode = function validateCode(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'submission',
+    operation: 'validateCode',
+    context: { user_id: req.user_id },
+    params: { code: params.code.value }
   };
   handlers.submission(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
@@ -1293,3 +1383,62 @@ module.exports.verifyMfa = function verifyMfa(req, res, next) {
     message: 'Local placeholder for verify MFA function.'
   });
 }
+
+module.exports.editSection = function editSection(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'editSection',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  lambdaEvent.params.id = params.id.value;
+  handlers.form(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
+
+module.exports.addSection = function addSection(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'addSection',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+
+  handlers.form(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+}
+
+module.exports.sectionFindAll = function sectionFindAll(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'section',
+    operation: 'findAll',
+    params: {
+      query: {
+        sort: params.sort.value,
+        order: params.order.value,
+        per_page: params.per_page.value,
+        page: params.page.value
+      }
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.sectionFindById = function sectionFindById(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'section',
+    operation: 'findById',
+    params: { id: params.id.value },
+    context: { user_id: req.user_id }
+  };
+  handlers.data(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};

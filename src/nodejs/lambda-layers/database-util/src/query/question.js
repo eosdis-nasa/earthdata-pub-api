@@ -114,22 +114,28 @@ const findAllEx = () => `
     GROUP BY input.question_id) input_agg ON question.id = input_agg.question_id`;
 const findById = () => `${findAllEx()} WHERE question.id = {{id}}`;
 const findByName = () => `${findAllEx()} WHERE question.short_name = {{short_name}}`;
-const update = ({ daac_ids }) => `
-  INSERT INTO question (id, short_name, version, long_name, text, help, required, created_at, daac_ids)
-  VALUES ({{payload.id}}, {{payload.short_name}}, {{payload.version}}, {{payload.long_name}}, {{payload.text}},
-  {{payload.help}}, {{payload.required}}, {{payload.created_at}}, ARRAY(
-    SELECT DISTINCT unnest(array_cat(daac_ids, ARRAY['${daac_ids.join('\',\'')}']::UUID[]))
-  ))
-  ON CONFLICT(short_name, version) DO UPDATE SET
-  long_name = EXCLUDED.long_name, text = EXCLUDED.text, help = EXCLUDED.help,
-  required = EXCLUDED.required, created_at = EXCLUDED.created_at, EXCLUDED.daac_ids
-  RETURNING *`;
-const add = ({ daac_ids }) => `
-  WITH new_question AS (${update({ daac_ids })}),
+
+const update = (params) => 
+  `UPDATE question
+   SET 
+     long_name = {{payload.long_name}}, text = {{payload.text}}, help = {{payload.help}}, required = {{payload.required}}, created_at = {{payload.created_at}},
+     daac_ids = ARRAY(
+       SELECT DISTINCT unnest(array_cat(daac_ids, ARRAY[${params.payload.daac_ids.map(id => `'${id}'`).join(',')}]::UUID[]))
+     )
+   WHERE short_name = {{payload.short_name}} and version = {{payload.version}}
+   RETURNING *`;
+const add = (params) => `
+  WITH new_question AS (INSERT INTO question (${params.payload.id ? 'id,': ''} short_name, version, long_name, text, 
+  help, required, ${params.payload.created_at ? 'created_at,': ''} daac_ids)
+  VALUES (${params.payload.id ? '{{payload.id}},': ''} {{payload.short_name}}, {{payload.version}}, {{payload.long_name}}, {{payload.text}}, {{payload.help}}, 
+  {{payload.required}}, ${params.payload.created_at ? '{{payload.created_at}},': ''} ${params.payload.daac_ids && params.payload.daac_ids.length > 0 ? `ARRAY['${params.payload.daac_ids.join('\',\'')}']::UUID[]` : `ARRAY[]::UUID[]`} 
+  ) RETURNING *
+    ),
   new_section_question AS (INSERT INTO section_question (section_id, question_id, list_order, required_if, show_if)
-  VALUES ({{payload.section_question.section_id}}, {{payload.section_question.question_id}}, 
-  {{payload.section_question.list_order}}, {{payload.section_question.required_if}}, 
-  {{payload.section_question.show_if}}) ON CONFLICT(section_id, question_id) DO UPDATE SET
+  SELECT {{payload.section_question.section_id}}, new_question.id, 
+  {{payload.section_question.list_order}}, ${params.payload.section_question.required_if ? `'${JSON.stringify(params.payload.section_question.required_if)}'::JSONB`: "'[]'::JSONB"}, 
+  ${params.payload.section_question.show_if ? `'${JSON.stringify(params.payload.section_question.show_if)}'::JSONB`: "'[]'::JSONB"}
+  FROM new_question ON CONFLICT(section_id, question_id) DO UPDATE SET
   section_id = EXCLUDED.section_id, question_id = EXCLUDED.question_id, list_order = EXCLUDED.list_order,
   required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if
   RETURNING *)
@@ -148,6 +154,46 @@ const deleteInput = (params) => `
     WHERE control_id IN ('${params.toDelete.join("','")}')
     RETURNING *`;
 
+
+const createOneInput = () => `
+  INSERT INTO input (question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required)
+  VALUES (
+    {{input.question_id}}, 
+    {{input.control_id}}, 
+    {{input.list_order}}, 
+    {{input.label}}, 
+    {{input.type}},
+    {{input.enums}}::JSONB, 
+    {{input.attributes}}::JSONB, 
+    {{input.required_if}}::JSONB, 
+    {{input.show_if}}::JSONB, 
+    {{input.required}}
+  )
+  RETURNING *;
+`;
+
+const updateOneInput = () => `
+  UPDATE input
+  SET 
+    control_id = {{input.control_id}},
+    question_id = {{input.question_id}}, 
+    list_order = {{input.list_order}},
+    label = {{input.label}},
+    type = {{input.type}},
+    enums = {{input.enums}}::JSONB,
+    attributes = {{input.attributes}}::JSONB,
+    required_if = {{input.required_if}}::JSONB,
+    show_if = {{input.show_if}}::JSONB,
+    required = {{input.required}}
+  WHERE 
+    question_id = {{input.old_question_id}}
+    AND control_id = {{input.old_control_id}}
+  RETURNING *;
+`;
+
+const inputFindById = () => `SELECT input.* FROM input where question_id={{input.id}} and control_id={{input.control_id}}`;
+const inputFindAll = () => `SELECT input.* FROM input`;
+
 module.exports.sectionJoin = sectionJoin;
 
 module.exports.findAll = findAll;
@@ -158,3 +204,8 @@ module.exports.update = update;
 module.exports.add = add;
 module.exports.updateInput = updateInput;
 module.exports.deleteInput = deleteInput;
+module.exports.createOneInput = createOneInput;
+module.exports.updateOneInput = updateOneInput;
+module.exports.inputFindById = inputFindById;
+module.exports.inputFindAll = inputFindAll;
+

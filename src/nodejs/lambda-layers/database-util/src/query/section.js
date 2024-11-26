@@ -54,4 +54,36 @@ const formJoin = () => sql.select({
   alias: 'section_agg'
 });
 
+const findAll = () => 'SELECT section.* FROM section';
+const findById = () => `${findAll()} WHERE section.id = {{id}}`;
+
+const createSection = (params) => sql.insert({
+  ...{
+    table: `section (${params.id ? 'id,': ''} form_id, heading, list_order${params.required_if ? ', required_if' : ''}${params.show_if ? ', show_if' : ''}${params.daac_id ? ', daac_id' : ''})`,
+    values: {
+      type: 'values_list',
+      items: [
+        ...(params.id ? ['{{id}}'] : []),
+        '{{form_id}}', '{{heading}}', '{{list_order}}',
+        ...(params.required_if ? [`'${JSON.stringify(params.required_if)}'::JSONB`] : []),
+        ...(params.show_if ? [`'${JSON.stringify(params.show_if)}'::JSONB`] : []),
+        ...(params.daac_id ? ['{{daac_id}}']: []),
+      ]
+    }
+  },
+  ...(params.id ? {conflict:{
+    constraints: ['id'],
+    update:{
+      type:'update',
+      set:[{cmd:'form_id = EXCLUDED.form_id, heading = EXCLUDED.heading, list_order = EXCLUDED.list_order, required_if = EXCLUDED.required_if, show_if = EXCLUDED.show_if, daac_id = EXCLUDED.daac_id'}]
+    }
+  }} : {}),
+  ...{
+    returning: ['*']
+  }
+})
+
 module.exports.formJoin = formJoin;
+module.exports.createSection = createSection;
+module.exports.findAll = findAll;
+module.exports.findById = findById;
