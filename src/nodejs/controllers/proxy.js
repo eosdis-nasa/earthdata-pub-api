@@ -71,14 +71,14 @@ module.exports.formFindById = function formFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'form',
-    operation: 'findById',
+    operation: 'formFindById',
     form_id: params.id.value,
     params: {
       daac_id: params.daac_id.value
     },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.form(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
@@ -91,7 +91,20 @@ module.exports.createForm = function createForm(req, res, next) {
     params: params.payload.value,
     context:  { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.form(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.updateForm = function updateForm(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'form',
+    operation: 'updateForm',
+    params: params.payload.value,
+    context:  { user_id: req.user_id }
+  };
+  handlers.form(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
@@ -100,7 +113,7 @@ module.exports.formFindAll = function formFindAll(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     resource: 'form',
-    operation: 'findAll',
+    operation: 'formFindAll',
     params: {
       short_name: params.short_name.value,
       version: params.version.value,
@@ -114,7 +127,7 @@ module.exports.formFindAll = function formFindAll(req, res, next) {
     },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.form(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
