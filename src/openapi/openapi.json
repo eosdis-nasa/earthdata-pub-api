@@ -6367,7 +6367,7 @@
         {
           "name": "step_id",
           "in": "path",
-          "description": "UUID of step to update.",
+          "description": "UUID of step",
           "required": true,
           "schema": {
             "type": "string"
