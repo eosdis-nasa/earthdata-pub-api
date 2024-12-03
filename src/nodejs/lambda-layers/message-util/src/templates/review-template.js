@@ -9,7 +9,7 @@ const getReviewerAddedTemplate = (params, envUrl) => {
                  <td>
                    <table>
                      <tr>
-                       <td width="60"><img src="https://pub.earthdata.nasa.gov/dashboard/images/app/src/assets/images/nasa-logo.d7dbc5e408ccd79bb7578f3358413d69.png"></td>
+                       <td width="60"><img src="https://drive.usercontent.google.com/download?id=1o_VMDqV1c9huOP7WVB_-KnEIkiyxNSio"></td>
                        <td><h4>Earthdata Pub</h4></td>
                      </tr>
                    </table>
