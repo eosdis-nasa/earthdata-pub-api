@@ -90,7 +90,7 @@ const getReviewerAddedTemplate = async (params, envUrl, xx) => {
                      <tr>
                       <td width="60">
                        <img src="https://www.seekpng.com/png/detail/668-6686267_logo-link-png.png" alt="Logo" title="Logo" style="display:block" width="200" height="87" />
-                        <img src="https://drive.google.com/uc?export=download&id=1o_VMDqV1c9huOP7WVB_-KnEIkiyxNSio" alt="Logo" title="Logo" style="display:block" width="200" height="87" />                   
+                        <img src="https://drive.google.com/uc?export=view&id=1o_VMDqV1c9huOP7WVB_-KnEIkiyxNSio" alt="Logo" title="Logo" style="display:block" width="200" height="87" />                   
                       </td>
                       <td>
                         <h4>Earthdata Pub</h4>
