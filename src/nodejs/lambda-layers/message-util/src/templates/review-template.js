@@ -89,7 +89,7 @@ const getReviewerAddedTemplate = async (params, envUrl, xx) => {
                    <table>
                      <tr>
                       <td width="60">
-                        ${svgContent} <!-- Inline SVG content -->
+                       <img src="https://www.seekpng.com/png/detail/668-6686267_logo-link-png.png" alt="Logo" title="Logo" style="display:block" width="200" height="87" />
                       </td>
                       <td>
                         <h4>Earthdata Pub</h4>
@@ -97,7 +97,7 @@ const getReviewerAddedTemplate = async (params, envUrl, xx) => {
                      </tr>
                    </table>
                  </td>
-                 <td align="right"><b>Reviewer Added</b>${xx}</td>
+                 <td align="right"><b>Reviewer Added</b>${xx}${svgContent}</td>
                  <td></td>
              </tr>
              <tr>
