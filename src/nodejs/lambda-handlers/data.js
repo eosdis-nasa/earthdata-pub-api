@@ -42,6 +42,15 @@ async function findAll({ resource, params, context }) {
   return db[resource].findAll(params);
 }
 
+async function createForm({ resource, params, context }) {
+  const privileges = await getPrivileges(context);
+  if (privileges.includes('ADMIN') || privileges.includes('FORM_CREATE')) {
+    params.privileged_user = true;
+  }
+
+  return db[resource].createForm(params);
+}
+
 async function seed() {
   const response = await db.seed();
   return response;
@@ -99,7 +108,8 @@ const operations = {
   add,
   updateInputs,
   onboardDaac,
-  offboardDaac
+  offboardDaac,
+  createForm
 };
 
 async function handler(event) {
