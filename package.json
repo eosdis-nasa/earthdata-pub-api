@@ -31,5 +31,7 @@
     "type": "git",
     "url": "https://github.com/eosdis-nasa/earthdata-pub-api.git"
   },
-  "dependencies": {}
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
 }
