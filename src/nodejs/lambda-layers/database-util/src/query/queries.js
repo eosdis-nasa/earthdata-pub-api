@@ -11,6 +11,7 @@ module.exports.question = require('./question.js');
 module.exports.role = require('./role.js');
 module.exports.section = require('./section.js');
 module.exports.service = require('./service.js');
+module.exports.step = require('./step.js');
 module.exports.submission = require('./submission.js');
 module.exports.subscription = require('./subscription.js');
 module.exports.user = require('./user.js');
