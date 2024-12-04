@@ -5,27 +5,20 @@ const { getNewSubmissionDAACTemplate } = require('./templates/new-submission-daa
 const { getDMTemplate } = require('./templates/direct-message');
 const { getReviewerAddedTemplate } = require('./templates/review-template');
 
-const toBase64 = (buffer) => Buffer.from(buffer).toString('base64');
-
-const fetchSvgAndConvertToBase64 = (url) => new Promise((resolve, reject) => {
+const fetchSvgContent = (url) => new Promise((resolve, reject) => {
   https.get(url, (res) => {
-    if (res.statusCode < 200 || res.statusCode >= 300) {
-      reject(new Error(`StatusCode=${res.statusCode}`));
+    if (res.statusCode !== 200) {
+      reject(new Error(`Request failed with status code ${res.statusCode}`));
+      return; // Necessary for consistent behavior
     }
-    const data = [];
-    res.on('data', (chunk) => data.push(chunk));
-    res.on('end', () => {
-      try {
-        const buffer = Buffer.concat(data);
-        const base64EncodedData = toBase64(buffer);
-        resolve(`data:image/svg+xml;base64,${base64EncodedData}`);
-      } catch (e) {
-        reject(e);
-      }
+
+    let data = '';
+    res.on('data', (chunk) => {
+      data += chunk;
     });
-  }).on('error', (e) => {
-    reject(e);
-  });
+
+    res.on('end', () => resolve(data));
+  }).on('error', reject);
 });
 
 const envUrl = process.env.ROOT_URL;
@@ -34,22 +27,29 @@ const createEmailHtml = async (params) => {
   if (params.customTemplateFunction) {
     return params.customTemplateFunction(params, envUrl);
   }
+
   if (params.eventMessage.event_type.match(/direct_message/gi)) {
     return getDMTemplate(params, envUrl);
-  } if (params.eventMessage.event_type.match(/request_initialized/gi)) {
-    return (params.user.initiator
-      ? getNewSubmissionTemplate(params, envUrl) : getNewSubmissionDAACTemplate(params, envUrl));
-  } if (params.eventMessage.event_type === 'review_required') {
+  }
+
+  if (params.eventMessage.event_type.match(/request_initialized/gi)) {
+    return params.user.initiator
+      ? getNewSubmissionTemplate(params, envUrl)
+      : getNewSubmissionDAACTemplate(params, envUrl);
+  }
+
+  if (params.eventMessage.event_type === 'review_required') {
     const svgUrl = 'https://pub.earthdata.nasa.gov/dashboard/images/app/src/assets/images/nasa-logo.78fcba4d9325e8ac5a2e15699d035ee0.svg';
     try {
-      const svgDataUri = await fetchSvgAndConvertToBase64(svgUrl);
-      return getReviewerAddedTemplate(params, envUrl, svgDataUri);
+      const svgContent = await fetchSvgContent(svgUrl);
+      return getReviewerAddedTemplate(params, envUrl, svgContent);
     } catch (error) {
-      console.error('Failed to fetch or convert SVG:', error);
-      return getReviewerAddedTemplate(params, envUrl); // Ensuring return in all paths
+      console.error('Error fetching SVG:', error.message);
+      return getReviewerAddedTemplate(params, envUrl);
     }
   }
-  return getDefaultStepPromotion(params, envUrl); // Ensuring return in all paths
+
+  return getDefaultStepPromotion(params, envUrl);
 };
 
 module.exports.createEmailHtml = createEmailHtml;
