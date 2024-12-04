@@ -1,4 +1,4 @@
-const getReviewerAddedTemplate = (params, envUrl) => {
+const getReviewerAddedTemplate = (params, envUrl, svgDataUri) => {
   const text = `Hello ${params.user.name},\n\nYou have been added as a reviewer to an Earthdata Pub request.\nYour review can be added at ${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}.`;
   const html = `
     <html>
@@ -9,7 +9,7 @@ const getReviewerAddedTemplate = (params, envUrl) => {
                  <td>
                    <table>
                      <tr>
-                       <td width="60"><img src="https://pub.sit.earthdata.nasa.gov/dashboard/images/app/src/assets/images/d7dbc5e408ccd79bb757.png"></td>
+                       <td width="60"><img src="${svgDataUri}"></td>
                        <td><h4>Earthdata Pub</h4></td>
                      </tr>
                    </table>
