@@ -1002,6 +1002,34 @@ resource "aws_lambda_function" "remap_statics" {
   }
 }
 
+
+# Image-test Lambda
+
+resource "aws_lambda_function" "image_test" {
+  filename         = "../artifacts/image-test-lambda.zip"
+  function_name    = "image_test"
+  role             = var.edpub_lambda_role_arn
+  handler          = "image-test.handler"
+  layers           = []
+  runtime          = "nodejs18.x"
+  source_code_hash = filesha256("../artifacts/image-test-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION           = var.region
+      STAGE            = var.stage
+      DASHBOARD_BUCKET = var.edpub_dashboard_s3_bucket
+      FORMS_BUCKET     = var.edpub_forms_s3_bucket
+      OVERVIEW_BUCKET  = var.edpub_overview_s3_bucket
+      API_ID           = var.api_id
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
 # APIProxy Lambda
 
 resource "aws_lambda_function" "api_proxy" {

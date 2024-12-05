@@ -43,6 +43,7 @@ install_lambda rds-backup
 install_lambda step-cleanup
 install_lambda register
 install_lambda remap-statics
+install_lambda image-test
 install_lambda service-authorizer
 install_lambda submission
 install_lambda subscribe
