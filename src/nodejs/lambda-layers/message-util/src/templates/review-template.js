@@ -58,12 +58,6 @@ const getReviewerAddedTemplate = async (params, envUrl) => {
   } catch (error) {
     console.error(error.message);
   }
-  try {
-    // Fetch the signed URL from the API
-    imgSrc2 = await fetchImageUrl2('https://pub.sit.earthdata.nasa.gov/image');
-  } catch (error) {
-    console.error(error.message);
-  }
 
   const text = `Hello ${params.user.name},\n\nYou have been added as a reviewer to an Earthdata Pub request.\nYour review can be added at ${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}.`;
 
@@ -78,7 +72,7 @@ const getReviewerAddedTemplate = async (params, envUrl) => {
                      <tr>
                       <td width="60">
                         <!-- Use the signed URL as the src -->
-                        <img src="" alt="Logo" style="display:block"/>   
+                        <img src=${params.urlLogo} alt="Logo" style="display:block"/>   
                           ${imgSrc}
                           <p> deepak </p>
                           ${imgSrc2}
