@@ -22,12 +22,7 @@ const createEmailHtml = async (params) => {
   }
 
   if (params.eventMessage.event_type === 'review_required') {
-    try {
-      return getReviewerAddedTemplate(params, envUrl);
-    } catch (error) {
-      console.error('Error fetching SVG:', error.message);
-      return getReviewerAddedTemplate(params, envUrl);
-    }
+    return getReviewerAddedTemplate(params, envUrl);
   }
 
   return getDefaultStepPromotion(params, envUrl);

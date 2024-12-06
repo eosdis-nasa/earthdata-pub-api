@@ -12,10 +12,7 @@ const getReviewerAddedTemplate = async (params, envUrl) => {
                      <tr>
                       <td width="60">
                         <!-- Use the signed URL as the src -->
-                        <img src=${params.logoUrl} alt="Logo" style="display:block"/>   
-                          ${params.urlLogo}
-                          <p> deepak </p>
-                          ${params.logoUrl}
+                        <img src=${params.logoUrl} alt="Logo" style="display:block"/>
                       </td>
                       <td>
                         <h4>Earthdata Pub</h4>
