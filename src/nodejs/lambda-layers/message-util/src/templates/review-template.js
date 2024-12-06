@@ -2,65 +2,54 @@ const https = require('https');
 
 const getReviewerAddedTemplate = async (params, envUrl) => {
 
-  const fetchImageUrl2 = (url) =>
-    new Promise((resolve, reject) => {
+  const fetchImageUrl2 = async (url) => {
+    const response = await new Promise((resolve, reject) => {
       https.get(url, (res) => {
         let data = '';
-  
-        // Collect response chunks
         res.on('data', (chunk) => {
-          data += chunk; // Append chunks to the data string
+          data += chunk;
         });
-  
-        // Process the complete response
-        res.on('end', () => {
-          if (res.statusCode === 200) {
-            try {
-              const jsonResponse = JSON.parse(data); // Parse JSON only if the response is a string
-              if (jsonResponse.url) {
-                resolve(jsonResponse.url); // Extract the 'url' key
-              } else {
-                reject(new Error('URL not found in response'));
-              }
-            } catch (error) {
-              reject(new Error(`Failed to parse JSON response: ${error.message}`));
-            }
-          } else {
-            reject(new Error(`Failed to fetch image. Status: ${res.statusCode}`));
-          }
-        });
-  
-        // Handle response errors
-        res.on('error', (err) => reject(new Error(`Error in response: ${err.message}`)));
-      }).on('error', (err) => reject(new Error(`Error making request: ${err.message}`)));
+        res.on('end', () => resolve({ statusCode: res.statusCode, data }));
+        res.on('error', reject);
+      }).on('error', reject);
     });
   
-  const fetchImageUrl = (url) => {
-    return new Promise((resolve, reject) => {
-      https
-        .get(url, (res) => {
-          res.setEncoding('utf8'); // Ensure response is treated as a string
-          res.on('data', (data) => {
-            if (res.statusCode === 200) {
-              try {
-                const jsonResponse = JSON.parse(data); // Parse the JSON response
-                if (jsonResponse.url) {
-                  resolve(jsonResponse.url); // Extract the 'url' key
-                } else {
-                  reject(new Error('URL not found in response'));
-                }
-              } catch (error) {
-                reject(new Error(`Failed to parse JSON response: ${error.message}`));
-              }
-            } else {
-              reject(new Error(`Failed to fetch image. Status: ${res.statusCode}`));
-            }
-          });
-          res.on('error', (err) => reject(new Error(`Error in response: ${err.message}`)));
-        })
-        .on('error', (err) => reject(new Error(`Error making request: ${err.message}`)));
+    if (response.statusCode === 200) {
+      const jsonResponse = response.data;
+      if (jsonResponse.url) {
+        return jsonResponse.url;
+      } else {
+        throw new Error('URL not found in response');
+      }
+    } else {
+      throw new Error(`Failed to fetch image. Status: ${response.statusCode}`);
+    }
+  };  
+  
+  const fetchImageUrl = async (url) => {
+    const response = await new Promise((resolve, reject) => {
+      https.get(url, (res) => {
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        res.on('end', () => resolve({ statusCode: res.statusCode, data }));
+        res.on('error', reject);
+      }).on('error', reject);
     });
-  };
+  
+    if (response.statusCode === 200) {
+      const jsonResponse = JSON.parse(response.data);
+      if (jsonResponse.url) {
+        return jsonResponse.url;
+      } else {
+        throw new Error('URL not found in response');
+      }
+    } else {
+      throw new Error(`Failed to fetch image. Status: ${response.statusCode}`);
+    }
+  };  
+  
   let imgSrc = '';
   let imgSrc2 = ''
   try {
