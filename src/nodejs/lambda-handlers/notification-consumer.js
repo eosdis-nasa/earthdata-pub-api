@@ -18,7 +18,7 @@ const { getTemplate, getEmailTemplate } = require('./notification-consumer/templ
 async function getNasaLogoUrl() {
   try {
     const payload = {
-      Bucket: 'earthdatapub-dashboard-sit',
+      Bucket: process.env.DASHBOARD_BUCKET,
       Key: 'images/app/src/assets/images/nasa_test.jpg'
     };
 
