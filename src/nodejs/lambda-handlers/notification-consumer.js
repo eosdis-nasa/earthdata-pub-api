@@ -5,12 +5,38 @@
  * implicit recipients and subscribers.
  * @module NotificationHandler
  */
-
+const { S3, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const region = process.env.REGION;
+const s3 = new S3({ region });
 const db = require('database-util');
-
 const msg = require('message-util');
-
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
+
+async function getNasaLogoUrl(){
+  try {
+    const payload = {
+      Bucket: 'earthdatapub-dashboard-sit',
+      Key: 'images/app/src/assets/images/nasa_test.jpg'
+    };
+
+    console.log('payload', payload)
+    const command = new GetObjectCommand(payload);
+
+    // Generate the signed URL
+    const signedUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 60 });
+
+    // Return the signed URL wrapped in a JSON object
+    return signedUrl;
+  } catch (error) {
+    console.error('Error generating signed URL:', error);
+    return {
+      status: 'error',
+      message: 'Failed to generate signed URL',
+      error: error.message
+    };
+  }
+}
 
 async function sendEmailNotification({ note, emailPayload, usersList }) {
   const roles = {
@@ -66,7 +92,7 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
     });
 
   if (emailPayload.event_type === 'request_initialized') users = users.map((user) => ({ name: user.name, email: user.email, initiator: user.id === emailPayload.user_id }));
-  await msg.sendEmail(users, emailPayload);
+  await msg.sendEmail(users, emailPayload, await getNasaLogoUrl());
 }
 
 async function processRecord(record) {
@@ -92,11 +118,13 @@ async function processRecord(record) {
   }
 }
 
+
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
   const records = event.Records;
   const promises = records.map((record) => processRecord(record));
   await Promise.all(promises);
+  
   return {
     statusCode: 200
   };

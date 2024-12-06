@@ -3,14 +3,11 @@ const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
 const uuid = require('uuid');
 const { createEmailHtml } = require('./create-email');
-const { S3, GetObjectCommand } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const sourceEmail = process.env.SOURCE_EMAIL;
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
-const s3 = new S3({ region });
 
 // const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
 // const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
@@ -37,30 +34,6 @@ function marshalAttributes(eventMessage) {
     }
     return attributes;
   }, {});
-}
-
-async function getNasaLogoUrl(){
-  try {
-    const payload = {
-      Bucket: 'earthdatapub-dashboard-sit',
-      Key: 'images/app/src/assets/images/nasa_test.jpg'
-    };
-
-    const command = new GetObjectCommand(payload);
-
-    // Generate the signed URL
-    const signedUrl = await getSignedUrl(s3, command, { expiresIn: 60 * 60 });
-
-    // Return the signed URL wrapped in a JSON object
-    return signedUrl;
-  } catch (error) {
-    console.error('Error generating signed URL:', error);
-    return {
-      status: 'error',
-      message: 'Failed to generate signed URL',
-      error: error.message
-    };
-  }
 }
 
 async function getSecretsValues() {
@@ -107,7 +80,7 @@ async function send(user, eventMessage, customTemplateFunction, ses, urlLogo) {
   }
 }
 
-async function sendEmail(users, eventMessage, customTemplateFunction) {
+async function sendEmail(users, eventMessage, logoUrl, customTemplateFunction) {
   try {
     const secretsResponse = await getSecretsValues();
     const sesCreds = JSON.parse(secretsResponse.SecretString);
@@ -118,8 +91,7 @@ async function sendEmail(users, eventMessage, customTemplateFunction) {
         secretAccessKey: sesCreds.ses_secret_access_key
       }
     });
-    const logoUrl = await getNasaLogoUrl();
-    const promises = users.map((user) => send(user, eventMessage, customTemplateFunction, ses, logoUrl));
+    const promises = users.map((user) => send(user, eventMessage, logoUrl, customTemplateFunction, ses));
     await Promise.all(promises);
     return { success: true };
   } catch (err) {
