@@ -1,64 +1,4 @@
-const https = require('https');
-
 const getReviewerAddedTemplate = async (params, envUrl) => {
-
-  const fetchImageUrl2 = async (url) => {
-    const response = await new Promise((resolve, reject) => {
-      https.get(url, (res) => {
-        let data = '';
-        res.on('data', (chunk) => {
-          data += chunk;
-        });
-        res.on('end', () => resolve({ statusCode: res.statusCode, data }));
-        res.on('error', reject);
-      }).on('error', reject);
-    });
-  
-    if (response.statusCode === 200) {
-      const jsonResponse = response.data;
-      if (jsonResponse.url) {
-        return jsonResponse.url;
-      } else {
-        throw new Error('URL not found in response');
-      }
-    } else {
-      throw new Error(`Failed to fetch image. Status: ${response.statusCode}`);
-    }
-  };  
-  
-  const fetchImageUrl = async (url) => {
-    const response = await new Promise((resolve, reject) => {
-      https.get(url, (res) => {
-        let data = '';
-        res.on('data', (chunk) => {
-          data += chunk;
-        });
-        res.on('end', () => resolve({ statusCode: res.statusCode, data }));
-        res.on('error', reject);
-      }).on('error', reject);
-    });
-  
-    if (response.statusCode === 200) {
-      const jsonResponse = JSON.parse(response.data);
-      if (jsonResponse.url) {
-        return jsonResponse.url;
-      } else {
-        throw new Error('URL not found in response');
-      }
-    } else {
-      throw new Error(`Failed to fetch image. Status: ${response.statusCode}`);
-    }
-  };  
-  
-  let imgSrc = '';
-  let imgSrc2 = ''
-  try {
-    // Fetch the signed URL from the API
-    imgSrc = await fetchImageUrl('https://pub.sit.earthdata.nasa.gov/image');
-  } catch (error) {
-    console.error(error.message);
-  }
-
   const text = `Hello ${params.user.name},\n\nYou have been added as a reviewer to an Earthdata Pub request.\nYour review can be added at ${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}.`;
 
   const html = `
@@ -73,9 +13,9 @@ const getReviewerAddedTemplate = async (params, envUrl) => {
                       <td width="60">
                         <!-- Use the signed URL as the src -->
                         <img src=${params.urlLogo} alt="Logo" style="display:block"/>   
-                          ${imgSrc}
+                          ${params.urlLogo}
                           <p> deepak </p>
-                          ${imgSrc2}
+                          ${params.urlLogo}
                       </td>
                       <td>
                         <h4>Earthdata Pub</h4>

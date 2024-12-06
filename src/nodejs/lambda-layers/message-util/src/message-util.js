@@ -49,7 +49,10 @@ async function getSecretsValues() {
 
 async function send(user, eventMessage, customTemplateFunction, ses, urlLogo) {
   try {
-    const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction, urlLogo});
+    const bodyArray = await createEmailHtml({
+      user, eventMessage, customTemplateFunction, urlLogo
+    });
+
     const payload = {
       Source: sourceEmail,
       Destination: {
@@ -80,7 +83,7 @@ async function send(user, eventMessage, customTemplateFunction, ses, urlLogo) {
   }
 }
 
-async function sendEmail(users, eventMessage, logoUrl, customTemplateFunction) {
+async function sendEmail(users, eventMessage, customTemplateFunction) {
   try {
     const secretsResponse = await getSecretsValues();
     const sesCreds = JSON.parse(secretsResponse.SecretString);
@@ -91,7 +94,10 @@ async function sendEmail(users, eventMessage, logoUrl, customTemplateFunction) {
         secretAccessKey: sesCreds.ses_secret_access_key
       }
     });
-    const promises = users.map((user) => send(user, eventMessage, logoUrl, customTemplateFunction, ses));
+    const logoUrl = 'https://earthdatapub-dashboard-sit.s3.us-west-2.amazonaws.com/images/app/src/assets/images/nasa_test.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAQXSOCK3LCTPCLEDN%2F20241206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20241206T072705Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHAaCXVzLXdlc3QtMiJHMEUCIFtHNSblu37yqA1BEe0QXOSF5Eyn60Tpb1hm7mdD0lToAiEA4fz5Z4jGoUTV9NbOD8SH9msnj90RvFNvdBvVAHB5Ljcq6AIIKRADGgwwNTA2Mjk1OTY4ODYiDCLFgXkXDmz7sFZC%2BCrFAom2tQYZ2xm7pQ6rDrYbXRyVf40BtF6iQrfIyldYZm3JwlEzyJp29PvcBWBkfQB6266pfw2892%2FrxlrHTwyxXuS001ftUVEBmeaAM2Y4EWo3ncehqy0%2Fe4yjEGNOLoupgbFEyJ9RxZJYsEaNF1aIj2teAPo3EdRZXLDCiwe7poS9wSpRV8edz7zy5H8yA6maQGmnXhW8JNlJuWF%2BEHR4XwVCIg0uKHjLgzpQ3BE%2BJwau%2B7tM%2FmSsi6LiW29tloBHsE2cxy9ikqo3BrkIqFs1dOAKS%2B8eT%2Bc3qRMrntrchbI26kHoJDmBphA%2F%2Bpb4XOca1InDCwEzN6LHrV14ufwaDwwehyurag6lO3Hvux4eUoUtgLTpKfjLDaKcmNZ38rcb8NKAVaCjOCP3E47TQqXKCOCyMhA5kIRTU1HJNiOEQf8U0ek173UwyM7KugY6ngEvYwOKgwZMtGXr7Q3gZ1dBffQRJ%2FwpD6HbFCFRDgDUIWSywEwgm3Im6XpGGQw51%2FAUsCeK0l2CzE6kzdGMcvQet%2BbZUMT5cvED0PnYHi7CducP0237vixhdENjD2mDEd6zWWnF5EaiYWrsSV%2FPwRdUaptnUo4TfGIwDFPRSnrS70RWMIPh9nKRZqxW%2BWw8A2zjRHEEWNFpQrArxs%2Fslg%3D%3D&X-Amz-Signature=25e67f6adcd9be3696e8c4c50a293a2bd0222a07da49acdd7abb4f581ee490a9&X-Amz-SignedHeaders=host&x-id=GetObject';
+    const promises = users.map(
+      (user) => send(user, eventMessage, logoUrl, customTemplateFunction, ses)
+    );
     await Promise.all(promises);
     return { success: true };
   } catch (err) {
