@@ -19,16 +19,6 @@ async function createStep(step, stepName, rollbackInfo) {
   });
 }
 
-async function createNewStep(params, user) {
-  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
-
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    const result = await db.workflow.createStep(params);
-    return result;
-  }
-  return { status: 'Invalid Permissions' };
-}
-
 async function addSteps(steps, workflowId) {
   const STEP_MAX = 100;
   let activeStepName = 'init';
@@ -115,10 +105,42 @@ async function editWorkflowMethod(params, user) {
   return ({ status: 'Invalid Permissions' });
 }
 
+async function createNewStep(params, user) {
+  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const result = await db.step.create(params);
+    return result;
+  }
+  return { status: 'Invalid Permissions' };
+}
+
+async function stepFindAll(params, user) {
+  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const result = await db.step.findAll(params);
+    return result;
+  }
+  return { status: 'Invalid Permissions' };
+}
+
+async function stepFindById(params, user) {
+  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const result = await db.step.findById(params);
+    return result;
+  }
+  return { status: 'Invalid Permissions' };
+}
+
 const operations = {
   editWorkflow: editWorkflowMethod,
   createWorkflow: createWorkflowMethod,
-  createStep: createNewStep
+  createStep: createNewStep,
+  stepFindAll,
+  stepFindById
 };
 
 async function handler(event) {

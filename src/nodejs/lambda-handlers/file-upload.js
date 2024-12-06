@@ -107,6 +107,26 @@ async function getGroupUploadUrlMethod(event, user) {
   });
 }
 
+async function getAttachmentUploadUrlMethod(event, user) {
+  const {
+    file_name: fileName,
+    file_type: fileType,
+    checksum_value: checksumValue,
+    conversation_id: conversationId
+  } = event;
+  const userInfo = await db.user.findById({ id: user });
+
+  if (!userInfo.user_privileges.includes('ADMIN') || !userInfo.user_privileges.includes('NOTE_REPLY')) {
+    return ({ error: 'Not Authorized' });
+  }
+  const key = `drafts/${conversationId}/${user}/${fileName}`;
+  return generateUploadUrl({
+    key,
+    checksumValue,
+    fileType
+  });
+}
+
 async function getChecksum(key, s3Client) {
   const payload = {
     Bucket: ingestBucket,
@@ -221,7 +241,8 @@ const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
   getDownloadUrl: getDownloadUrlMethod,
-  getGroupUploadUrl: getGroupUploadUrlMethod
+  getGroupUploadUrl: getGroupUploadUrlMethod,
+  getAttachmentUploadUrl: getAttachmentUploadUrlMethod
 };
 
 async function handler(event) {
