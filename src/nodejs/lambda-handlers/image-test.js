@@ -1,34 +1,25 @@
-import { S3 } from '@aws-sdk/client-s3'; // Using ES Modules syntax
+/**
+ * Lambda to update request templates in the api after redeploying the overview,
+ * dashboard, and/or forms apps
+ * @module ImageTest
+ */
 
-// Initialize S3 client
-const s3 = new S3({
-  region: 'us-west-2'
-});
+const { S3, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
-export default async function handler() {
-  try {
-    const bucketName = 'earthdatapub-dashboard-sit';
-    const fileKey = 'images/app/src/assets/images/nasa_test.jpg';
+const region = process.env.REGION;
 
-    const params = {
-      Bucket: bucketName,
-      Key: fileKey
-    };
+const s3 = new S3({ region });
 
-    const file = await s3.getObject(params);
+async function handler() {
+  const payload = {
+    Bucket: process.env.DASHBOARD_BUCKET,
+    Key: 'images/app/src/assets/images/nasa_test.jpg'
+  };
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: 'File fetched successfully.',
-        fileContent: file.Body.toString('base64') // Base64 encoded content
-      })
-    };
-  } catch (error) {
-    console.error('Error fetching file from S3', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to fetch the file from S3.', details: error.message })
-    };
-  }
+  const command = new GetObjectCommand(payload);
+  const signedUrl = await getSignedUrl(s3, command, { expiresIn: 60 });
+  return signedUrl;
 }
+
+module.exports.handler = handler;
