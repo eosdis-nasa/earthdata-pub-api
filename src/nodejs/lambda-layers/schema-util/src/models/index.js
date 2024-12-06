@@ -48,6 +48,7 @@ const UMMCMN = require('./umm-cmn.js');
 const Upload = require('./upload.js');
 const GroupUpload = require('./group-upload.js');
 const Step = require('./step.js');
+const Section = require('./section.js');
 const AttachmentUpload = require('./attachment-upload.js');
 
 const models = {
@@ -99,7 +100,9 @@ const models = {
   Upload,
   GroupUpload,
   Step,
+  Section,
   AttachmentUpload
+
 };
 
 function collectionMetadata() {
