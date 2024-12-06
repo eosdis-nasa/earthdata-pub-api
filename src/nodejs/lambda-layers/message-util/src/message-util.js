@@ -47,10 +47,10 @@ async function getSecretsValues() {
   }
 }
 
-async function send(user, eventMessage, customTemplateFunction, ses, urlLogo) {
+async function send(user, eventMessage, logoUrl, customTemplateFunction, ses) {
   try {
     const bodyArray = await createEmailHtml({
-      user, eventMessage, customTemplateFunction, urlLogo
+      user, eventMessage, customTemplateFunction, logoUrl
     });
 
     const payload = {
