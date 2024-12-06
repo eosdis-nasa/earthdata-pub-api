@@ -18,7 +18,7 @@ async function handler() {
   };
 
   const command = new GetObjectCommand(payload);
-  const signedUrl = await getSignedUrl(s3, command, { expiresIn: 60 });
+  const signedUrl = await getSignedUrl(s3, command, { expiresIn: 60*60 });
   return signedUrl;
 }
 
