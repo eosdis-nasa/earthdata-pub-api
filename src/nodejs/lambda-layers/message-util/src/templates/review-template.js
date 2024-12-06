@@ -1,25 +1,27 @@
 const https = require('https');
 
 const getReviewerAddedTemplate = async (params, envUrl) => {
-  const fetchImageUrl = async (url) => new Promise((resolve, reject) => https.get(url, (res) => {
-    let data = '';
-    res.on('data', (chunk) => {
-      data += chunk;
-    });
-    res.on('end', () => {
+  const fetchImageUrl = (url) => new Promise((resolve, reject) => https.get(url, (res) => {
+    res.setEncoding('utf8'); // Ensure response is treated as a string
+    res.on('data', (data) => {
       if (res.statusCode === 200) {
         try {
           const jsonResponse = JSON.parse(data); // Parse the JSON response
-          resolve(jsonResponse.url); // Extract the 'url' key
+          if (jsonResponse.url) {
+            resolve(jsonResponse.url); // Extract the 'url' key
+          } else {
+            reject(new Error('URL not found in response'));
+          }
         } catch (error) {
-          reject(new Error('Failed to parse JSON response'));
+          reject(new Error(`Failed to parse JSON response: ${error.message}`));
         }
       } else {
         reject(new Error(`Failed to fetch image. Status: ${res.statusCode}`));
       }
     });
-  }).on('error', (err) => reject(new Error(`Error: ${err.message}`))));
 
+    res.on('error', (err) => reject(new Error(`Error in response: ${err.message}`)));
+  }).on('error', (err) => reject(new Error(`Error making request: ${err.message}`))));
   let imgSrc = '';
   try {
     // Fetch the signed URL from the API
