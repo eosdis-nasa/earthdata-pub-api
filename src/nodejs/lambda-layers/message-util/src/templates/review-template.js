@@ -1,34 +1,34 @@
 const https = require('https');
 
 const getReviewerAddedTemplate = async (params, envUrl) => {
-  const fetchImage = async (url) => new Promise((resolve, reject) => {
-    https.get(url, (res) => {
-      let data = '';
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-      res.on('end', () => {
-        if (res.statusCode === 200) {
-          resolve(data);
-        } else {
-          reject(new Error(`Failed to fetch image. Status: ${res.statusCode}`));
-        }
-      });
-    }).on('error', (err) => {
-      reject(new Error(`Error: ${err.message}`));
+  const fetchImageUrl = async (url) => new Promise((resolve, reject) => https.get(url, (res) => {
+    let data = '';
+    res.on('data', (chunk) => {
+      data += chunk;
     });
-  });
+    res.on('end', () => {
+      if (res.statusCode === 200) {
+        try {
+          const jsonResponse = JSON.parse(data); // Parse the JSON response
+          resolve(jsonResponse.url); // Extract the 'url' key
+        } catch (error) {
+          reject(new Error('Failed to parse JSON response'));
+        }
+      } else {
+        reject(new Error(`Failed to fetch image. Status: ${res.statusCode}`));
+      }
+    });
+  }).on('error', (err) => reject(new Error(`Error: ${err.message}`))));
 
-  // Fetch the <img> tag or fallback if an error occurs
-  let imgTag = '';
+  let imgSrc = '';
   try {
-    imgTag = await fetchImage('https://pub.sit.earthdata.nasa.gov/image');
+    // Fetch the signed URL from the API
+    imgSrc = await fetchImageUrl('https://pub.sit.earthdata.nasa.gov/image');
   } catch (error) {
-    console.error(error);
-    imgTag = '<img src="" alt="Placeholder Image" style="display:block"/>';
+    console.error(error.message);
+    imgSrc = await fetchImageUrl('https://pub.sit.earthdata.nasa.gov/image'); // Fallback image
   }
 
-  // Fallback Base64 image content (example provided here)
   const text = `Hello ${params.user.name},\n\nYou have been added as a reviewer to an Earthdata Pub request.\nYour review can be added at ${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}.`;
 
   const html = `
@@ -41,7 +41,8 @@ const getReviewerAddedTemplate = async (params, envUrl) => {
                    <table>
                      <tr>
                       <td width="60">
-                        <td width="60"><img src="${imgTag}"></td>
+                        <!-- Use the signed URL as the src -->
+                        <img src="${imgSrc}" alt="Logo" style="display:block"/>                
                       </td>
                       <td>
                         <h4>Earthdata Pub</h4>
