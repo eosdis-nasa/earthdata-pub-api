@@ -6,7 +6,7 @@ const getReviewerAddedTemplate = async (params, envUrl) => {
     res.on('data', (data) => {
       if (res.statusCode === 200) {
         try {
-          const jsonResponse = JSON.parse(data); // Parse the JSON response
+          const jsonResponse = data; // Parse the JSON response
           if (jsonResponse.url) {
             resolve(jsonResponse.url); // Extract the 'url' key
           } else {
