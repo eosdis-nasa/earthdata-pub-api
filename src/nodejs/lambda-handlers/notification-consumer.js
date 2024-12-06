@@ -91,9 +91,9 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
       senderId: note.sender_edpuser_id,
       userRole
     });
-
+  const nasaLogo = await getNasaLogoUrl();
   if (emailPayload.event_type === 'request_initialized') users = users.map((user) => ({ name: user.name, email: user.email, initiator: user.id === emailPayload.user_id }));
-  await msg.sendEmail(users, emailPayload, await getNasaLogoUrl());
+  await msg.sendEmail(users, emailPayload, nasaLogo);
 }
 
 async function processRecord(record) {
