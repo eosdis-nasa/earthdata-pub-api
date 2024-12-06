@@ -5,7 +5,6 @@
  * @module Notification
  * @see module:NotificationHandler
  */
-
 const msg = require('message-util');
 const db = require('database-util');
 
@@ -32,7 +31,8 @@ async function replyMethod(params) {
       conversation_id: params.conversation_id,
       text: params.text,
       viewer_users: params.viewer_users,
-      viewer_roles: params.viewer_roles
+      viewer_roles: params.viewer_roles,
+      attachments: params.attachments
     },
     user_id: params.context.user_id
   };

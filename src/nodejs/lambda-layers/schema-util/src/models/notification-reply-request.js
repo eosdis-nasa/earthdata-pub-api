@@ -16,6 +16,11 @@ module.exports.model = (path) => ({
       description: 'List of UUIDs of Roles to have visibility on the note',
       type: 'array',
       items: { $ref: `#${path}UUID` }
+    },
+    attachments: {
+      description: 'List of files names of attachments uploaded as part of the note',
+      type: 'array',
+      items: { type: 'string' }
     }
   }
 });
