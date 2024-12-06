@@ -25,7 +25,7 @@ const getReviewerAddedTemplate = async (params, envUrl) => {
     imgTag = await fetchImage('https://pub.sit.earthdata.nasa.gov/image');
   } catch (error) {
     console.error(error);
-    imgTag = '<img src="" alt="Placeholder Image" style="display:block"/>'; // Fallback image
+    imgTag = '<img src="" alt="Placeholder Image" style="display:block"/>';
   }
 
   // Fallback Base64 image content (example provided here)
@@ -41,7 +41,7 @@ const getReviewerAddedTemplate = async (params, envUrl) => {
                    <table>
                      <tr>
                       <td width="60">
-                       ${imgTag}                      
+                        <td width="60"><img src="${imgTag}"></td>
                       </td>
                       <td>
                         <h4>Earthdata Pub</h4>
