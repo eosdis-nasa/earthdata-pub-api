@@ -13,7 +13,6 @@
   "license": "Unlicense",
   "private": true,
   "dependencies": {
-
     "@aws-sdk/client-api-gateway": "3.347.1",
     "@aws-sdk/client-cognito-identity-provider": "3.347.1",
     "@aws-sdk/client-lambda": "3.347.1",
@@ -21,12 +20,12 @@
     "@aws-sdk/client-s3": "3.347.1",
     "@aws-sdk/client-secrets-manager": "3.347.1",
     "@aws-sdk/client-ses": "3.347.1",
+    "@aws-sdk/client-sesv2": "^3.699.0",
     "@aws-sdk/client-sns": "3.347.1",
     "@aws-sdk/client-sqs": "3.347.1",
     "@aws-sdk/credential-providers": "3.347.1",
     "@aws-sdk/s3-presigned-post": "3.348.0",
     "@aws-sdk/s3-request-presigner": "3.347.1",
-    "@aws-sdk/client-ses": "3.347.1",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "js-yaml": "^4.0.0",
