@@ -62,12 +62,8 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
       senderId: note.sender_edpuser_id,
       userRole
     });
-  const bucketPayload = {
-    bucket: process.env.DASHBOARD_BUCKET,
-    key: 'images/app/src/assets/images/nasa_test.jpg'
-  };
   if (emailPayload.event_type === 'request_initialized') users = users.map((user) => ({ name: user.name, email: user.email, initiator: user.id === emailPayload.user_id }));
-  await msg.sendEmail(users, emailPayload, bucketPayload);
+  await msg.sendEmail(users, emailPayload);
 }
 
 async function processRecord(record) {
