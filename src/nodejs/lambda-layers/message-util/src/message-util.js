@@ -127,12 +127,7 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
     const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
     const nasaLogo = await getAttachmentAsBase64String({
       bucket: process.env.DASHBOARD_BUCKET,
-      key: 'images/app/src/assets/images/nasa_test.jpg'
-    });
-
-    const imageAttachment = await getAttachmentAsBase64String({
-      bucket: process.env.DASHBOARD_BUCKET,
-      key: 'images/app/src/assets/images/nasa_test.jpg'
+      key: 'images/app/src/assets/images/nasa-logo.d7dbc5e408ccd79bb7578f3358413d69.png'
     });
 
     const rawEmail = getRawFromTemplate({
@@ -142,8 +137,7 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       htmlText: bodyArray[1],
       plainText: bodyArray[0],
       images: [
-        { data: imageAttachment, name: 'image1.jpg' },
-        { data: imageAttachment, name: 'image2.jpg' }
+      // { data: imageAttachment, name: 'image1.jpg' } // attachment code will be added later
       ],
       nasaLogo
     });
