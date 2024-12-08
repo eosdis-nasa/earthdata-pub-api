@@ -9,7 +9,7 @@ const getDMTemplate = (params, envUrl) => {
                  <td>
                    <table>
                      <tr>
-                       <td width="60"><img src = "https://pub.earthdata.nasa.gov/dashboard/images/app/src/assets/images/nasa-logo.78fcba4d9325e8ac5a2e15699d035ee0.svg"></td>
+                       <td width="60"><img src="cid:NASALogo" alt="NASA Logo"></td>
                        <td><h4>Earthdata Pub</h4></td>
                      </tr>
                    </table>

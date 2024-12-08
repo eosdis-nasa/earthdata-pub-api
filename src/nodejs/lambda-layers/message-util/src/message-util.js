@@ -1,6 +1,8 @@
 const { SNS } = require('@aws-sdk/client-sns');
-const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
+
 const uuid = require('uuid');
 const { createEmailHtml } = require('./create-email');
 
@@ -10,6 +12,80 @@ const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
 // const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
 // const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+
+// Helper function to read a stream into a buffer
+const streamToBuffer = (stream) => new Promise((resolve, reject) => {
+  const chunks = [];
+  stream.on('data', (chunk) => chunks.push(chunk));
+  stream.on('end', () => resolve(Buffer.concat(chunks)));
+  stream.on('error', reject);
+});
+
+// Helper to fetch attachment as base64
+const getAttachmentAsBase64String = async ({ bucket, key }) => {
+  const s3 = new S3Client();
+
+  try {
+    const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+    const buffer = await streamToBuffer(response.Body);
+    return buffer.toString('base64');
+  } catch (error) {
+    console.error(`Failed to fetch S3 object: ${error.message}`);
+    throw error;
+  }
+};
+
+// Generate the raw email with attachment
+const getRawFromTemplate = ({
+  subject,
+  from,
+  to,
+  htmlText,
+  plainText,
+  images = [],
+  nasaLogo
+}) => {
+  const nasaLogoPart = nasaLogo
+    ? `
+--EDPUB_ALTERNATIVE
+Content-Type: image/png
+Content-ID: <NASALogo>
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="nasa_logo.png"
+
+${nasaLogo}`
+    : '';
+
+  const imagesPart = images
+    .map(
+      ({ data, name }) => `
+--EDPUB_ALTERNATIVE
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="${name}"
+
+${data}`
+    )
+    .join(''); // Join all image parts into a single string
+
+  return `MIME-Version: 1.0
+Content-Type: multipart/alternative;boundary=EDPUB_ALTERNATIVE
+From: ${from}
+To: ${to}
+Subject: ${subject}
+
+--EDPUB_ALTERNATIVE
+Content-Type: text/plain; charset=utf-8
+
+${plainText}
+
+--EDPUB_ALTERNATIVE
+Content-Type: text/html; charset=utf-8
+
+${htmlText}
+${nasaLogoPart}${imagesPart}
+--EDPUB_ALTERNATIVE--`;
+};
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -49,28 +125,37 @@ async function getSecretsValues() {
 async function send(user, eventMessage, customTemplateFunction, ses) {
   try {
     const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
-    const payload = {
-      Source: sourceEmail,
-      Destination: {
-        ToAddresses: [user.email]
-      },
-      Message: {
-        Subject: {
-          Data: 'EDPUB Notification'
-        },
-        Body: {
-          Text: {
-            Data: bodyArray[0],
-            Charset: 'UTF-8'
-          },
-          Html: {
-            Data: bodyArray[1],
-            Charset: 'UTF-8'
-          }
+    const nasaLogo = await getAttachmentAsBase64String({
+      bucket: process.env.DASHBOARD_BUCKET,
+      key: 'images/app/src/assets/images/nasa_test.jpg'
+    });
+
+    const imageAttachment = await getAttachmentAsBase64String({
+      bucket: process.env.DASHBOARD_BUCKET,
+      key: 'images/app/src/assets/images/nasa_test.jpg'
+    });
+
+    const rawEmail = getRawFromTemplate({
+      subject: 'EDPUB Notification',
+      from: sourceEmail,
+      to: user.email,
+      htmlText: bodyArray[1],
+      plainText: bodyArray[0],
+      images: [
+        { data: imageAttachment, name: 'image1.jpg' },
+        { data: imageAttachment, name: 'image2.jpg' }
+      ],
+      nasaLogo
+    });
+
+    const command = new SendEmailCommand({
+      Content: {
+        Raw: {
+          Data: new TextEncoder().encode(rawEmail)
         }
       }
-    };
-    const command = new SendEmailCommand(payload);
+    });
+
     await ses.send(command);
     return { success: true };
   } catch (err) {
@@ -83,7 +168,7 @@ async function sendEmail(users, eventMessage, customTemplateFunction) {
   try {
     const secretsResponse = await getSecretsValues();
     const sesCreds = JSON.parse(secretsResponse.SecretString);
-    const ses = new SESClient({
+    const ses = new SESv2Client({
       region: 'us-east-1',
       credentials: {
         accessKeyId: sesCreds.ses_access_key_id,
