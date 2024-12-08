@@ -84,10 +84,33 @@ const getRawFromTemplate = ({
   to,
   htmlText,
   plainText,
-  image,
-  imageName,
+  images = [],
   nasaLogo
-}) => `MIME-Version: 1.0
+}) => {
+  const nasaLogoPart = nasaLogo
+    ? `
+--EDPUB_ALTERNATIVE
+Content-Type: image/png
+Content-ID: <NASALogo>
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="nasa_logo.png"
+
+${nasaLogo}`
+    : '';
+
+  const imagesPart = images
+    .map(
+      ({ data, name }) => `
+--EDPUB_ALTERNATIVE
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="${name}"
+
+${data}`
+    )
+    .join(''); // Join all image parts into a single string
+
+  return `MIME-Version: 1.0
 Content-Type: multipart/alternative;boundary=EDPUB_ALTERNATIVE
 From: ${from}
 To: ${to}
@@ -102,23 +125,9 @@ ${plainText}
 Content-Type: text/html; charset=utf-8
 
 ${htmlText}
-
---EDPUB_ALTERNATIVE
-Content-Type: image/png
-Content-ID: <NASALogo>
-Content-Transfer-Encoding: base64
-Content-Disposition: inline; filename="nasa_logo.png"
-
-${nasaLogo}
-
---EDPUB_ALTERNATIVE
-Content-Type: image/png
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="${imageName}"
-
-${image}
-
+${nasaLogoPart}${imagesPart}
 --EDPUB_ALTERNATIVE--`;
+};
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -158,28 +167,6 @@ async function getSecretsValues() {
 async function send(user, eventMessage, customTemplateFunction, ses) {
   try {
     const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
-    // const payload = {
-    //   Source: sourceEmail,
-    //   Destination: {
-    //     ToAddresses: [user.email]
-    //   },
-    //   Message: {
-    //     Subject: {
-    //       Data: 'EDPUB Notification'
-    //     },
-    //     Body: {
-    //       Text: {
-    //         Data: bodyArray[0],
-    //         Charset: 'UTF-8'
-    //       },
-    //       Html: {
-    //         Data: bodyArray[1],
-    //         Charset: 'UTF-8'
-    //       }
-    //     }
-    //   }
-    // };
-
     const nasaLogo = await getAttachmentAsBase64String({
       bucket: process.env.DASHBOARD_BUCKET,
       key: 'images/app/src/assets/images/nasa_test.jpg'
@@ -196,8 +183,10 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       to: 'deepak.acharya@uah.edu', // Replace with verified recipient
       htmlText: bodyArray[1],
       plainText: bodyArray[0],
-      image: imageAttachment,
-      imageName: 'test_image.png',
+      images: [
+        { data: imageAttachment, name: 'image1.jpg' },
+        { data: imageAttachment, name: 'image2.jpg' }
+      ],
       nasaLogo
     });
 
