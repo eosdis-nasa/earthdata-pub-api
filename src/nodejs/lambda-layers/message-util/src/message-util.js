@@ -182,12 +182,12 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
 
     const nasaLogo = await getAttachmentAsBase64String({
       bucket: process.env.DASHBOARD_BUCKET,
-      key: 'images/app/src/assets/images/nasa_test.jpg' // Update with correct key
+      key: 'images/app/src/assets/images/nasa_test.jpg'
     });
 
     const imageAttachment = await getAttachmentAsBase64String({
       bucket: process.env.DASHBOARD_BUCKET,
-      key: 'images/app/src/assets/images/nasa_test.jpg' // Update with correct key
+      key: 'images/app/src/assets/images/nasa_test.jpg'
     });
 
     const rawEmail = getRawFromTemplate({
