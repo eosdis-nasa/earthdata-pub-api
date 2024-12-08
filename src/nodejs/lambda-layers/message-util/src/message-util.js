@@ -1,51 +1,19 @@
 const { SNS } = require('@aws-sdk/client-sns');
-const { SendEmailCommand } = require('@aws-sdk/client-ses');
-const { SESv2Client } = require('@aws-sdk/client-sesv2');
-const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
-
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
-const uuid = require('uuid');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
 
+const uuid = require('uuid');
+const { createEmailHtml } = require('./create-email');
+
+const sourceEmail = process.env.SOURCE_EMAIL;
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
-
 // const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
 // const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
 
-const getRawFromTemplate = ({
-  subject, from, to, htmlText, image, imageName, nasaLogo
-}) => `MIME-Version: 1.0
-Content-Type: multipart/mixed;boundary=EDPUB_BOUNDARY
-From: <${from}>
-To: <${to}>
-Subject: ${subject}
-
---EDPUB_BOUNDARY
-Content-Type: text/html;charset=utf-8
-
-${htmlText}
-
---EDPUB_BOUNDARY
-Content-Type: image/png
-Content-ID: <NASALogo>
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment
-
-${nasaLogo}
-
---EDPUB_BOUNDARY
-Content-Type: image/png
-Content-Transfer-Encoding: base64
-Content-Disposition: inline ;filename="${imageName}"
-
-${image}
-
---EDPUB_BOUNDARY--
-`;
-
-const wrapBase64String = (data, lineLength = 512) => data.match(new RegExp(`.{1,${lineLength}}`, 'g')).join('\r\n');
-
+// Helper function to read a stream into a buffer
 const streamToBuffer = (stream) => new Promise((resolve, reject) => {
   const chunks = [];
   stream.on('data', (chunk) => chunks.push(chunk));
@@ -53,25 +21,104 @@ const streamToBuffer = (stream) => new Promise((resolve, reject) => {
   stream.on('error', reject);
 });
 
+// Helper to fetch attachment as base64
 const getAttachmentAsBase64String = async ({ bucket, key }) => {
   const s3 = new S3Client();
 
   try {
-    const response = await s3.send(
-      new GetObjectCommand({ Bucket: bucket, Key: key })
-    );
-
+    const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
     const buffer = await streamToBuffer(response.Body);
-    const base64String = buffer.toString('base64');
-
-    return wrapBase64String(base64String);
+    return buffer.toString('base64');
   } catch (error) {
     console.error(`Failed to fetch S3 object: ${error.message}`);
     throw error;
   }
 };
 
-const recipientListToStr = (recipients) => `<${recipients.join('>,<')}>`;
+// Plain text email content
+const plainTextContent = `Hello,
+
+You have been added as a reviewer to an Earthdata Pub request. 
+Visit the Earthdata Pub dashboard here: https://example.com/dashboard
+
+Thanks,
+Earthdata Pub Team`;
+
+// HTML email content
+const htmlContent = `<html>
+    <body style="background: white">
+      <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style>
+      <table border="0" cellpadding="10" cellspacing="0" style="width:100%">
+        <tr style="width:100%;background:#f8f8f8">
+          <td>
+            <table>
+              <tr>
+                <td width="60">
+                  <img src="cid:NASALogo" alt="NASA Logo">
+                </td>
+                <td>
+                  <h4>Earthdata Pub</h4>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td align="right"><b>Reviewer Added</b></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding:20px;">
+            <h1>Hello,</h1><br><br>
+            <p>You have been added as a reviewer to an Earthdata Pub request.</p>
+            <p>Your review can be added at <a href="https://example.com/review">https://example.com/review</a>.</p><br>
+            <p><a href="https://example.com/dashboard">Visit Dashboard</a></p>
+          </td>
+        </tr>
+      </table>
+    </body>
+  </html>`;
+
+// Generate the raw email with attachment
+const getRawFromTemplate = ({
+  subject,
+  from,
+  to,
+  htmlText,
+  plainText,
+  image,
+  imageName,
+  nasaLogo
+}) => `MIME-Version: 1.0
+Content-Type: multipart/alternative;boundary=EDPUB_ALTERNATIVE
+From: ${from}
+To: ${to}
+Subject: ${subject}
+
+--EDPUB_ALTERNATIVE
+Content-Type: text/plain; charset=utf-8
+
+${plainText}
+
+--EDPUB_ALTERNATIVE
+Content-Type: text/html; charset=utf-8
+
+${htmlText}
+
+--EDPUB_ALTERNATIVE
+Content-Type: image/png
+Content-ID: <NASALogo>
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="nasa_logo.png"
+
+${nasaLogo}
+
+--EDPUB_ALTERNATIVE
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="${imageName}"
+
+${image}
+
+--EDPUB_ALTERNATIVE--`;
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -108,69 +155,69 @@ async function getSecretsValues() {
   }
 }
 
-async function send(user, eventMessage, bucketInfo, customTemplateFunction, ses) {
-  // try {
-  //   const bodyArray = await createEmailHtml({
-  //     user, eventMessage, customTemplateFunction, logoUrl
-  //   });
+async function send(user, eventMessage, customTemplateFunction, ses) {
+  try {
+    // const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
+    // const payload = {
+    //   Source: sourceEmail,
+    //   Destination: {
+    //     ToAddresses: [user.email]
+    //   },
+    //   Message: {
+    //     Subject: {
+    //       Data: 'EDPUB Notification'
+    //     },
+    //     Body: {
+    //       Text: {
+    //         Data: bodyArray[0],
+    //         Charset: 'UTF-8'
+    //       },
+    //       Html: {
+    //         Data: bodyArray[1],
+    //         Charset: 'UTF-8'
+    //       }
+    //     }
+    //   }
+    // };
 
-  //   const payload = {
-  //     Source: sourceEmail,
-  //     Destination: {
-  //       ToAddresses: [user.email]
-  //     },
-  //     Message: {
-  //       Subject: {
-  //         Data: 'EDPUB Notification'
-  //       },
-  //       Body: {
-  //         Text: {
-  //           Data: bodyArray[0],
-  //           Charset: 'UTF-8'
-  //         },
-  //         Html: {
-  //           Data: bodyArray[1],
-  //           Charset: 'UTF-8'
-  //         }
-  //       }
-  //     }
-  //   };
-  //   const command = new SendEmailCommand(payload);
-  //   await ses.send(command);
-  //   return { success: true };
-  // } catch (err) {
-  //   console.error(`Error sending email to ${user.email}:`, err);
-  //   return ({ error: 'Error sending email ' });
-  // }
-  const attachmentString = await getAttachmentAsBase64String({
-    bucket: bucketInfo.bucket,
-    key: bucketInfo.key
-  });
-  const logoString = await getAttachmentAsBase64String({
-    bucket: bucketInfo.bucket,
-    key: bucketInfo.key
-  });
-  const rawString = await getRawFromTemplate({
-    subject: 'Testing Raw Email With Attachments',
-    from: 'noreply@nasa.gov',
-    to: recipientListToStr(['deepak.acharya@uah.edu']),
-    htmlText: '<html> <body> <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style> <table border="0" cellpadding="10" cellspacing="0" style="width:100%"> <tr style="width:100%;background:#f8f8f8"> <td> <table> <tr> <td width="60"><img src="cid:NASALogo"></td> <td><h4>Earthdata Pub</h4></td> </tr> </table> </td> <td align="right"><b>Direct Message Received</b></td> <td></td> </tr> <tr> <td colspan="2" style="padding:20px;"> <h1>Testing Header</h1> <p>Testing paragraph</p> </td> </tr> </table> </body> </html>',
-    image: attachmentString,
-    imageName: 'test.png',
-    nasaLogo: logoString
-  });
-  const command = new SendEmailCommand({
-    Content: {
-      Raw: {
-        Data: new TextEncoder().encode(rawString)
+    const nasaLogo = await getAttachmentAsBase64String({
+      bucket: process.env.DASHBOARD_BUCKET,
+      key: 'images/app/src/assets/images/nasa_test.jpg' // Update with correct key
+    });
+
+    const imageAttachment = await getAttachmentAsBase64String({
+      bucket: process.env.DASHBOARD_BUCKET,
+      key: 'images/app/src/assets/images/nasa_test.jpg' // Update with correct key
+    });
+
+    const rawEmail = getRawFromTemplate({
+      subject: 'EDPUB Notification',
+      from: sourceEmail, // Replace with verified SES email
+      to: 'deepak.acharya@uah.edu', // Replace with verified recipient
+      htmlText: htmlContent,
+      plainText: plainTextContent,
+      image: imageAttachment,
+      imageName: 'test_image.png',
+      nasaLogo
+    });
+
+    const command = new SendEmailCommand({
+      Content: {
+        Raw: {
+          Data: new TextEncoder().encode(rawEmail)
+        }
       }
-    }
-  });
-  await ses.send(command);
-  return { success: true };
+    });
+
+    await ses.send(command);
+    return { success: true };
+  } catch (err) {
+    console.error(`Error sending email to ${user.email}:`, err);
+    return ({ error: 'Error sending email ' });
+  }
 }
 
-async function sendEmail(users, eventMessage, bucketInfo, customTemplateFunction) {
+async function sendEmail(users, eventMessage, customTemplateFunction) {
   try {
     const secretsResponse = await getSecretsValues();
     const sesCreds = JSON.parse(secretsResponse.SecretString);
@@ -181,10 +228,7 @@ async function sendEmail(users, eventMessage, bucketInfo, customTemplateFunction
         secretAccessKey: sesCreds.ses_secret_access_key
       }
     });
-
-    const promises = users.map(
-      (user) => send(user, eventMessage, bucketInfo, customTemplateFunction, ses)
-    );
+    const promises = users.map((user) => send(user, eventMessage, customTemplateFunction, ses));
     await Promise.all(promises);
     return { success: true };
   } catch (err) {
