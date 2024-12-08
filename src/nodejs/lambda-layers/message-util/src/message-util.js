@@ -35,47 +35,47 @@ const getAttachmentAsBase64String = async ({ bucket, key }) => {
   }
 };
 
-// Plain text email content
-const plainTextContent = `Hello,
+// // Plain text email content
+// const plainTextContent = `Hello,
 
-You have been added as a reviewer to an Earthdata Pub request. 
-Visit the Earthdata Pub dashboard here: https://example.com/dashboard
+// You have been added as a reviewer to an Earthdata Pub request.
+// Visit the Earthdata Pub dashboard here: https://example.com/dashboard
 
-Thanks,
-Earthdata Pub Team`;
+// Thanks,
+// Earthdata Pub Team`;
 
-// HTML email content
-const htmlContent = `<html>
-    <body style="background: white">
-      <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style>
-      <table border="0" cellpadding="10" cellspacing="0" style="width:100%">
-        <tr style="width:100%;background:#f8f8f8">
-          <td>
-            <table>
-              <tr>
-                <td width="60">
-                  <img src="cid:NASALogo" alt="NASA Logo">
-                </td>
-                <td>
-                  <h4>Earthdata Pub</h4>
-                </td>
-              </tr>
-            </table>
-          </td>
-          <td align="right"><b>Reviewer Added</b></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td colspan="2" style="padding:20px;">
-            <h1>Hello,</h1><br><br>
-            <p>You have been added as a reviewer to an Earthdata Pub request.</p>
-            <p>Your review can be added at <a href="https://example.com/review">https://example.com/review</a>.</p><br>
-            <p><a href="https://example.com/dashboard">Visit Dashboard</a></p>
-          </td>
-        </tr>
-      </table>
-    </body>
-  </html>`;
+// // HTML email content
+// const htmlContent = `<html>
+//     <body style="background: white">
+//       <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style>
+//       <table border="0" cellpadding="10" cellspacing="0" style="width:100%">
+//         <tr style="width:100%;background:#f8f8f8">
+//           <td>
+//             <table>
+//               <tr>
+//                 <td width="60">
+//                   <img src="cid:NASALogo" alt="NASA Logo">
+//                 </td>
+//                 <td>
+//                   <h4>Earthdata Pub</h4>
+//                 </td>
+//               </tr>
+//             </table>
+//           </td>
+//           <td align="right"><b>Reviewer Added</b></td>
+//           <td></td>
+//         </tr>
+//         <tr>
+//           <td colspan="2" style="padding:20px;">
+//             <h1>Hello,</h1><br><br>
+//             <p>You have been added as a reviewer to an Earthdata Pub request.</p>
+//             <p>Your review can be added at <a href="https://example.com/review">https://example.com/review</a>.</p><br>
+//             <p><a href="https://example.com/dashboard">Visit Dashboard</a></p>
+//           </td>
+//         </tr>
+//       </table>
+//     </body>
+//   </html>`;
 
 // Generate the raw email with attachment
 const getRawFromTemplate = ({
@@ -157,7 +157,7 @@ async function getSecretsValues() {
 
 async function send(user, eventMessage, customTemplateFunction, ses) {
   try {
-    // const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
+    const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
     // const payload = {
     //   Source: sourceEmail,
     //   Destination: {
@@ -194,8 +194,8 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       subject: 'EDPUB Notification',
       from: sourceEmail, // Replace with verified SES email
       to: 'deepak.acharya@uah.edu', // Replace with verified recipient
-      htmlText: htmlContent,
-      plainText: plainTextContent,
+      htmlText: bodyArray[1],
+      plainText: bodyArray[0],
       image: imageAttachment,
       imageName: 'test_image.png',
       nasaLogo
