@@ -179,8 +179,8 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
 
     const rawEmail = getRawFromTemplate({
       subject: 'EDPUB Notification',
-      from: sourceEmail, // Replace with verified SES email
-      to: 'deepak.acharya@uah.edu', // Replace with verified recipient
+      from: sourceEmail,
+      to: user.email,
       htmlText: bodyArray[1],
       plainText: bodyArray[0],
       images: [
