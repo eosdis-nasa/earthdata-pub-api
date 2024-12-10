@@ -37,9 +37,9 @@ async function replyMethod(params) {
     user_id: params.context.user_id
   };
   message.data.step_name = params.step_name ? params.step_name : null;
-
+  console.log('attachments', message);
   await msg.sendEvent(message);
-  return { message: 'Successfully sent.' };
+  return { message: message };
 }
 
 async function addUserMethod(params) {

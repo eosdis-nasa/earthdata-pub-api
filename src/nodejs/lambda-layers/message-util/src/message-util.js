@@ -99,7 +99,7 @@ async function sendEmail(users, eventMessage, customTemplateFunction) {
   }
 }
 
-function sendEvent(eventMessage) {
+async function sendEvent(eventMessage) {
   const params = {
     Subject: 'event',
     Message: JSON.stringify(eventMessage),
@@ -108,7 +108,8 @@ function sendEvent(eventMessage) {
     MessageDeduplicationId: Date.now().toString(),
     TopicArn: eventSns
   };
-  const response = sns.publish(params).catch((e) => { console.error(e); });
+  const response = await sns.publish(params).catch((e) => { console.error(e); });
+  console.log('response', response);
   return response;
 }
 
