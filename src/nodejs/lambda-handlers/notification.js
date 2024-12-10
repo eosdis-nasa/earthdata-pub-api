@@ -37,9 +37,8 @@ async function replyMethod(params) {
     user_id: params.context.user_id
   };
   message.data.step_name = params.step_name ? params.step_name : null;
-  console.log('attachments', message);
   await msg.sendEvent(message);
-  return { message: message };
+  return { message: 'Successfully sent.' };
 }
 
 async function addUserMethod(params) {
@@ -71,6 +70,31 @@ async function conversationMethod(params) {
   const { params: { detailed, step_name: stepName } } = params;
   let response = {};
   const userInfo = await db.user.findById({ id: params.context.user_id });
+
+  // Function to check for lock and wait if enforced
+  const waitForLockRelease = async () => {
+    let isLocked = true;
+    const maxAttempts = 5; // Number of attempts before giving up
+    let attempts = 0;
+
+    while (isLocked && attempts < maxAttempts) {
+      const lockStatus = await db.note.checkNoteTableLock();
+      isLocked = lockStatus.lock_exists;
+      if (isLocked) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        attempts += 1;
+      }
+    }
+
+    if (isLocked) {
+      throw new Error('Lock on note table persisted beyond acceptable limit.');
+    }
+  };
+
+  // Check for lock and wait if necessary
+  await waitForLockRelease();
+
+  // Fetch conversation data based on user privileges
   if (userInfo.user_privileges.includes('ADMIN')
   || userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
     response = await db.note.readConversation({
@@ -92,11 +116,12 @@ async function conversationMethod(params) {
       ...(stepName && { step_name: stepName })
     });
   }
-  // TODO - Consider updating js filter implementation to be within SQl query instead
+
+  // Filter notes if detailed mode is not requested
   if (String(detailed).toLowerCase() !== 'true') {
-    // Filter id of system user which sends automated logging notes
     response.notes = response.notes.filter((note) => note.from.id !== '1b10a09d-d342-4eee-a9eb-c99acd2dde17');
   }
+
   return response;
 }
 

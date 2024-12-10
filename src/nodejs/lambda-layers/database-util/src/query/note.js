@@ -524,6 +524,14 @@ SELECT *, FALSE as unread FROM (${sql.select({
   order: 'DESC'
 })}) privilegedConversationList ORDER BY last_change DESC`;
 
+const checkNoteTableLock = () => `
+SELECT EXISTS (
+  SELECT 1
+  FROM pg_locks
+  WHERE relation::regclass::text = 'note'
+) AS lock_exists;
+`;
+
 const readConversation = (params) => `
 ${params.user_id && !params.daac ?
 `WITH user_update AS (UPDATE conversation_edpuser SET
@@ -771,3 +779,4 @@ module.exports.removeViewer = removeViewer;
 module.exports.addViewerRoles = addViewerRoles;
 module.exports.removeViewerRole = removeViewerRole;
 module.exports.addAttachments = addAttachments;
+module.exports.checkNoteTableLock = checkNoteTableLock;

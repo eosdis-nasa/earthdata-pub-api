@@ -109,7 +109,6 @@ async function sendEvent(eventMessage) {
     TopicArn: eventSns
   };
   const response = await sns.publish(params).catch((e) => { console.error(e); });
-  console.log('response', response);
   return response;
 }
 
