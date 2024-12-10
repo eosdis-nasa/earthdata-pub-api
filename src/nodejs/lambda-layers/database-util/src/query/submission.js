@@ -329,9 +329,13 @@ FROM submission
 WHERE submission.id = {{id}}`;
 
 const initialize = (params) => `
-INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''}, contributor_ids)
-VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}::UUID])
-RETURNING *`;
+WITH new_submission AS (
+  INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''}, contributor_ids)
+  VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}::UUID])
+  RETURNING *
+)
+${params.daac_id ? ', association AS (INSERT INTO publication_accession_association SELECT new_submission.id, {{accession_submission_id}}, {{code}} FROM new_submission)' : ''}
+SELECT * FROM new_submission`;
 
 const updateName = () => `
 UPDATE submission

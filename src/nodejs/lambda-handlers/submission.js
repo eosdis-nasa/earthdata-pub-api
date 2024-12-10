@@ -57,11 +57,37 @@ async function resumeMethod(event, user, silent = false) {
   return status;
 }
 
+async function validateCodeMethod(event) {
+  const { code } = event;
+  const codeData = await db.submission.checkCode({ code });
+
+  // If we get anything but the expected return of daac_id and submission_id the validation failed
+  if (codeData.daac_id) {
+    return {
+      is_valid: true,
+      ...codeData
+    };
+  }
+
+  return { is_valid: false };
+}
+
 async function initializeMethod(event, user) {
-  const submission = await db.submission.initialize({
+  const initializationData = {
     user_id: user.id,
     ...event
-  });
+  };
+  const codeData = event.code ? await validateCodeMethod({ code: event.code }) : null;
+
+  if (codeData && codeData.is_valid === true) {
+    // Add code table properties in order to populate the publication_accession_association table
+    initializationData.daac_id = codeData.daac_id;
+    initializationData.accession_submission_id = codeData.submission_id;
+  } else if (codeData) {
+    return { error: 'Invalid Code' };
+  }
+
+  const submission = await db.submission.initialize(initializationData);
   const status = await db.submission.getState(submission);
   const eventMessage = {
     event_type: 'request_initialized',
@@ -390,20 +416,6 @@ async function deleteStepReviewApprovalMethod(event, user) {
     return formData;
   }
   return { error: 'Not Authorized' };
-}
-
-async function validateCodeMethod(event) {
-  const { code } = event.params;
-
-  const codeData = await db.submission.checkCode({ code });
-  const validationResponse = { isValid: false };
-
-  // If we get anything but the expected return of daac_id and submission_id the validation failed
-  if (codeData.daac_id) {
-    validationResponse.isValid = true;
-  }
-
-  return validationResponse;
 }
 
 const operations = {
