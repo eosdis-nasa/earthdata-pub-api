@@ -86,7 +86,7 @@ async function editWorkflowMethod(params, user) {
     id, version, description, steps
   } = params;
 
-  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_UPDATE'];
+  const approvedUserPrivileges = ['ADMIN'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { steps: oldSteps } = await db.workflow.findById({ id });
     await db.workflow.clearSteps({ id });
