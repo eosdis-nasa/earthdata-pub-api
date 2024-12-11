@@ -1142,3 +1142,25 @@ resource "aws_lambda_permission" "mfa_auth" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/mfa/*"
 }
+
+# DraftCleanup Lambda
+resource "aws_lambda_function" "draft_cleanup" {
+  filename         = "../artifacts/draft-cleanup-lambda.zip"
+  function_name    = "remap_statics"
+  role             = var.edpub_lambda_role_arn
+  handler          = "draft-cleanup.handler"
+  layers           = []
+  runtime          = "nodejs18.x"
+  source_code_hash = filesha256("../artifacts/draft-cleanup-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION           = var.region
+      INGEST_BUCKET    = var.edpub_upload_s3_bucket
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
