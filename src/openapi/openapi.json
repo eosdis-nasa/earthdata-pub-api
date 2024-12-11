@@ -2054,7 +2054,7 @@
       ],
       "get": {
         "tags": [
-          "data"
+          "notification"
         ],
         "summary": "Get notes",
         "description": "Returns list of notes",
@@ -2138,12 +2138,12 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${notification_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"notification\",\"operation\":\"findByConversationId\",\"params\":{\"conversation_id\": \"$req.path.get('conversation_id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"conversation\",\"operation\":\"findByConversationId\",\"params\":{\"conversation_id\": \"$req.path.get('conversation_id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
