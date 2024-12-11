@@ -234,6 +234,7 @@ module.exports.noteFindAll = function noteFindAll(req, res, next) {
 module.exports.findByConversationId = function findByConversationId(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
+    resource: 'note',
     operation: 'findByConversationId',
     conversation_id: params.conversation_id.value,
     context: { user_id: req.user_id }

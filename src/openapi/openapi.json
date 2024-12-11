@@ -2054,7 +2054,7 @@
       ],
       "get": {
         "tags": [
-          "notification"
+          "data"
         ],
         "summary": "Get notes",
         "description": "Returns list of notes",
@@ -2143,7 +2143,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"conversation\",\"operation\":\"findByConversationId\",\"params\":{\"conversation_id\": \"$req.path.get('conversation_id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"note\",\"operation\":\"findByConversationId\",\"params\":{\"conversation_id\": \"$req.path.get('conversation_id')\"},\"context\":{\"user_id\": \"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
