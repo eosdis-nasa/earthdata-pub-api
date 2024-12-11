@@ -84,7 +84,7 @@ async function offboardDaac({ id, context }) {
 }
 
 async function findByConversationId(params) {
-  const { conversation_id: conversationId } = params;
+  const { conversation_id: conversationId } = params.params;
   const approvedUserPrivileges = ['ADMIN', 'NOTE_ADDUSER'];
   const user = await db.user.findById({ id: params.context.user_id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {

@@ -110,7 +110,7 @@ async function sendEvent(eventMessage) {
   };
 
   try {
-    const response = await sns.publish(params).promise();
+    const response = await sns.publish(params).catch((e) => { console.error(e); });
     return response;
   } catch (error) {
     console.error('Error publishing to SNS:', error);
