@@ -1144,9 +1144,10 @@ resource "aws_lambda_permission" "mfa_auth" {
 }
 
 # DraftCleanup Lambda
+
 resource "aws_lambda_function" "draft_cleanup" {
   filename         = "../artifacts/draft-cleanup-lambda.zip"
-  function_name    = "remap_statics"
+  function_name    = "draft_cleanup"
   role             = var.edpub_lambda_role_arn
   handler          = "draft-cleanup.handler"
   layers           = []
