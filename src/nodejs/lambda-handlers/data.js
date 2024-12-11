@@ -83,6 +83,16 @@ async function offboardDaac({ id, context }) {
   return response;
 }
 
+async function findByConversationId(params) {
+  const { conversation_id: conversationId } = params;
+  const approvedUserPrivileges = ['ADMIN', 'NOTE_ADDUSER'];
+  const user = await db.user.findById({ id: params.context.user_id });
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return db.note.findByConversationId({ conversationId });
+  }
+  return { error: 'Invalid permissions.' };
+}
+
 const operations = {
   findById,
   findAll,
@@ -91,7 +101,8 @@ const operations = {
   add,
   updateInputs,
   onboardDaac,
-  offboardDaac
+  offboardDaac,
+  findByConversationId
 };
 
 async function handler(event) {

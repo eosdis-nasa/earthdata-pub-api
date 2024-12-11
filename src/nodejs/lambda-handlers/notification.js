@@ -112,16 +112,6 @@ async function addViewersMethod(params) {
   return { error: 'Invalid permissions.' };
 }
 
-async function getNoteByConversation(params) {
-  const { conversation_id: conversationId } = params;
-  const approvedUserPrivileges = ['ADMIN', 'NOTE_ADDUSER'];
-  const user = await db.user.findById({ id: params.context.user_id });
-  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    return db.note.findByConversationId({ conversationId });
-  }
-  return { error: 'Invalid permissions.' };
-}
-
 async function removeViewerMethod(params) {
   const { note_id: noteId, viewer_id: viewerId } = params;
   const approvedUserPrivileges = ['ADMIN', 'NOTE_REMOVEUSER'];
@@ -161,8 +151,7 @@ const operations = {
   add_viewers: addViewersMethod,
   remove_viewer: removeViewerMethod,
   add_viewer_roles: addViewerRolesMethod,
-  remove_viewer_role: removeViewerRoleMethod,
-  findByConversationId: getNoteByConversation
+  remove_viewer_role: removeViewerRoleMethod
 };
 
 async function handler(event) {
