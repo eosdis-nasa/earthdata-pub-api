@@ -239,7 +239,7 @@ module.exports.findByConversationId = function findByConversationId(req, res, ne
     conversation_id: params.conversation_id.value,
     context: { user_id: req.user_id }
   };
-  handlers.notification(lambdaEvent).then((body) => {
+  handlers.data(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
