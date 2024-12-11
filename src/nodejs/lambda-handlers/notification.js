@@ -71,29 +71,6 @@ async function conversationMethod(params) {
   let response = {};
   const userInfo = await db.user.findById({ id: params.context.user_id });
 
-  // Function to check for lock and wait if enforced
-  const waitForLockRelease = async () => {
-    let isLocked = true;
-    const maxAttempts = 5; // Number of attempts before giving up
-    let attempts = 0;
-
-    while (isLocked && attempts < maxAttempts) {
-      const lockStatus = await db.note.checkNoteTableLock();
-      isLocked = lockStatus.lock_exists;
-      if (isLocked) {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        attempts += 1;
-      }
-    }
-
-    if (isLocked) {
-      throw new Error('Lock on note table persisted beyond acceptable limit.');
-    }
-  };
-
-  // Check for lock and wait if necessary
-  await waitForLockRelease();
-
   // Fetch conversation data based on user privileges
   if (userInfo.user_privileges.includes('ADMIN')
   || userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
@@ -131,6 +108,16 @@ async function addViewersMethod(params) {
   const user = await db.user.findById({ id: params.context.user_id });
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.note.addViewers({ noteId, viewerIds });
+  }
+  return { error: 'Invalid permissions.' };
+}
+
+async function getNoteByConversation(params) {
+  const { conversation_id: conversationId } = params;
+  const approvedUserPrivileges = ['ADMIN', 'NOTE_ADDUSER'];
+  const user = await db.user.findById({ id: params.context.user_id });
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return db.note.findByConversationId({ conversationId });
   }
   return { error: 'Invalid permissions.' };
 }
@@ -174,7 +161,8 @@ const operations = {
   add_viewers: addViewersMethod,
   remove_viewer: removeViewerMethod,
   add_viewer_roles: addViewerRolesMethod,
-  remove_viewer_role: removeViewerRoleMethod
+  remove_viewer_role: removeViewerRoleMethod,
+  findByConversationId: getNoteByConversation
 };
 
 async function handler(event) {
