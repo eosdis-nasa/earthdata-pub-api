@@ -108,8 +108,14 @@ async function sendEvent(eventMessage) {
     MessageDeduplicationId: Date.now().toString(),
     TopicArn: eventSns
   };
-  const response = await sns.publish(params).catch((e) => { console.error(e); });
-  return response;
+
+  try {
+    const response = await sns.publish(params).promise();
+    return response;
+  } catch (error) {
+    console.error('Error publishing to SNS:', error);
+    throw error;
+  }
 }
 
 function sendMetric(eventMessage) {
