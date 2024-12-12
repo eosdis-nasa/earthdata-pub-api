@@ -72,17 +72,18 @@ async function validateCodeMethod(event) {
   return { is_valid: false };
 }
 
-async function initializeMethod(event, user) {
+async function initializeMethod(event, user, skipCopy = false) {
   const initializationData = {
     user_id: user.id,
     ...event
   };
   const codeData = event.code ? await validateCodeMethod({ code: event.code }) : null;
+  const accessionSubmissionId = codeData && codeData.submission_id ? codeData.submission_id : null;
 
   if (codeData && codeData.is_valid === true) {
     // Add code table properties in order to populate the publication_accession_association table
     initializationData.daac_id = codeData.daac_id;
-    initializationData.accession_submission_id = codeData.submission_id;
+    initializationData.accession_submission_id = accessionSubmissionId;
   } else if (codeData) {
     return { error: 'Invalid Code' };
   }
@@ -104,6 +105,13 @@ async function initializeMethod(event, user) {
     user_list: staffIds
   });
   db.submission.addContributors({ id: status.id, contributor_ids: staffIds });
+
+  // If initializing a Publication Form, Pre-populate data w/ content from accession form
+  if (accessionSubmissionId && !skipCopy) {
+    // eslint-disable-next-line
+    await copySubmissionMethod({ id: accessionSubmissionId }, user, status.id);
+  }
+
   await msg.sendEvent(eventMessage);
   return status;
 }
@@ -312,12 +320,28 @@ async function removeContributorMethod(event, user) {
   return db.submission.findById({ id });
 }
 
-async function copySubmissionMethod(event, user) {
+async function copySubmissionMethod(event, user, newSubmissionId) {
   const {
     id: originId, copy_context: copyContext, copy_filter: copyFilter, action_copy: actionCopy
   } = event;
-  const { form_data: formData, daac_id: daacId } = await db.submission.findById({ id: originId });
-  const { id } = await initializeMethod({ daac_id: daacId }, user);
+  const { form_data: formData, code } = await db.submission.findById({ id: originId });
+
+  /*
+  This is used to handle the two ways we enter this function:
+  1) From initializeMethod
+    - user created a new DPR submission from the dashboard/api which triggered initializeMethod()
+    - initializeMethod created the new submission so we have the new id, just need to copy the data
+  2) Directly from API
+    - user cloned either a DAR or DPR submission
+    - Need to initialize the new submission with the code value from the base submission
+  */
+  let id;
+  if (newSubmissionId) {
+    id = newSubmissionId;
+  } else {
+    const result = await initializeMethod({ code }, user, true);
+    id = result.id;
+  }
 
   const filteredFormData = !copyFilter ? formData
     : filterObject(formData, copyFilter);
