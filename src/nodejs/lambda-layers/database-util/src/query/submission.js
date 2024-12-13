@@ -5,7 +5,7 @@ const workflow = require('./workflow.js');
 const table = 'submission';
 // const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
 
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_status_label', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'code', 'step_data', 'step_status_label', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
 const customFields = ['id', 'name', 'data_producer_name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_status_label', 'step_name', 'status', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
 
 const fieldMap = {
@@ -33,7 +33,8 @@ const fieldMap = {
   lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
   contributor_ids: 'submission.contributor_ids',
   copy: '(EXISTS(SELECT edpuser_id FROM submission_copy WHERE submission_copy.id = submission.id)) "copy"',
-  origin_id: 'submission_copy.origin_id'
+  origin_id: 'submission_copy.origin_id',
+  code: 'publication_accession_association.code'
 };
 const refs = {
   initiator_ref: {
@@ -141,6 +142,11 @@ const refs = {
     type: 'left_join',
     src: 'submission_form_data_pool',
     on:{ left: 'submission_form_data_pool.id', right: 'submission.id'}
+  },
+  publication_accession_association: {
+    type: 'left_join',
+    src: 'publication_accession_association',
+    on:{ left: 'submission.id', right: 'publication_accession_association.publication_submission_id'}
   }
 };
 
@@ -187,7 +193,7 @@ const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, submission_form_data(params.privileged_user), refs.step, refs.workflow, refs.daac, refs.submission_form_data_pool, refs.submission_copy]
+    joins: [refs.submission_status, refs.publication_accession_association, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, submission_form_data(params.privileged_user), refs.step, refs.workflow, refs.daac, refs.submission_form_data_pool, refs.submission_copy]
   },
   where: {
     filters: [{ field: fieldMap.id, param: 'id' }]
@@ -329,9 +335,13 @@ FROM submission
 WHERE submission.id = {{id}}`;
 
 const initialize = (params) => `
-INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''}, contributor_ids)
-VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}::UUID])
-RETURNING *`;
+WITH new_submission AS (
+  INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''}, contributor_ids)
+  VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}::UUID])
+  RETURNING *
+)
+${params.code ? ', association AS (INSERT INTO publication_accession_association SELECT new_submission.id, {{accession_submission_id}}, {{code}} FROM new_submission)' : ''}
+SELECT * FROM new_submission`;
 
 const updateName = () => `
 UPDATE submission

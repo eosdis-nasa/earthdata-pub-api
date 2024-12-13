@@ -458,7 +458,7 @@ module.exports.validateCode = function validateCode(req, res, next) {
     resource: 'submission',
     operation: 'validateCode',
     context: { user_id: req.user_id },
-    params: { code: params.code.value }
+    code: params.code.value
   };
   handlers.submission(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);

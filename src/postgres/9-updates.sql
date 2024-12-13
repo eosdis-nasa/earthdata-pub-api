@@ -184,3 +184,47 @@ DELETE FROM step_edge WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' A
 UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='init';
 DELETE FROM step_edge WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='data_accession_request_form';
 DELETE FROM step_edge WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='data_accession_request_form_review';
+
+-- 12/9/24 Create accession_publication_code DB Association
+CREATE TABLE IF NOT EXISTS publication_accession_association (
+  publication_submission_id UUID NOT NULL,
+  accession_submission_id UUID NOT NULL,
+  code UUID NOT NULL,
+  PRIMARY KEY (publication_submission_id),
+  FOREIGN KEY (publication_submission_id) REFERENCES submission (id),
+  FOREIGN KEY (accession_submission_id) REFERENCES submission (id),
+  FOREIGN KEY (code) REFERENCES code (code)
+);
+
+CREATE OR REPLACE FUNCTION accession_workflow_id()
+RETURNS UUID
+LANGUAGE plpgsql
+AS $$
+DECLARE
+workflow_id UUID;
+BEGIN
+  SELECT workflow.id INTO workflow_id
+  FROM workflow
+  WHERE workflow.short_name = 'accession_workflow'
+  ORDER BY workflow.version DESC
+  LIMIT 1;
+RETURN workflow_id;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION init_submission()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+INSERT INTO submission_metadata(id)
+  VALUES(NEW.id);
+INSERT INTO submission_status(id, workflow_id, step_name)
+  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), accession_workflow_id()), 'init');
+INSERT INTO submission_workflow(id, workflow_id)
+  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), accession_workflow_id()));
+RETURN NEW;
+END;
+$$;
+
+DROP FUNCTION init_workflow_id;
