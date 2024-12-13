@@ -212,4 +212,19 @@ RETURN workflow_id;
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION init_submission()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+INSERT INTO submission_metadata(id)
+  VALUES(NEW.id);
+INSERT INTO submission_status(id, workflow_id, step_name)
+  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), accession_workflow_id()), 'init');
+INSERT INTO submission_workflow(id, workflow_id)
+  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), accession_workflow_id()));
+RETURN NEW;
+END;
+$$;
+
 DROP FUNCTION init_workflow_id;
