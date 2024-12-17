@@ -60,14 +60,6 @@ Content-Transfer-Encoding: base64
 Content-Disposition: attachment
 
 ${nasaLogo}
-
---EDPUB_BOUNDARY
-Content-Type: image/png
-Content-Transfer-Encoding: base64
-Content-Disposition: inline ;filename=""
-
-
---EDPUB_BOUNDARY--
 `;
 
 const sns = new SNS({
