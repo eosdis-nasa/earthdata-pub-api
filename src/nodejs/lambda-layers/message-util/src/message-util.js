@@ -41,21 +41,15 @@ const getRawFromTemplate = ({
   from,
   to,
   htmlText,
-  plainText,
   nasaLogo
 }) => `MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="EDPUB_BOUNDARY"
+Content-Type: multipart/mixed;boundary=EDPUB_BOUNDARY
 From: <${from}>
 To: <${to}>
 Subject: ${subject}
 
 --EDPUB_BOUNDARY
-Content-Type: text/plain; charset=utf-8
-
-${plainText}
-
---EDPUB_BOUNDARY
-Content-Type: text/html; charset=utf-8
+Content-Type: text/html;charset=utf-8
 
 ${htmlText}
 
@@ -63,11 +57,18 @@ ${htmlText}
 Content-Type: image/png
 Content-ID: <NASALogo>
 Content-Transfer-Encoding: base64
-Content-Disposition: inline; filename="nasa_logo.png"
+Content-Disposition: attachment
 
 ${nasaLogo}
 
---EDPUB_BOUNDARY--`;
+--EDPUB_BOUNDARY
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Disposition: inline ;filename=""
+
+
+--EDPUB_BOUNDARY--
+`;
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
