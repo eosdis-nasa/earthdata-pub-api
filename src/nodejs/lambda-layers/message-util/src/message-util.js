@@ -154,7 +154,7 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       eventMessage.attachments.map(async (fileName) => {
         const attachment = await getAttachmentAsBase64String({
           bucket: process.env.DASHBOARD_BUCKET,
-          key: `${eventMessage.noteId}/${fileName}`
+          key: `attachments/${eventMessage.noteId}/${fileName}`
         });
         return {
           data: attachment,
