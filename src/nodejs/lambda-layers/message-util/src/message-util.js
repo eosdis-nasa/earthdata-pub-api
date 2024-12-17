@@ -35,14 +35,31 @@ const getAttachmentAsBase64String = async ({ bucket, key }) => {
   }
 };
 
-// Generate the raw email with attachment
+const getMimeType = (extension) => {
+  switch (extension.toLowerCase()) {
+    case 'png':
+      return 'image/png';
+    case 'jpg':
+    case 'jpeg':
+      return 'image/jpeg';
+    case 'pdf':
+      return 'application/pdf';
+    case 'txt':
+      return 'text/plain';
+    case 'html':
+      return 'text/html';
+    default:
+      return 'application/octet-stream'; // Default for unknown types
+  }
+};
+
 const getRawFromTemplate = ({
   subject,
   from,
   to,
   htmlText,
   plainText,
-  images = [],
+  attachments = [],
   nasaLogo
 }) => {
   const nasaLogoPart = nasaLogo
@@ -56,16 +73,19 @@ Content-Disposition: inline; filename="nasa_logo.png"
 ${nasaLogo}`
     : '';
 
-  const imagesPart = images
-    .map(
-      ({ data, name }) => `
+  const attachmentsPart = attachments
+    .map(({ data, name }) => {
+      const extension = name.split('.').pop(); // Extract file extension
+      const mimeType = getMimeType(extension); // Get MIME type based on extension
+
+      return `
 --EDPUB_ALTERNATIVE
-Content-Type: image/png
+Content-Type: ${mimeType}
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="${name}"
 
-${data}`
-    )
+${data}`;
+    })
     .join(''); // Join all image parts into a single string
 
   return `MIME-Version: 1.0
@@ -83,7 +103,7 @@ ${plainText}
 Content-Type: text/html; charset=utf-8
 
 ${htmlText}
-${nasaLogoPart}${imagesPart}
+${nasaLogoPart}${attachmentsPart}
 --EDPUB_ALTERNATIVE--`;
 };
 
@@ -130,15 +150,26 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       key: 'images/app/src/assets/images/nasa-logo.d7dbc5e408ccd79bb7578f3358413d69.png'
     });
 
+    const attachmentsJson = await Promise.all(
+      eventMessage.attachments.map(async (fileName) => {
+        const attachment = await getAttachmentAsBase64String({
+          bucket: process.env.DASHBOARD_BUCKET,
+          key: `${eventMessage.noteId}/${fileName}`
+        });
+        return {
+          data: attachment,
+          name: fileName
+        };
+      })
+    );
+
     const rawEmail = getRawFromTemplate({
       subject: 'EDPUB Notification',
       from: sourceEmail,
       to: user.email,
       htmlText: bodyArray[1],
       plainText: bodyArray[0],
-      images: [
-      // { data: imageAttachment, name: 'image1.jpg' } // attachment code will be added later
-      ],
+      attachments: attachmentsJson,
       nasaLogo
     });
 
