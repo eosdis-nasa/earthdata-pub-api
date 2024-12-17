@@ -116,7 +116,7 @@ async function getAttachmentUploadUrlMethod(event, user) {
   } = event;
   const userInfo = await db.user.findById({ id: user });
 
-  if (!userInfo.user_privileges.includes('ADMIN') || !userInfo.user_privileges.includes('NOTE_REPLY')) {
+  if (!userInfo.user_privileges.includes('ADMIN') && !userInfo.user_privileges.includes('NOTE_REPLY')) {
     return ({ error: 'Not Authorized' });
   }
   const key = `drafts/${conversationId}/${user}/${fileName}`;
