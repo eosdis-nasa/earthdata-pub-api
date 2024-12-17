@@ -41,27 +41,37 @@ const getRawFromTemplate = ({
   from,
   to,
   htmlText,
-  plainText,
+  image,
+  imageName,
   nasaLogo
 }) => `MIME-Version: 1.0
-Content-Type: multipart/alternative;boundary=EDPUB_BOUNDARY
-From: ${from}
-To: ${to}
+Content-Type: multipart/mixed;boundary=EDPUB_BOUNDARY
+From: <${from}>
+To: <${to}>
 Subject: ${subject}
 
 --EDPUB_BOUNDARY
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/html;charset=utf-8
 
-${plainText}
+${htmlText}
 
 --EDPUB_BOUNDARY
 Content-Type: image/png
 Content-ID: <NASALogo>
 Content-Transfer-Encoding: base64
-Content-Disposition: inline; filename="nasa_logo.png"
-${htmlText}
+Content-Disposition: attachment
+
 ${nasaLogo}
---EDPUB_BOUNDARY--`;
+
+--EDPUB_BOUNDARY
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Disposition: inline ;filename="${imageName}"
+
+${image}
+
+--EDPUB_BOUNDARY--
+`;
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -110,6 +120,8 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       subject: 'EDPUB Notification',
       from: sourceEmail,
       to: user.email,
+      image: nasaLogo,
+      imageName: 'nasa_logo.png',
       htmlText: bodyArray[1],
       plainText: bodyArray[0],
       nasaLogo
