@@ -42,50 +42,26 @@ const getRawFromTemplate = ({
   to,
   htmlText,
   plainText,
-  images = [],
   nasaLogo
-}) => {
-  const nasaLogoPart = nasaLogo
-    ? `
---EDPUB_ALTERNATIVE
-Content-Type: image/png
-Content-ID: <NASALogo>
-Content-Transfer-Encoding: base64
-Content-Disposition: inline; filename="nasa_logo.png"
-
-${nasaLogo}`
-    : '';
-
-  const imagesPart = images
-    .map(
-      ({ data, name }) => `
---EDPUB_ALTERNATIVE
-Content-Type: image/png
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="${name}"
-
-${data}`
-    )
-    .join(''); // Join all image parts into a single string
-
-  return `MIME-Version: 1.0
-Content-Type: multipart/alternative;boundary=EDPUB_ALTERNATIVE
+}) => `MIME-Version: 1.0
+Content-Type: multipart/alternative;boundary=EDPUB_BOUNDARY
 From: ${from}
 To: ${to}
 Subject: ${subject}
 
---EDPUB_ALTERNATIVE
+--EDPUB_BOUNDARY
 Content-Type: text/plain; charset=utf-8
 
 ${plainText}
 
---EDPUB_ALTERNATIVE
-Content-Type: text/html; charset=utf-8
-
+--EDPUB_BOUNDARY
+Content-Type: image/png
+Content-ID: <NASALogo>
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="nasa_logo.png"
 ${htmlText}
-${nasaLogoPart}${imagesPart}
---EDPUB_ALTERNATIVE--`;
-};
+${nasaLogo}
+--EDPUB_BOUNDARY--`;
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -136,9 +112,6 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       to: user.email,
       htmlText: bodyArray[1],
       plainText: bodyArray[0],
-      images: [
-      // { data: imageAttachment, name: 'image1.jpg' } // attachment code will be added later
-      ],
       nasaLogo
     });
 
