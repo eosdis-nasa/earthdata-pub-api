@@ -20,8 +20,10 @@ const getReviewerAddedTemplate = (params, envUrl) => {
              <tr>
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
-                 <p>You have been added as a reviewer to an Earthdata Pub request.</p>
-                 <p>Your review can be added at <a aria-label="Visit Earthdata Pub Request Review Page" href="${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}">${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}</a>.</p><br>
+                 <p>${params.eventMessage.submitted_by_name} has requested that you review a Data Accession Request submitted via Earthdata Pub.</p>
+                 <p>Please access the submission at <a aria-label="Visit Earthdata Pub Request Review Page" href="${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}">${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}</a>.</p><br>
+                 <p>Specific review instructions (if any) are viewable in the comments section at the bottom of the Data Accession Request page. Please note that any comments you leave in the form are viewable by NASA staff, DAAC User Working Group members, and the data producer who submitted the request.</p><br>
+                 <p>Thank you.</p><br>
                  <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                </td>
              </tr>
