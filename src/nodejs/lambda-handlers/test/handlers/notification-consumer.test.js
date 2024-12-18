@@ -62,7 +62,6 @@ describe('notification-consumer', () => {
       expect(users).toEqual([{ email: 'test@test.test' }]);
       expect(emailPayload).toEqual({
         submission_id: 'f68a54ba-0411-47ad-934b-42fa552b6fe5',
-        note_id: '',
         workflow_name: 'test workflow',
         conversation_last_message: 'Data Accession Request Form review completed; please click on the green button on the far right of your submission’s row to complete the next action, if applicable.',
         event_type: 'review_approved',
