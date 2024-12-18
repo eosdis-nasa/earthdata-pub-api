@@ -137,7 +137,6 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       bucket: process.env.DASHBOARD_BUCKET,
       key: 'images/app/src/assets/images/nasa-logo.d7dbc5e408ccd79bb7578f3358413d69.png'
     });
-    
     const attachmentsJson = await Promise.all(
       eventMessage.attachments.map(async (fileName) => {
         const attachment = await getAttachmentAsBase64String({
