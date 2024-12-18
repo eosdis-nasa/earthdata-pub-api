@@ -9,6 +9,7 @@ const { createEmailHtml } = require('./create-email');
 const sourceEmail = process.env.SOURCE_EMAIL;
 const eventSns = process.env.EVENT_SNS;
 const metricsSns = process.env.METRICS_SNS;
+const ingestBucket = process.env.INGEST_BUCKET;
 const eventGroupId = 'edpub-event-group';
 // const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
 // const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
@@ -36,75 +37,62 @@ const getAttachmentAsBase64String = async ({ bucket, key }) => {
 };
 
 const getMimeType = (extension) => {
-  switch (extension.toLowerCase()) {
-    case 'png':
-      return 'image/png';
-    case 'jpg':
-    case 'jpeg':
-      return 'image/jpeg';
-    case 'pdf':
-      return 'application/pdf';
-    case 'txt':
-      return 'text/plain';
-    case 'html':
-      return 'text/html';
-    default:
-      return 'application/octet-stream'; // Default for unknown types
-  }
+  const mimeTypes = {
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    pdf: 'application/pdf',
+    txt: 'text/plain'
+  };
+  return mimeTypes[extension.toLowerCase()] || 'application/octet-stream'; // Default type
 };
 
+// Generate the raw email with attachment
 const getRawFromTemplate = ({
   subject,
   from,
   to,
   htmlText,
-  plainText,
-  attachments = [],
-  nasaLogo
+  nasaLogo,
+  attachments = []
 }) => {
-  const nasaLogoPart = nasaLogo
-    ? `
---EDPUB_ALTERNATIVE
-Content-Type: image/png
-Content-ID: <NASALogo>
-Content-Transfer-Encoding: base64
-Content-Disposition: inline; filename="nasa_logo.png"
-
-${nasaLogo}`
-    : '';
-
+  // Construct attachment parts
   const attachmentsPart = attachments
     .map(({ data, name }) => {
       const extension = name.split('.').pop(); // Extract file extension
       const mimeType = getMimeType(extension); // Get MIME type based on extension
 
       return `
---EDPUB_ALTERNATIVE
+--EDPUB_BOUNDARY
 Content-Type: ${mimeType}
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="${name}"
 
 ${data}`;
     })
-    .join(''); // Join all image parts into a single string
+    .join(''); // Join all attachment parts into a single string
 
+  // Return the full email MIME structure
   return `MIME-Version: 1.0
-Content-Type: multipart/alternative;boundary=EDPUB_ALTERNATIVE
-From: ${from}
-To: ${to}
+Content-Type: multipart/mixed; boundary=EDPUB_BOUNDARY
+From: <${from}>
+To: <${to}>
 Subject: ${subject}
 
---EDPUB_ALTERNATIVE
-Content-Type: text/plain; charset=utf-8
-
-${plainText}
-
---EDPUB_ALTERNATIVE
+--EDPUB_BOUNDARY
 Content-Type: text/html; charset=utf-8
 
 ${htmlText}
-${nasaLogoPart}${attachmentsPart}
---EDPUB_ALTERNATIVE--`;
+
+--EDPUB_BOUNDARY
+Content-Type: image/png
+Content-ID: <NASALogo>
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="nasa_logo.png"
+
+${nasaLogo}${attachmentsPart}
+
+--EDPUB_BOUNDARY--`;
 };
 
 const sns = new SNS({
@@ -153,7 +141,7 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
     const attachmentsJson = await Promise.all(
       eventMessage.attachments.map(async (fileName) => {
         const attachment = await getAttachmentAsBase64String({
-          bucket: process.env.DASHBOARD_BUCKET,
+          bucket: ingestBucket,
           key: `attachments/${eventMessage.noteId}/${fileName}`
         });
         return {
