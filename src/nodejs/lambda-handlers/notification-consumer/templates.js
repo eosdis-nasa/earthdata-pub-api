@@ -81,7 +81,9 @@ const getEmailTemplate = async (eventMessage, message) => {
   } else {
     emailPayload = {
       conversation_last_message: message.text,
-      event_type: eventMessage.event_type
+      event_type: eventMessage.event_type,
+      note_id: message.note_id,
+      attachments: message.attachments
     };
   }
 

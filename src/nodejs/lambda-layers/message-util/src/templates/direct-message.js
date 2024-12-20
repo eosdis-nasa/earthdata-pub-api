@@ -1,5 +1,14 @@
 const getDMTemplate = (params, envUrl) => {
-  const text = `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}`;
+  const attachmentsHtml = params.eventMessage.attachments
+    .map(
+      (fileName) => `<p><a style="text-align: left;" href="${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}" aria-label="Download ${fileName}">${fileName}</a></p>`
+    )
+    .join(''); // Join the generated HTML to create a single string
+
+  const text = `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}\n\nAttachments:\n${params.eventMessage.attachments
+    .map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`)
+    .join('\n')}`;
+
   const html = `
     <html>
        <body>
@@ -21,7 +30,11 @@ const getDMTemplate = (params, envUrl) => {
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
                  <p>You have received a direct message on the Earthdata Pub Dashboard.</p>
-                 <h2>Message:</h2><p style="white-space: pre;">${decodeURI(params.eventMessage.conversation_last_message)}</p><br><br>
+                 <h2>Message:</h2>
+                 <p style="white-space: pre;">${decodeURI(params.eventMessage.conversation_last_message)}</p><br><br>
+                 
+                 <h3>Attachments:</h3>
+                 ${attachmentsHtml}
                  
                  <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                </td>
@@ -30,6 +43,7 @@ const getDMTemplate = (params, envUrl) => {
        </body>
      </html> 
     `;
+
   return [text, html];
 };
 
