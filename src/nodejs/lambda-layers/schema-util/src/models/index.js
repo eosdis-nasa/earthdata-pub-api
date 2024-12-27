@@ -31,6 +31,7 @@ const StepReviewCreateDelete = require('./stepreview-create-delete.js')
 const Submission = require('./submission.js');
 const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
+const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const User = require('./user.js');
@@ -86,6 +87,7 @@ const models = {
   SubmissionOperationMapMetadata,
   SubmissionOperationRequest,
   SubscribeRequest,
+  SubmissionOperationAssignDaacs,
   Subscription,
   User,
   UUID,

@@ -92,6 +92,7 @@ module.exports.onboard = one;
 module.exports.offboard = one;
 module.exports.getSubmissionDaac = one;
 module.exports.getManagerIds = many;
+module.exports.getObserverIds = many;
 module.exports.getStepReviewApproval = many;
 module.exports.createStepReviewApproval = many;
 module.exports.deleteStepReviewApproval = many;

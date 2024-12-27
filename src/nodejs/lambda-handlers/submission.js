@@ -406,6 +406,64 @@ async function validateCodeMethod(event) {
   return validationResponse;
 }
 
+async function assignDaacsMethod(event) {
+  const { id, daacs } = event;
+
+  // Generate a code for each daac to be assigned
+  // eslint-disable-next-line
+  for (const daacId of daacs) {
+    await db.submission.createCode({ submissionId: id, daacID: daacId });
+  }
+
+  const submission = await db.submission.findById({ id });
+
+  // Send notification emails to the following
+  // - the point of contact of the submission (form response),
+  // - the assigned DAAC's Data Managers,
+  // - and the ESDIS observer collaborator of the accession request
+
+  const idList = [];
+
+  // Get the assigned DAAC's Data Managers Ids
+  // eslint-disable-next-line
+  for (const assignedDaac of submission.assigned_daacs) {
+    const managerList = await db.user.getManagerIds({ daac_id: assignedDaac.daac_id });
+
+    if (Array.isArray(managerList)) {
+      managerList.forEach((entry) => idList.push(entry.id));
+    }
+  }
+
+  // Get the ESDIS observer collaborator of the accession request
+  const observers = await db.user.getObserverIds({ contributor_ids: submission.contributor_ids });
+
+  if (Array.isArray(observers)) {
+    observers.forEach((entry) => idList.push(entry.id));
+  }
+
+  const emailRecipients = await db.user.getEmails({ user_list: idList });
+
+  if (!(emailRecipients && Array.isArray(emailRecipients))) {
+    return { error: 'Invalid Recipients. Code notification emails were not sent.' };
+  }
+
+  // Add the point of contact info from the submission
+  emailRecipients.push({
+    name: submission.form_data.poc_name,
+    email: submission.form_data.poc_email
+  });
+
+  const emailPayload = {
+    event_type: 'daac_assignment',
+    submission_name: submission.name,
+    assigned_daacs: submission.assigned_daacs
+  };
+
+  await msg.sendEmail(emailRecipients, emailPayload);
+
+  return submission;
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -429,7 +487,8 @@ const operations = {
   createStepReviewApproval: createStepReviewApprovalMethod,
   getStepReviewApproval: getStepReviewApprovalMethod,
   deleteStepReviewApproval: deleteStepReviewApprovalMethod,
-  validateCode: validateCodeMethod
+  validateCode: validateCodeMethod,
+  assignDaacs: assignDaacsMethod
 };
 
 async function handler(event) {

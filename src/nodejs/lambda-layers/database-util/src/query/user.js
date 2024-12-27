@@ -426,6 +426,23 @@ const getManagerIds = (params) => sql.select({
   }
 });
 
+const getObserverIds = (params) => sql.select({
+  fields: ['id'],
+  from: {
+    base: 'edpuser',
+    joins:[
+      {type: 'left_join', src: 'edpuser_edprole', on: {left: 'edpuser_edprole.edpuser_id', right: 'edpuser.id'}}
+    ]
+  },
+  where: {
+    filters: [
+      { field: 'edpuser.id', any: { values: { param: 'contributor_ids' } } },
+      { cmd: "edpuser_edprole.edprole_id = '4be6ca4d-6362-478b-8478-487a668314b1'"}
+
+    ]
+  }
+});
+
 
 module.exports.find = find;
 module.exports.findAll = findAll;
@@ -448,3 +465,4 @@ module.exports.getUsers = getUsers;
 module.exports.setDetail = setDetail;
 module.exports.updateUsername = updateUsername;
 module.exports.getManagerIds = getManagerIds;
+module.exports.getObserverIds = getObserverIds;
