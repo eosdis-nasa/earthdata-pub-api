@@ -406,8 +406,13 @@ async function validateCodeMethod(event) {
   return validationResponse;
 }
 
-async function assignDaacsMethod(event) {
+async function assignDaacsMethod(event, user) {
   const { id, daacs } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ASSIGNDAAC'];
+
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Invalid permissions.' };
+  }
 
   // Generate a code for each daac to be assigned
   // eslint-disable-next-line
@@ -461,7 +466,19 @@ async function assignDaacsMethod(event) {
 
   await msg.sendEmail(emailRecipients, emailPayload);
 
-  return submission;
+  // Promote to the next workflow step
+  const eventMessage = {
+    event_type: 'workflow_promote_step',
+    submission_id: submission.id,
+    conversation_id: submission.conversation_id,
+    workflow_id: submission.workflow_id,
+    user_id: user.id,
+    data: submission.step_data.data,
+    step_name: submission.step_name
+  };
+  await msg.sendEvent(eventMessage);
+
+  return db.submission.findById({ id });
 }
 
 const operations = {

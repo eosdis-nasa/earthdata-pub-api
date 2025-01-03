@@ -184,3 +184,11 @@ DELETE FROM step_edge WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' A
 UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='init';
 DELETE FROM step_edge WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='data_accession_request_form';
 DELETE FROM step_edge WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='data_accession_request_form_review';
+
+-- 1/3/25 Update dashboard to handle DAAC Assginment
+INSERT INTO step(step_name, type, data) VALUES ('daac_assignment', 'action', '{"rollback":"data_accession_request_form_review","type": "review"}');
+UPDATE step_edge SET next_step_name='daac_assignment' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'daac_assignment', 'close');
+INSERT INTO privilege VALUES ('REQUEST_ASSIGNDAAC');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_ASSIGNDAAC');
+DELETE FROM daac WHERE id='1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
