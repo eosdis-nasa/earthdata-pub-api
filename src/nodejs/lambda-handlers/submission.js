@@ -414,13 +414,20 @@ async function assignDaacsMethod(event, user) {
     return { error: 'Invalid permissions.' };
   }
 
+  let submission = await db.submission.findById({ id });
+
+  // Check current step - only proceed if on DAAC assignment step
+  if (submission.step_name !== 'daac_assignment'){
+    return { error: 'Invalid workflow step. Unable to assign DAACs.' };
+  }
+
   // Generate a code for each daac to be assigned
   // eslint-disable-next-line
   for (const daacId of daacs) {
     await db.submission.createCode({ submissionId: id, daacID: daacId });
   }
 
-  const submission = await db.submission.findById({ id });
+  submission = await db.submission.findById({ id });
 
   // Send notification emails to the following
   // - the point of contact of the submission (form response),
