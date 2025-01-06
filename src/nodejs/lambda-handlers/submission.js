@@ -417,7 +417,7 @@ async function assignDaacsMethod(event, user) {
   let submission = await db.submission.findById({ id });
 
   // Check current step - only proceed if on DAAC assignment step
-  if (submission.step_name !== 'daac_assignment'){
+  if (submission.step_name !== 'daac_assignment') {
     return { error: 'Invalid workflow step. Unable to assign DAACs.' };
   }
 
