@@ -22,6 +22,8 @@ const getReviewerAddedTemplate = (params, envUrl) => {
                  <h1>Hello ${params.user.name},</h1><br><br>
                  <p>You have been added as a reviewer to an Earthdata Pub request.</p>
                  <p>Your review can be added at <a aria-label="Visit Earthdata Pub Request Review Page" href="${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}">${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}</a>.</p><br>
+                 <br>
+                 <h3>Dashboard:</h3>
                  <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                </td>
              </tr>

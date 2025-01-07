@@ -36,6 +36,8 @@ const getDMTemplate = (params, envUrl) => {
                  <h3>Attachments:</h3>
                  ${attachmentsHtml}
                  
+                 <br><br>
+                 <h3>Dashboard:</h3>
                  <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                </td>
              </tr>
