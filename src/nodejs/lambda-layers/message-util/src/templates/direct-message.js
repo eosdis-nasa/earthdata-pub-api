@@ -3,19 +3,12 @@ const getDMTemplate = (params, envUrl) => {
   if (params.eventMessage.attachments && params.eventMessage.attachments.length > 0) {
     attachmentsHtml = `
       <h3>Attachments:</h3>
-      ${params.eventMessage.attachments
-        .map(
-          (fileName) => `<p><a style="text-align: left;" href="${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}" aria-label="Download ${fileName}">${fileName}</a></p>`
-        )
-        .join('')}`;
+      ${params.eventMessage.attachments.map((fileName) => `<p><a style="text-align: left;" href="${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}" aria-label="Download ${fileName}">${fileName}</a></p>`).join('')}`;
   }
 
   const text = `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}\n\nAttachments:\n${
     params.eventMessage.attachments && params.eventMessage.attachments.length > 0
-      ? params.eventMessage.attachments
-          .map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`)
-          .join('\n')
-      : 'None'
+      ? params.eventMessage.attachments.map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`).join('\n') : 'None'
   }`;
 
   const html = `
