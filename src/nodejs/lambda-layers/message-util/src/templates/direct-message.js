@@ -1,13 +1,22 @@
 const getDMTemplate = (params, envUrl) => {
-  const attachmentsHtml = params.eventMessage.attachments
-    .map(
-      (fileName) => `<p><a style="text-align: left;" href="${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}" aria-label="Download ${fileName}">${fileName}</a></p>`
-    )
-    .join(''); // Join the generated HTML to create a single string
+  let attachmentsHtml = '';
+  if (params.eventMessage.attachments && params.eventMessage.attachments.length > 0) {
+    attachmentsHtml = `
+      <h3>Attachments:</h3>
+      ${params.eventMessage.attachments
+        .map(
+          (fileName) => `<p><a style="text-align: left;" href="${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}" aria-label="Download ${fileName}">${fileName}</a></p>`
+        )
+        .join('')}`;
+  }
 
-  const text = `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}\n\nAttachments:\n${params.eventMessage.attachments
-    .map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`)
-    .join('\n')}`;
+  const text = `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}\n\nAttachments:\n${
+    params.eventMessage.attachments && params.eventMessage.attachments.length > 0
+      ? params.eventMessage.attachments
+          .map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`)
+          .join('\n')
+      : 'None'
+  }`;
 
   const html = `
     <html>
@@ -32,10 +41,7 @@ const getDMTemplate = (params, envUrl) => {
                  <p>You have received a direct message on the Earthdata Pub Dashboard.</p>
                  <h2>Message:</h2>
                  <p style="white-space: pre;">${decodeURI(params.eventMessage.conversation_last_message)}</p><br><br>
-                 
-                 <h3>Attachments:</h3>
                  ${attachmentsHtml}
-                 
                  <br><br>
                  <h3>Dashboard:</h3>
                  <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
