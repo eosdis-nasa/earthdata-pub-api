@@ -104,6 +104,8 @@ DROP TABLE IF EXISTS step_review CASCADE;
 
 DROP TABLE IF EXISTS code CASCADE;
 
+DROP TABLE IF EXISTS publication_accession_association CASCADE;
+
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
   short_name VARCHAR NOT NULL,
@@ -639,4 +641,14 @@ CREATE TABLE IF NOT EXISTS code (
   FOREIGN KEY (submission_id) REFERENCES submission (id),
   FOREIGN KEY (daac_id) REFERENCES daac (id),
   UNIQUE (submission_id, daac_id)
+);
+
+CREATE TABLE IF NOT EXISTS publication_accession_association (
+  publication_submission_id UUID NOT NULL,
+  accession_submission_id UUID NOT NULL,
+  code UUID NOT NULL,
+  PRIMARY KEY (publication_submission_id),
+  FOREIGN KEY (publication_submission_id) REFERENCES submission (id),
+  FOREIGN KEY (accession_submission_id) REFERENCES submission (id),
+  FOREIGN KEY (code) REFERENCES code (code)
 );
