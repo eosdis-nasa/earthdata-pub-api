@@ -356,6 +356,7 @@ async function createStepReviewApprovalMethod(event, user) {
       formId: formData?.length > 0 ? formData[0].form_id : '',
       userIds,
       submissionId,
+      submitted_by_name: user.name,
       // Have to use string here because SNS doesn't support boolean type
       emailPayloadProvided: 'true'
     };

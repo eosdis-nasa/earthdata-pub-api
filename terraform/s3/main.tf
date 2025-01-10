@@ -17,6 +17,16 @@ resource "aws_s3_bucket" "earthdatapub-upload" {
       days = 14
     }
   }
+
+  lifecycle_rule {
+    id      = "draft-attachments-age-off"
+    prefix  = "drafts/"
+    enabled = true
+
+    expiration {
+      days = 7
+    }
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "upload-encryption" {
