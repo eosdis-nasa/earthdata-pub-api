@@ -106,6 +106,8 @@ DROP TABLE IF EXISTS code CASCADE;
 
 DROP TABLE IF EXISTS publication_accession_association CASCADE;
 
+DROP TABLE IF EXISTS upload_step CASCADE;
+
 CREATE TABLE IF NOT EXISTS form (
   id UUID DEFAULT UUID_GENERATE_V4(),
   short_name VARCHAR NOT NULL,
@@ -310,7 +312,7 @@ CREATE TABLE IF NOT EXISTS step (
   FOREIGN KEY (action_id) REFERENCES action (id),
   FOREIGN KEY (form_id) REFERENCES form (id),
   FOREIGN KEY (service_id) REFERENCES service (id),
-  CONSTRAINT step_type_check CHECK (type IN ('init', 'action', 'form', 'review', 'service', 'close')),
+  CONSTRAINT step_type_check CHECK (type IN ('init', 'action', 'form', 'review', 'service', 'upload', 'close')),
   CONSTRAINT step_foreign_key_check CHECK (NUM_NONNULLS(action_id, form_id, service_id) <= 1)
 );
 
@@ -651,4 +653,15 @@ CREATE TABLE IF NOT EXISTS publication_accession_association (
   FOREIGN KEY (publication_submission_id) REFERENCES submission (id),
   FOREIGN KEY (accession_submission_id) REFERENCES submission (id),
   FOREIGN KEY (code) REFERENCES code (code)
+);
+
+CREATE TABLE IF NOT EXISTS upload_step (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  step_name VARCHAR NOT NULL,
+  upload_destination VARCHAR NOT NULL,
+  category_type VARCHAR NOT NULL,
+  help_text VARCHAR NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  UNIQUE (step_name)
 );

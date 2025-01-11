@@ -111,7 +111,8 @@ const refs = {
             ['form_id', 'step.form_id'],
             ['service_id', 'step.service_id'],
             ['data', 'step.data'],
-            ['daac_only', 'form.daac_only']
+            ['daac_only', 'form.daac_only'],
+            ['upload_step_id', 'upload_step.id']
           ],
           strip: true,
           alias: 'step_data'
@@ -119,11 +120,17 @@ const refs = {
       ],
       from: { 
         base: 'step', 
-        joins: [{
-          type: 'left_join',
-          src: 'form',
-          on: { left: 'step.form_id', right: 'form.id' }
-        }]
+        joins: [
+          {
+            type: 'left_join',
+            src: 'form',
+            on: { left: 'step.form_id', right: 'form.id' }
+          }, {
+            type: 'left_join',
+            src: 'upload_step',
+            on: { left: 'step.step_name', right: 'upload_step.step_name' }
+          }
+        ]
       },
       alias: 'step'
     }

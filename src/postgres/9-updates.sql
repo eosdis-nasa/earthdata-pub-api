@@ -228,3 +228,23 @@ END;
 $$;
 
 DROP FUNCTION init_workflow_id;
+
+-- 1/7/25 EDPUB-1430 Add Upload step type
+ALTER TABLE step DROP CONSTRAINT step_type_check;
+ALTER TABLE step ADD CONSTRAINT step_type_check CHECK (type IN ('init', 'action', 'form', 'review', 'service', 'upload', 'close'));
+
+CREATE TABLE IF NOT EXISTS upload_step (
+  id UUID DEFAULT UUID_GENERATE_V4(),
+  step_name VARCHAR NOT NULL,
+  upload_destination VARCHAR NOT NULL,
+  category_type VARCHAR NOT NULL,
+  help_text VARCHAR NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  UNIQUE (step_name)
+);
+
+INSERT INTO step (step_name, type) VALUES ('cost_model', 'upload');
+UPDATE step_edge SET next_step_name = 'cost_model' WHERE workflow_id = '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name ='data_accession_request_form_review';
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'cost_model' , 'assign_a_workflow');
+INSERT INTO upload_step (step_name, upload_destination, category_type, help_text) VALUES ('cost_model', 'DAR_Uploads', 'cost_model', 'Please provide a cost model file. Files must be less than 5 GB and cannot include .exe or .dll extensions.');

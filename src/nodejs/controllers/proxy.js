@@ -1181,6 +1181,20 @@ module.exports.attachmentFileUpload = function attachmentFileUpload(req, res, ne
   });
 };
 
+module.exports.uploadStepUrl = function uploadStepUrl(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: 'getUploadStepUrl',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.listFiles = function listFiles(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1204,6 +1218,19 @@ module.exports.getDownloadUrl = function getDownloadUrl(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 }
+
+module.exports.getUploadStep = function getUploadStep(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: 'getUploadStep',
+    upload_step_id: params.upload_step_id.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
 
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({

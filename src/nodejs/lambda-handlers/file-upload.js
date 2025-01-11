@@ -127,6 +127,24 @@ async function getAttachmentUploadUrlMethod(event, user) {
   });
 }
 
+async function getUploadStepUrlMethod(event, user) {
+  const {
+    file_name: fileName,
+    file_type: fileType,
+    checksum_value: checksumValue,
+    file_category: fileCategory,
+    destination: uploadDestination,
+    submission_id: submissionId
+  } = event;
+
+  const key = `${uploadDestination.replace(/^\/?/, '').replace(/\/?$/, '')}/${submissionId}/${fileCategory}/${user}/${fileName}`;
+  return generateUploadUrl({
+    key,
+    checksumValue,
+    fileType
+  });
+}
+
 async function getChecksum(key, s3Client) {
   const payload = {
     Bucket: ingestBucket,
@@ -237,12 +255,19 @@ async function getDownloadUrlMethod(event, user) {
   return ({ error: 'Not Authorized' });
 }
 
+async function getUploadStepMethod(event) {
+  const { upload_step_id: uploadStepId } = event;
+  return db.upload.findUploadStepById({ id: uploadStepId });
+}
+
 const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
   getDownloadUrl: getDownloadUrlMethod,
   getGroupUploadUrl: getGroupUploadUrlMethod,
-  getAttachmentUploadUrl: getAttachmentUploadUrlMethod
+  getAttachmentUploadUrl: getAttachmentUploadUrlMethod,
+  getUploadStepUrl: getUploadStepUrlMethod,
+  getUploadStep: getUploadStepMethod
 };
 
 async function handler(event) {

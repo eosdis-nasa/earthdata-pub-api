@@ -503,12 +503,14 @@ INSERT INTO step(step_name, type, data) VALUES ('get_from_mmt', 'action', '{"rol
 INSERT INTO step(step_name, type, data) VALUES ('map_from_mmt', 'action', '{"rollback":"get_from_mmt","type": "action"}');
 INSERT INTO step(step_name, type, data) VALUES ('publish_to_cmr', 'action', '{"rollback":"map_from_mmt","type": "action"}');
 INSERT INTO step(step_name, type, action_id) VALUES ('send_to_mmt', 'action', '3fe93672-cd91-45d4-863b-c6d0d63f8c8c');
+INSERT INTO step (step_name, type) VALUES ('cost_model', 'upload');
 
 -- Unknown DAAC
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form_review', 'assign_a_workflow');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form_review', 'cost_model');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'cost_model' , 'assign_a_workflow');
 
 -- GHRC
 -- Step(step_name, type, action_id, form_id, service_id, data)
@@ -646,4 +648,8 @@ INSERT INTO daac VALUES ('6b3ea184-57c5-4fc5-a91b-e49708f91b67', 'PO.DAAC', 'Phy
 INSERT INTO daac VALUES ('00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1', 'SEDAC', 'Socioeconomic Data and Applications Data Center (SEDAC)', 'http://sedac.ciesin.columbia.edu/', 'NASA''s Socioeconomic Data and Applications Center (SEDAC) is operated by the Center for International Earth Science Information Network (CIESIN), a unit of the Earth Institute at Columbia University based at the Lamont-Doherty Earth Observatory in Palisades, New York. SEDAC''s missions are to synthesize Earth science and socioeconomic data and information in ways useful to a wide range of decision makers and other applied users, and to provide an “Information Gateway” between the socioeconomic and Earth science data and information domains. SEDAC datasets can be accessed via the dataset section of the SEDAC web site.', 'Synthesized Earth science and socio-economic data', 'c1690729-b67e-4675-a1a5-b2323f347dff', 'f0a89bc6-707f-4a34-8041-1593934c2e42','true');
 INSERT INTO daac VALUES ('cdccdd71-cbe2-4220-8569-a6355ea24f3f', 'Example', 'Example DAAC', 'https://earthdata.nasa.gov', 'This is an example DAAC for sample and testing purposes.', 'Testing of EDPUB', 'c1690729-b67e-4675-a1a5-b2323f347dff', '8edd07a0-34e1-45c7-a2c1-7fc9ae884030','false');
 INSERT INTO daac VALUES ('1c36f0b9-b7fd-481b-9cab-3bc3cea35413', 'Unknown', 'Unknown DAAC', 'https://earthdata.nasa.gov', 'Choose this if you are not sure where the data product should be archived.', '', '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', '5be24b44-d66b-4396-9266-a9d066000d9e','false');
+
+-- upload_step(id, step_name, upload_destination, category_type, help_text)
+INSERT INTO upload_step (step_name, upload_destination, category_type, help_text) VALUES ('cost_model', 'DAR_Uploads', 'cost_model', 'Please provide a cost model file. Files must be less than 5 GB and cannot include .exe or .dll extensions.');
+
 

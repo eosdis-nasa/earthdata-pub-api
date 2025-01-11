@@ -125,3 +125,5 @@ module.exports.checkCode = one;
 module.exports.createCode = one;
 module.exports.createSection = one;
 module.exports.addAttachments = one;
+module.exports.findAllUploadSteps = many;
+module.exports.findUploadStepById = one;
