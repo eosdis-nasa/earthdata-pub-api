@@ -222,6 +222,47 @@ async function listFilesMethod(event, user) {
   return ({ error: 'Not Authorized' });
 }
 
+async function listStepFilesMethod(event, user) {
+  let rawResponse;
+  const { submission_id: submissionId } = event;
+  const userInfo = await db.user.findById({ id: user });
+  const {
+    contributor_ids: contributorIds,
+    step_data: stepData
+  } = await db.submission.findById({ id: submissionId });
+
+  const {
+    upload_destination: prefix
+  } = await db.upload.findUploadStepById({ id: stepData.upload_step_id });
+
+  if (contributorIds.includes(user)
+    || userInfo.user_privileges.includes('ADMIN')
+  ) {
+    if (prefix) {
+      const s3Client = new S3Client({ region });
+      const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${prefix}/${submissionId}` });
+
+      try {
+        rawResponse = await s3Client.send(command);
+      } catch (err) {
+        console.error(err);
+        return ({ error: 'Error listing files' });
+      }
+
+      if (rawResponse.Contents) {
+        const response = [];
+        for (let i = 0; i < rawResponse.Contents.length; i += 1) {
+          response.push(await processFile(rawResponse.Contents[i], s3Client));
+        }
+        return response;
+      }
+      return ([]);
+    }
+    return ([]);
+  }
+  return ({ error: 'Not Authorized' });
+}
+
 async function getDownloadUrlMethod(event, user) {
   const { key } = event;
   const s3Client = new S3Client({
@@ -263,6 +304,7 @@ async function getUploadStepMethod(event) {
 const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
+  listStepFiles: listStepFilesMethod,
   getDownloadUrl: getDownloadUrlMethod,
   getGroupUploadUrl: getGroupUploadUrlMethod,
   getAttachmentUploadUrl: getAttachmentUploadUrlMethod,

@@ -622,7 +622,7 @@ SELECT step_name FROM submission_status WHERE id = {{id}}
 
 // TODO - Upate this query's complexity and to use sql builder
 const getSubmissionDetailsById = (params) => `
-WITH step_visibility AS (SELECT step.*, form.daac_only FROM step LEFT JOIN form ON step.form_id = form.id),
+WITH step_visibility AS (SELECT step.*, upload_step.id AS upload_step_id, form.daac_only FROM step LEFT JOIN form ON step.form_id = form.id LEFT JOIN upload_step ON step.step_name = upload_step.step_name),
 filteredForm AS (SELECT * FROM form ${params.privilegedUser === false ? `WHERE form.daac_only=false`: ``})
 SELECT submission.id id, conversation_id, submission.created_at created_at, daac.long_name daac_name, 
 submission.hidden hidden,
@@ -633,7 +633,7 @@ submission_form_data_pool.data::json->'data_product_name_value' data_product_nam
 array_agg(DISTINCT JSONB_BUILD_OBJECT('id', edpuser2.id, 'name', edpuser2.name)) as contributors,
 JSONB_BUILD_OBJECT('id', workflow.id, 'name', workflow.long_name, 'steps',
 array_agg(DISTINCT step_edge.step_name)) workflow,
-JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('type', step_visibility.type, 'name', step_visibility.step_name,'action_id', step_visibility.action_id, 
+JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('type', step_visibility.type, 'name', step_visibility.step_name,'action_id', step_visibility.action_id, 'upload_step_id', step_visibility.upload_step_id, 
 'form_id', step_visibility.form_id,'service_id', step_visibility.service_id, 'data', step_visibility.data, 'daac_only', step_visibility.daac_only)) step_data,
 CASE 
   WHEN filteredForm.id is null THEN '[]'
@@ -669,7 +669,7 @@ ON submission.id = submission_metadata.id
 WHERE submission.id= {{id}}
 GROUP BY submission.id, daac.long_name, edpuser1.name, edpuser1.id,
 submission_status.last_change, workflow.long_name, workflow.id,
-submission_form_data_pool.data, step_visibility.type, step_visibility.step_name, step_visibility.action_id,
+submission_form_data_pool.data, step_visibility.type, step_visibility.step_name, step_visibility.action_id, step_visibility.upload_step_id,
 step_visibility.form_id, step_visibility.service_id, step_visibility.data, step_visibility.daac_only, filteredForm.id, 
 filteredForm.long_name, submission_form_data.submitted_at, submission_metadata.metadata;
 `;

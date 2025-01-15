@@ -1207,6 +1207,18 @@ module.exports.listFiles = function listFiles(req, res, next) {
   });
 };
 
+module.exports.listStepFiles = function listStepFiles(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'listStepFiles',
+    submission_id: params.submission_id.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.getDownloadUrl = function getDownloadUrl(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
