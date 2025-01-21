@@ -109,6 +109,19 @@ async function serviceMethod(status) {
   await promoteStepMethod(eventMessage);
 }
 
+async function uploadMethod(status) {
+  const eventMessage = {
+    event_type: 'upload_step_completed',
+    submission_id: status.id,
+    conversation_id: status.conversation_id,
+    workflow_id: status.workflow_id,
+    step_name: status.step.name,
+    data: status.step.data
+  };
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+  await msg.sendEvent(eventMessage);
+}
+
 async function closeMethod(status) {
   const submissionMetrics = await db.metrics.getSubmissions({
     submissionId: status.id
@@ -131,6 +144,7 @@ const stepMethods = {
   form: formMethod,
   review: reviewMethod,
   service: serviceMethod,
+  upload: uploadMethod,
   close: closeMethod
 };
 

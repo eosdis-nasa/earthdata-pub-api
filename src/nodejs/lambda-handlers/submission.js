@@ -292,6 +292,25 @@ async function changeStepMethod(event, user) {
   return db.submission.findById({ id });
 }
 
+async function promoteStepMethod(event, user) {
+  const { id } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
+  if ((user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege)))) {
+    const status = await db.submission.getState({ id });
+    const eventMessage = {
+      event_type: 'workflow_promote_step',
+      submission_id: id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      user_id: user.id,
+      data: status.step.data,
+      step_name: status.step_name
+    };
+    await msg.sendEvent(eventMessage);
+  }
+  return db.submission.findById({ id });
+}
+
 async function addContributorsMethod(event, user) {
   const { id, contributor_ids: contributorIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
@@ -457,6 +476,7 @@ const operations = {
   withdraw: withdrawMethod,
   restore: restoreMethod,
   changeStep: changeStepMethod,
+  promoteStep: promoteStepMethod,
   addContributors: addContributorsMethod,
   removeContributor: removeContributorMethod,
   copySubmission: copySubmissionMethod,

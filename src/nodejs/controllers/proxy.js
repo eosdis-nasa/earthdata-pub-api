@@ -892,6 +892,19 @@ module.exports.submissionOperationChangeStep = function submissionOperationChang
   });
 };
 
+module.exports.submissionOperationPromoteStep = function submissionOperationPromoteStep(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'promoteStep',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.submissionOperationAddContributors = function submissionOperationAddContributors(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
