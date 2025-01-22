@@ -228,3 +228,11 @@ END;
 $$;
 
 DROP FUNCTION init_workflow_id;
+
+-- 1/3/25 Update dashboard to handle DAAC Assginment
+INSERT INTO step(step_name, type, data) VALUES ('daac_assignment', 'action', '{"rollback":"data_accession_request_form_review","type": "review"}');
+UPDATE step_edge SET next_step_name='daac_assignment' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'daac_assignment', 'close');
+INSERT INTO privilege VALUES ('REQUEST_ASSIGNDAAC');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_ASSIGNDAAC');
+DELETE FROM daac WHERE id='1c36f0b9-b7fd-481b-9cab-3bc3cea35413';

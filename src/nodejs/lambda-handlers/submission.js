@@ -442,6 +442,88 @@ async function deleteStepReviewApprovalMethod(event, user) {
   return { error: 'Not Authorized' };
 }
 
+async function assignDaacsMethod(event, user) {
+  const { id, daacs } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ASSIGNDAAC'];
+
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Invalid permissions.' };
+  }
+
+  let submission = await db.submission.findById({ id });
+
+  // Check current step - only proceed if on DAAC assignment step
+  if (submission.step_name !== 'daac_assignment') {
+    return { error: 'Invalid workflow step. Unable to assign DAACs.' };
+  }
+
+  // Generate a code for each daac to be assigned
+  // eslint-disable-next-line
+  for (const daacId of daacs) {
+    await db.submission.createCode({ submissionId: id, daacID: daacId });
+  }
+
+  submission = await db.submission.findById({ id });
+
+  // Send notification emails to the following
+  // - the point of contact of the submission (form response),
+  // - the assigned DAAC's Data Managers,
+  // - and the ESDIS observer collaborator of the accession request
+
+  const idList = [];
+
+  // Get the assigned DAAC's Data Managers Ids
+  // eslint-disable-next-line
+  for (const assignedDaac of submission.assigned_daacs) {
+    const managerList = await db.user.getManagerIds({ daac_id: assignedDaac.daac_id });
+
+    if (Array.isArray(managerList)) {
+      managerList.forEach((entry) => idList.push(entry.id));
+    }
+  }
+
+  // Get the ESDIS observer collaborator of the accession request
+  const observers = await db.user.getObserverIds({ contributor_ids: submission.contributor_ids });
+
+  if (Array.isArray(observers)) {
+    observers.forEach((entry) => idList.push(entry.id));
+  }
+
+  const emailRecipients = await db.user.getEmails({ user_list: idList });
+
+  if (!(emailRecipients && Array.isArray(emailRecipients))) {
+    return { error: 'Invalid Recipients. Code notification emails were not sent.' };
+  }
+
+  // Add the point of contact info from the submission
+  emailRecipients.push({
+    name: submission.form_data.poc_name,
+    email: submission.form_data.poc_email
+  });
+
+  const emailPayload = {
+    event_type: 'daac_assignment',
+    submission_name: submission.name,
+    assigned_daacs: submission.assigned_daacs
+  };
+
+  await msg.sendEmail(emailRecipients, emailPayload);
+
+  // Promote to the next workflow step
+  const eventMessage = {
+    event_type: 'workflow_promote_step',
+    submission_id: submission.id,
+    conversation_id: submission.conversation_id,
+    workflow_id: submission.workflow_id,
+    user_id: user.id,
+    data: submission.step_data.data,
+    step_name: submission.step_name
+  };
+  await msg.sendEvent(eventMessage);
+
+  return db.submission.findById({ id });
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -465,7 +547,8 @@ const operations = {
   createStepReviewApproval: createStepReviewApprovalMethod,
   getStepReviewApproval: getStepReviewApprovalMethod,
   deleteStepReviewApproval: deleteStepReviewApprovalMethod,
-  validateCode: validateCodeMethod
+  validateCode: validateCodeMethod,
+  assignDaacs: assignDaacsMethod
 };
 
 async function handler(event) {

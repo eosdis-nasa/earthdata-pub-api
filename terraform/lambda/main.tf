@@ -711,6 +711,7 @@ resource "aws_lambda_function" "submission" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      ROOT_URL       = var.client_root_url
     }
   }
   vpc_config {
