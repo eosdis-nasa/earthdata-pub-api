@@ -14,5 +14,5 @@ resource "aws_sesv2_configuration_set" "edpub_configuration_set" {
     sending_enabled = true
   }
 
-  tags = []
+  tags = {}
 }
