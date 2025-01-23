@@ -151,5 +151,9 @@ module "sqs_queues" {
 module "ses" {
   source = "./ses"
 
+  providers = {
+    aws = aws.east-1-provider
+  }
+
   ses_configuration_set_name = var.ses_configuration_set_name
 }
