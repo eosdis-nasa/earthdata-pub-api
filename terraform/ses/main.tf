@@ -1,6 +1,4 @@
 resource "aws_sesv2_configuration_set" "edpub_configuration_set" {
-  
-  provider = aws.east-1-provider
 
   configuration_set_name = var.ses_configuration_set_name
 
@@ -16,5 +14,5 @@ resource "aws_sesv2_configuration_set" "edpub_configuration_set" {
     sending_enabled = true
   }
 
-  tags = []
+  tags = {}
 }
