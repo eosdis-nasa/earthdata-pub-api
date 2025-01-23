@@ -117,12 +117,16 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       nasaLogo
     });
 
+    const secretsResponse = await getSecretsValues();
+    const sesCreds = JSON.parse(secretsResponse.SecretString);
     const command = new SendEmailCommand({
       Content: {
         Raw: {
           Data: new TextEncoder().encode(rawEmail)
         }
-      }
+      },
+      ConfigurationSetName: sesCreds.ses_configuration_set_name,
+      FromEmailAddressIdentityArn: sesCreds.ses_secret_sender_arn
     });
 
     await ses.send(command);
@@ -135,14 +139,8 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
 
 async function sendEmail(users, eventMessage, customTemplateFunction) {
   try {
-    const secretsResponse = await getSecretsValues();
-    const sesCreds = JSON.parse(secretsResponse.SecretString);
     const ses = new SESv2Client({
-      region: 'us-east-1',
-      credentials: {
-        accessKeyId: sesCreds.ses_access_key_id,
-        secretAccessKey: sesCreds.ses_secret_access_key
-      }
+      region: 'us-east-1'
     });
     const promises = users.map((user) => send(user, eventMessage, customTemplateFunction, ses));
     await Promise.all(promises);
