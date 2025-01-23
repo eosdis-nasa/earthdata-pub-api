@@ -30,8 +30,8 @@ module "s3" {
 module "aws_secrets" {
   source = "./aws_secrets"
 
-  ses_access_key_id = var.ses_access_key_id
-  ses_secret_access_key = var.ses_secret_access_key
+  ses_secret_sender_arn = var.ses_secret_sender_arn
+  ses_configuration_set_name = var.ses_configuration_set_name
   ornl_endpoint_url = var.ornl_endpoint_url
   ornl_endpoint_access_token = var.ornl_endpoint_access_token
   gesdisc_endpoint_url = var.gesdisc_endpoint_url
@@ -146,4 +146,10 @@ module "sqs_queues" {
   account_id = var.account_id
   stage = var.stage
   edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
+}
+
+module "ses" {
+  source = "./ses"
+
+  ses_configuration_set_name = var.ses_configuration_set_name
 }
