@@ -31,7 +31,7 @@ const templates = {
     text: `Form ID ${e.form_id} has been submitted and Workflow progress will resume.`
   }),
   review_approved: (e) => ({
-    text: `${parseStepName(e.data.rollback)} review completed; please click on the green button on the far right of your request's row to complete the next action, if applicable.`
+    text: `${parseStepName(e.data.rollback)} review completed; please click on the green button on the far right of your request’s row to complete the next action, if applicable.`
   }),
   review_rejected: (e) => ({
     text: `Request ID ${e.submission_id} has not passed review and rolled back to step "${e.data.rollback}"`
