@@ -957,6 +957,19 @@ module.exports.submissionOperationMapMetadata = function submissionOperationMapM
   });
 };
 
+module.exports.submissionOperationAssignDaacs = function submissionOperationAssignDaacs(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'assignDaacs',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.searchMetrics = function searchMetrics(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
