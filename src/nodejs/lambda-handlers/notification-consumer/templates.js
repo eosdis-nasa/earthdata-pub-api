@@ -13,7 +13,7 @@ const templates = {
     text: `Request ID ${e.submission_id} has been initialized.`
   }),
   action_request_no_id: (e) => ({
-    text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your submission's row to work on this action, if applicable`
+    text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your request's row to work on this action, if applicable`
   }),
   workflow_started: (e) => ({
     text: `The request has started on Workflow ID ${e.workflow_id}.`
@@ -31,7 +31,7 @@ const templates = {
     text: `Form ID ${e.form_id} has been submitted and Workflow progress will resume.`
   }),
   review_approved: (e) => ({
-    text: `${parseStepName(e.data.rollback)} review completed; please click on the green button on the far right of your submission’s row to complete the next action, if applicable.`
+    text: `${parseStepName(e.data.rollback)} review completed; please click on the green button on the far right of your request’s row to complete the next action, if applicable.`
   }),
   review_rejected: (e) => ({
     text: `Request ID ${e.submission_id} has not passed review and rolled back to step "${e.data.rollback}"`
@@ -41,6 +41,9 @@ const templates = {
   }),
   review_required: (e) => ({
     text: `Your review is required for Request ID ${e.submission_id}`
+  }),
+  upload_step_completed: (e) => ({
+    text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your request's row to work on this action, if applicable`
   })
 };
 

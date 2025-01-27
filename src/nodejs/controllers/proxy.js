@@ -892,6 +892,19 @@ module.exports.submissionOperationChangeStep = function submissionOperationChang
   });
 };
 
+module.exports.submissionOperationPromoteStep = function submissionOperationPromoteStep(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'promoteStep',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.submissionOperationAddContributors = function submissionOperationAddContributors(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
@@ -1194,10 +1207,36 @@ module.exports.attachmentFileUpload = function attachmentFileUpload(req, res, ne
   });
 };
 
+module.exports.uploadStepUrl = function uploadStepUrl(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: 'getUploadStepUrl',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.listFiles = function listFiles(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     operation: 'listFiles',
+    submission_id: params.submission_id.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.listStepFiles = function listStepFiles(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'listStepFiles',
     submission_id: params.submission_id.value,
     context: { user_id: req.user_id }
   };
@@ -1217,6 +1256,19 @@ module.exports.getDownloadUrl = function getDownloadUrl(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 }
+
+module.exports.getUploadStep = function getUploadStep(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: 'getUploadStep',
+    upload_step_id: params.upload_step_id.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
 
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({

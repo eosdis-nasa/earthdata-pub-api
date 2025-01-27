@@ -52,6 +52,7 @@ const GroupUpload = require('./group-upload.js');
 const Step = require('./step.js');
 const Section = require('./section.js');
 const AttachmentUpload = require('./attachment-upload.js');
+const StepUpload = require('./step-upload.js');
 
 const models = {
   Action,
@@ -105,7 +106,8 @@ const models = {
   GroupUpload,
   Step,
   Section,
-  AttachmentUpload
+  AttachmentUpload,
+  StepUpload
 
 };
 
