@@ -49,8 +49,9 @@ async function refreshToken({ token }) {
     refresh_token: token
   });
   const decoded = jwt.decode(tokens.id_token);
-  const refresh = tokens.refresh_token;
+  const refresh = token;
   const access = tokens.access_token;
+
   return { access, refresh, decoded };
 }
 
