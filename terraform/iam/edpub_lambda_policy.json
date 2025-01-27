@@ -76,6 +76,14 @@
         "${gesdisc_endpoint_arn}",
         "${ornl_service_authorization_arn}"
       ]
+    },
+    {
+      "Effect": "Allow",
+      "Action":[
+        "ses:SendEmail",
+        "ses:SendRawEmail"
+      ],
+      "Resource" : "*"
     }
   ]
 }
