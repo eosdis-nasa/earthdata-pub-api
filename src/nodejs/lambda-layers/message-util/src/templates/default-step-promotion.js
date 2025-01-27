@@ -24,6 +24,7 @@ const getDefaultStepPromotion = (params, envUrl) => {
                     <h2>New Status:</h2>
                     <p>${eventMessage.conversation_last_message}</p>
                     <br><br>
+                    <h3>Dashboard:</h3>
                     <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                 </td>
             </tr>
