@@ -17,6 +17,7 @@ data "template_file" "edpub_oas" {
   vars = {
     auth_lambda_arn               = var.auth_lambda_arn
     data_lambda_arn               = var.data_lambda_arn
+    form_lambda_arn               = var.form_lambda_arn
     invoke_lambda_arn             = var.invoke_lambda_arn
     notification_lambda_arn       = var.notification_lambda_arn
     metrics_lambda_arn            = var.metrics_lambda_arn
