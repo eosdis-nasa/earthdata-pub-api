@@ -7,8 +7,8 @@ resource "aws_secretsmanager_secret" "ses_access_creds" {
 resource "aws_secretsmanager_secret_version" "ses_access_creds" {
   secret_id = aws_secretsmanager_secret.ses_access_creds.id
     secret_string = jsonencode({
-        "ses_access_key_id" = var.ses_access_key_id
-        "ses_secret_access_key" = var.ses_secret_access_key
+        "ses_secret_sender_arn" = var.ses_secret_sender_arn
+        "ses_configuration_set_name" = var.ses_configuration_set_name
     })
 }
 

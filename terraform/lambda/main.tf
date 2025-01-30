@@ -483,6 +483,7 @@ resource "aws_lambda_function" "notification_consumer" {
   environment {
     variables = {
       REGION                = var.region
+      INGEST_BUCKET         = var.edpub_upload_s3_bucket
       EMAIL_SNS             = var.edpub_email_sns_arn
       EVENT_SNS             = var.edpub_event_sns_arn
       METRICS_SNS           = var.edpub_metrics_sns_arn
@@ -493,6 +494,7 @@ resource "aws_lambda_function" "notification_consumer" {
       PG_PORT               = var.db_port
       SOURCE_EMAIL          = var.ses_from_email
       ROOT_URL              = var.client_root_url
+      DASHBOARD_BUCKET      = var.edpub_dashboard_s3_bucket
     }
   }
   vpc_config {

@@ -1,6 +1,8 @@
 const { SNS } = require('@aws-sdk/client-sns');
-const { SESClient, SendEmailCommand } = require('@aws-sdk/client-ses');
 const { SecretsManagerClient, GetSecretValueCommand } = require('@aws-sdk/client-secrets-manager');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { SESv2Client, SendEmailCommand } = require('@aws-sdk/client-sesv2');
+
 const uuid = require('uuid');
 const { createEmailHtml } = require('./create-email');
 
@@ -10,6 +12,56 @@ const metricsSns = process.env.METRICS_SNS;
 const eventGroupId = 'edpub-event-group';
 // const sesAccessKeyId = process.env.SES_ACCESS_KEY_ID;
 // const sesSecretAccessKey = process.env.SES_SECRET_ACCESS_KEY;
+
+// Helper function to read a stream into a buffer
+const streamToBuffer = (stream) => new Promise((resolve, reject) => {
+  const chunks = [];
+  stream.on('data', (chunk) => chunks.push(chunk));
+  stream.on('end', () => resolve(Buffer.concat(chunks)));
+  stream.on('error', reject);
+});
+
+// Helper to fetch attachment as base64
+const getAttachmentAsBase64String = async ({ bucket, key }) => {
+  const s3 = new S3Client();
+
+  try {
+    const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+    const buffer = await streamToBuffer(response.Body);
+    return buffer.toString('base64');
+  } catch (error) {
+    console.error(`Failed to fetch S3 object: ${error.message}`);
+    throw error;
+  }
+};
+
+// Generate the raw email with attachment
+const getRawFromTemplate = ({
+  subject,
+  from,
+  to,
+  htmlText,
+  nasaLogo
+}) => `MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary=EDPUB_BOUNDARY
+From: <${from}>
+To: <${to}>
+Subject: ${subject}
+
+--EDPUB_BOUNDARY
+Content-Type: text/html; charset=utf-8
+
+${htmlText}
+
+--EDPUB_BOUNDARY
+Content-Type: image/png
+Content-ID: <NASALogo>
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="nasa_logo.png"
+
+${nasaLogo}
+
+--EDPUB_BOUNDARY--`;
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -49,28 +101,34 @@ async function getSecretsValues() {
 async function send(user, eventMessage, customTemplateFunction, ses) {
   try {
     const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
-    const payload = {
-      Source: sourceEmail,
-      Destination: {
-        ToAddresses: [user.email]
-      },
-      Message: {
-        Subject: {
-          Data: 'EDPUB Notification'
-        },
-        Body: {
-          Text: {
-            Data: bodyArray[0],
-            Charset: 'UTF-8'
-          },
-          Html: {
-            Data: bodyArray[1],
-            Charset: 'UTF-8'
-          }
+    const nasaLogo = await getAttachmentAsBase64String({
+      bucket: process.env.DASHBOARD_BUCKET,
+      key: 'images/app/src/assets/images/nasa-logo.d7dbc5e408ccd79bb7578f3358413d69.png'
+    });
+
+    const rawEmail = getRawFromTemplate({
+      subject: 'EDPUB Notification',
+      from: sourceEmail,
+      to: user.email,
+      image: nasaLogo,
+      imageName: 'nasa_logo.png',
+      htmlText: bodyArray[1],
+      plainText: bodyArray[0],
+      nasaLogo
+    });
+
+    const secretsResponse = await getSecretsValues();
+    const sesCreds = JSON.parse(secretsResponse.SecretString);
+    const command = new SendEmailCommand({
+      Content: {
+        Raw: {
+          Data: new TextEncoder().encode(rawEmail)
         }
-      }
-    };
-    const command = new SendEmailCommand(payload);
+      },
+      ConfigurationSetName: sesCreds.ses_configuration_set_name,
+      FromEmailAddressIdentityArn: sesCreds.ses_secret_sender_arn
+    });
+
     await ses.send(command);
     return { success: true };
   } catch (err) {
@@ -81,14 +139,8 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
 
 async function sendEmail(users, eventMessage, customTemplateFunction) {
   try {
-    const secretsResponse = await getSecretsValues();
-    const sesCreds = JSON.parse(secretsResponse.SecretString);
-    const ses = new SESClient({
-      region: 'us-east-1',
-      credentials: {
-        accessKeyId: sesCreds.ses_access_key_id,
-        secretAccessKey: sesCreds.ses_secret_access_key
-      }
+    const ses = new SESv2Client({
+      region: 'us-east-1'
     });
     const promises = users.map((user) => send(user, eventMessage, customTemplateFunction, ses));
     await Promise.all(promises);
