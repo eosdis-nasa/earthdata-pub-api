@@ -137,6 +137,7 @@ module "sns_topics" {
   region = var.region
   account_id = var.account_id
   stage = var.stage
+  ses_alarm_email = var.ses_alarm_email
 }
 
 module "sqs_queues" {
@@ -156,4 +157,10 @@ module "ses" {
   }
 
   ses_configuration_set_name = var.ses_configuration_set_name
+}
+
+module "cloudwatch" {
+  source = "./cloudwatch"
+
+  edpub_ses_reputation_alarm_sns_arn = module.sns_topics.edpub_ses_reputation_alarm_sns_arn  
 }

@@ -13,3 +13,7 @@ output "edpub_email_sns_arn" {
 output "edpub_metrics_sns_arn" {
   value = aws_sns_topic.edpub_metrics_sns.arn
 }
+
+output "edpub_ses_reputation_alarm_sns_arn" {
+  value = aws_sns_topic.edpub_ses_reputation_alarm_sns.arn
+}
