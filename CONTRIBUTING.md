@@ -175,10 +175,10 @@ All github settings should be the same across all EDPub repositories. Developers
    EDPub framework. All other repos will follow include versions of the high level
    *.md files from there, e.g. CONTRIBUTING.md. The core repo is <https://github.com/eosdis-nasa/earthdata-pub>
 1. Repositories - EDPub repositories shall be named `earthdata-pub-thing`,
-   for example: `earthdata-pub-forms`, `earthdata-pub-api`.
+   for example: `earthdata-pub-dashboard`, `earthdata-pub-api`.
 1. Modules - EDPub core modules will be named "EDPub Thing" where "Thing" is
    always capitalized and one word. The name should be descriptive. Examples are
-   "EDPub Forms", "EDPub API", "EDPub Dashboard", "EDPub Workflows". It is acceptable
+   "EDPub API", "EDPub Dashboard", "EDPub Workflows". It is acceptable
    to use Thing as a name by itself when the context is obvious. So, Dashboard as
    a label inside an EDPub diagram makes sense.
 1. Abbreviation - We will use the abbreviation "EDPub" to shorten EDPub, however
