@@ -149,3 +149,24 @@ INSERT INTO section_question VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', 'ad
 
 -- 11/15/24 Add attachments column to notes and add default
 ALTER TABLE note ADD attachments VARCHAR[] DEFAULT '{}';
+
+-- 12/09/24 EDPUB-1436 Create DAAC Backfill Publication Codes
+ALTER TABLE code
+ALTER COLUMN submission_id DROP NOT NULL;
+
+-- Bulk insert daac_id to code table
+INSERT INTO code (daac_id) VALUES 
+('40397fe8-4841-4e4c-b84a-6ece359ff5ff'),
+('c606afba-725b-4ae4-9557-1fd33260ae12'),
+('d551380f-8813-40e4-9763-2a5bb6007cd0'),
+('1ea1da68-cb95-431f-8dd8-a2cf16d7ef98'),
+('ef229725-1cad-485e-a72b-a276d2ca3175'),
+('9e0628f1-0dde-4ed2-b1e3-690c70326f25'),
+('de6d5ec9-4728-4f2b-9d43-ae2f0fdac96a'),
+('aec3724f-b30b-4b3f-9b9a-e0907d9d14b3'),
+('fe75c306-ac04-4689-a702-073d9cb071fe'),
+('15df4fda-ed0d-417f-9124-558fb5e5b561'),
+('6b3ea184-57c5-4fc5-a91b-e49708f91b67'),
+('00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1'),
+('cdccdd71-cbe2-4220-8569-a6355ea24f3f'),
+('1c36f0b9-b7fd-481b-9cab-3bc3cea35413');

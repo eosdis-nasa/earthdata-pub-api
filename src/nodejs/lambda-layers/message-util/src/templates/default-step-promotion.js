@@ -8,7 +8,7 @@ const getDefaultStepPromotion = (params, envUrl) => {
         <table border="0" cellpadding="10" cellspacing="0" style="width:100%">
             <tr style="width:100%;background:#f8f8f8">
                 <td><table><tr>
-                    <td width="60"><img src="https://pub.earthdata.nasa.gov/dashboard/images/app/src/assets/images/nasa-logo.78fcba4d9325e8ac5a2e15699d035ee0.svg"></td>
+                    <td width="60"><img src="cid:NASALogo" alt="NASA Logo"></td>
                     <td><h4>Earthdata Pub</h4></td>
                 </tr></table></td>
                 <td align="right"><b>Step Change</b></td>
@@ -24,6 +24,7 @@ const getDefaultStepPromotion = (params, envUrl) => {
                     <h2>New Status:</h2>
                     <p>${eventMessage.conversation_last_message}</p>
                     <br><br>
+                    <h3>Dashboard:</h3>
                     <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
                 </td>
             </tr>

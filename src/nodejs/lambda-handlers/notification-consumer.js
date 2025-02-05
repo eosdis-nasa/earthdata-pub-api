@@ -118,6 +118,7 @@ async function processRecord(record) {
       }
       const note = await db.note[operation](message);
       if (process.env.AWS_EXECUTION_ENV && message.attachments) {
+        message.note_id = note.id;
         const attachments = await moveDraftAttachments({
           conversationId: message.conversation_id,
           attachmentNames: message.attachments,
