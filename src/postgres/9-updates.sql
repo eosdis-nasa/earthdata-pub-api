@@ -187,6 +187,7 @@ DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad3
 DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='FORM_READ');
 DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='FORM_DELETE');
 DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='WORKFLOW_READ');
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='WORKFLOW_UPDATE');
 DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='QUESTION_READ');
 DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='REQUEST_INITIALIZE');
 DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='REQUEST_LOCK');

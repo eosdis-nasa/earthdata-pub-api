@@ -200,7 +200,7 @@ describe('workflow', () => {
       context: { user_id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc' },
       operation: 'createWorkflow'
     };
-    db.user.findById.mockReturnValue({ user_privileges: ['WORKFLOW_CREATE'] });
+    db.user.findById.mockReturnValue({ user_privileges: ['ADMIN'] });
     db.workflow.initialize.mockReturnValue({ id: '45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' });
     db.workflow.createStep.mockImplementation((params) => payload.steps[params.step_name]);
     db.workflow.findById.mockReturnValue(payload);
@@ -213,7 +213,7 @@ describe('workflow', () => {
       context: { user_id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc' },
       operation: 'editWorkflow'
     };
-    db.user.findById.mockReturnValue({ user_privileges: ['WORKFLOW_UPDATE'] });
+    db.user.findById.mockReturnValue({ user_privileges: ['ADMIN'] });
     db.workflow.createStep.mockImplementation((params) => payload.steps[params.step_name]);
     db.workflow.findById.mockReturnValue(oldWorkflow);
     db.workflow.updateWorkflowMetaData.mockReturnValue(payload);
@@ -226,7 +226,7 @@ describe('workflow', () => {
       context: { user_id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc' },
       operation: 'editWorkflow'
     };
-    db.user.findById.mockReturnValue({ user_privileges: ['WORKFLOW_UPDATE'] });
+    db.user.findById.mockReturnValue({ user_privileges: ['ADMIN'] });
     db.workflow.createStep.mockImplementation((params) => payload.steps[params.step_name]);
     db.workflow.findById.mockReturnValue(oldWorkflow);
     db.workflow.updateWorkflowMetaData.mockReturnValue(payload);
@@ -240,7 +240,7 @@ describe('workflow', () => {
       context: { user_id: '958fab13-ae06-470b-80e0-c9ba4e60f1bc' },
       operation: 'createWorkflow'
     };
-    db.user.findById.mockReturnValue({ user_privileges: ['WORKFLOW_CREATE'] });
+    db.user.findById.mockReturnValue({ user_privileges: ['ADMIN'] });
     db.workflow.initialize.mockReturnValue({ id: '45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' });
     db.workflow.createStep.mockImplementation((params) => payload.steps[params.step_name]);
     const response = await workflow.handler(createPayload);
