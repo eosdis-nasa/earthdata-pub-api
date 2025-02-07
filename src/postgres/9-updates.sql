@@ -174,12 +174,10 @@ INSERT INTO code (daac_id) VALUES
 --2/5/25 - Solidify necessary privileges
 -- RolePrivilege(edprole_id, privilege) UWG Member
 DELETE FROM edprole_privilege WHERE edprole_id='19ac227b-e96c-46fa-a378-cf82c461b669' AND privilege='NOTE_NEW');
-DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='REQUEST_SUBMIT');
 DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='REQUEST_LOCK');
 DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='REQUEST_UNLOCK');
 DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='FORM_READ');
 DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='FORM_DELETE');
-DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='REQUEST_SUBMIT');
 DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='REQUEST_LOCK');
 DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='REQUEST_UNLOCK');
 DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='NOTE_NEW');
@@ -207,7 +205,6 @@ DELETE FROM edprole_privilege WHERE edprole_id='4be6ca4d-6362-478b-8478-487a6683
 DELETE FROM edprole_privilege WHERE edprole_id='4be6ca4d-6362-478b-8478-487a668314b1' AND privilege='METRICS_READ');
 DELETE FROM edprole_privilege WHERE edprole_id='4be6ca4d-6362-478b-8478-487a668314b1' AND privilege='NOTE_NEW');
 
-DELETE FROM privilege WHERE privilege='REQUEST_SUBMIT';
 DELETE FROM privilege WHERE privilege='REQUEST_LOCK';
 DELETE FROM privilege WHERE privilege='REQUEST_UNLOCK';
 DELETE FROM privilege WHERE privilege='USER_CREATE';
