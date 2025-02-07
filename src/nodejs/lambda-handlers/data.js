@@ -21,6 +21,7 @@ async function findById({ resource, params, context }) {
   if (privileges.includes('ADMIN') || privileges.includes('DAAC_READ')) {
     params.privileged_user = true;
   }
+  params.user_id = context.user_id;
 
   return db[resource].findById(params);
 }
