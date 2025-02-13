@@ -598,6 +598,7 @@ CREATE TABLE IF NOT EXISTS note (
   text VARCHAR NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   step_name VARCHAR,
+  attachments VARCHAR[],
   PRIMARY KEY (id),
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
@@ -632,7 +633,7 @@ CREATE TABLE IF NOT EXISTS note_scope (
 
 CREATE TABLE IF NOT EXISTS code (
   code UUID DEFAULT UUID_GENERATE_V4(),
-  submission_id UUID NOT NULL,
+  submission_id UUID,
   daac_id UUID NOT NULL,
   PRIMARY KEY (code),
   FOREIGN KEY (submission_id) REFERENCES submission (id),

@@ -1,8 +1,8 @@
-variable "ses_access_key_id" {
+variable "ses_secret_sender_arn" {
   type = string
 }
 
-variable "ses_secret_access_key" {
+variable "ses_configuration_set_name" {
   type = string
 }
 

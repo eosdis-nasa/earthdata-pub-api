@@ -49,6 +49,7 @@ const Upload = require('./upload.js');
 const GroupUpload = require('./group-upload.js');
 const Step = require('./step.js');
 const Section = require('./section.js');
+const AttachmentUpload = require('./attachment-upload.js');
 
 const models = {
   Action,
@@ -99,7 +100,9 @@ const models = {
   Upload,
   GroupUpload,
   Step,
-  Section
+  Section,
+  AttachmentUpload
+
 };
 
 function collectionMetadata() {

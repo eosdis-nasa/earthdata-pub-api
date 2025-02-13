@@ -124,3 +124,4 @@ module.exports.create = one;
 module.exports.checkCode = one;
 module.exports.createCode = one;
 module.exports.createSection = one;
+module.exports.addAttachments = one;

@@ -5,12 +5,16 @@
  * implicit recipients and subscribers.
  * @module NotificationHandler
  */
+const {
+  S3Client, CopyObjectCommand, DeleteObjectCommand
+} = require('@aws-sdk/client-s3');
 
 const db = require('database-util');
-
 const msg = require('message-util');
-
 const { getTemplate, getEmailTemplate } = require('./notification-consumer/templates.js');
+
+const ingestBucket = process.env.INGEST_BUCKET;
+const region = process.env.REGION;
 
 async function sendEmailNotification({ note, emailPayload, usersList }) {
   const roles = {
@@ -69,6 +73,36 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
   await msg.sendEmail(users, emailPayload);
 }
 
+async function moveDraftAttachments({
+  conversationId, attachmentNames, userId, noteId
+}) {
+  const draftPrefix = `drafts/${conversationId}/${userId}`;
+  const s3Client = new S3Client({
+    region
+  });
+  const attachments = [];
+  await Promise.all(attachmentNames.map(async (attachmentName) => {
+    try {
+      const copyCommand = new CopyObjectCommand({
+        CopySource: `${ingestBucket}/${draftPrefix}/${attachmentName}`,
+        Bucket: ingestBucket,
+        Key: `attachments/${noteId}/${attachmentName}`
+      });
+      await s3Client.send(copyCommand);
+      attachments.push(attachmentName);
+      const deleteCommand = new DeleteObjectCommand({
+        Bucket: ingestBucket,
+        Key: `${draftPrefix}/${attachmentName}`
+      });
+      await s3Client.send(deleteCommand);
+    } catch (error) {
+      // eslint-disable-next-line
+      console.log(`Failed to move object: ${attachmentName}\n${error}`);
+    }
+  }));
+  return attachments;
+}
+
 async function processRecord(record) {
   const { eventMessage } = msg.parseRecord(record);
   if (!(eventMessage.data && eventMessage.data.silent)) {
@@ -83,6 +117,16 @@ async function processRecord(record) {
         message.subject = 'No Subject';
       }
       const note = await db.note[operation](message);
+      if (process.env.AWS_EXECUTION_ENV && message.attachments) {
+        message.note_id = note.id;
+        const attachments = await moveDraftAttachments({
+          conversationId: message.conversation_id,
+          attachmentNames: message.attachments,
+          userId: message.user_id,
+          noteId: note.id
+        });
+        await db.note.addAttachments({ noteId: note.id, attachments });
+      }
       if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
         const emailPayload = eventMessage.emailPayloadProvided ? eventMessage
           : await getEmailTemplate(eventMessage, message);
