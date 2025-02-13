@@ -34,9 +34,6 @@ variable "permissions_boundary_arn" {
 variable "edpub_dashboard_s3_bucket" {
   type = string
 }
-variable "edpub_forms_s3_bucket" {
-  type = string
-}
 variable "edpub_overview_s3_bucket" {
   type = string
 }
@@ -133,5 +130,9 @@ variable "gesdisc_endpoint_access_token"{
 }
 
 variable "ornl_service_authorization_secret" {
+  type = string
+}
+
+variable "ses_alarm_email" {
   type = string
 }
