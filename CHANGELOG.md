@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Unreleased changes can be added here. -->
 - Add attachments capabilities
+- Updated github repo template assets
 
 ## 1.1.0
 
