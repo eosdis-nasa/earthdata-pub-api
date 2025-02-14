@@ -4,13 +4,16 @@ This is the api code repository for Earthdata Pub.
 
 ## Table of Contents
 
-- [Contributing](#contributing)
-- [Prerequisites](#prerequisites)
-- [Installing](#installing)
-- [Building and running locally](#building-and-running-locally)
-- [Deploying](#deploying)
-- [Testing](#testing)
-- [Documentation](#documentation)
+- [Earthdata Pub API](#earthdata-pub-api)
+  - [Table of Contents](#table-of-contents)
+  - [Contributing](#contributing)
+    - [Prerequisites](#prerequisites)
+    - [Installing](#installing)
+    - [Building and running locally](#building-and-running-locally)
+  - [Deploying](#deploying)
+  - [Testing](#testing)
+  - [Documentation](#documentation)
+  - [References](#references)
 
 ## Contributing
 
@@ -132,3 +135,9 @@ Optionally you can generate documentation without building.
 ```bash
 npm run generate-docs
 ```
+
+## References
+
+- EOSDIS Slack Channel: #earthdatapub
+- EDPub Wiki: [https://wiki.earthdata.nasa.gov/display/EDPUB/Earthdata+Pub+Home](https://wiki.earthdata.nasa.gov/display/EDPUB/Earthdata+Pub+Home)
+- EDPub Roadmap: [https://wiki.earthdata.nasa.gov/display/EDPUB/EDPub+Feature+Roadmap](https://wiki.earthdata.nasa.gov/display/EDPUB/EDPub+Feature+Roadmap)
