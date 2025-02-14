@@ -6,10 +6,10 @@
 
 const db = require('database-util');
 
-const editPerms = { privilege: ['ADMIN', 'FORM_CREATE'] };
-const readPerms = { privilege: ['ADMIN', 'QUESTION_READ'] };
-const inputCreatePerms = { privilege: ['ADMIN', 'FORM_CREATE'] };
-const inputUpdatePerms = { privilege: ['ADMIN', 'FORM_UPDATE'] };
+const editPerms = { privilege: ['ADMIN'] };
+const readPerms = { privilege: ['ADMIN'] };
+const inputCreatePerms = { privilege: ['ADMIN'] };
+const inputUpdatePerms = { privilege: ['ADMIN'] };
 
 async function hasPerms(uid, perms) {
   const userInfo = await db.user.findById({ id: uid });

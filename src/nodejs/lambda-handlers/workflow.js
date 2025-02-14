@@ -62,7 +62,7 @@ async function createWorkflowMethod(params, user) {
   const {
     short_name: shortName, version, long_name: longName, description, steps
   } = params;
-  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+  const approvedUserPrivileges = ['ADMIN'];
 
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { id } = await db.workflow.initialize({
@@ -86,7 +86,7 @@ async function editWorkflowMethod(params, user) {
     id, version, description, steps
   } = params;
 
-  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_UPDATE'];
+  const approvedUserPrivileges = ['ADMIN'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const { steps: oldSteps } = await db.workflow.findById({ id });
     await db.workflow.clearSteps({ id });
@@ -106,7 +106,7 @@ async function editWorkflowMethod(params, user) {
 }
 
 async function createNewStep(params, user) {
-  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+  const approvedUserPrivileges = ['ADMIN'];
 
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const result = await db.step.create(params);
@@ -116,7 +116,7 @@ async function createNewStep(params, user) {
 }
 
 async function stepFindAll(params, user) {
-  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+  const approvedUserPrivileges = ['ADMIN'];
 
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const result = await db.step.findAll(params);
@@ -126,7 +126,7 @@ async function stepFindAll(params, user) {
 }
 
 async function stepFindById(params, user) {
-  const approvedUserPrivileges = ['ADMIN', 'WORKFLOW_CREATE'];
+  const approvedUserPrivileges = ['ADMIN'];
 
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const result = await db.step.findById(params);

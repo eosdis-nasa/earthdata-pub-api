@@ -183,7 +183,7 @@ describe('user', () => {
     };
     const mockCreateCognitoUser = jest.fn();
     mockCreateCognitoUser.mockReturnValue({ msg: 'a new user has been created in cognito' });
-    db.user.findById.mockReturnValueOnce({ user_privileges: ['USER_CREATE'] });
+    db.user.findById.mockReturnValueOnce({ user_privileges: ['ADMIN'] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['ADMIN'] });
     db.user.findById.mockReturnValueOnce({ user_privileges: ['NO_PRIVILEGES'] });
     db.user.loginUser.mockReturnValue({ msg: 'a new user has been created' });
