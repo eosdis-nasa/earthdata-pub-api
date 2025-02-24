@@ -59,7 +59,7 @@ async function getPostUrlMethod(event, user) {
     const {
       daac_id: daacId,
       contributor_ids: contributorIds
-    } = await db.submission.findById({ id: submissionId });
+    } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
     if (!daacId) return ({ error: 'Submission not found' });
 
     const userDaacs = groupIds.length > 0 ? await db.daac.getIds({ group_ids: groupIds }) : [];
@@ -177,7 +177,7 @@ async function listFilesMethod(event, user) {
   const {
     daac_id: daacId,
     contributor_ids: contributorIds
-  } = await db.submission.findById({ id: submissionId });
+  } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
 
   if (contributorIds.includes(user)
     || userInfo.user_privileges.includes('ADMIN')
@@ -219,7 +219,7 @@ async function getDownloadUrlMethod(event, user) {
 
   const {
     daac_id: daacId
-  } = await db.submission.findById({ id: submissionId });
+  } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
 
   if (userInfo.user_privileges.includes('ADMIN')
     || userDaacIds.includes(daacId)
