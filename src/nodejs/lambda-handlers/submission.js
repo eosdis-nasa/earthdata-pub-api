@@ -234,7 +234,7 @@ async function withdrawMethod(event, user) {
     });
     return submission;
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function restoreMethod(event, user) {
@@ -243,7 +243,7 @@ async function restoreMethod(event, user) {
   if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.submission.restoreSubmission({ id });
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function changeStepMethod(event, user) {
@@ -255,7 +255,7 @@ async function changeStepMethod(event, user) {
                                                && await validStep.step_name) {
     return db.submission.setStep({ step_name, id });
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function addContributorsMethod(event, user) {
@@ -269,7 +269,7 @@ async function addContributorsMethod(event, user) {
     });
     return db.submission.addContributors({ id, contributor_ids: contributorIds });
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function removeContributorMethod(event, user) {
@@ -283,14 +283,16 @@ async function removeContributorMethod(event, user) {
     });
     return db.submission.removeContributor({ id, contributor: contributorId });
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function copySubmissionMethod(event, user) {
   const {
     id: originId, copy_context: copyContext, copy_filter: copyFilter, action_copy: actionCopy
   } = event;
-  const { form_data: formData, daac_id: daacId } = await db.submission.findById({ id: originId });
+  const { form_data: formData, daac_id: daacId } = await db.submission.findById(
+    { id: originId, user_id: user.id }
+  );
   const { id } = await initializeMethod({ daac_id: daacId }, user);
 
   const filteredFormData = !copyFilter ? formData
@@ -309,7 +311,7 @@ async function copySubmissionMethod(event, user) {
     id, edpuser_id: user.id, origin_id: originId, context: copyContext
   });
 
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-vars
