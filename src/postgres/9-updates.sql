@@ -282,7 +282,6 @@ INSERT INTO upload_step (step_name, upload_destination, category_type, help_text
 -- 2/25/25 Add Default Publication Workflow
 INSERT INTO workflow VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'default_publication_workflow', 1, 'Default Publication Workflow', 'This is the default publication workflow for DAACs who have not yet created a DAAC specific publication workflow.');
 
--- Default
 INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'init', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'data_publication_request_form_review', 'close');
