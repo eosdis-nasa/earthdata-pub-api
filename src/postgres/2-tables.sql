@@ -637,7 +637,7 @@ CREATE TABLE IF NOT EXISTS note_scope (
 
 CREATE TABLE IF NOT EXISTS code (
   code UUID DEFAULT UUID_GENERATE_V4(),
-  submission_id UUID NOT NULL,
+  submission_id UUID,
   daac_id UUID NOT NULL,
   PRIMARY KEY (code),
   FOREIGN KEY (submission_id) REFERENCES submission (id),

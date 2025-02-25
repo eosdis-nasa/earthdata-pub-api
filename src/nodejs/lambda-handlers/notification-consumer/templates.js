@@ -75,7 +75,8 @@ const getEmailTemplate = async (eventMessage, message) => {
       conversation_last_message: message.text,
       event_type: eventMessage.event_type,
       daac_name: daac.short_name,
-      user_id: eventMessage.user_id
+      user_id: eventMessage.user_id,
+      submitted_by_name: eventMessage.submitted_by_name
     };
 
     if (formData?.data_product_name_value) {
@@ -84,7 +85,9 @@ const getEmailTemplate = async (eventMessage, message) => {
   } else {
     emailPayload = {
       conversation_last_message: message.text,
-      event_type: eventMessage.event_type
+      event_type: eventMessage.event_type,
+      note_id: message.note_id,
+      attachments: message.attachments
     };
   }
 

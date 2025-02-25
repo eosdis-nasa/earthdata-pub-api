@@ -182,6 +182,103 @@ const refs = {
   }
 };
 
+const daacIdSelect = () => sql.select({
+  fields: [
+    'submission.daac_id',
+  ],
+  from: {
+    base: 'submission',
+  },
+  where: {
+    filters: [{ field: 'submission.id', param: 'id' }]
+  }
+})
+
+const daacGroup = () => ({
+  type: 'inner_join',
+  src: {
+    type: 'select',
+    fields: [
+      'daac.id AS daac_id',
+      'daac.edpgroup_id'
+    ],
+    from: {
+      base: 'daac',
+    },
+    where: {
+      filters: [{ field: 'daac.id', value: `(${daacIdSelect()})` }]
+    },
+    alias: 'daac_group'
+  },
+  on:{ left: 'edpuser_edpgroup.edpgroup_id', right: 'daac_group.edpgroup_id'}
+});
+
+const submissionDaacUsers = () => sql.select({
+  type: 'select',
+  fields: [
+    'daac_id',
+    'edpuser_id',
+    'privilege'
+  ],
+  from: {
+    base: 'edpuser_edpgroup',
+    joins: [
+      daacGroup(),
+      { type: 'natural_join', src: 'edpuser_edprole' },
+      { type: 'natural_join', src: 'edprole_privilege' },
+    ]
+  },
+  where: {
+    filters: [{ field: 'edprole_privilege.privilege', literal: "REQUEST_DAACREAD" }]
+  }
+});
+
+const adminUsers = () => sql.select({
+  fields: [
+    'NULL AS daac_id',
+    'edpuser_id',
+    'privilege '
+  ],
+  from: {
+    base: 'edpuser_edprole',
+    joins: [
+      { type: 'natural_join', src: 'edprole_privilege' },
+    ]
+  },
+  where: {
+    filters: [{ field: 'edprole_privilege.privilege', literal: "ADMIN" }]
+  }
+});
+
+const submissionPrivilegedUsers = () => ({
+    type: 'left_join',
+    src: {
+      type: 'select',
+      fields: [
+        'daac_privileged_users.daac_id',
+        'daac_privileged_users.user_ids'
+      ],
+      from: {
+        base: sql.select({
+          fields: [
+            `(${daacIdSelect()})`,
+            'array_agg(edpuser_id) user_ids'
+          ],
+          from: {
+            base: sql.union({
+              query1: submissionDaacUsers(),
+              query2: adminUsers(),
+              alias: 'user_union'
+            })
+          },
+          alias: 'daac_privileged_users'
+        })
+      },
+      alias: 'privileged_users',
+    },
+    on:{ left: 'submission.daac_id', right: 'privileged_users.daac_id'}
+});
+
 const submission_form_data = (privileged_user) => ({
   type: 'natural_left_join',
   src: {
@@ -225,10 +322,13 @@ const findById = (params) => sql.select({
   fields: fields(allFields),
   from: {
     base: table,
-    joins: [refs.submission_status, refs.code, refs.publication_accession_association, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, submission_form_data(params.privileged_user), refs.step, refs.workflow, refs.daac, refs.submission_form_data_pool, refs.submission_copy]
+    joins: [refs.submission_status, refs.code, refs.publication_accession_association, refs.initiator_ref, refs.submission_metadata, refs.submission_action_data, submission_form_data(params.privileged_user), refs.step, refs.workflow, refs.daac, refs.submission_form_data_pool, refs.submission_copy, submissionPrivilegedUsers()]
   },
   where: {
-    filters: [{ field: fieldMap.id, param: 'id' }]
+    filters: [
+      { field: fieldMap.id, param: 'id' },
+      ...([{ cmd: `('${params.user_id}'=ANY(submission.contributor_ids) OR '${params.user_id}' = ANY(privileged_users.user_ids))` }]),
+    ]
   }
 });
 

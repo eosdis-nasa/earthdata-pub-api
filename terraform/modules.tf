@@ -30,8 +30,8 @@ module "s3" {
 module "aws_secrets" {
   source = "./aws_secrets"
 
-  ses_access_key_id = var.ses_access_key_id
-  ses_secret_access_key = var.ses_secret_access_key
+  ses_secret_sender_arn = var.ses_secret_sender_arn
+  ses_configuration_set_name = var.ses_configuration_set_name
   ornl_endpoint_url = var.ornl_endpoint_url
   ornl_endpoint_access_token = var.ornl_endpoint_access_token
   gesdisc_endpoint_url = var.gesdisc_endpoint_url
@@ -66,7 +66,6 @@ module "lambda_functions" {
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
   edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
-  edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
   edpub_actions_s3_bucket = var.edpub_actions_s3_bucket
   edpub_upload_s3_bucket = var.edpub_upload_s3_bucket
@@ -116,7 +115,6 @@ module "apigateway_endpoints" {
   cognito_user_pool_arn = "arn:aws:cognito-idp:${var.region}:${var.account_id}:userpool/${var.cognito_user_pool_id}"
   edpub_apigateway_s3_role_arn = module.iam_roles.edpub_apigateway_s3_role_arn
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
-  edpub_forms_s3_bucket = var.edpub_forms_s3_bucket
   edpub_overview_s3_bucket = var.edpub_overview_s3_bucket
   edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   vpc_endpoint_id = var.vpc_endpoint_id
@@ -137,6 +135,7 @@ module "sns_topics" {
   region = var.region
   account_id = var.account_id
   stage = var.stage
+  ses_alarm_email = var.ses_alarm_email
 }
 
 module "sqs_queues" {
@@ -146,4 +145,20 @@ module "sqs_queues" {
   account_id = var.account_id
   stage = var.stage
   edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
+}
+
+module "ses" {
+  source = "./ses"
+
+  providers = {
+    aws = aws.east-1-provider
+  }
+
+  ses_configuration_set_name = var.ses_configuration_set_name
+}
+
+module "cloudwatch" {
+  source = "./cloudwatch"
+
+  edpub_ses_reputation_alarm_sns_arn = module.sns_topics.edpub_ses_reputation_alarm_sns_arn  
 }

@@ -268,7 +268,7 @@ async function withdrawMethod(event, user) {
     });
     return submission;
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function restoreMethod(event, user) {
@@ -277,7 +277,7 @@ async function restoreMethod(event, user) {
   if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.submission.restoreSubmission({ id });
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function changeStepMethod(event, user) {
@@ -289,7 +289,7 @@ async function changeStepMethod(event, user) {
                                                && await validStep.step_name) {
     return db.submission.setStep({ step_name, id });
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function promoteStepMethod(event, user) {
@@ -322,7 +322,7 @@ async function addContributorsMethod(event, user) {
     });
     return db.submission.addContributors({ id, contributor_ids: contributorIds });
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function removeContributorMethod(event, user) {
@@ -336,14 +336,14 @@ async function removeContributorMethod(event, user) {
     });
     return db.submission.removeContributor({ id, contributor: contributorId });
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function copySubmissionMethod(event, user, newSubmissionId) {
   const {
     id: originId, copy_context: copyContext, copy_filter: copyFilter, action_copy: actionCopy
   } = event;
-  const { form_data: formData, code } = await db.submission.findById({ id: originId });
+  const { form_data: formData, code } = await db.submission.findById({ id: originId, user_id: user.id });
 
   /*
   This is used to handle the two ways we enter this function:
@@ -378,7 +378,7 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
     id, edpuser_id: user.id, origin_id: originId, context: copyContext
   });
 
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-vars
@@ -425,6 +425,7 @@ async function createStepReviewApprovalMethod(event, user) {
       formId: formData?.length > 0 ? formData[0].form_id : '',
       userIds,
       submissionId,
+      submitted_by_name: user.name,
       // Have to use string here because SNS doesn't support boolean type
       emailPayloadProvided: 'true'
     };

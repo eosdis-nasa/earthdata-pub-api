@@ -229,6 +229,27 @@ $$;
 
 DROP FUNCTION init_workflow_id;
 
+-- 12/09/24 EDPUB-1436 Create DAAC Backfill Publication Codes
+ALTER TABLE code
+ALTER COLUMN submission_id DROP NOT NULL;
+
+-- Bulk insert daac_id to code table
+INSERT INTO code (daac_id) VALUES 
+('40397fe8-4841-4e4c-b84a-6ece359ff5ff'),
+('c606afba-725b-4ae4-9557-1fd33260ae12'),
+('d551380f-8813-40e4-9763-2a5bb6007cd0'),
+('1ea1da68-cb95-431f-8dd8-a2cf16d7ef98'),
+('ef229725-1cad-485e-a72b-a276d2ca3175'),
+('9e0628f1-0dde-4ed2-b1e3-690c70326f25'),
+('de6d5ec9-4728-4f2b-9d43-ae2f0fdac96a'),
+('aec3724f-b30b-4b3f-9b9a-e0907d9d14b3'),
+('fe75c306-ac04-4689-a702-073d9cb071fe'),
+('15df4fda-ed0d-417f-9124-558fb5e5b561'),
+('6b3ea184-57c5-4fc5-a91b-e49708f91b67'),
+('00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1'),
+('cdccdd71-cbe2-4220-8569-a6355ea24f3f'),
+('1c36f0b9-b7fd-481b-9cab-3bc3cea35413');
+
 -- 1/3/25 Update dashboard to handle DAAC Assginment
 INSERT INTO step(step_name, type, data) VALUES ('daac_assignment', 'action', '{"rollback":"data_accession_request_form_review","type": "review"}');
 UPDATE step_edge SET next_step_name='daac_assignment' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
@@ -257,4 +278,3 @@ UPDATE step SET data='{"rollback":"cost_model","type": "upload"}' WHERE step_nam
 UPDATE step_edge SET next_step_name = 'cost_model' WHERE workflow_id = '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name ='data_accession_request_form_review';
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'cost_model' , 'daac_assignment');
 INSERT INTO upload_step (step_name, upload_destination, category_type, help_text) VALUES ('cost_model', 'DAR_Uploads', 'cost_model', 'Please provide a cost model file. Files must be less than 5 GB and cannot include .exe or .dll extensions.');
-

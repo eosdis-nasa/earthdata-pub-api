@@ -53,10 +53,11 @@ services:
     ports:
       - 5432:5432
   pg_admin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: edpub@edpub.com
       PGADMIN_DEFAULT_PASSWORD: edpub
+      PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: "False"
     ports:
       - 8001:80
