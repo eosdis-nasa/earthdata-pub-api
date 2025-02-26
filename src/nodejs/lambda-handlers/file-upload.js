@@ -59,15 +59,15 @@ async function getPostUrlMethod(event, user) {
     const {
       daac_id: daacId,
       contributor_ids: contributorIds
-    } = await db.submission.findById({ id: submissionId });
+    } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
     if (!daacId) return ({ error: 'Submission not found' });
 
-    const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
-      .map((daac) => daac.id);
+    const userDaacs = groupIds.length > 0 ? await db.daac.getIds({ group_ids: groupIds }) : [];
+    const userDaacIds = userDaacs.map((daac) => daac.id);
 
     if (contributorIds.includes(user)
       || userInfo.user_privileges.includes('ADMIN')
-      || userDaacs.includes(daacId)
+      || userDaacIds.includes(daacId)
     ) {
       return generateUploadUrl({
         key: `${daacId}/${submissionId}/${fileCategory}/${user}/${fileName}`,
@@ -171,16 +171,17 @@ async function listFilesMethod(event, user) {
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
-  const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
-    .map((daac) => daac.id);
+  const userDaacs = groupIds.length > 0 ? await db.daac.getIds({ group_ids: groupIds }) : [];
+  const userDaacIds = userDaacs.map((daac) => daac.id);
+
   const {
     daac_id: daacId,
     contributor_ids: contributorIds
-  } = await db.submission.findById({ id: submissionId });
+  } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
 
   if (contributorIds.includes(user)
     || userInfo.user_privileges.includes('ADMIN')
-    || userDaacs.includes(daacId)
+    || userDaacIds.includes(daacId)
   ) {
     const s3Client = new S3Client({ region });
     const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
@@ -213,14 +214,15 @@ async function getDownloadUrlMethod(event, user) {
   const submissionId = key.split('/')[1];
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
-  const userDaacs = (await db.daac.getIds({ group_ids: groupIds }))
-    .map((daac) => daac.id);
+  const userDaacs = groupIds.length > 0 ? await db.daac.getIds({ group_ids: groupIds }) : [];
+  const userDaacIds = userDaacs.map((daac) => daac.id);
+
   const {
     daac_id: daacId
-  } = await db.submission.findById({ id: submissionId });
+  } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
 
   if (userInfo.user_privileges.includes('ADMIN')
-    || userDaacs.includes(daacId)
+    || userDaacIds.includes(daacId)
   ) {
     const payload = {
       Bucket: ingestBucket,
