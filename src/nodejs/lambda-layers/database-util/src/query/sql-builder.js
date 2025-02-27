@@ -117,6 +117,8 @@ const strWrapper = (value) => ` '${value}'`;
 
 const strLiteral = ({ value }) => strLiteral(value);
 
+const union = ({ query1, query2, alias }) => `${alias ? '(' : ''}${query1.type ? complexParse(query1) : query1} UNION ${query2.type ? complexParse(query2) : query2}${alias ? `) ${alias}` : ''}`;
+
 const complexTypes = {
   select: selectQuery,
   insert: insertQuery,
@@ -135,7 +137,8 @@ const complexTypes = {
   json_merge_agg: jsonMergeAgg,
   json_obj: jsonObj,
   literal: strLiteral,
-  any: anyClause
+  any: anyClause,
+  union,
 };
 
 module.exports = complexTypes;
