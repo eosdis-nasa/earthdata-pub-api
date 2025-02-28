@@ -343,7 +343,9 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
   const {
     id: originId, copy_context: copyContext, copy_filter: copyFilter, action_copy: actionCopy
   } = event;
-  const { form_data: formData, code } = await db.submission.findById({ id: originId, user_id: user.id });
+  const { form_data: formData, code } = await db.submission.findById(
+    { id: originId, user_id: user.id }
+  );
 
   /*
   This is used to handle the two ways we enter this function:
