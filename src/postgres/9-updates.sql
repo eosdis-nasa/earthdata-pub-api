@@ -278,3 +278,8 @@ UPDATE step SET data='{"rollback":"cost_model","type": "upload"}' WHERE step_nam
 UPDATE step_edge SET next_step_name = 'cost_model' WHERE workflow_id = '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name ='data_accession_request_form_review';
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'cost_model' , 'daac_assignment');
 INSERT INTO upload_step (step_name, upload_destination, category_type, help_text) VALUES ('cost_model', 'DAR_Uploads', 'cost_model', 'Please provide a cost model file. Files must be less than 5 GB and cannot include .exe or .dll extensions.');
+
+-- 3/5/25 Reroute Feature pivot updates
+UPDATE step SET data='{"rollback":"data_accession_request_form_review","type": "review"}' WHERE step_name='daac_assignment';
+DELETE FROM step WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='cost_model';
+UPDATE step_edge SET next_step_name='daac_assignment' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
