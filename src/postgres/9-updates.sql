@@ -279,6 +279,15 @@ UPDATE step_edge SET next_step_name = 'cost_model' WHERE workflow_id = '3335970e
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'cost_model' , 'daac_assignment');
 INSERT INTO upload_step (step_name, upload_destination, category_type, help_text) VALUES ('cost_model', 'DAR_Uploads', 'cost_model', 'Please provide a cost model file. Files must be less than 5 GB and cannot include .exe or .dll extensions.');
 
+-- 2/25/25 Add Default Publication Workflow
+INSERT INTO workflow VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'default_publication_workflow', 1, 'Default Publication Workflow', 'This is the default publication workflow for DAACs who have not yet created a DAAC specific publication workflow.');
+
+INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'init', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'data_publication_request_form_review', 'close');
+
+UPDATE daac SET workflow_id='f223eec5-2c4d-4412-9c97-5df4117c9290' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND id != 'cdccdd71-cbe2-4220-8569-a6355ea24f3f';
+
 -- 3/5/25 Reroute Feature pivot updates
 UPDATE step SET data='{"rollback":"data_accession_request_form_review","type": "review"}' WHERE step_name='daac_assignment';
 DELETE FROM step WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='cost_model';
