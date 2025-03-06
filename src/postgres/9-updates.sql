@@ -287,3 +287,12 @@ INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'data_publ
 INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'data_publication_request_form_review', 'close');
 
 UPDATE daac SET workflow_id='f223eec5-2c4d-4412-9c97-5df4117c9290' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND id != 'cdccdd71-cbe2-4220-8569-a6355ea24f3f';
+
+-- 10/21/24 EDPUB-1372 Repurpose DAAC Selection Page to DAAC Assignment Page
+UPDATE daac SET hidden = 'false' WHERE id = 'c606afba-725b-4ae4-9557-1fd33260ae12';
+UPDATE daac SET hidden = 'false' WHERE id = 'd551380f-8813-40e4-9763-2a5bb6007cd0';
+UPDATE daac SET hidden = 'false' WHERE id = '9e0628f1-0dde-4ed2-b1e3-690c70326f25';
+UPDATE daac SET hidden = 'false' WHERE id = 'de6d5ec9-4728-4f2b-9d43-ae2f0fdac96a';
+UPDATE daac SET hidden = 'false' WHERE id = 'aec3724f-b30b-4b3f-9b9a-e0907d9d14b3';
+UPDATE daac SET hidden = 'false' WHERE id = 'fe75c306-ac04-4689-a702-073d9cb071fe';
+UPDATE daac SET hidden = 'false' WHERE id = '00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1';
