@@ -230,7 +230,7 @@ async function listStepFilesMethod(event, user) {
   const {
     contributor_ids: contributorIds,
     step_data: stepData
-  } = await db.submission.findById({ id: submissionId });
+  } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
 
   const {
     upload_destination: prefix
