@@ -4,7 +4,7 @@
 
 FROM amazon/aws-cli:latest as aws
 
-FROM node:18.14.1
+FROM node:22.14.0
 
 RUN \
 apt-get update -y && \
