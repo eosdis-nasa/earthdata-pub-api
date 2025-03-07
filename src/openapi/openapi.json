@@ -6492,7 +6492,7 @@
           }
         ],
         "x-amazon-apigateway-integration": {
-          "uri": "${data_lambda_arn}",
+          "uri": "${user_lambda_arn}",
           "passthroughBehavior": "when_no_match",
           "httpMethod": "POST",
           "type": "aws",
