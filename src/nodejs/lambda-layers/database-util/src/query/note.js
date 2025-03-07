@@ -443,13 +443,49 @@ const findAll = (params) => sql.select({
   from: { base: 'note' }
 });
 
-const findById = (params) => sql.select({
-  fields: ['note.*'],
-  from: { base: 'note' },
-  where: {
-    filters: [{ field: 'note.id', param: 'id' }]
-  }
-});
+const findById = (params) => `
+SELECT note.*
+FROM note 
+LEFT join submission ON note.conversation_id = submission.conversation_id
+LEFT JOIN note_scope ON note.id = note_scope.note_id
+WHERE note.id = '${params.id}' AND (
+	'${params.user_id}' = ANY(SELECT edpuser_id FROM edpuser_edprole NATURAL JOIN edprole_privilege WHERE privilege = 'ADMIN') OR (
+		( '${params.user_id}' = ANY(submission.contributor_ids) OR '${params.user_id}' = ANY(
+			SELECT id
+			FROM edpuser
+			LEFT JOIN edpuser_edpgroup ON edpuser.id = edpuser_edpgroup.edpuser_id 
+			LEFT JOIN edpuser_edprole ON edpuser.id = edpuser_edprole.edpuser_id 
+			WHERE edpuser_edprole.edprole_id = ANY(
+				SELECT edprole_id FROM edprole_privilege left JOIN edprole ON edprole_privilege.edprole_id = edprole.id WHERE privilege = 'REQUEST_DAACREAD')
+				AND edpuser_edpgroup.edpgroup_id = ANY(SELECT daac.edpgroup_id 
+					FROM note
+					LEFT join submission ON note.conversation_id = submission.conversation_id 
+					LEFT JOIN daac ON submission.daac_id = daac.id 
+					WHERE note.id = '${params.id}')
+			)
+		) AND (
+			'${params.user_id}' =ANY(note_scope.user_ids) 
+			OR note.id in (
+				SELECT note.id
+				FROM note
+				LEFT JOIN note_scope ns on note.id = ns.note_id
+				WHERE (array_length(edprole_ids, 1) ISNULL AND array_length(user_ids, 1) ISNULL) OR note.id in (
+						SELECT distinct note_id
+						FROM  (
+							SELECT ns.note_id, unnest(ns.edprole_ids) as role_id
+							FROM note_scope ns
+							) unraveled
+						WHERE unraveled.role_id IN (
+								SELECT edprole_id 
+								FROM edpuser_edprole WHERE 
+								edpuser_id = '${params.user_id}'
+						)
+					)			
+				)
+		)
+	)
+)
+`
 
 const getConversationList = (params) => sql.select({
   fields: ['conversation.*', 'conversation_edpuser.unread'],
