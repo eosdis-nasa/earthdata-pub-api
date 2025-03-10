@@ -17,7 +17,7 @@ async function hasPerms(uid, perms) {
 }
 
 async function editSection({ params, context }) {
-  if (await hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
+  if (await hasPerms(context.user_id, ['ADMIN'])) {
     const response = await db.section.createSection(params);
     return response;
   }
@@ -25,7 +25,7 @@ async function editSection({ params, context }) {
 }
 
 async function addSection({ params, context }) {
-  if (await hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
+  if (await hasPerms(context.user_id, ['ADMIN'])) {
     const response = await db.section.createSection(params);
     return response;
   }
@@ -33,14 +33,14 @@ async function addSection({ params, context }) {
 }
 
 async function createForm({ params, context }) {
-  if (await hasPerms(context.user_id, ['ADMIN', 'FORM_CREATE'])) {
+  if (await hasPerms(context.user_id, ['ADMIN'])) {
     params.privileged_user = true;
   }
   return db.form.createForm(params);
 }
 
 async function updateForm({ params, context }) {
-  if (await hasPerms(context.user_id, ['ADMIN', 'FORM_UPDATE'])) {
+  if (await hasPerms(context.user_id, ['ADMIN'])) {
     params.privileged_user = true;
   }
   return db.form.updateForm(params);
