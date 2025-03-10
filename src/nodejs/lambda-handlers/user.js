@@ -47,8 +47,7 @@ async function createCognitoUser({
 }
 
 async function createMethod(params, privileges) {
-  if (privileges.includes('ADMIN')
-    || privileges.includes('USER_CREATE')) {
+  if (privileges.includes('ADMIN')) {
     const { email, detailed } = params;
     const { email: emailUsed } = await db.user.findByEmail({ email });
     if (emailUsed === email) { return { error: 'Duplicate email' }; }
@@ -88,6 +87,16 @@ async function findMethod(params, privileges) {
     || privileges.includes('USER_READ')) {
     if (params.id) return db.user.findById(params);
     return db.user.find(params);
+  }
+  return { error: 'No privilege' };
+}
+
+async function findByIdMethod(event, privileges) {
+  const { params, context } = event;
+  if (privileges.includes('ADMIN')
+    || privileges.includes('USER_READ')
+    || params.id === context.user_id) {
+    return db.user.findById(params);
   }
   return { error: 'No privilege' };
 }
@@ -146,6 +155,7 @@ async function getUsersMethod(params) {
 const operations = {
   create: createMethod,
   find: findMethod,
+  findById: findByIdMethod,
   add_group: addGroupMethod,
   remove_group: removeGroupMethod,
   add_role: addRoleMethod,
