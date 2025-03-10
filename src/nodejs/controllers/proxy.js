@@ -453,7 +453,7 @@ module.exports.userFindById = function userFindById(req, res, next) {
     params: { id: params.id.value },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.user(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
