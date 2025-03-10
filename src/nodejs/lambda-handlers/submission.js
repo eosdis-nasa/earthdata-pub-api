@@ -308,7 +308,7 @@ async function promoteStepMethod(event, user) {
     };
     await msg.sendEvent(eventMessage);
   }
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 async function addContributorsMethod(event, user) {
@@ -472,7 +472,7 @@ async function assignDaacsMethod(event, user) {
     return { error: 'Invalid permissions.' };
   }
 
-  let submission = await db.submission.findById({ id });
+  let submission = await db.submission.findById({ id, user_id: user.id });
 
   // Check current step - only proceed if on DAAC assignment step
   if (submission.step_name !== 'daac_assignment') {
@@ -485,7 +485,7 @@ async function assignDaacsMethod(event, user) {
     await db.submission.createCode({ submissionId: id, daacID: daacId });
   }
 
-  submission = await db.submission.findById({ id });
+  submission = await db.submission.findById({ id, user_id: user.id });
 
   // Send notification emails to the following
   // - the point of contact of the submission (form response),
@@ -543,7 +543,7 @@ async function assignDaacsMethod(event, user) {
   };
   await msg.sendEvent(eventMessage);
 
-  return db.submission.findById({ id });
+  return db.submission.findById({ id, user_id: user.id });
 }
 
 const operations = {
