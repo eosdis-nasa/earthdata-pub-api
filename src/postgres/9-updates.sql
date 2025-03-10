@@ -53,7 +53,7 @@ RAISE;
 -- 08/30/24 updates form table to include daac_only column for limiting a forms visability
 ALTER TABLE form ADD daac_only BOOLEAN DEFAULT False;
 
--- 09/3/24 removes DAAC_READ priviledge from Data Producer
+-- 09/3/24 removes DAAC_READ privilege from Data Producer
 DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='DAAC_READ';
 
 -- 09/13/24 additions for showcasing daac_only forms in the ornl test workflow
@@ -278,3 +278,62 @@ UPDATE step SET data='{"rollback":"cost_model","type": "upload"}' WHERE step_nam
 UPDATE step_edge SET next_step_name = 'cost_model' WHERE workflow_id = '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name ='data_accession_request_form_review';
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'cost_model' , 'daac_assignment');
 INSERT INTO upload_step (step_name, upload_destination, category_type, help_text) VALUES ('cost_model', 'DAR_Uploads', 'cost_model', 'Please provide a cost model file. Files must be less than 5 GB and cannot include .exe or .dll extensions.');
+
+--2/5/25 - Solidify necessary privileges
+-- RolePrivilege(edprole_id, privilege) UWG Member
+DELETE FROM edprole_privilege WHERE edprole_id='19ac227b-e96c-46fa-a378-cf82c461b669' AND privilege='NOTE_NEW';
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='REQUEST_LOCK';
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='REQUEST_UNLOCK';
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='FORM_CREATE';
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='FORM_READ';
+DELETE FROM edprole_privilege WHERE edprole_id='804b335c-f191-4d26-9b98-1ec1cb62b97d' AND privilege='FORM_DELETE';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='REQUEST_LOCK';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='REQUEST_UNLOCK';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='NOTE_NEW';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='METRICS_READ';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='FORM_CREATE';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='FORM_READ';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='FORM_DELETE';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='WORKFLOW_READ';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='WORKFLOW_UPDATE';
+DELETE FROM edprole_privilege WHERE edprole_id='a5b4947a-67d2-434e-9889-59c2fad39676' AND privilege='QUESTION_READ';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='REQUEST_INITIALIZE';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='REQUEST_LOCK';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='REQUEST_UNLOCK';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='REQUEST_REASSIGN';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='FORM_CREATE';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='FORM_UPDATE';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='GROUP_UPLOAD';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='WORKFLOW_CREATE';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='WORKFLOW_DELETE';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='QUESTION_READ';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='METRICS_READ';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='NOTE_ADDUSER';
+DELETE FROM edprole_privilege WHERE edprole_id='2aa89c57-85f1-4611-812d-b6760bb6295c' AND privilege='NOTE_REMOVEUSER';
+DELETE FROM edprole_privilege WHERE edprole_id='4be6ca4d-6362-478b-8478-487a668314b1' AND privilege='REQUEST_REASSIGN';
+DELETE FROM edprole_privilege WHERE edprole_id='4be6ca4d-6362-478b-8478-487a668314b1' AND privilege='REQUEST_LOCK';
+DELETE FROM edprole_privilege WHERE edprole_id='4be6ca4d-6362-478b-8478-487a668314b1' AND privilege='METRICS_READ';
+DELETE FROM edprole_privilege WHERE edprole_id='4be6ca4d-6362-478b-8478-487a668314b1' AND privilege='NOTE_NEW';
+
+DELETE FROM privilege WHERE privilege='REQUEST_LOCK';
+DELETE FROM privilege WHERE privilege='REQUEST_UNLOCK';
+DELETE FROM privilege WHERE privilege='USER_CREATE';
+DELETE FROM privilege WHERE privilege='FORM_CREATE';
+DELETE FROM privilege WHERE privilege='FORM_READ';
+DELETE FROM privilege WHERE privilege='FORM_UPDATE';
+DELETE FROM privilege WHERE privilege='FORM_DELETE';
+DELETE FROM privilege WHERE privilege='WORKFLOW_CREATE';
+DELETE FROM privilege WHERE privilege='WORKFLOW_READ';
+DELETE FROM privilege WHERE privilege='WORKFLOW_UPDATE';
+DELETE FROM privilege WHERE privilege='WORKFLOW_DELETE';
+DELETE FROM privilege WHERE privilege='METRICS_READ';
+DELETE FROM privilege WHERE privilege='NOTE_NEW';
+DELETE FROM privilege WHERE privilege='QUESTION_READ';
+
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'NOTE_REPLY');
+
+-- 2/28/25 Re-add metrics privilege as it will be used by https://github.com/eosdis-nasa/earthdata-pub-dashboard/pull/128
+INSERT INTO privilege VALUES ('METRICS_READ');
+INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'METRICS_READ');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'METRICS_READ');

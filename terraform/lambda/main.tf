@@ -3,7 +3,7 @@
 resource "aws_lambda_layer_version" "auth_util" {
   filename            = "../artifacts/auth-util-layer.zip"
   layer_name          = "authUtilLayer"
-  compatible_runtimes = ["nodejs18.x"]
+  compatible_runtimes = ["nodejs22.x"]
   source_code_hash    = filesha256("../artifacts/auth-util-layer.zip")
 }
 
@@ -12,7 +12,7 @@ resource "aws_lambda_layer_version" "auth_util" {
 resource "aws_lambda_layer_version" "database_util" {
   filename            = "../artifacts/database-util-layer.zip"
   layer_name          = "databaseUtilLayer"
-  compatible_runtimes = ["nodejs18.x"]
+  compatible_runtimes = ["nodejs22.x"]
   source_code_hash    = filesha256("../artifacts/database-util-layer.zip")
 }
 
@@ -21,7 +21,7 @@ resource "aws_lambda_layer_version" "database_util" {
 resource "aws_lambda_layer_version" "message_util" {
   filename            = "../artifacts/message-util-layer.zip"
   layer_name          = "messageUtilLayer"
-  compatible_runtimes = ["nodejs18.x"]
+  compatible_runtimes = ["nodejs22.x"]
   source_code_hash    = filesha256("../artifacts/message-util-layer.zip")
 }
 
@@ -30,7 +30,7 @@ resource "aws_lambda_layer_version" "message_util" {
 resource "aws_lambda_layer_version" "schema_util" {
   filename            = "../artifacts/schema-util-layer.zip"
   layer_name          = "schemaUtilLayer"
-  compatible_runtimes = ["nodejs18.x"]
+  compatible_runtimes = ["nodejs22.x"]
   source_code_hash    = filesha256("../artifacts/schema-util-layer.zip")
 }
 
@@ -46,7 +46,7 @@ resource "aws_lambda_function" "action_consumer" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/action-consumer-lambda.zip")
   timeout          = 180
   environment {
@@ -98,7 +98,7 @@ resource "aws_lambda_function" "data" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/data-lambda.zip")
   timeout          = 180
   environment {
@@ -140,7 +140,7 @@ resource "aws_lambda_function" "form" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/form-lambda.zip")
   timeout          = 180
   environment {
@@ -180,7 +180,7 @@ resource "aws_lambda_function" "inbound_consumer" {
     aws_lambda_layer_version.database_util.arn,
     aws_lambda_layer_version.message_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/inbound-consumer-lambda.zip")
   timeout          = 180
   environment {
@@ -226,7 +226,7 @@ resource "aws_lambda_function" "invoke" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/invoke-lambda.zip")
   timeout          = 180
   environment {
@@ -268,7 +268,7 @@ resource "aws_lambda_function" "metrics" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/metrics-lambda.zip")
   timeout          = 180
   environment {
@@ -311,7 +311,7 @@ resource "aws_lambda_function" "metrics_consumer" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/metrics-consumer-lambda.zip")
   timeout          = 180
   environment {
@@ -358,7 +358,7 @@ resource "aws_lambda_function" "model" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/model-lambda.zip")
   timeout          = 180
   environment {
@@ -397,7 +397,7 @@ resource "aws_lambda_function" "module" {
   layers = [
     aws_lambda_layer_version.database_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/module-lambda.zip")
   timeout          = 180
   environment {
@@ -436,7 +436,7 @@ resource "aws_lambda_function" "notification" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/notification-lambda.zip")
   timeout          = 180
   environment {
@@ -477,7 +477,7 @@ resource "aws_lambda_function" "notification_consumer" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/notification-consumer-lambda.zip")
   timeout          = 180
   environment {
@@ -523,7 +523,7 @@ resource "aws_lambda_function" "rds_backup" {
   function_name    = "rds_backup"
   role             = var.edpub_rds_backup_lambda_role_arn
   handler          = "rds-backup.handler"
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/rds-backup-lambda.zip")
   timeout          = 180
   environment {
@@ -567,7 +567,7 @@ resource "aws_lambda_function" "step_cleanup" {
     aws_lambda_layer_version.database_util.arn
   ]
   handler          = "step-cleanup.handler"
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/step-cleanup-lambda.zip")
   timeout          = 180
   environment {
@@ -618,7 +618,7 @@ resource "aws_lambda_function" "register" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/register-lambda.zip")
   timeout          = 180
   environment {
@@ -658,7 +658,7 @@ resource "aws_lambda_function" "service_authorizer" {
     aws_lambda_layer_version.database_util.arn,
     aws_lambda_layer_version.message_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/service-authorizer-lambda.zip")
   timeout          = 180
   environment {
@@ -699,7 +699,7 @@ resource "aws_lambda_function" "submission" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/submission-lambda.zip")
   timeout          = 180
   environment {
@@ -742,7 +742,7 @@ resource "aws_lambda_function" "subscribe" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/subscribe-lambda.zip")
   timeout          = 180
   environment {
@@ -783,7 +783,7 @@ resource "aws_lambda_function" "user" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/user-lambda.zip")
   timeout          = 180
   environment {
@@ -826,7 +826,7 @@ resource "aws_lambda_function" "workflow_consumer" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/workflow-consumer-lambda.zip")
   timeout          = 180
   environment {
@@ -872,7 +872,7 @@ resource "aws_lambda_function" "workflow" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/workflow-lambda.zip")
   timeout          = 180
   environment {
@@ -912,7 +912,7 @@ resource "aws_lambda_function" "auth" {
     aws_lambda_layer_version.auth_util.arn,
     aws_lambda_layer_version.database_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/auth-lambda.zip")
   timeout          = 180
   environment {
@@ -956,7 +956,7 @@ resource "aws_lambda_function" "version" {
   function_name    = "version"
   role             = var.edpub_lambda_role_arn
   handler          = "version.handler"
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/version-lambda.zip")
   timeout          = 180
   environment {
@@ -986,7 +986,7 @@ resource "aws_lambda_function" "remap_statics" {
   role             = var.edpub_lambda_role_arn
   handler          = "remap-statics.handler"
   layers           = []
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/remap-statics-lambda.zip")
   timeout          = 180
   environment {
@@ -1012,7 +1012,7 @@ resource "aws_lambda_function" "api_proxy" {
   role             = var.edpub_lambda_role_arn
   handler          = "api-proxy.handler"
   layers           = []
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/api-proxy-lambda.zip")
   timeout          = 180
   environment {
@@ -1040,7 +1040,7 @@ resource "aws_lambda_function" "questions" {
     aws_lambda_layer_version.message_util.arn,
     aws_lambda_layer_version.schema_util.arn
   ]
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/questions-lambda.zip")
   timeout          = 180
   environment {
@@ -1075,7 +1075,7 @@ resource "aws_lambda_function" "file_upload" {
   function_name = "file_upload"
   role          = var.edpub_lambda_role_arn
   handler       = "file-upload.handler"
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/file-upload-lambda.zip")
   timeout          = 180
   layers = [
@@ -1113,7 +1113,7 @@ resource "aws_lambda_function" "mfa_auth" {
   function_name = "mfa_auth"
   role          = var.edpub_lambda_role_arn
   handler       = "mfa-auth.handler"
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/mfa-auth-lambda.zip")
   timeout          = 180
   layers = [
