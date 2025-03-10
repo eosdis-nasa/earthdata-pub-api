@@ -993,7 +993,7 @@ resource "aws_lambda_function" "remap_statics" {
       REGION           = var.region
       STAGE            = var.stage
       DASHBOARD_BUCKET = var.edpub_dashboard_s3_bucket
-      OVERVIEW_BUCKET  = var.edpub_overview_s3_bucket
+      OVERVIEW_BUCKET  = var.edpub_dashboard_s3_bucket
       API_ID           = var.api_id
     }
   }
