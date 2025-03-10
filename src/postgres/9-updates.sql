@@ -337,3 +337,11 @@ INSERT INTO privilege VALUES ('METRICS_READ');
 INSERT INTO edprole_privilege VALUES ('a5b4947a-67d2-434e-9889-59c2fad39676', 'METRICS_READ');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'METRICS_READ');
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'METRICS_READ');
+-- 2/25/25 Add Default Publication Workflow
+INSERT INTO workflow VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'default_publication_workflow', 1, 'Default Publication Workflow', 'This is the default publication workflow for DAACs who have not yet created a DAAC specific publication workflow.');
+
+INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'init', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'data_publication_request_form_review', 'close');
+
+UPDATE daac SET workflow_id='f223eec5-2c4d-4412-9c97-5df4117c9290' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND id != 'cdccdd71-cbe2-4220-8569-a6355ea24f3f';
