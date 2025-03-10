@@ -12216,7 +12216,7 @@
         },
         "x-amazon-apigateway-integration": {
           "type": "aws",
-          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_overview_s3_bucket}/index.html",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_dashboard_s3_bucket}/index.html",
           "credentials": "${edpub_apigateway_s3_role_arn}",
           "httpMethod": "GET",
           "passthroughBehavior": "when_no_match",
@@ -12260,7 +12260,7 @@
         },
         "x-amazon-apigateway-integration": {
           "type": "aws",
-          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_overview_s3_bucket}/{key}",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_dashboard_s3_bucket}/{key}",
           "credentials": "${edpub_apigateway_s3_role_arn}",
           "httpMethod": "GET",
           "passthroughBehavior": "when_no_match",
