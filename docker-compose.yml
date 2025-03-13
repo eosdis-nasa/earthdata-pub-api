@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
   local_api:
-    image: node:18.14.1
+    image: node:22.14.0
     volumes:
       - ./src/nodejs:/var/nodejs
     working_dir: /var/nodejs

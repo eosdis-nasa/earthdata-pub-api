@@ -211,26 +211,6 @@ module.exports.noteFindById = function noteFindById(req, res, next) {
   });
 };
 
-module.exports.noteFindAll = function noteFindAll(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'note',
-    operation: 'findAll',
-    params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
-    },
-    context: { user_id: req.user_id }
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.questionFindById = function questionFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -473,7 +453,7 @@ module.exports.userFindById = function userFindById(req, res, next) {
     params: { id: params.id.value },
     context: { user_id: req.user_id }
   };
-  handlers.data(lambdaEvent).then((body) => {
+  handlers.user(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
