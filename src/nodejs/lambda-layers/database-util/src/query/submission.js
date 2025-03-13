@@ -745,11 +745,11 @@ const getStepName = () => `
 SELECT step_name FROM submission_status WHERE id = {{id}}
 `;
 
-// TODO - Upate this query's complexity and to use sql builder
+// TODO - Update this query's complexity and to use sql builder
 const getSubmissionDetailsById = (params) => `
 WITH step_visibility AS (SELECT step.*, upload_step.id AS upload_step_id, form.daac_only FROM step LEFT JOIN form ON step.form_id = form.id LEFT JOIN upload_step ON step.step_name = upload_step.step_name),
 filteredForm AS (SELECT * FROM form ${params.privilegedUser === false ? `WHERE form.daac_only=false`: ``})
-SELECT submission.id id, conversation_id, submission.created_at created_at, daac.long_name daac_name, 
+SELECT submission.id id, conversation_id, submission.created_at created_at,
 submission.hidden hidden,
 JSONB_BUILD_OBJECT('name', edpuser1.name, 'id', edpuser1.id) initiator,
 submission_status.last_change last_change,
@@ -769,8 +769,6 @@ CASE
       'long_name', filteredForm.long_name, 'daac_only', filteredForm.daac_only, 'submitted_at', submission_form_data.submitted_at))) 
 END forms, submission_metadata.metadata metadata
 FROM submission
-JOIN daac
-ON submission.daac_id = daac.id
 JOIN edpuser edpuser1
 ON submission.initiator_edpuser_id = edpuser1.id
 JOIN submission_status
@@ -792,7 +790,7 @@ ON submission_form_data.form_id = filteredForm.id
 JOIN submission_metadata
 ON submission.id = submission_metadata.id
 WHERE submission.id= {{id}}
-GROUP BY submission.id, daac.long_name, edpuser1.name, edpuser1.id,
+GROUP BY submission.id, edpuser1.name, edpuser1.id,
 submission_status.last_change, workflow.long_name, workflow.id,
 submission_form_data_pool.data, step_visibility.type, step_visibility.step_name, step_visibility.action_id, step_visibility.upload_step_id,
 step_visibility.form_id, step_visibility.service_id, step_visibility.data, step_visibility.daac_only, filteredForm.id, 
