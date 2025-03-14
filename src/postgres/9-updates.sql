@@ -360,6 +360,8 @@ UPDATE step SET data='{"rollback":"data_accession_request_form_review","type": "
 DELETE FROM step WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='cost_model';
 UPDATE step_edge SET next_step_name='daac_assignment' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
 
+
+-- 3/14/23 Create New 'Submit Data to an ESDIS DAAC' Form
 INSERT INTO form VALUES ('19025579-99ca-4344-8611-704dae626343', 'Submit_Data_ESDIS_DAAC', 1, 'Submit Data to an ESDIS DAAC', 'Submit Data to an ESDIS DAAC.');
 
 INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b51', '19025579-99ca-4344-8611-704dae626343', 'Contact Information', 0, '[]', '[]', NULL);

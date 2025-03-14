@@ -626,7 +626,7 @@ INSERT INTO daac VALUES ('cdccdd71-cbe2-4220-8569-a6355ea24f3f', 'Example', 'Exa
 -- upload_step(id, step_name, upload_destination, category_type, help_text)
 INSERT INTO upload_step (step_name, upload_destination, category_type, help_text) VALUES ('cost_model', 'DAR_Uploads', 'cost_model', 'Please provide a cost model file. Files must be less than 5 GB and cannot include .exe or .dll extensions.');
 
--- Data Assignment Form
+-- Data Assignment Form EDPUB-1435
 -- Question(id, short_name, version, long_name, text, help, required, created_at)
 INSERT INTO question VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'assignment_form_principal_investigator', 1, 'Principal Investigator', 'Who is the primary person responsible for managing the project or research that is creating the data you are hoping to publish at a NASA DAAC?', '');
 INSERT INTO question VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'assignment_form_data_submission_poc', 1, 'Data Submission Point of Contact', 'Who should ESDIS contact with questions regarding this data submission request', 'This person should have in-depth knowledge of this project and the data it will be producing or has produced, allowing them to provide additional information as needed.');
