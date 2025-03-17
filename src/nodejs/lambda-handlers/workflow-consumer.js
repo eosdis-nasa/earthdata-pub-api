@@ -217,7 +217,12 @@ async function reviewApprovedMethod(eventMessage) {
 }
 
 async function reviewRejectedMethod(eventMessage) {
-  const { submission_id: id, step_name: stepName, user_id: userId } = eventMessage;
+  const {
+    submission_id: id,
+    step_name: stepName,
+    user_id: userId,
+    next_step: nextStep
+  } = eventMessage;
   // Did this because of lint error. This line has a length of 104. Maximum allowed is 100
   const stepReview = await db.submission.checkCountStepReviewRejected({
     submission_id: id, step_name: stepName, user_id: userId
@@ -229,7 +234,14 @@ async function reviewRejectedMethod(eventMessage) {
         status: 'TRUE'
       });
     }
-    await db.submission.rollback({ id, step_name: stepName });
+    if (typeof nextStep !== 'undefined') {
+      const validStep = await db.submission.checkWorkflow({ step_name: nextStep, id });
+      if (validStep.step_name) {
+        await db.submission.setStep({ id, step_name: nextStep });
+      }
+    } else {
+      await db.submission.rollback({ id, step_name: stepName });
+    }
   }
 }
 
