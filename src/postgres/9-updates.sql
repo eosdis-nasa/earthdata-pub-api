@@ -359,3 +359,12 @@ UPDATE daac SET hidden = 'false' WHERE id = '00dcf32a-a4e2-4e55-a0d1-3a74cf100ca
 UPDATE step SET data='{"rollback":"data_accession_request_form_review","type": "review"}' WHERE step_name='daac_assignment';
 DELETE FROM step WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='cost_model';
 UPDATE step_edge SET next_step_name='daac_assignment' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
+
+-- 3/17/25 Add ESDIS Final Review
+INSERT INTO privilege VALUES ('REQUEST_REVIEW_ESDIS');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_REVIEW_ESDIS');
+INSERT INTO step(step_name, step_status_label, type, data) VALUES ('daac_assignment_final', 'Final DAAC Assignment', 'action', '{"rollback":"esdis_final_review","type": "review"}');
+INSERT INTO step(step_name, step_status_label, type, data) VALUES ('esdis_final_review', 'ESDIS Final Review', 'review', '{"rollback":"daac_assignment","type": "action"}');
+UPDATE step_edge SET next_step_name='esdis_final_review' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='daac_assignment';
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'esdis_final_review', 'daac_assignment_final');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'daac_assignment_final', 'close');

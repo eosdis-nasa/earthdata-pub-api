@@ -34,7 +34,7 @@ const templates = {
     text: `${parseStepName(e.data.rollback)} review completed; please click on the green button on the far right of your request’s row to complete the next action, if applicable.`
   }),
   review_rejected: (e) => ({
-    text: `Request ID ${e.submission_id} has not passed review and rolled back to step "${e.data.rollback}"`
+    text: e.next_step ? `Request ID ${e.submission_id} has not passed review and was set to step "${e.next_step}"` : `Request ID ${e.submission_id} has not passed review and rolled back to step "${e.data.rollback}"`
   }),
   metadata_updated: (e) => ({
     text: `The Collection level metadata for Request ID ${e.submission_id} has been updated.`
