@@ -236,8 +236,14 @@ async function reviewRejectedMethod(eventMessage) {
     }
     if (typeof nextStep !== 'undefined') {
       const validStep = await db.submission.checkWorkflow({ step_name: nextStep, id });
-      if (validStep.step_name) {
+      if (validStep.step_name || nextStep === 'close') {
         await db.submission.setStep({ id, step_name: nextStep });
+
+        if (nextStep === 'close') {
+          const status = await db.submission.getState({ id });
+          const method = stepMethods[nextStep];
+          await method(status);
+        }
       }
     } else {
       await db.submission.rollback({ id, step_name: stepName });
