@@ -603,11 +603,13 @@ CREATE TABLE IF NOT EXISTS note (
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   step_name VARCHAR,
   attachments VARCHAR[],
+  daac_id UUID,
   PRIMARY KEY (id),
   FOREIGN KEY (conversation_id) REFERENCES conversation (id),
   FOREIGN KEY (sender_edpuser_id) REFERENCES edpuser (id),
   UNIQUE (id),
-  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  FOREIGN KEY (step_name) REFERENCES step (step_name),
+  FOREIGN KEY (daac_id) REFERENCES daac(id)
 );
 
 -- Create a custom ENUM type
