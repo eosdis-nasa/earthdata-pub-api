@@ -188,7 +188,7 @@ DELETE FROM step_edge WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' A
 -- 12/9/24 Create accession_publication_code DB Association
 CREATE TABLE IF NOT EXISTS publication_accession_association (
   publication_submission_id UUID NOT NULL,
-  accession_submission_id UUID NOT NULL,
+  accession_submission_id UUID,
   code UUID NOT NULL,
   PRIMARY KEY (publication_submission_id),
   FOREIGN KEY (publication_submission_id) REFERENCES submission (id),

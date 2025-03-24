@@ -649,7 +649,7 @@ CREATE TABLE IF NOT EXISTS code (
 
 CREATE TABLE IF NOT EXISTS publication_accession_association (
   publication_submission_id UUID NOT NULL,
-  accession_submission_id UUID NOT NULL,
+  accession_submission_id UUID,
   code UUID NOT NULL,
   PRIMARY KEY (publication_submission_id),
   FOREIGN KEY (publication_submission_id) REFERENCES submission (id),
