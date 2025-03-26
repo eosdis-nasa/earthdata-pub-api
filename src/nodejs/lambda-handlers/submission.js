@@ -551,10 +551,16 @@ async function assignDaacsMethod(event, user) {
 }
 
 async function esdisReviewMethod(event, user) {
-  const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW_ESDIS'];
+  const approvedUserPrivileges = ['ADMIN'];
+  const conditionalUserPrivileges = ['REQUEST_REVIEW_ESDIS'];
   const validWorkflowSteps = ['esdis_final_review'];
   const { id, action } = event;
-  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (
+    user.id?.includes('service-authorizer')
+    || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))
+    || (user.user_privileges.some((privilege) => conditionalUserPrivileges.includes(privilege))
+    && user.user_groups.some((group) => group.short_name === 'root_group'))
+  ) {
     const status = await db.submission.getState({ id });
     if (!validWorkflowSteps.includes(status.step_name)) {
       return { error: 'Invalid workflow step. Unable to complete review.' };
