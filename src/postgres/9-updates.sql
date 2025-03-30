@@ -188,7 +188,7 @@ DELETE FROM step_edge WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' A
 -- 12/9/24 Create accession_publication_code DB Association
 CREATE TABLE IF NOT EXISTS publication_accession_association (
   publication_submission_id UUID NOT NULL,
-  accession_submission_id UUID NOT NULL,
+  accession_submission_id UUID,
   code UUID NOT NULL,
   PRIMARY KEY (publication_submission_id),
   FOREIGN KEY (publication_submission_id) REFERENCES submission (id),
@@ -460,3 +460,7 @@ INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d28', 'assignment_da
 INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d28', 'assignment_data_format_other_info', 9, 'If Other, please provide the data format(s)', 'text', '{}', '{}', '[{"field":"assignment_data_format_other","value":"true"}]','[]',  False);
 
 INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 'assignment_form_data_producers_table', 0, '', 'table', '[{"key":"data_product_name","label":"Name of data product: How do you refer to the data product?","type":"text","editable":true},{"key": "data_prod_timeline","label": "Data Production Timeline: Include the start date and when do you expect data production to be complete.","type": "text","editable": true},{"key":"data_prod_volume","label":"Data Product Volume: What is the estimated or actual total volume of the data product upon completion of production?","type":"text","editable":true},{"key":"instrument_collect_data","label":"Instrument: What instrument  is used to collect data?","type":"text","editable":true}]', '{}', '[]','[]',  True);
+
+-- 3/21/25 Update notes to be associated with the submission's daac at time of creation
+ALTER TABLE note ADD daac_id UUID;
+ALTER TABLE note ADD FOREIGN KEY (daac_id) REFERENCES daac(id);
