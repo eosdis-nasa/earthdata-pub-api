@@ -35,6 +35,9 @@
     "uuid": "8.3.2"
   },
   "overrides": {
-    "jsonwebtoken": "^9.0.0"
+     "jsonwebtoken": "^9.0.0",
+     "fast-xml-parser": "^5.0.9",
+     "request": "^2.88.0",
+     "tough-cookie": "^4.1.3"
   }
 }
