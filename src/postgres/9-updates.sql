@@ -465,3 +465,11 @@ INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 'assignment_fo
 -- 3/21/25 Update notes to be associated with the submission's daac at time of creation
 ALTER TABLE note ADD daac_id UUID;
 ALTER TABLE note ADD FOREIGN KEY (daac_id) REFERENCES daac(id);
+
+-- 4/4/25 Allow Observer role to create/remove step review approval requirements
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'CREATE_STEPREVIEW');
+INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REMOVE_STEPREVIEW');
+
+-- 4/4/25 Allow Data Manager to limit note visibility
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'NOTE_ADDUSER');
+INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'NOTE_REMOVEUSER');
