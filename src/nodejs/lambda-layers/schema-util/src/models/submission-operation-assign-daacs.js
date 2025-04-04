@@ -10,7 +10,11 @@ module.exports.model = (path) => ({
           description: 'List of UUIDs of DAACs to assign',
           type: 'array',
           items: { $ref: `#${path}UUID` }
-        }
+        },
+      requires_review: {
+        description: 'Whether or not the submission requires additional review by the chosen DAAC',
+        type: 'boolean',
+      }
   }
 });
 

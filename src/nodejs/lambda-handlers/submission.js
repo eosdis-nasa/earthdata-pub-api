@@ -465,7 +465,7 @@ async function deleteStepReviewApprovalMethod(event, user) {
 }
 
 async function assignDaacsMethod(event, user) {
-  const { id, daacs } = event;
+  const { id, daacs, requires_review: requiresReview } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_ASSIGNDAAC'];
 
   if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
@@ -479,57 +479,89 @@ async function assignDaacsMethod(event, user) {
     return { error: 'Invalid workflow step. Unable to assign DAACs.' };
   }
 
-  // Generate a code for each daac to be assigned
-  // eslint-disable-next-line
-  for (const daacId of daacs) {
-    await db.submission.createCode({ submissionId: id, daacID: daacId });
-  }
-
-  submission = await db.submission.findById({ id, user_id: user.id });
-
-  // Send notification emails to the following
-  // - the point of contact of the submission (form response),
-  // - the assigned DAAC's Data Managers,
-  // - and the ESDIS observer collaborator of the accession request
-
-  const idList = [];
-
-  // Get the assigned DAAC's Data Managers Ids
-  // eslint-disable-next-line
-  for (const assignedDaac of submission.assigned_daacs) {
-    const managerList = await db.user.getManagerIds({ daac_id: assignedDaac.daac_id });
-
-    if (Array.isArray(managerList)) {
-      managerList.forEach((entry) => idList.push(entry.id));
+  // If the submission requires a daac review - assign the daac and move to the next step
+  if (requiresReview) {
+    // Double check that only one DAAC was chosen
+    // should not be an issue comming from the dashboard but ensure is the case from the API
+    if (daacs && daacs.length > 1) {
+      return { error: 'Invalid number of DAACS selected. Only 1 DAAC may be selected when needs review is true.' };
     }
+
+    // Assign Daac to the submission
+    const daacId = daacs[0];
+    await db.submission.updateDaac({ id, daac_id: daacId });
+  } else {
+    // If the submission does not require a daac review - assign the codes for all daacs selected
+    // Generate a code for each daac to be assigned
+    // eslint-disable-next-line
+    for (const daacId of daacs) {
+      await db.submission.createCode({ submissionId: id, daacID: daacId });
+    }
+
+    submission = await db.submission.findById({ id, user_id: user.id });
+
+    // Send notification emails to the following
+    // - the point of contact of the submission (form response),
+    // - the assigned DAAC's Data Managers,
+    // - and the ESDIS observer collaborator of the accession request
+
+    const userIds = [];
+
+    // Get the assigned DAAC's Data Managers Ids
+    // eslint-disable-next-line
+    for (const assignedDaac of submission.assigned_daacs) {
+      const managerList = await db.user.getManagerIds({ daac_id: assignedDaac.daac_id });
+
+      if (Array.isArray(managerList)) {
+        managerList.forEach((entry) => userIds.push(entry.id));
+      }
+    }
+
+    // Get the ESDIS observer collaborator of the accession request
+    const rootOnly = true;
+    const observers = await db.user.getObserverIds({
+      contributor_ids: submission.contributor_ids,
+      root_only: rootOnly
+    });
+
+    if (Array.isArray(observers)) {
+      observers.forEach((entry) => userIds.push(entry.id));
+    }
+
+    // TODO - Revisit this if we start autopopulating data from the first form to the second
+    const pocRecipients = [];
+
+    // Add the POC from the first form
+    if (submission.form_data.assignment_form_data_submission_poc_email) {
+      pocRecipients.push({
+        name: submission.form_data.assignment_form_data_submission_poc_name
+          ? submission.form_data.assignment_form_data_submission_poc_name : '',
+        email: submission.form_data.assignment_form_data_submission_poc_email
+      });
+    }
+
+    // Add the POC from the second form
+    if (submission.form_data.poc_email) {
+      pocRecipients.push({
+        name: submission.form_data.poc_name ? submission.form_data.poc_name : '',
+        email: submission.form_data.poc_email
+      });
+    }
+
+    const eventMessage = {
+      event_type: 'daac_assignment',
+      submission_id: submission.id,
+      conversation_id: submission.conversation_id,
+      submission_name: submission.name,
+      step_name: submission.step_name,
+      assigned_daacs: submission.assigned_daacs,
+      ...(userIds.length > 0 && { userIds }),
+      ...(pocRecipients.length > 0 && { additional_recipients: pocRecipients }),
+      emailPayloadProvided: 'true'
+    };
+
+    await msg.sendEvent(eventMessage);
   }
-
-  // Get the ESDIS observer collaborator of the accession request
-  const observers = await db.user.getObserverIds({ contributor_ids: submission.contributor_ids });
-
-  if (Array.isArray(observers)) {
-    observers.forEach((entry) => idList.push(entry.id));
-  }
-
-  const emailRecipients = await db.user.getEmails({ user_list: idList });
-
-  if (!(emailRecipients && Array.isArray(emailRecipients))) {
-    return { error: 'Invalid Recipients. Code notification emails were not sent.' };
-  }
-
-  // Add the point of contact info from the submission
-  emailRecipients.push({
-    name: submission.form_data.poc_name,
-    email: submission.form_data.poc_email
-  });
-
-  const emailPayload = {
-    event_type: 'daac_assignment',
-    submission_name: submission.name,
-    assigned_daacs: submission.assigned_daacs
-  };
-
-  await msg.sendEmail(emailRecipients, emailPayload);
 
   // Promote to the next workflow step
   const eventMessage = {
