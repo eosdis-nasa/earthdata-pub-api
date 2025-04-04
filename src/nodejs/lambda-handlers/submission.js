@@ -580,9 +580,16 @@ async function esdisReviewMethod(event, user) {
       const currentReviewers = await db.submission.getStepReviewApproval({ id });
       const userIds = currentReviewers.map((reviewer) => reviewer.edpuser_id);
       const deleteReviewStep = 'data_accession_request_form_review';
-      await db.submission.deleteStepReviewApproval(
-        { submission_id: id, user_ids: userIds, step_name: deleteReviewStep }
-      );
+
+      // eslint-disable-next-line
+      for (const userId of userIds) {
+        const eventData = {
+          submissionId: id,
+          userIds: [userId],
+          stepName: deleteReviewStep
+        };
+        await deleteStepReviewApprovalMethod(eventData, user);
+      }
 
       // remove the currently assigned DAAC value
       await db.submission.updateDaac({ id, daac_id: null });
