@@ -226,7 +226,9 @@ const submissionPrivilegedUsers = () => ({
             `(${daacIdSelect()})`,
             'array_agg(edpuser_id) user_ids'
           ],
-          base: `(${submissionDaacUsers()})`,
+          from: {
+            base: `(${submissionDaacUsers()})`
+          },
           alias: 'daac_privileged_users'
         })
       },
