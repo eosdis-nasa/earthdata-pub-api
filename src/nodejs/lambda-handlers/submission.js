@@ -474,8 +474,12 @@ async function assignDaacsMethod(event, user) {
 
   let submission = await db.submission.findById({ id, user_id: user.id });
 
+  if (submission.error) {
+    return { error: 'Invalid permissions.' };
+  }
+
   // Check current step - only proceed if on DAAC assignment step
-  if (submission.step_name !== 'daac_assignment') {
+  if (!submission.step_name.match(/daac_assignment(_final)?/g)) {
     return { error: 'Invalid workflow step. Unable to assign DAACs.' };
   }
 
@@ -578,6 +582,76 @@ async function assignDaacsMethod(event, user) {
   return db.submission.findById({ id, user_id: user.id });
 }
 
+async function esdisReviewMethod(event, user) {
+  const approvedUserPrivileges = ['ADMIN'];
+  const conditionalUserPrivileges = ['REQUEST_REVIEW_ESDIS'];
+  const validWorkflowSteps = ['esdis_final_review'];
+  const { id, action } = event;
+  if (
+    user.id?.includes('service-authorizer')
+    || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))
+    || (user.user_privileges.some((privilege) => conditionalUserPrivileges.includes(privilege))
+    && user.user_groups.some((group) => group.short_name === 'root_group'))
+  ) {
+    const status = await db.submission.getState({ id });
+    if (!validWorkflowSteps.includes(status.step_name)) {
+      return { error: 'Invalid workflow step. Unable to complete review.' };
+    }
+    let eventType;
+    let param;
+    let nextStep;
+    if (action === 'reject') {
+      eventType = 'review_rejected';
+      nextStep = 'close';
+    } else if (action === 'approve') {
+      eventType = 'review_approved';
+    } else if (action === 'reassign') {
+      eventType = 'workflow_step_change';
+
+      // reset any current review requirements (assignees) for the DAR review step
+      const currentReviewers = await db.submission.getStepReviewApproval({ id });
+      const userIds = currentReviewers.map((reviewer) => reviewer.edpuser_id);
+      const deleteReviewStep = 'data_accession_request_form_review';
+
+      // eslint-disable-next-line
+      for (const userId of userIds) {
+        const eventData = {
+          submissionId: id,
+          userIds: [userId],
+          stepName: deleteReviewStep
+        };
+        await deleteStepReviewApprovalMethod(eventData, user);
+      }
+
+      // remove the currently assigned DAAC value
+      await db.submission.updateDaac({ id, daac_id: null });
+
+      // reset the current step to the DAAC Assignment Prompt step
+      param = {
+        id,
+        step_name: 'daac_assignment'
+      };
+      await changeStepMethod(param, user);
+    } else {
+      return { error: 'Invalid review action' };
+    }
+    const eventMessage = {
+      event_type: eventType,
+      submission_id: id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      user_id: user.id,
+      data: status.step.data,
+      step_name: status.step_name,
+      ...(nextStep && { next_step: nextStep })
+    };
+    if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+    await msg.sendEvent(eventMessage);
+    return db.submission.getState({ id });
+  }
+  return { error: 'Not Authorized' };
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -587,6 +661,7 @@ const operations = {
   submit: submitMethod,
   save: saveMethod,
   review: reviewMethod,
+  esdisReview: esdisReviewMethod,
   resume: resumeMethod,
   lock: lockMethod,
   unlock: unlockMethod,
