@@ -496,6 +496,14 @@ async function assignDaacsMethod(event, user) {
     await db.submission.updateDaac({ id, daac_id: daacId });
   } else {
     // If the submission does not require a daac review - assign the codes for all daacs selected
+    // If there are existing codes - remove any not in the new list
+    if (submission.assigned_daacs !== null) {
+      const removedDaacs = submission.assigned_daacs
+        .filter((daacObj) => !daacs.includes(daacObj.daac_id))
+        .map((daacObj) => daacObj.daac_id);
+      await db.submission.deleteCodes({ submissionId: id, daacs: removedDaacs });
+    }
+
     // Generate a code for each daac to be assigned
     // eslint-disable-next-line
     for (const daacId of daacs) {

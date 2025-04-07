@@ -894,6 +894,12 @@ ON CONFLICT DO NOTHING
 RETURNING *
 `
 
+const deleteCodes = (params) => `
+DELETE FROM code 
+WHERE submission_id={{submissionId}} 
+AND daac_id=ANY(ARRAY[${params.daacs.map(id => `'${id}'`).join(',')}]::UUID[])
+`
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -942,3 +948,4 @@ module.exports.updateStatusStepReviewApproval = updateStatusStepReviewApproval;
 module.exports.stepCleanup = stepCleanup;
 module.exports.checkCode = checkCode;
 module.exports.createCode = createCode;
+module.exports.deleteCodes = deleteCodes;
