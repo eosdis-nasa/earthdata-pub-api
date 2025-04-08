@@ -485,7 +485,7 @@ INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'N
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'NOTE_REMOVEUSER');
 
 -- 4/7/25 Moving Needs Review Question to it's own thing.
-INSERT INTO step(step_name, type, data) VALUES ('additional_review_question', 'action', '{"rollback":"assignment_form_data_accession_request_form","type": "form","form", "19025579-99ca-4344-8611-704dae626343"}');
+INSERT INTO step(step_name, type, data) VALUES ('additional_review_question', 'action', '{"rollback":"assignment_form_data_accession_request_form","type": "form","form":"19025579-99ca-4344-8611-704dae626343"}');
 Update step_edge SET next_step_name = 'additional_review_question' WHERE workflow_id ='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name = 'assignment_form_data_accession_request_form';
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'additional_review_question', 'daac_assignment');
 UPDATE step SET data = '{"rollback":"additional_review_question","type": "action"}' WHERE step_name = 'daac_assignment';
