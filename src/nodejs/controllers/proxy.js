@@ -1215,6 +1215,18 @@ module.exports.getDashboardApp = function getDashboardApp(req, res, next) {
   });
 };
 
+module.exports.getGettingStartedPage = function getGettingStartedPage(req, res, next) {
+  res.send({
+    message: 'Placeholder for Getting Started Page.'
+  });
+};
+
+module.exports.getDataPubGuidelinesPage = function getDataPubGuidelinesPage(req, res, next) {
+  res.send({
+    message: 'Placeholder for Data Pub Guidelines Page.'
+  });
+};
+
 module.exports.getDashboardAppSubpath = function getDashboardAppSubpath(req, res, next) {
   res.send({
     message: 'Placeholder for dashboard app subpath endpoint.'
