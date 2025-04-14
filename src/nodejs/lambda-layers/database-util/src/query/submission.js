@@ -192,7 +192,8 @@ const submissionDaacUsers = () => sql.select({
   },
   where: {
     filters: [{ field: 'edprole_privilege.privilege', literal: "REQUEST_DAACREAD" }]
-  }
+  },
+  alias: 'daac_privileged_users_subquery'
 });
 
 const adminUsers = () => sql.select({
@@ -209,8 +210,7 @@ const adminUsers = () => sql.select({
   },
   where: {
     filters: [{ field: 'edprole_privilege.privilege', literal: "ADMIN" }]
-  },
-  alias: 'daac_privileged_users_subquery'
+  }
 });
 
 const submissionPrivilegedUsers = () => ({
