@@ -8,6 +8,7 @@ jest.mock('message-util', () => jest.fn());
 db.user = jest.fn();
 db.user.findById = jest.fn();
 db.user.getManagerIds = jest.fn();
+db.user.getRootGroupObserverIds = jest.fn();
 db.note = jest.fn();
 db.note.addUsersToConversation = jest.fn();
 db.note.removeUserFromConversation = jest.fn();
@@ -54,6 +55,8 @@ describe('submission', () => {
     };
     db.user.findById.mockReturnValue({ id: 'test user' });
     db.user.getManagerIds.mockReturnValue(['test manager']);
+    db.user.getRootGroupObserverIds.mockReturnValue(['test root group observer']);
+
     db.submission.initialize.mockReturnValue({
       id: 'test submission'
     });

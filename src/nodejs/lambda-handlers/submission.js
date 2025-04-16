@@ -98,7 +98,12 @@ async function initializeMethod(event, user, skipCopy = false) {
     step_name: 'init',
     user_id: user.id
   };
-  const staff = await db.user.getManagerIds({ daac_id: event.daac_id });
+  let staff;
+  if (!event.daac_id) {
+    staff = await db.user.getRootGroupObserverIds();
+  } else {
+    staff = await db.user.getManagerIds({ daac_id: event.daac_id });
+  }
   const staffIds = staff.map((usr) => usr.id);
   await db.note.addUsersToConversation({
     conversation_id: status.conversation_id,
