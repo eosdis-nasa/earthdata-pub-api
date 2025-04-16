@@ -483,3 +483,10 @@ INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'R
 -- 4/4/25 Allow Data Manager to limit note visibility
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'NOTE_ADDUSER');
 INSERT INTO edprole_privilege VALUES ('2aa89c57-85f1-4611-812d-b6760bb6295c', 'NOTE_REMOVEUSER');
+
+-- 4/7/25 Moving Needs Review Question to it's own thing.
+INSERT INTO step(step_name, type, data) VALUES ('additional_review_question', 'action', '{"rollback":"assignment_form_data_accession_request_form","type": "form","form":"19025579-99ca-4344-8611-704dae626343"}');
+Update step_edge SET next_step_name = 'additional_review_question' WHERE workflow_id ='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name = 'assignment_form_data_accession_request_form';
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'additional_review_question', 'daac_assignment');
+UPDATE step SET data = '{"rollback":"additional_review_question","type": "action"}' WHERE step_name = 'daac_assignment';
+UPDATE step SET data = '{"rollback":"data_accession_request_form_review","type": "review", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name = 'esdis_final_review';
