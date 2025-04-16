@@ -6434,7 +6434,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"assignDaacs\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('daacs'))\"daacs\": $inputRoot.daacs,#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"assignDaacs\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('daacs'))\"daacs\": $inputRoot.daacs,#end #if($body.containsKey('requires_review'))\"requires_review\": $inputRoot.requires_review,#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
