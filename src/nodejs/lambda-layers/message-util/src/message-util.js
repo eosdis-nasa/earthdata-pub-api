@@ -76,7 +76,7 @@ function marshalAttribute(attribute) {
     return { DataType: 'Number', StringValue: `${attribute}` };
   }
   // eslint-disable-next-line no-console
-  console.warn('marshalAttribute: Unsupported attribute type', attribute);
+  console.log('marshalAttribute: Unsupported attribute type', attribute);
   return {};
 }
 
