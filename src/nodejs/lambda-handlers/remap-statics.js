@@ -20,6 +20,7 @@ const s3 = new S3({ region });
 const apigateway = new APIGateway({ region });
 
 function getResourceIds() {
+  console.log(`apigateway reponse`, apigateway.getResources({ restApiId: apiId, limit: '500' });
   return new Promise((resolve, reject) => {
     apigateway.getResources({ restApiId: apiId, limit: '500' }, (err, data) => {
       if (err) { reject(err); } else {
@@ -86,6 +87,7 @@ async function deployChanges() {
 
 async function handler() {
   const resourceIds = await getResourceIds();
+  console.log(`resourceIds:`, resourceIds);
   await Promise.all(Object.entries(staticSites).map(async ([key, site]) => {
     console.info(`Mapping '${key}'`);
     const mappings = await getS3Mappings(site.bucket);
