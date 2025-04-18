@@ -53,7 +53,6 @@ async function setMFAPreferenceMethod(event) {
   };
   const command = new AdminSetUserMFAPreferenceCommand(payload);
   const resp = await idp.send(command);
-  db.user.enableMFA({ id: user.id });
   return resp;
 }
 
