@@ -6,8 +6,6 @@ const {
   GetUserCommand
 } = require('@aws-sdk/client-cognito-identity-provider');
 
-const db = require('database-util');
-
 const userPoolId = process.env.CUP_ID;
 
 async function getUser(idp, accessToken) {
