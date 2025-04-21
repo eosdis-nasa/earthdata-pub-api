@@ -323,7 +323,7 @@ const findById = (params) => sql.select({
   where: {
     filters: [
       { field: fieldMap.id, param: 'id' },
-      ...([{ cmd: `({{user_id}}=ANY(submission.contributor_ids) OR {{user_id}} = ANY(privileged_users.user_ids)) OR '4daa6b22-f015-4ce2-8dac-8b3510004fca' = ANY(SELECT EDPGROUP_ID FROM EDPUSER_EDPGROUP WHERE EDPUSER_ID={{user_id}})` }]),
+      ...([{ cmd: `(({{user_id}}=ANY(submission.contributor_ids) OR {{user_id}} = ANY(privileged_users.user_ids)) OR '4daa6b22-f015-4ce2-8dac-8b3510004fca' = ANY(SELECT EDPGROUP_ID FROM EDPUSER_EDPGROUP WHERE EDPUSER_ID={{user_id}}))` }]),
     ]
   }
 });
