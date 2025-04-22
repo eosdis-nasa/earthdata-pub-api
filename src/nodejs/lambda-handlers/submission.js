@@ -528,7 +528,6 @@ async function assignDaacsMethod(event, user) {
       }
     }
 
-    // TODO - Revisit this if we start autopopulating data from the first form to the second
     const pocRecipients = [];
 
     // Add the POC from the first form
@@ -537,14 +536,6 @@ async function assignDaacsMethod(event, user) {
         name: submission.form_data.assignment_form_data_submission_poc_name
           ? submission.form_data.assignment_form_data_submission_poc_name : '',
         email: submission.form_data.assignment_form_data_submission_poc_email
-      });
-    }
-
-    // Add the POC from the second form
-    if (submission.form_data.poc_email) {
-      pocRecipients.push({
-        name: submission.form_data.poc_name ? submission.form_data.poc_name : '',
-        email: submission.form_data.poc_email
       });
     }
 
