@@ -458,3 +458,15 @@ Update step_edge SET next_step_name = 'additional_review_question' WHERE workflo
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'additional_review_question', 'daac_assignment');
 UPDATE step SET data = '{"rollback":"additional_review_question","type": "action"}' WHERE step_name = 'daac_assignment';
 UPDATE step SET data = '{"rollback":"data_accession_request_form_review","type": "review", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name = 'esdis_final_review';
+
+-- 4/22/25 Grandfathered requests update
+UPDATE daac SET workflow_id='f223eec5-2c4d-4412-9c97-5df4117c9290';
+
+INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publication_worfklow', 1, 'ORNL Publication Workflow', 'This is the publication workflow for ORNL.');
+
+INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'init','data_publication_request_form');
+INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'data_publication_request_form_review','push_to_ornl_database_f2');
+INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'push_to_ornl_database_f2', 'close');
+
+UPDATE daac SET workflow_id='d45145c6-7461-4a00-a86d-9189da57bc1b' WHERE id='15df4fda-ed0d-417f-9124-558fb5e5b561';
