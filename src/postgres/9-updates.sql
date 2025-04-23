@@ -381,7 +381,7 @@ INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b54', '19025579-99
 
 INSERT INTO step(step_name, type, form_id) VALUES ('assignment_form_data_accession_request_form', 'form', '19025579-99ca-4344-8611-704dae626343');
 
-UPDATE step_edge SET next_step_name = 'assignment_form_data_accession_request_form' WHERE step_name = 'init' AND next_step_name = 'data_accession_request_form';
+UPDATE step_edge SET next_step_name = 'assignment_form_data_accession_request_form' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name = 'init';
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'assignment_form_data_accession_request_form', 'data_accession_request_form');
 
 INSERT INTO question VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'assignment_form_principal_investigator', 1, 'Principal Investigator', 'Who is the primary person responsible for managing the research that is creating the data you are hoping to publish at a NASA DAAC?', '');
