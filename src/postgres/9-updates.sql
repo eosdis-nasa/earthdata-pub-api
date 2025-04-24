@@ -152,38 +152,6 @@ ALTER TABLE note ADD attachments VARCHAR[] DEFAULT '{}';
 
 -- 11/25/24 EDPUB-1375: Update DAAC specific workflows
 UPDATE workflow SET short_name='accession_workflow', long_name='Accession Workflow', description='This is the default workflow for data accession.' WHERE id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9';
---  Migrate any submission currently in the DAR form/review step to the accession workflow; also migrate pushing of the accession form action to DAR review step
-UPDATE submission_status SET workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', last_change=now() WHERE step_name = ANY('{data_accession_request_form, data_accession_request_form_review}');
-UPDATE submission_status SET workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', step_name='data_accession_request_form_review', last_change=now() WHERE step_name='push_to_ornl_database_f1';
-
-UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='init';
-DELETE FROM step_edge WHERE worfklow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_accession_request_form';
-DELETE FROM step_edge WHERE worfklow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_accession_request_form_review';
-
-UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='init';
-DELETE FROM step_edge WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='data_accession_request_form';
-DELETE FROM step_edge WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='data_accession_request_form_review';
-DELETE FROM step_edge WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='push_to_ornl_database_f1';
-
-UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce' AND step_name='ornl_service_trigger';
-DELETE FROM step_edge WHERE workflow_id='0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce' AND step_name='data_accession_request_form';
-DELETE FROM step_edge WHERE workflow_id='0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce' AND step_name='push_to_ornl_database_f1';
-
-UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='init';
-DELETE FROM step_edge WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='data_accession_request_form';
-DELETE FROM step_edge WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='data_accession_request_form_review';
-
-UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='init';
-DELETE FROM step_edge WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='data_accession_request_form';
-DELETE FROM step_edge WHERE workflow_id='a8d22c43-7814-4609-ac04-66fb50228bf7' AND step_name='data_accession_request_form_review';
-
-UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND step_name='init';
-DELETE FROM step_edge WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND step_name='data_accession_request_form';
-DELETE FROM step_edge WHERE workflow_id='c1690729-b67e-4675-a1a5-b2323f347dff' AND step_name='data_accession_request_form_review';
-
-UPDATE step_edge SET next_step_name='data_publication_request_form' WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='init';
-DELETE FROM step_edge WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='data_accession_request_form';
-DELETE FROM step_edge WHERE workflow_id='a5a14d98-df13-47f2-b86b-1504c7d4360d' AND step_name='data_accession_request_form_review';
 
 -- 12/9/24 Create accession_publication_code DB Association
 CREATE TABLE IF NOT EXISTS publication_accession_association (
@@ -490,3 +458,15 @@ Update step_edge SET next_step_name = 'additional_review_question' WHERE workflo
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'additional_review_question', 'daac_assignment');
 UPDATE step SET data = '{"rollback":"additional_review_question","type": "action"}' WHERE step_name = 'daac_assignment';
 UPDATE step SET data = '{"rollback":"data_accession_request_form_review","type": "review", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name = 'esdis_final_review';
+
+-- 4/22/25 Grandfathered requests update
+UPDATE daac SET workflow_id='f223eec5-2c4d-4412-9c97-5df4117c9290';
+
+INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publication_worfklow', 1, 'ORNL Publication Workflow', 'This is the publication workflow for ORNL.');
+
+INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'init','data_publication_request_form');
+INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'data_publication_request_form', 'data_publication_request_form_review');
+INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'data_publication_request_form_review','push_to_ornl_database_f2');
+INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'push_to_ornl_database_f2', 'close');
+
+UPDATE daac SET workflow_id='d45145c6-7461-4a00-a86d-9189da57bc1b' WHERE id='15df4fda-ed0d-417f-9124-558fb5e5b561';
