@@ -41,7 +41,7 @@ describe('file-upload', () => {
     createPresignedPost.mockImplementationOnce((client, functPayload) => {
       expect(functPayload).toEqual({
         Bucket: 'TEST_BUCKET',
-        Key: 'daac_id/some_id/sample/user_id/test.txt',
+        Key: 'some_id/sample/user_id/test.txt',
         Conditions: [
           { 'x-amz-meta-checksumalgorithm': 'SHA256' },
           { 'x-amz-meta-checksumvalue': '1234567890' },
