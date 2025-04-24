@@ -5085,6 +5085,124 @@
         "x-router-controller": "cors"
       }
     },
+    "/api/data/submission/operation/review/esdis": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Perform the review for the ESDIS form.",
+        "description": "Allows a submission to be reviewed.",
+        "operationId": "submissionOperationEsdisReview",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmissionOperationEsdisReview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Cognito_Authorizer": ["openid"]
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${submission_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"esdisReview\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('action'))\"action\":\"$body.get('action')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPTIONS method for CORS",
+        "operationId": "optionsSubmission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
     "/api/data/submission/operation/lock": {
       "post": {
         "tags": [
@@ -6316,7 +6434,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"assignDaacs\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('daacs'))\"daacs\": $inputRoot.daacs,#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"assignDaacs\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('daacs'))\"daacs\": $inputRoot.daacs,#end #if($body.containsKey('requires_review'))\"requires_review\": $inputRoot.requires_review,#end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
@@ -12452,7 +12570,7 @@
         },
         "x-amazon-apigateway-integration": {
           "type": "aws",
-          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_overview_s3_bucket}/index.html",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_dashboard_s3_bucket}/index.html",
           "credentials": "${edpub_apigateway_s3_role_arn}",
           "httpMethod": "GET",
           "passthroughBehavior": "when_no_match",
@@ -12468,20 +12586,12 @@
         "x-router-controller": "proxy"
       }
     },
-    "/{key+}": {
+    "/getting_started": {
       "get": {
-        "tags": [
-          "applications"
-        ],
-        "summary": "Serve the overview app.",
-        "description": "Serves the static files for the overview single page app.",
-        "operationId": "getOverviewAppSubpath",
-        "parameters": [{
-          "name": "key",
-          "in": "path",
-          "required": true,
-          "schema": { "type": "string" }
-        }],
+        "tags": ["applications"],
+        "summary": "Serve the Getting Started page.",
+        "description": "Serves the static Getting Started page.",
+        "operationId": "getGettingStartedPage",
         "responses": {
           "200": {
             "description": "OK",
@@ -12496,7 +12606,47 @@
         },
         "x-amazon-apigateway-integration": {
           "type": "aws",
-          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_overview_s3_bucket}/{key}",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_dashboard_s3_bucket}/index.html",
+          "credentials": "${edpub_apigateway_s3_role_arn}",
+          "httpMethod": "GET",
+          "passthroughBehavior": "when_no_match",
+          "requestParameters": {},
+          "requestTemplates": {
+            "application/json": "#set($mappings = {\"default\": \"index.html\", \"index.html\": \"index.html\"}) #set($key = $method.request.path.key) #if ($mappings.containsKey($key)) #set($context.requestOverride.path.key = $mappings.get($key)) #else #set($context.requestOverride.path.key = $mappings.get('default')) #end"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Content-Type": "integration.response.header.Content-Type"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      }
+    },
+    "/data_publication_guidelines": {
+      "get": {
+        "tags": ["applications"],
+        "summary": "Serve the Data Publication Guidelines page.",
+        "description": "Serves the static Data Publication Guidelines page.",
+        "operationId": "getDataPubGuidelinesPage",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-west-2:s3:path/${edpub_dashboard_s3_bucket}/index.html",
           "credentials": "${edpub_apigateway_s3_role_arn}",
           "httpMethod": "GET",
           "passthroughBehavior": "when_no_match",

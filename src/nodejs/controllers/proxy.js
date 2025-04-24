@@ -794,6 +794,19 @@ module.exports.submissionOperationReview = function submissionOperationReview(re
   });
 };
 
+module.exports.submissionOperationEsdisReview = function submissionOperationEsdisReview(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'esdisReview',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.submissionOperationResume = function submissionOperationResume(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
@@ -1277,6 +1290,18 @@ module.exports.getOverviewAppDataPublicationGuidelines = function getOverviewApp
 module.exports.getDashboardApp = function getDashboardApp(req, res, next) {
   res.send({
     message: 'Placeholder for dashboard app root endpoint.'
+  });
+};
+
+module.exports.getGettingStartedPage = function getGettingStartedPage(req, res, next) {
+  res.send({
+    message: 'Placeholder for Getting Started Page.'
+  });
+};
+
+module.exports.getDataPubGuidelinesPage = function getDataPubGuidelinesPage(req, res, next) {
+  res.send({
+    message: 'Placeholder for Data Pub Guidelines Page.'
   });
 };
 

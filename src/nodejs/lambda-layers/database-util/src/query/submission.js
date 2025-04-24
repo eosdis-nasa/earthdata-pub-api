@@ -192,7 +192,7 @@ const daacIdSelect = () => sql.select({
   where: {
     filters: [{ field: 'submission.id', param: 'id' }]
   }
-})
+});
 
 const daacGroup = () => ({
   type: 'inner_join',
@@ -265,11 +265,7 @@ const submissionPrivilegedUsers = () => ({
             'array_agg(edpuser_id) user_ids'
           ],
           from: {
-            base: sql.union({
-              query1: submissionDaacUsers(),
-              query2: adminUsers(),
-              alias: 'user_union'
-            })
+            base: `(${submissionDaacUsers()}) daac_privileged_users_subquery`
           },
           alias: 'daac_privileged_users'
         })
@@ -327,7 +323,7 @@ const findById = (params) => sql.select({
   where: {
     filters: [
       { field: fieldMap.id, param: 'id' },
-      ...([{ cmd: `('${params.user_id}'=ANY(submission.contributor_ids) OR '${params.user_id}' = ANY(privileged_users.user_ids))` }]),
+      ...([{ cmd: `(({{user_id}}=ANY(submission.contributor_ids) OR {{user_id}} = ANY(privileged_users.user_ids)) OR '4daa6b22-f015-4ce2-8dac-8b3510004fca' = ANY(SELECT EDPGROUP_ID FROM EDPUSER_EDPGROUP WHERE EDPUSER_ID={{user_id}}))` }]),
     ]
   }
 });
@@ -367,7 +363,7 @@ const getDaacSubmissions = (params) => sql.select({
   where: {
       conjunction: 'OR',
       filters: [
-        ...(params.user_id ? [{cmd: `initiator ->> 'id' = {{user_id}}`}] : []),
+        ...(params.user_id ? [{cmd: `initiator ->> 'id' = {{user_id}}`}, {cmd: `{{user_id}} = ANY(contributor_ids)`}] : []),
         ...(params.daac ? [{
           field: 'conversation_id',
           any: {
@@ -898,6 +894,12 @@ ON CONFLICT DO NOTHING
 RETURNING *
 `
 
+const deleteCodes = (params) => `
+DELETE FROM code 
+WHERE submission_id={{submissionId}} 
+AND daac_id=ANY(ARRAY[${params.daacs.map(id => `'${id}'`).join(',')}]::UUID[])
+`
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -946,3 +948,4 @@ module.exports.updateStatusStepReviewApproval = updateStatusStepReviewApproval;
 module.exports.stepCleanup = stepCleanup;
 module.exports.checkCode = checkCode;
 module.exports.createCode = createCode;
+module.exports.deleteCodes = deleteCodes;

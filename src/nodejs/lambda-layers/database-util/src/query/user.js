@@ -448,14 +448,15 @@ const getObserverIds = (params) => sql.select({
   from: {
     base: 'edpuser',
     joins:[
-      {type: 'left_join', src: 'edpuser_edprole', on: {left: 'edpuser_edprole.edpuser_id', right: 'edpuser.id'}}
+      {type: 'left_join', src: 'edpuser_edprole', on: {left: 'edpuser_edprole.edpuser_id', right: 'edpuser.id'}},
+      {type: 'left_join', src: 'edpuser_edpgroup', on: {left: 'edpuser_edpgroup.edpuser_id', right: 'edpuser.id'}}
     ]
   },
   where: {
     filters: [
       { field: 'edpuser.id', any: { values: { param: 'contributor_ids' } } },
-      { cmd: "edpuser_edprole.edprole_id = '4be6ca4d-6362-478b-8478-487a668314b1'"}
-
+      { cmd: "edpuser_edprole.edprole_id = '4be6ca4d-6362-478b-8478-487a668314b1'"},
+      ...(params.root_only && params.root_only === true ? [{ field: 'edpuser_edpgroup.edpgroup_id', literal: '4daa6b22-f015-4ce2-8dac-8b3510004fca' }] : [])
     ]
   }
 });

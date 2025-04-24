@@ -34,7 +34,7 @@ const templates = {
     text: `${parseStepName(e.data.rollback)} review completed; please click on the green button on the far right of your request’s row to complete the next action, if applicable.`
   }),
   review_rejected: (e) => ({
-    text: `Request ID ${e.submission_id} has not passed review and rolled back to step "${e.data.rollback}"`
+    text: e.next_step ? `Request ID ${e.submission_id} has not passed review and was set to step "${e.next_step}"` : `Request ID ${e.submission_id} has not passed review and rolled back to step "${e.data.rollback}"`
   }),
   metadata_updated: (e) => ({
     text: `The Collection level metadata for Request ID ${e.submission_id} has been updated.`
@@ -44,6 +44,9 @@ const templates = {
   }),
   upload_step_completed: (e) => ({
     text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your request's row to work on this action, if applicable`
+  }),
+  daac_assignment: (e) => ({
+    text: `${parseStepName(e.step_name)} is complete for Request ID ${e.submission_id}. Publication Codes are: ${e.assigned_daacs.map((element) => `${element.daac_name}: ${element.code}`).join(', ')}`
   })
 };
 
