@@ -520,7 +520,6 @@ async function assignDaacsMethod(event, user) {
     // Send notification emails to the following
     // - the point of contact of the submission (form response),
     // - the assigned DAAC's Data Managers,
-    // - and the ESDIS observer collaborator of the accession request
 
     const userIds = [];
 
@@ -534,18 +533,6 @@ async function assignDaacsMethod(event, user) {
       }
     }
 
-    // Get the ESDIS observer collaborator of the accession request
-    const rootOnly = true;
-    const observers = await db.user.getObserverIds({
-      contributor_ids: submission.contributor_ids,
-      root_only: rootOnly
-    });
-
-    if (Array.isArray(observers)) {
-      observers.forEach((entry) => userIds.push(entry.id));
-    }
-
-    // TODO - Revisit this if we start autopopulating data from the first form to the second
     const pocRecipients = [];
 
     // Add the POC from the first form
@@ -557,19 +544,11 @@ async function assignDaacsMethod(event, user) {
       });
     }
 
-    // Add the POC from the second form
-    if (submission.form_data.poc_email) {
-      pocRecipients.push({
-        name: submission.form_data.poc_name ? submission.form_data.poc_name : '',
-        email: submission.form_data.poc_email
-      });
-    }
-
     const eventMessage = {
       event_type: 'daac_assignment',
       submission_id: submission.id,
       conversation_id: submission.conversation_id,
-      submission_name: submission.name,
+      submission_name: submission.form_data.assignment_form_project_name_info,
       step_name: submission.step_name,
       assigned_daacs: submission.assigned_daacs,
       ...(userIds.length > 0 && { userIds }),
