@@ -70,14 +70,12 @@ const getEmailTemplate = async (eventMessage, message) => {
   if (eventMessage.event_type !== 'direct_message') {
     const workflowName = db.workflow.getLongName({ id: eventMessage.workflow_id });
     const formData = (await db.submission.getFormData({ id: eventMessage.submission_id })).data;
-    const daac = await db.submission.getSubmissionDaac({ id: eventMessage.submission_id });
 
     emailPayload = {
       submission_id: eventMessage.submission_id,
       workflow_name: (await workflowName).long_name,
       conversation_last_message: message.text,
       event_type: eventMessage.event_type,
-      daac_name: daac.short_name,
       user_id: eventMessage.user_id,
       submitted_by_name: eventMessage.submitted_by_name
     };

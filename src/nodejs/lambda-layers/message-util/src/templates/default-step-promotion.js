@@ -18,7 +18,7 @@ const getDefaultStepPromotion = (params, envUrl) => {
                 <td colspan="2" style="padding:20px;">
                     <h1>Hello ${user.name},</h1><br>
                     <br>
-                    <p>The following request to the ${eventMessage.daac_name} in Earthdata Pub has a change in status:</p>
+                    <p>The following request in Earthdata Pub has a change in status:</p>
                     <h2>Request:</h2>
                     <p><a style="text-align: left;" href="${envUrl}/dashboard/requests/id/${eventMessage.submission_id}" aria-label="View the request">${eventMessage.submission_name} (${eventMessage.submission_id})</a><br></p>
                     <h2>New Status:</h2>

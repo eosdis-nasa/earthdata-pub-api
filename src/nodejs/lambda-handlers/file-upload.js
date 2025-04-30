@@ -60,7 +60,7 @@ async function getPostUrlMethod(event, user) {
       daac_id: daacId,
       contributor_ids: contributorIds
     } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
-    if (!daacId) return ({ error: 'Submission not found' });
+    if (!contributorIds) return ({ error: 'Submission not found' });
 
     const userDaacs = groupIds.length > 0 ? await db.daac.getIds({ group_ids: groupIds }) : [];
     const userDaacIds = userDaacs.map((daac) => daac.id);
@@ -70,7 +70,7 @@ async function getPostUrlMethod(event, user) {
       || userDaacIds.includes(daacId)
     ) {
       return generateUploadUrl({
-        key: `${daacId}/${submissionId}/${fileCategory}/${user}/${fileName}`,
+        key: `${submissionId}/${fileCategory}/${user}/${fileName}`,
         checksumValue,
         fileType,
         fileCategory
@@ -202,7 +202,7 @@ async function listFilesMethod(event, user) {
     || userDaacIds.includes(daacId)
   ) {
     const s3Client = new S3Client({ region });
-    const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${daacId}/${submissionId}` });
+    const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${submissionId}` });
 
     try {
       rawResponse = await s3Client.send(command);
