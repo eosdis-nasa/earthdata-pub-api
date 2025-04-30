@@ -225,6 +225,7 @@ UPDATE step_edge SET step_name='daac_assignment' WHERE workflow_id='3335970e-8a9
 INSERT INTO privilege VALUES ('REQUEST_ASSIGNDAAC');
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_ASSIGNDAAC');
 UPDATE submission SET daac_id=NULL WHERE daac_id='1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
+DELETE FROM code WHERE daac_id='1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
 DELETE FROM daac WHERE id='1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
 
 -- 1/7/25 EDPUB-1430 Add Upload step type
