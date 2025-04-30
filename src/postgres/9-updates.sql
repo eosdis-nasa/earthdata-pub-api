@@ -224,6 +224,8 @@ UPDATE step_edge SET next_step_name='daac_assignment' WHERE workflow_id='3335970
 UPDATE step_edge SET step_name='daac_assignment' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND next_step_name='close';
 INSERT INTO privilege VALUES ('REQUEST_ASSIGNDAAC');
 INSERT INTO edprole_privilege VALUES ('4be6ca4d-6362-478b-8478-487a668314b1', 'REQUEST_ASSIGNDAAC');
+UPDATE submission SET daac_id=NULL WHERE daac_id='1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
+DELETE FROM code WHERE daac_id='1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
 DELETE FROM daac WHERE id='1c36f0b9-b7fd-481b-9cab-3bc3cea35413';
 
 -- 1/7/25 EDPUB-1430 Add Upload step type
@@ -325,7 +327,7 @@ UPDATE daac SET hidden = 'false' WHERE id = '00dcf32a-a4e2-4e55-a0d1-3a74cf100ca
 
 -- 3/5/25 Reroute Feature pivot updates
 UPDATE step SET data='{"rollback":"data_accession_request_form_review","type": "review"}' WHERE step_name='daac_assignment';
-DELETE FROM step WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='cost_model';
+DELETE FROM step_edge WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='cost_model';
 UPDATE step_edge SET next_step_name='daac_assignment' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
 
 -- 3/17/25 Add ESDIS Final Review
