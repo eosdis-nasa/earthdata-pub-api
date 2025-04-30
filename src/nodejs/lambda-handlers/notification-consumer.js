@@ -16,7 +16,12 @@ const { getTemplate, getEmailTemplate } = require('./notification-consumer/templ
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
-async function sendEmailNotification({ note, emailPayload, usersList }) {
+async function sendEmailNotification({
+  note,
+  emailPayload,
+  usersList,
+  additionalContacts
+}) {
   const roles = {
     data_producer: '804b335c-f191-4d26-9b98-1ec1cb62b97d',
     daac_staff: 'a5b4947a-67d2-434e-9889-59c2fad39676',
@@ -68,6 +73,11 @@ async function sendEmailNotification({ note, emailPayload, usersList }) {
       senderId: note.sender_edpuser_id,
       userRole
     });
+
+  // Optional contacts from forms that do not necessarily have EDPUB accounts
+  if (additionalContacts) {
+    users.push(...additionalContacts);
+  }
 
   if (emailPayload.event_type === 'request_initialized') users = users.map((user) => ({ name: user.name, email: user.email, initiator: user.id === emailPayload.user_id }));
   await msg.sendEmail(users, emailPayload);
@@ -130,7 +140,12 @@ async function processRecord(record) {
       if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
         const emailPayload = eventMessage.emailPayloadProvided ? eventMessage
           : await getEmailTemplate(eventMessage, message);
-        await sendEmailNotification({ note, emailPayload, usersList: eventMessage.userIds });
+        await sendEmailNotification({
+          note,
+          emailPayload,
+          usersList: eventMessage.userIds,
+          additionalContacts: eventMessage.additional_recipients
+        });
       }
     }
   }

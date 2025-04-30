@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add attachments capabilities
 - Updated github repo template assets
 - Fix upload error for users not assigned to a group
+- Add default publication workflow
+- Update request details db query to remove daac long name from response
+- Added backend for handling ESDIS final review
+- Update notes to be associated with the submission's daac at time of creation
+- Updating backend to handle the needs_review case in daac selection
 
 ## 1.1.0
 

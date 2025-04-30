@@ -109,6 +109,19 @@ async function serviceMethod(status) {
   await promoteStepMethod(eventMessage);
 }
 
+async function uploadMethod(status) {
+  const eventMessage = {
+    event_type: 'upload_step_completed',
+    submission_id: status.id,
+    conversation_id: status.conversation_id,
+    workflow_id: status.workflow_id,
+    step_name: status.step.name,
+    data: status.step.data
+  };
+  if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+  await msg.sendEvent(eventMessage);
+}
+
 async function closeMethod(status) {
   const submissionMetrics = await db.metrics.getSubmissions({
     submissionId: status.id
@@ -131,6 +144,7 @@ const stepMethods = {
   form: formMethod,
   review: reviewMethod,
   service: serviceMethod,
+  upload: uploadMethod,
   close: closeMethod
 };
 
@@ -203,7 +217,12 @@ async function reviewApprovedMethod(eventMessage) {
 }
 
 async function reviewRejectedMethod(eventMessage) {
-  const { submission_id: id, step_name: stepName, user_id: userId } = eventMessage;
+  const {
+    submission_id: id,
+    step_name: stepName,
+    user_id: userId,
+    next_step: nextStep
+  } = eventMessage;
   // Did this because of lint error. This line has a length of 104. Maximum allowed is 100
   const stepReview = await db.submission.checkCountStepReviewRejected({
     submission_id: id, step_name: stepName, user_id: userId
@@ -215,7 +234,20 @@ async function reviewRejectedMethod(eventMessage) {
         status: 'TRUE'
       });
     }
-    await db.submission.rollback({ id, step_name: stepName });
+    if (typeof nextStep !== 'undefined') {
+      const validStep = await db.submission.checkWorkflow({ step_name: nextStep, id });
+      if (validStep.step_name || nextStep === 'close') {
+        await db.submission.setStep({ id, step_name: nextStep });
+
+        if (nextStep === 'close') {
+          const status = await db.submission.getState({ id });
+          const method = stepMethods[nextStep];
+          await method(status);
+        }
+      }
+    } else {
+      await db.submission.rollback({ id, step_name: stepName });
+    }
   }
 }
 
