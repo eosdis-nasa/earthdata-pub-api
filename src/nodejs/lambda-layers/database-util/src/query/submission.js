@@ -744,7 +744,14 @@ SELECT step_name FROM submission_status WHERE id = {{id}}
 // TODO - Update this query's complexity and to use sql builder
 const getSubmissionDetailsById = (params) => `
 WITH step_visibility AS (SELECT step.*, upload_step.id AS upload_step_id, form.daac_only FROM step LEFT JOIN form ON step.form_id = form.id LEFT JOIN upload_step ON step.step_name = upload_step.step_name),
-filteredForm AS (SELECT * FROM form ${params.privilegedUser === false ? `WHERE form.daac_only=false`: ``})
+filteredForms AS (
+  SELECT submission_form_data.id, 
+  JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('id', form.id, 'long_name', form.long_name, 'daac_only', form.daac_only, 'submitted_at', submission_form_data.submitted_at))) forms
+  FROM submission_form_data
+  LEFT JOIN form ON submission_form_data.form_id = form.id
+  WHERE submission_form_data.id= {{id}} ${params.privilegedUser === false ? `AND form.daac_only=false`: ``}
+  GROUP BY submission_form_data.id
+)
 SELECT submission.id id, conversation_id, submission.created_at created_at,
 submission.hidden hidden,
 JSONB_BUILD_OBJECT('name', edpuser1.name, 'id', edpuser1.id) initiator,
@@ -757,12 +764,9 @@ array_agg(DISTINCT step_edge.step_name)) workflow,
 JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('type', step_visibility.type, 'name', step_visibility.step_name,'action_id', step_visibility.action_id, 'upload_step_id', step_visibility.upload_step_id, 
 'form_id', step_visibility.form_id,'service_id', step_visibility.service_id, 'data', step_visibility.data, 'daac_only', step_visibility.daac_only)) step_data,
 CASE 
-  WHEN filteredForm.id is null THEN '[]'
-  WHEN filteredForm.long_name is null THEN '[]' 
-  WHEN submission_form_data.submitted_at is null THEN '[]' 
+  WHEN filteredForms.forms is null THEN '[]'
   ELSE
-    JSONB_AGG(DISTINCT JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT('id', filteredForm.id,
-      'long_name', filteredForm.long_name, 'daac_only', filteredForm.daac_only, 'submitted_at', submission_form_data.submitted_at))) 
+    filteredForms.forms 
 END forms, submission_metadata.metadata metadata
 FROM submission
 JOIN edpuser edpuser1
@@ -779,18 +783,15 @@ JOIN step_edge
 ON submission_status.workflow_id = step_edge.workflow_id
 JOIN step_visibility
 ON submission_status.step_name = step_visibility.step_name
-LEFT JOIN submission_form_data
-ON submission.id = submission_form_data.id
-LEFT JOIN filteredForm
-ON submission_form_data.form_id = filteredForm.id
+LEFT JOIN filteredForms
+ON submission.id = filteredForms.id
 JOIN submission_metadata
 ON submission.id = submission_metadata.id
 WHERE submission.id= {{id}}
 GROUP BY submission.id, edpuser1.name, edpuser1.id,
 submission_status.last_change, workflow.long_name, workflow.id,
 submission_form_data_pool.data, step_visibility.type, step_visibility.step_name, step_visibility.action_id, step_visibility.upload_step_id,
-step_visibility.form_id, step_visibility.service_id, step_visibility.data, step_visibility.daac_only, filteredForm.id, 
-filteredForm.long_name, submission_form_data.submitted_at, submission_metadata.metadata;
+step_visibility.form_id, step_visibility.service_id, step_visibility.data, step_visibility.daac_only, filteredForms.forms, submission_metadata.metadata;
 `;
 
 const getSubmissionDaac = () => sql.select({
