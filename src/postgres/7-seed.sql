@@ -1,8 +1,8 @@
 
 -- Form(id, short_name, version, long_name, description, daac_only)
-INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_accession_request', 1, 'Data Accession Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
+INSERT INTO form VALUES ('6c544723-241c-4896-a38c-adbc0a364293', 'data_evaluation_request', 1, 'Data Evaluation Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
 INSERT INTO form VALUES ('19025579-99ca-4344-8610-704dae626343', 'data_publication_request', 1, 'Data Publication Request', 'This form is used to get high level information about a dataset, typically this will be submitted by the data provider or an appropriate agent.');
-INSERT INTO form VALUES ('3f77385f-7087-4d22-81c1-5c29b95d3295', 'ornl_submission', 1, 'ORNL Submission Form', 'This form is used by ORNL DAAC staff to enter pieces of information needed by the DAAC that the Data Provider will not have when submitting the Data Accession Request Form', true);
+INSERT INTO form VALUES ('3f77385f-7087-4d22-81c1-5c29b95d3295', 'ornl_submission', 1, 'ORNL Submission Form', 'This form is used by ORNL DAAC staff to enter pieces of information needed by the DAAC that the Data Provider will not have when submitting the Data Evaluation Request Form', true);
 INSERT INTO form VALUES ('19025579-99ca-4344-8611-704dae626343', 'Submit_Data_ESDIS_DAAC', 1, 'Submit Data to an ESDIS DAAC', 'Submit Data to an ESDIS DAAC.');
 
 -- Service(id, short_name, long_name, description, endpoint, options, headers, method, code, payload)
@@ -56,7 +56,7 @@ INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b54', '19025579-99
 
 -- Question(id, short_name, version, long_name, text, help, required, created_at)
 INSERT INTO question VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info', 1, 'Primary Data Producer', 'Who is the primary person responsible for the collection or creation of this data product?', 'The Primary Data Producer is often the Principal Investigator, Project Scientist, or Project Manager.');
-INSERT INTO question VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'point_of_contact', 1, 'Data Accession Point of Contact', 'Who should the DAAC contact with questions regarding this Data Accession request?', 'This person should have in-depth knowledge of this data product, allowing them to provide additional information as needed.');
+INSERT INTO question VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'point_of_contact', 1, 'Data Evaluation Point of Contact', 'Who should the DAAC contact with questions regarding this Data Accession request?', 'This person should have in-depth knowledge of this data product, allowing them to provide additional information as needed.');
 INSERT INTO question VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organization', 1, 'Funding Organization', 'What organization(s) funded the creation of this data product?', '');
 INSERT INTO question VALUES ('4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 'funding_program', 1, 'Funding Program/Element', 'Under what program or program element within the funding organization was this data product created?', 'Examples include NASA programs such as MEaSUREs, Terrestrial Hydrology, Earth Venture, ACCESS, or AIST.');
 INSERT INTO question VALUES ('f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 'data_product_name', 1, 'Data Product Name', 'How do you refer to this data product?', 'This is how the DAAC will refer to this data product during the data publication process. The DAAC will work with you to develop an official data product title in compliance with DAAC/ESDIS standards.');
@@ -64,8 +64,8 @@ INSERT INTO question VALUES ('39701413-ac96-4b66-9c2f-2d9c08a18ed9', 'data_produ
 INSERT INTO question VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi', 1, 'Data Product DOI', 'If a Digital Object Identifier (DOI) already exists for this data product (not common), please provide it.', 'This would be a DOI for the actual data and not for a paper related to this data product. The DAAC will create the data product DOI during data publication. Therefore, the DAAC needs to know if a data product DOI already exists.');
 INSERT INTO question VALUES ('c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 'data_product_doi', 2, 'Data Product DOI', 'If a Digital Object Identifier (DOI) already exists for this data product (not common), please provide it.', 'This would be a DOI for the actual data and not for a paper related to this data product. The DAAC will create the data product DOI during data publication. Therefore, the DAAC needs to know if a data product DOI already exists.');
 INSERT INTO question VALUES ('7fd7bccf-5065-4033-9956-9e80bc99c205', 'science_value', 1, 'Science Value of Data Product', 'What is the science value of this data product?', 'For example, describe the benefits to the science community, the strengths compared to similar data products, and/or other data products that it complements.');
-INSERT INTO question VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_accession_reason', 1, 'Reason for Data Accession Request', 'Why are you requesting to have this data product archived and distributed at the DAAC?', 'For example, you are publishing a paper and the publisher requires data to be archived in a trusted repository, you have been instructed by a NASA program manager to archive your data at a DAAC, or you want this data product to be distributed with related data products.');
-INSERT INTO question VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_accession_approval_dependencies', 1, 'Dependencies for Data Accession Approval', 'Do you have any dependencies related to this data product being approved to be published at the DAAC?', 'For example, you are publishing a paper, you are presenting at a conference, or your project has a requirement to publish data by a certain time.');
+INSERT INTO question VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_evaluation_reason', 1, 'Reason for Data Accession Request', 'Why are you requesting to have this data product archived and distributed at the DAAC?', 'For example, you are publishing a paper and the publisher requires data to be archived in a trusted repository, you have been instructed by a NASA program manager to archive your data at a DAAC, or you want this data product to be distributed with related data products.');
+INSERT INTO question VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_evaluation_approval_dependencies', 1, 'Dependencies for Data Accession Approval', 'Do you have any dependencies related to this data product being approved to be published at the DAAC?', 'For example, you are publishing a paper, you are presenting at a conference, or your project has a requirement to publish data by a certain time.');
 INSERT INTO question VALUES ('2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 'data_product_restrictions', 1, 'Open Data Policy', 'Can this data product be publicly released in compliance with NASA''s Open Data Policy?', 'For a description of the open data policy, please refer to the <a href="https://earthdata.nasa.gov/collaborate/open-data-services-and-software/data-information-policy" target=_blank>NASA Earthdata Data and Information Policy web page <i class="fas fa-external-link-alt"></i></a>.');
 INSERT INTO question VALUES ('ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 'data_product_documentation', 1, 'Data Product Documentation', 'Are there any existing documents that you would like to have included in the review of your data product? If "Yes", please upload the document(s).', 'For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality. If you have more than 5 documents, please contact the DAAC for assistance. Files must be less than 5 GB and cannot include .exe or .dll extensions.');
 INSERT INTO question VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 'data_format', 1, 'Data Format', 'What file format(s) does this data product include?', 'For a list of NASA-approved data formats, please refer to the <a href="https://earthdata.nasa.gov/esdis/eso/standards-and-references#data-formats" target=_blank>NASA Earthdata Standards and Practices web page <i class="fas fa-external-link-alt"></i></a>.', True);
@@ -243,9 +243,9 @@ INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_
 INSERT INTO input VALUES ('c9c73e88-837a-42d2-aa1a-50874a333607', 'data_product_doi', 1, '', 'table', '[{"key": "data_product_doi_value","label": "DOI","type": "text","editable": true}]', '{}', '[{"field":"data_product_doi_exists","value":"true","message":"Please add DOIs."}]','[]',  False);
 INSERT INTO input VALUES ('c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 'data_product_doi_value', 0, 'DOI', 'text', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('7fd7bccf-5065-4033-9956-9e80bc99c205', 'science_value_description', 0, '', 'textarea', '{}', '{"rows":3,"cols":20}', '[]','[]',  True);
-INSERT INTO input VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_accession_reason_description', 0, '', 'textarea', '{}', '{"rows":5,"cols":20,"maxlength":1000}', '[]','[]',  True);
-INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_accession_approval_dependencies_radios', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_accession_approval_dependencies_explanation', 1, 'If Yes, please provide a brief explanation.', 'text', '{}', '{}', '[{"field": "data_accession_approval_dependencies_radios","value": "Yes"}]','[]',  False);
+INSERT INTO input VALUES ('bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 'data_evaluation_reason_description', 0, '', 'textarea', '{}', '{"rows":5,"cols":20,"maxlength":1000}', '[]','[]',  True);
+INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_evaluation_approval_dependencies_radios', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 'data_evaluation_approval_dependencies_explanation', 1, 'If Yes, please provide a brief explanation.', 'text', '{}', '{}', '[{"field": "data_evaluation_approval_dependencies_radios","value": "Yes"}]','[]',  False);
 INSERT INTO input VALUES ('2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 'data_product_restrictions_public', 0, '', 'radio', '["Yes","No","Not sure"]', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 'data_product_restrictions_explanation', 1, 'If No or Not sure, please provide a brief explanation.', 'text', '{}', '{}', '[{"field": "data_product_restrictions_public","value": "No"},{"field": "data_product_restrictions_public","value": "Not sure"}]','[]',  False);
 INSERT INTO input VALUES ('ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 'data_product_documentation_url', 1, 'Alternatively provide a URL to the document(s)', 'text', '{}', '{}', '[]','[]',  False);
@@ -443,7 +443,7 @@ INSERT INTO edpuser_edprole VALUES ('1b10a09d-d342-4eee-a9eb-c99acd2dde17', '756
 
 -- Workflow(id, short_name, version, long_name, description)
 INSERT INTO workflow VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init_workflow', 1, 'Initialization Workflow', 'This workflow performs no actions and is used for initializing submissions.');
-INSERT INTO workflow VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_accession_request_workflow', 1, 'Data Accession Request Workflow', 'This is the default initial workflow for a new data accession request.');
+INSERT INTO workflow VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_evaluation_request_workflow', 1, 'Data Evaluation Request Workflow', 'This is the default initial workflow for a new data evaluation request.');
 INSERT INTO workflow VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'request_forms_workflow', 1, 'Request Forms Workflow', 'This is the default workflow for a new request that covers both forms.');
 INSERT INTO workflow VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_publication_request_workflow', 1, 'Data Publication Request Workflow', 'This is the default initial workflow for a new data publication request.');
 INSERT INTO workflow VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 1, 'Assign a Workflow', 'This is the default initial workflow.');
@@ -464,8 +464,8 @@ INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publi
 -- Step(step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_name, type) VALUES ('init', 'init');
 INSERT INTO step(step_name, type) VALUES ('close', 'close');
-INSERT INTO step(step_name, type, form_id) VALUES ('data_accession_request_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
-INSERT INTO step(step_name, type, data) VALUES ('data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
+INSERT INTO step(step_name, type, form_id) VALUES ('data_evaluation_request_form', 'form', '6c544723-241c-4896-a38c-adbc0a364293');
+INSERT INTO step(step_name, type, data) VALUES ('data_evaluation_request_form_review', 'review', '{"rollback":"data_evaluation_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
 INSERT INTO step(step_name, type, form_id) VALUES ('data_publication_request_form', 'form', '19025579-99ca-4344-8610-704dae626343');
 INSERT INTO step(step_name, type, data) VALUES ('data_publication_request_form_review', 'review', '{"rollback":"data_publication_request_form","type": "form","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 INSERT INTO step(step_name, type, data) VALUES ('assign_a_workflow', 'action', '{"rollback":"init","type": "init"}');
@@ -478,21 +478,21 @@ INSERT INTO step(step_name, type, data) VALUES ('get_from_mmt', 'action', '{"rol
 INSERT INTO step(step_name, type, data) VALUES ('map_from_mmt', 'action', '{"rollback":"get_from_mmt","type": "action"}');
 INSERT INTO step(step_name, type, data) VALUES ('publish_to_cmr', 'action', '{"rollback":"map_from_mmt","type": "action"}');
 INSERT INTO step(step_name, type, action_id) VALUES ('send_to_mmt', 'action', '3fe93672-cd91-45d4-863b-c6d0d63f8c8c');
-INSERT INTO step (step_name, type, data) VALUES ('cost_model', 'upload', '{"rollback":"data_accession_request_form_review","type": "review"}');
+INSERT INTO step (step_name, type, data) VALUES ('cost_model', 'upload', '{"rollback":"data_evaluation_request_form_review","type": "review"}');
 INSERT INTO step(step_name, type, data) VALUES ('daac_assignment', 'action', '{"rollback":"additional_review_question","type": "action"}');
 INSERT INTO step(step_name, step_status_label, type, data) VALUES ('daac_assignment_final', 'Final DAAC Assignment', 'action', '{"rollback":"esdis_final_review","type": "review"}');
-INSERT INTO step(step_name, step_status_label, type, data) VALUES ('esdis_final_review', 'ESDIS Final Review', 'review', '{"rollback":"data_accession_request_form_review","type": "review", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
-INSERT INTO step(step_name, type, form_id) VALUES ('assignment_form_data_accession_request_form', 'form', '19025579-99ca-4344-8611-704dae626343');
-INSERT INTO step(step_name, type, data) VALUES ('additional_review_question', 'action', '{"rollback":"assignment_form_data_accession_request_form","type": "form","form":"19025579-99ca-4344-8611-704dae626343"}');
+INSERT INTO step(step_name, step_status_label, type, data) VALUES ('esdis_final_review', 'ESDIS Final Review', 'review', '{"rollback":"data_evaluation_request_form_review","type": "review", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
+INSERT INTO step(step_name, type, form_id) VALUES ('assignment_form_data_evaluation_request_form', 'form', '19025579-99ca-4344-8611-704dae626343');
+INSERT INTO step(step_name, type, data) VALUES ('additional_review_question', 'action', '{"rollback":"assignment_form_data_evaluation_request_form","type": "form","form":"19025579-99ca-4344-8611-704dae626343"}');
 
 -- Accession Workflow
 -- StepEdge(workflow_id, step_name, next_step_name)
-INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'init', 'assignment_form_data_accession_request_form');
-INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'assignment_form_data_accession_request_form', 'additional_review_question');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'init', 'assignment_form_data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'assignment_form_data_evaluation_request_form', 'additional_review_question');
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'additional_review_question', 'daac_assignment');
-INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'daac_assignment', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form_review', 'esdis_final_review');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'daac_assignment', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_evaluation_request_form_review', 'esdis_final_review');
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'esdis_final_review', 'daac_assignment_final');
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'daac_assignment_final', 'close');
 
@@ -502,9 +502,9 @@ INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'daac_assi
 INSERT INTO step(step_id, step_name, type, data) VALUES ('d278f01e-1ef7-4677-a350-73ccadeddc22', 'create_skeleton_dataset_record_in_mmt', 'action', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('9549666c-94ff-4ff5-accc-1df834fde963', 'push_collection_metadata_to_cmr_via_mmt', 'action', '{"rollback":"create_skeleton_dataset_record_in_mmt","type": "action"}');
 -- StepEdge(workflow_id, step_name, next_step_name)
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'init', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'init', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_evaluation_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'data_publication_request_form_review', 'create_skeleton_dataset_record_in_mmt');
 INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'create_skeleton_dataset_record_in_mmt', 'push_collection_metadata_to_cmr_via_mmt');
@@ -512,16 +512,16 @@ INSERT INTO step_edge VALUES ('45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8', 'push_coll
 
 -- ORNL 
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)
-INSERT INTO step(step_id, step_name, type, data) VALUES ('6445f44b-bcda-41b4-86e4-23761edc22bf', 'push_to_ornl_database_f1', 'action', '{"rollback": "data_accession_request_form_review", "type": "review"}');
+INSERT INTO step(step_id, step_name, type, data) VALUES ('6445f44b-bcda-41b4-86e4-23761edc22bf', 'push_to_ornl_database_f1', 'action', '{"rollback": "data_evaluation_request_form_review", "type": "review"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('4791d53b-6c8f-4d5b-9ee9-81cebd4c4b04', 'push_to_ornl_database_f2', 'action', '{"rollback": "data_publication_request_form_review", "type": "review"}');
 INSERT INTO step(step_id, step_name, type, data) VALUES ('bbca687c-c6c5-45f6-b2e9-7f2c58a00a26', 'email_daac_staff', 'action', '{"rollback": "push_to_ornl_database_f2", "type": "action"}');
 INSERT INTO step(step_id, step_name, type, service_id) VALUES ('62c8a133-4af7-4d41-8174-179ffbe81d3f','ornl_service_trigger','service','f33f9ce5-e402-4823-8847-f380d1b7789b');
 
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('b51a6c31-c098-41b0-89ad-261254b0aaae', 'init', 'close');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init','data_accession_request_form');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_accession_request_form_review','push_to_ornl_database_f1');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'init','data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_evaluation_request_form_review','push_to_ornl_database_f1');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'push_to_ornl_database_f1', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('a218f99d-cfc1-44e5-b203-3e447e1c1275', 'data_publication_request_form_review','push_to_ornl_database_f2');
@@ -545,8 +545,8 @@ INSERT INTO step(step_id, step_name, type, form_id) VALUES ('37e41513-4c2c-49eb-
 
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'init', 'ornl_service_trigger');
-INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_service_trigger', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_accession_request_form', 'push_to_ornl_database_f1');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_service_trigger', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_evaluation_request_form', 'push_to_ornl_database_f1');
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'push_to_ornl_database_f1', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'data_publication_request_form', 'submission_form');
 INSERT INTO step_edge VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'submission_form', 'email_daac_staff');
@@ -577,9 +577,9 @@ INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publ
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('a9c55c56-8fd7-4bd1-89aa-0cf9e28da07e', 'send_metadata_to_ges_disc', 'action', '09293035-2d31-44d3-a6b0-675f10dc34bf', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 -- StepEdge(workflow_id, step_name, next_step_name)
-INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'init', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'init', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_evaluation_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'data_publication_request_form_review', 'send_metadata_to_ges_disc');
 INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'send_metadata_to_ges_disc', 'close');
@@ -588,22 +588,22 @@ INSERT INTO step_edge VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'send_meta
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step(step_id, step_name, type, data) VALUES ('88d12552-d2e3-4737-9c6a-8bd86b5df3c7', 'email_asdc_staff', 'action', '{"rollback":"data_publication_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8610-704dae626343"}');
 -- INSERT INTO workflow VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'asdc_darkhorse_workflow', 1, 'ASDC Default Workflow (Darkhorse)', 'This is the darkhorse workflow for ASDC.');
-INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'init', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'init', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_evaluation_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'data_publication_request_form_review', 'email_asdc_staff');
 INSERT INTO step_edge VALUES ('a8d22c43-7814-4609-ac04-66fb50228bf7', 'email_asdc_staff', 'close');
 
 INSERT INTO step_edge VALUES ('c651b698-ec06-44d7-a69b-44bf8b4bc4f5', 'init', 'close');
 
-INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_accession_request_form_review', 'close');
+INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'init', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('4bc927f2-f34a-4033-afe3-02520cc7dcf7', 'data_evaluation_request_form_review', 'close');
 
-INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'init', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'init', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_evaluation_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('c0b4294f-3713-43ea-89af-83eba9eacff1', 'data_publication_request_form_review', 'close');
 
@@ -614,9 +614,9 @@ INSERT INTO step_edge VALUES ('0e81909a-f780-40db-9242-a0c3274b6e95', 'data_publ
 INSERT INTO step_edge VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'init', 'assign_a_workflow');
 INSERT INTO step_edge VALUES ('056ca100-107e-4fe5-a54a-e5f2d902a27a', 'assign_a_workflow', 'close');
 
-INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'init', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'init', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_evaluation_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'data_publication_request_form_review', 'start_qa');
 INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'start_qa', 'complete_qa');
@@ -633,9 +633,9 @@ INSERT INTO step_edge VALUES ('c1690729-b67e-4675-a1a5-b2323f347dff', 'publish_t
 -- Step(step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_id, step_name, type, data) VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'export_metadata', 'action', '{"rollback":"data_publication_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8610-704dae626343"}');
 -- StepEdge(workflow_id, step_name, next_step_name)
-INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'init', 'data_accession_request_form');
-INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'data_accession_request_form_review', 'data_publication_request_form');
+INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'init', 'data_evaluation_request_form');
+INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
+INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'data_evaluation_request_form_review', 'data_publication_request_form');
 INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'data_publication_request_form', 'data_publication_request_form_review');
 INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'data_publication_request_form_review', 'export_metadata');
 INSERT INTO step_edge VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'export_metadata', 'close');
