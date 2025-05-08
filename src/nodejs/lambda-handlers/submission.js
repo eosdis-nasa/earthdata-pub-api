@@ -536,11 +536,11 @@ async function assignDaacsMethod(event, user) {
     const pocRecipients = [];
 
     // Add the POC from the first form
-    if (submission.form_data.assignment_form_data_submission_poc_email) {
+    if (submission.form_data.dar_form_data_submission_poc_email) {
       pocRecipients.push({
-        name: submission.form_data.assignment_form_data_submission_poc_name
-          ? submission.form_data.assignment_form_data_submission_poc_name : '',
-        email: submission.form_data.assignment_form_data_submission_poc_email
+        name: submission.form_data.dar_form_data_submission_poc_name
+          ? submission.form_data.dar_form_data_submission_poc_name : '',
+        email: submission.form_data.dar_form_data_submission_poc_email
       });
     }
 
@@ -548,7 +548,7 @@ async function assignDaacsMethod(event, user) {
       event_type: 'daac_assignment',
       submission_id: submission.id,
       conversation_id: submission.conversation_id,
-      submission_name: submission.form_data.assignment_form_project_name_info,
+      submission_name: submission.form_data.dar_form_project_name_info,
       step_name: submission.step_name,
       assigned_daacs: submission.assigned_daacs,
       ...(userIds.length > 0 && { userIds }),
