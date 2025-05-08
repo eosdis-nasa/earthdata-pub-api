@@ -205,7 +205,7 @@ async function reviewApprovedMethod(eventMessage) {
   // if unapproved is 0 means all assigned users have approved the form
   if (stepReview.unapproved && parseInt(stepReview.unapproved, 10) === 0) {
     const newEvent = { ...eventMessage, event_type: 'workflow_promote_step_direct' };
-    if (eventMessage.step_name === 'data_accession_request_form_review') {
+    if (eventMessage.step_name === 'data_evaluation_request_form_review') {
       await db.metrics.setAccessionReversion({
         id: eventMessage.submission_id,
         status: 'FALSE'
@@ -228,7 +228,7 @@ async function reviewRejectedMethod(eventMessage) {
     submission_id: id, step_name: stepName, user_id: userId
   });
   if (stepReview.unapproved && parseInt(stepReview.unapproved, 10) === 0) {
-    if (eventMessage.step_name === 'data_accession_request_form_review') {
+    if (eventMessage.step_name === 'data_evaluation_request_form_review') {
       await db.metrics.setAccessionReversion({
         id: eventMessage.submission_id,
         status: 'TRUE'

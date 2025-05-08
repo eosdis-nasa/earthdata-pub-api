@@ -39,7 +39,7 @@ describe('notification-consumer', () => {
           data: {
             type: 'form',
             form_id: '6c544723-241c-4896-a38c-adbc0a364293',
-            rollback: 'data_accession_request_form'
+            rollback: 'data_evaluation_request_form'
           }
         })
       }

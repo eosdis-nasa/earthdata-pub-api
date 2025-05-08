@@ -603,7 +603,7 @@ async function esdisReviewMethod(event, user) {
       // reset any current review requirements (assignees) for the DAR review step
       const currentReviewers = await db.submission.getStepReviewApproval({ id });
       const userIds = currentReviewers.map((reviewer) => reviewer.edpuser_id);
-      const deleteReviewStep = 'data_accession_request_form_review';
+      const deleteReviewStep = 'data_evaluation_request_form_review';
 
       // eslint-disable-next-line
       for (const userId of userIds) {
