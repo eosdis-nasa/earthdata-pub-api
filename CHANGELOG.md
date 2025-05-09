@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added backend for handling ESDIS final review
 - Update notes to be associated with the submission's daac at time of creation
 - Updating backend to handle the needs_review case in daac selection
+- Renamed DAR -> DER form. Renamed Submit Data to ESDIS form to DAR
 
 ## 1.1.0
 

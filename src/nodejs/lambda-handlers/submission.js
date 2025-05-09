@@ -536,11 +536,11 @@ async function assignDaacsMethod(event, user) {
     const pocRecipients = [];
 
     // Add the POC from the first form
-    if (submission.form_data.assignment_form_data_submission_poc_email) {
+    if (submission.form_data.dar_form_data_submission_poc_email) {
       pocRecipients.push({
-        name: submission.form_data.assignment_form_data_submission_poc_name
-          ? submission.form_data.assignment_form_data_submission_poc_name : '',
-        email: submission.form_data.assignment_form_data_submission_poc_email
+        name: submission.form_data.dar_form_data_submission_poc_name
+          ? submission.form_data.dar_form_data_submission_poc_name : '',
+        email: submission.form_data.dar_form_data_submission_poc_email
       });
     }
 
@@ -548,7 +548,7 @@ async function assignDaacsMethod(event, user) {
       event_type: 'daac_assignment',
       submission_id: submission.id,
       conversation_id: submission.conversation_id,
-      submission_name: submission.form_data.assignment_form_project_name_info,
+      submission_name: submission.form_data.dar_form_project_name_info,
       step_name: submission.step_name,
       assigned_daacs: submission.assigned_daacs,
       ...(userIds.length > 0 && { userIds }),
@@ -603,7 +603,7 @@ async function esdisReviewMethod(event, user) {
       // reset any current review requirements (assignees) for the DAR review step
       const currentReviewers = await db.submission.getStepReviewApproval({ id });
       const userIds = currentReviewers.map((reviewer) => reviewer.edpuser_id);
-      const deleteReviewStep = 'data_accession_request_form_review';
+      const deleteReviewStep = 'data_evaluation_request_form_review';
 
       // eslint-disable-next-line
       for (const userId of userIds) {

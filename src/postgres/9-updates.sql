@@ -464,7 +464,7 @@ UPDATE step SET data = '{"rollback":"data_accession_request_form_review","type":
 -- 4/22/25 Grandfathered requests update
 UPDATE daac SET workflow_id='f223eec5-2c4d-4412-9c97-5df4117c9290';
 
-INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publication_worfklow', 1, 'ORNL Publication Workflow', 'This is the publication workflow for ORNL.');
+INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publication_workflow', 1, 'ORNL Publication Workflow', 'This is the publication workflow for ORNL.');
 
 INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'init','data_publication_request_form');
 INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'data_publication_request_form', 'data_publication_request_form_review');
@@ -472,3 +472,146 @@ INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'data_publ
 INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'push_to_ornl_database_f2', 'close');
 
 UPDATE daac SET workflow_id='d45145c6-7461-4a00-a86d-9189da57bc1b' WHERE id='15df4fda-ed0d-417f-9124-558fb5e5b561';
+
+-- 5/8/25 Rename forms
+--Rename DAR to DER
+UPDATE form SET short_name='data_evaluation_request', long_name='Data Evaluation Request' WHERE id='6c544723-241c-4896-a38c-adbc0a364293';
+UPDATE form SET description='This form is used by ORNL DAAC staff to enter pieces of information needed by the DAAC that the Data Provider will not have when submitting the Data Evaluation Request Form' WHERE id='3f77385f-7087-4d22-81c1-5c29b95d3295';
+UPDATE question SET long_name='Data Evaluation Point of Contact', text='Who should the DAAC contact with questions regarding this Data Evaluation request?' WHERE id='f3e2eab9-6375-4e53-9cc2-3d16f318d333';
+UPDATE question SET short_name='data_evaluation_reason', long_name='Reason for Data Evaluation Request' WHERE id='bd00dbb7-1d3c-46fa-82a4-734236f4e06c';
+UPDATE question SET short_name='data_evaluation_approval_dependencies', long_name='Dependencies for Data Evaluation Approval' WHERE id='f40956c3-9af8-400e-8dd8-c5e2965dcb8a';
+UPDATE input SET control_id='data_evaluation_reason_description' WHERE control_id='data_accession_reason_description';
+UPDATE input SET control_id='data_evaluation_approval_dependencies_radios' WHERE control_id='data_accession_approval_dependencies_radios';
+UPDATE input SET control_id='data_evaluation_approval_dependencies_explanation', required_if='[{"field": "data_evaluation_approval_dependencies_radios","value": "Yes"}]' WHERE control_id='data_accession_approval_dependencies_explanation';
+UPDATE workflow SET short_name='data_evaluation_request_workflow', long_name='Data Evaluation Request Workflow', description='This is the default initial workflow for a new data evaluation request.' WHERE id='4bc927f2-f34a-4033-afe3-02520cc7dcf7';
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_step_name_fkey;
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_next_step_name_fkey;
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey
+  FOREIGN KEY (next_step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
+ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE step_metrics DROP CONSTRAINT step_metrics_step_name_fkey;
+ALTER TABLE step_metrics ADD CONSTRAINT step_metrics_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE note DROP CONSTRAINT note_step_name_fkey;
+ALTER TABLE note ADD CONSTRAINT note_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE step_review DROP CONSTRAINT step_review_step_name_fkey;
+ALTER TABLE step_review ADD CONSTRAINT step_review_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+UPDATE step SET step_name='data_evaluation_request_form' WHERE step_name='data_accession_request_form';
+UPDATE step SET step_name='data_evaluation_request_form_review', data='{"rollback":"data_evaluation_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name='data_accession_request_form_review';
+UPDATE step SET data='{"rollback":"data_evaluation_request_form_review","type": "review"}' WHERE step_name='cost_model';
+UPDATE step SET data='{"rollback":"data_evaluation_request_form_review","type": "review", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name='esdis_final_review';
+UPDATE step SET data='{"rollback": "data_evaluation_request_form_review", "type": "review"}' WHERE step_id='6445f44b-bcda-41b4-86e4-23761edc22bf';
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_step_name_fkey;
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_next_step_name_fkey;
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey
+  FOREIGN KEY (next_step_name) REFERENCES step (step_name);
+ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
+ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE step_metrics DROP CONSTRAINT step_metrics_step_name_fkey;
+ALTER TABLE step_metrics ADD CONSTRAINT step_metrics_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE note DROP CONSTRAINT note_step_name_fkey;
+ALTER TABLE note ADD CONSTRAINT note_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE step_review DROP CONSTRAINT step_review_step_name_fkey;
+ALTER TABLE step_review ADD CONSTRAINT step_review_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+
+--Rename new form to DAR
+UPDATE form SET short_name='data_accession_request', long_name='Data Accession Request', description='This form is used to get high level information about a data collection, typically this will be submitted by the data provider or an appropriate agent.' WHERE id='19025579-99ca-4344-8611-704dae626343';
+UPDATE step SET data='{"rollback":"data_evaluation_request_form","type": "form", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name='data_evaluation_request_form_review';
+UPDATE step SET data='{"rollback":"data_publication_request_form","type": "form", "form_id":"19025579-99ca-4344-8610-704dae626343"}' WHERE step_name='data_publication_request_form_review';
+ALTER TABLE step_metrics DROP CONSTRAINT step_metrics_step_name_fkey;
+ALTER TABLE step_metrics ADD CONSTRAINT step_metrics_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_step_name_fkey;
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_next_step_name_fkey;
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey
+  FOREIGN KEY (next_step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
+ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+UPDATE step SET step_name='data_accession_request_form' WHERE step_name='assignment_form_data_accession_request_form';
+ALTER TABLE step_metrics DROP CONSTRAINT step_metrics_step_name_fkey;
+ALTER TABLE step_metrics ADD CONSTRAINT step_metrics_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_step_name_fkey;
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE step_edge DROP CONSTRAINT step_edge_next_step_name_fkey;
+ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey
+  FOREIGN KEY (next_step_name) REFERENCES step (step_name);
+ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
+ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+INSERT INTO step(step_name, type, data) VALUES ('data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form", "form_id":"19025579-99ca-4344-8611-704dae626343"}');
+UPDATE step SET data='{"rollback":"data_accession_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8611-704dae626343"}' WHERE step_name='additional_review_question';
+UPDATE step_edge SET step_name='data_accession_request_form_review' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form';
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form', 'data_accession_request_form_review');
+UPDATE question SET short_name='dar_form_principal_investigator' WHERE id='80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3';
+UPDATE question SET short_name='dar_form_data_submission_poc' WHERE id='80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4';
+UPDATE question SET short_name='dar_form_funding_organization' WHERE id='8a364184-42ac-48fe-b831-acb2eb08c730';
+UPDATE question SET short_name='dar_form_funding_program' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d731';
+UPDATE question SET short_name='dar_form_program_officer' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d732';
+UPDATE question SET short_name='dar_form_releated_projects' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d733';
+UPDATE question SET short_name='dar_form_project_name' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d734';
+UPDATE question SET short_name='dar_form_project_desc' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d735';
+UPDATE question SET short_name='dar_form_science_value' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d736';
+UPDATE question SET short_name='dar_form_data_sub_req' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d737';
+UPDATE question SET short_name='dar_form_data_sub_req_approval' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d738';
+UPDATE question SET short_name='dar_form_open_data_policy' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d739';
+UPDATE question SET short_name='dar_form_project_documentation' WHERE id='4ecc885f-daf8-4bc6-a8cd-d30c2a54d740';
+UPDATE question SET short_name='dar_form_data_format' WHERE id='50e8d566-b9ab-4bd9-9adc-92a3c8fb5d28';
+UPDATE question SET short_name='dar_form_data_producers_table_info' WHERE id='50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35';
+UPDATE input SET control_id='dar_form_principal_investigator_fullname' WHERE control_id='assignment_form_principal_investigator_fullname';
+UPDATE input SET control_id='dar_form_principal_investigator_organization' WHERE control_id='assignment_form_principal_investigator_organization';
+UPDATE input SET control_id='dar_form_principal_investigator_email' WHERE control_id='assignment_form_principal_investigator_email';
+UPDATE input SET control_id='dar_form_principal_investigator_orcid' WHERE control_id='assignment_form_principal_investigator_orcid';
+UPDATE input SET control_id='dar_form_data_submission_poc_name' WHERE control_id='assignment_form_data_submission_poc_name';
+UPDATE input SET control_id='dar_form_data_submission_poc_organization' WHERE control_id='assignment_form_data_submission_poc_organization';
+UPDATE input SET control_id='dar_form_data_submission_poc_email' WHERE control_id='assignment_form_data_submission_poc_email';
+UPDATE input SET control_id='dar_form_data_submission_poc_orcid' WHERE control_id='assignment_form_data_submission_poc_orcid';
+UPDATE input SET control_id='dar_form_funding_nasa' WHERE control_id='assignment_form_funding_nasa';
+UPDATE input SET control_id='dar_form_funding_noaa' WHERE control_id='assignment_form_funding_noaa';
+UPDATE input SET control_id='dar_form_funding_nsf' WHERE control_id='assignment_form_funding_nsf';
+UPDATE input SET control_id='dar_form_funding_usgs' WHERE control_id='assignment_form_funding_usgs';
+UPDATE input SET control_id='dar_form_funding_university' WHERE control_id='assignment_form_funding_university';
+UPDATE input SET control_id='dar_form_funding_other' WHERE control_id='assignment_form_funding_other';
+UPDATE input SET control_id='dar_form_funding_organization_other', required_if='[{"field": "dar_form_funding_other","value": "true"}, {"field": "dar_form_funding_university","value": "true"}]' WHERE control_id='assignment_form_funding_organization_other';
+UPDATE input SET control_id='dar_form_funding_program_name' WHERE control_id='assignment_form_funding_program_name';
+UPDATE input SET control_id='dar_form_program_officer_name' WHERE control_id='assignment_form_program_officer_name';
+UPDATE input SET control_id='dar_form_releated_projects_yes_no' WHERE control_id='assignment_form_releated_projects_yes_no';
+UPDATE input SET control_id='dar_form_releated_projects_yes_explanation', required_if='[{"field": "dar_form_releated_projects_yes_no","value": "Yes"}]' WHERE control_id='assignment_form_releated_projects_yes_explanation';
+UPDATE input SET control_id='dar_form_project_name_info' WHERE control_id='assignment_form_project_name_info';
+UPDATE input SET control_id='dar_form_project_desc_info' WHERE control_id='assignment_form_project_desc_info';
+UPDATE input SET control_id='dar_form_science_value_info' WHERE control_id='assignment_form_science_value_info';
+UPDATE input SET control_id='dar_form_data_sub_req_info' WHERE control_id='assignment_form_data_sub_req_info';
+UPDATE input SET control_id='dar_form_data_sub_req_approval_info' WHERE control_id='assignment_form_data_sub_req_approval_info';
+UPDATE input SET control_id='dar_form_data_sub_req_approval_info_no', required_if='[{"field": "dar_form_data_sub_req_approval_info","value": "Yes"}]' WHERE control_id='assignment_form_data_sub_req_approval_info_no';
+UPDATE input SET control_id='dar_form_open_data_policy_info' WHERE control_id='assignment_form_open_data_policy_info';
+UPDATE input SET control_id='dar_form_open_data_policy_info_no', required_if='[{"field": "dar_form_open_data_policy_info","value": "No"}, {"field": "dar_form_open_data_policy_info","value": "Not Sure"}]' WHERE control_id='assignment_form_open_data_policy_info_no';
+UPDATE input SET control_id='dar_form_project_documentation' WHERE control_id='assignment_form_project_documentation';
+UPDATE input SET control_id='dar_form_project_documentation_url' WHERE control_id='assignment_form_project_documentation_url';
+UPDATE input SET control_id='dar_form_project_documentation_web' WHERE control_id='assignment_form_project_documentation_web';
+UPDATE input SET control_id='dar_form_data_producers_table' WHERE control_id='assignment_form_data_producers_table';

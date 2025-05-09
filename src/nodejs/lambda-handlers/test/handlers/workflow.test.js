@@ -106,19 +106,19 @@ const payload = {
       type: 'init',
       step_id: 'df110469-a40a-42be-9c7f-da61023d341e',
       step_message: '',
-      next_step_name: 'data_accession_request_form'
+      next_step_name: 'data_evaluation_request_form'
     },
     close: {
       type: 'close',
       step_id: '8b428f04-363d-4180-9a3b-991a57c3c12c',
       prev_step_name: 'push_collection_metadata_to_cmr_via_mmt'
     },
-    data_accession_request_form: {
+    data_evaluation_request_form: {
       type: 'form',
       form_id: '6c544723-241c-4896-a38c-adbc0a364293',
       step_id: 'b860d03a-baee-4ba8-80f2-f522dd8dbf11',
       step_message: '',
-      next_step_name: 'data_accession_request_form_review',
+      next_step_name: 'data_evaluation_request_form_review',
       prev_step_name: 'init'
     },
     data_publication_request_form: {
@@ -127,7 +127,7 @@ const payload = {
       step_id: '5ceb67b9-484c-48a6-bbc9-f6bba323d5b7',
       step_message: '',
       next_step_name: 'data_publication_request_form_review',
-      prev_step_name: 'data_accession_request_form_review'
+      prev_step_name: 'data_evaluation_request_form_review'
     },
     map_question_response_to_ummc: {
       type: 'action',
@@ -141,17 +141,17 @@ const payload = {
       next_step_name: 'create_skeleton_dataset_record_in_mmt',
       prev_step_name: 'data_publication_request_form_review'
     },
-    data_accession_request_form_review: {
+    data_evaluation_request_form_review: {
       type: 'review',
       step_id: '11f3e4c9-ba94-4516-8bde-ddd701f84474',
       prev_step: {
         type: 'form',
         form_id: '6c544723-241c-4896-a38c-adbc0a364293',
-        rollback: 'data_accession_request_form'
+        rollback: 'data_evaluation_request_form'
       },
       step_message: '',
       next_step_name: 'data_publication_request_form',
-      prev_step_name: 'data_accession_request_form'
+      prev_step_name: 'data_evaluation_request_form'
     },
     data_publication_request_form_review: {
       type: 'review',
