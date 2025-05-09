@@ -496,6 +496,18 @@ ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
 ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey
   FOREIGN KEY (step_name) REFERENCES step (step_name)
   ON UPDATE CASCADE;
+ALTER TABLE step_metrics DROP CONSTRAINT step_metrics_step_name_fkey;
+ALTER TABLE step_metrics ADD CONSTRAINT step_metrics_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE note DROP CONSTRAINT note_step_name_fkey;
+ALTER TABLE note ADD CONSTRAINT note_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
+ALTER TABLE step_review DROP CONSTRAINT step_review_step_name_fkey;
+ALTER TABLE step_review ADD CONSTRAINT step_review_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
 UPDATE step SET step_name='data_evaluation_request_form' WHERE step_name='data_accession_request_form';
 UPDATE step SET step_name='data_evaluation_request_form_review', data='{"rollback":"data_evaluation_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name='data_accession_request_form_review';
 UPDATE step SET data='{"rollback":"data_evaluation_request_form_review","type": "review"}' WHERE step_name='cost_model';
@@ -509,6 +521,15 @@ ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey
   FOREIGN KEY (next_step_name) REFERENCES step (step_name);
 ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
 ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE step_metrics DROP CONSTRAINT step_metrics_step_name_fkey;
+ALTER TABLE step_metrics ADD CONSTRAINT step_metrics_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE note DROP CONSTRAINT note_step_name_fkey;
+ALTER TABLE note ADD CONSTRAINT note_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
+ALTER TABLE step_review DROP CONSTRAINT step_review_step_name_fkey;
+ALTER TABLE step_review ADD CONSTRAINT step_review_step_name_fkey
   FOREIGN KEY (step_name) REFERENCES step (step_name);
 
 --Rename new form to DAR
@@ -527,6 +548,10 @@ ALTER TABLE step_edge DROP CONSTRAINT step_edge_next_step_name_fkey;
 ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey
   FOREIGN KEY (next_step_name) REFERENCES step (step_name)
   ON UPDATE CASCADE;
+ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
+ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name)
+  ON UPDATE CASCADE;
 UPDATE step SET step_name='data_accession_request_form' WHERE step_name='assignment_form_data_accession_request_form';
 ALTER TABLE step_metrics DROP CONSTRAINT step_metrics_step_name_fkey;
 ALTER TABLE step_metrics ADD CONSTRAINT step_metrics_step_name_fkey
@@ -537,6 +562,9 @@ ALTER TABLE step_edge ADD CONSTRAINT step_edge_step_name_fkey
 ALTER TABLE step_edge DROP CONSTRAINT step_edge_next_step_name_fkey;
 ALTER TABLE step_edge ADD CONSTRAINT step_edge_next_step_name_fkey
   FOREIGN KEY (next_step_name) REFERENCES step (step_name);
+ALTER TABLE submission_status DROP CONSTRAINT submission_status_step_name_fkey;
+ALTER TABLE submission_status ADD CONSTRAINT submission_status_step_name_fkey
+  FOREIGN KEY (step_name) REFERENCES step (step_name);
 INSERT INTO step(step_name, type, data) VALUES ('data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form", "form_id":"19025579-99ca-4344-8611-704dae626343"}');
 UPDATE step SET data='{"rollback":"data_accession_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8611-704dae626343"}' WHERE step_name='additional_review_question';
 UPDATE step_edge SET step_name='data_accession_request_form_review' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form';
