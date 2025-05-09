@@ -459,7 +459,7 @@ INSERT INTO workflow VALUES ('ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7', 'gesdisc_pu
 INSERT INTO workflow VALUES ('a5a14d98-df13-47f2-b86b-1504c7d4360d', 'podaac_default_workflow', 1, 'PO DAAC Default Workflow', 'This is the default workflow for PO DAAC.');
 INSERT INTO workflow VALUES ('0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce', 'ornl_test_workflow', 1, 'ORNL Test Workflow', 'This is a workflow for demoing requested functionality for the ORNL workflow.');
 INSERT INTO workflow VALUES ('f223eec5-2c4d-4412-9c97-5df4117c9290', 'default_publication_workflow', 1, 'Default Publication Workflow', 'This is the default publication workflow for DAACs who have not yet created a DAAC specific publication workflow.');
-INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publication_worfklow', 1, 'ORNL Publication Workflow', 'This is the publication workflow for ORNL.');
+INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publication_workflow', 1, 'ORNL Publication Workflow', 'This is the publication workflow for ORNL.');
 
 -- Step(step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_name, type) VALUES ('init', 'init');
@@ -575,7 +575,7 @@ INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publ
 INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_management_review', 'data_publication_request_form_esdis_review');
 INSERT INTO step_edge VALUES ('7843dc6d-f56d-488a-9193-bb7c0dc3696d', 'data_publication_request_form_esdis_review', 'close');
 
--- GES DISC Push Worfklow
+-- GES DISC Push Workflow
 -- Step(step_id, step_name, type, action_id, form_id, service_id, data)
 INSERT INTO step(step_id, step_name, type, action_id, data) VALUES ('a9c55c56-8fd7-4bd1-89aa-0cf9e28da07e', 'send_metadata_to_ges_disc', 'action', '09293035-2d31-44d3-a6b0-675f10dc34bf', '{"rollback":"data_publication_request_form_review","type": "review","form_id":"19025579-99ca-4344-8610-704dae626343"}');
 -- StepEdge(workflow_id, step_name, next_step_name)

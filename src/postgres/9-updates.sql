@@ -464,7 +464,7 @@ UPDATE step SET data = '{"rollback":"data_accession_request_form_review","type":
 -- 4/22/25 Grandfathered requests update
 UPDATE daac SET workflow_id='f223eec5-2c4d-4412-9c97-5df4117c9290';
 
-INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publication_worfklow', 1, 'ORNL Publication Workflow', 'This is the publication workflow for ORNL.');
+INSERT INTO workflow VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'ornl_publication_workflow', 1, 'ORNL Publication Workflow', 'This is the publication workflow for ORNL.');
 
 INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'init','data_publication_request_form');
 INSERT INTO step_edge VALUES ('d45145c6-7461-4a00-a86d-9189da57bc1b', 'data_publication_request_form', 'data_publication_request_form_review');
@@ -488,16 +488,16 @@ UPDATE step SET step_name='data_evaluation_request_form' WHERE step_name='data_a
 UPDATE step SET step_name='data_evaluation_request_form_review', data='{"rollback":"data_evaluation_request_form","type": "form","form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name='data_accession_request_form_review';
 UPDATE step SET data='{"rollback":"data_evaluation_request_form_review","type": "review"}' WHERE step_name='cost_model';
 UPDATE step SET data='{"rollback":"data_evaluation_request_form_review","type": "review", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}' WHERE step_name='esdis_final_review';
-UPDATE step_edge SET next_step_name='data_evaluation_request_form' WHERE worfklow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='daac_assignment';
-UPDATE step_edge SET step_name='data_evaluation_request_form', next_step_name='data_evaluation_request_form_review' WHERE worfklow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form';
-UPDATE step_edge SET step_name='data_evaluation_request_form_review' WHERE worfklow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
-UPDATE step_edge SET next_step_name='data_evaluation_request_form' WHERE worfklow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='init';
-UPDATE step_edge SET step_name='data_evaluation_request_form', next_step_name='data_evaluation_request_form_review' WHERE worfklow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_accession_request_form';
-UPDATE step_edge SET step_name='data_evaluation_request_form_review' WHERE worfklow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_accession_request_form_review';
+UPDATE step_edge SET next_step_name='data_evaluation_request_form' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='daac_assignment';
+UPDATE step_edge SET step_name='data_evaluation_request_form', next_step_name='data_evaluation_request_form_review' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form';
+UPDATE step_edge SET step_name='data_evaluation_request_form_review' WHERE workflow_id='3335970e-8a9b-481b-85b7-dfaaa3f5dbd9' AND step_name='data_accession_request_form_review';
+UPDATE step_edge SET next_step_name='data_evaluation_request_form' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='init';
+UPDATE step_edge SET step_name='data_evaluation_request_form', next_step_name='data_evaluation_request_form_review' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_accession_request_form';
+UPDATE step_edge SET step_name='data_evaluation_request_form_review' WHERE workflow_id='45e8d0e8-d8c9-47e1-85a2-5b5db6e34dd8' AND step_name='data_accession_request_form_review';
 UPDATE step SET data='{"rollback": "data_evaluation_request_form_review", "type": "review"}' WHERE step_id='6445f44b-bcda-41b4-86e4-23761edc22bf';
-UPDATE step_edge SET next_step_name='data_evaluation_request_form' WHERE worfklow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='init';
-UPDATE step_edge SET step_name='data_evaluation_request_form', next_step_name='data_evaluation_request_form_review' WHERE worfklow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='data_accession_request_form';
-UPDATE step_edge SET step_name='data_evaluation_request_form_review' WHERE worfklow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='data_accession_request_form_review';
+UPDATE step_edge SET next_step_name='data_evaluation_request_form' WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='init';
+UPDATE step_edge SET step_name='data_evaluation_request_form', next_step_name='data_evaluation_request_form_review' WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='data_accession_request_form';
+UPDATE step_edge SET step_name='data_evaluation_request_form_review' WHERE workflow_id='a218f99d-cfc1-44e5-b203-3e447e1c1275' AND step_name='data_accession_request_form_review';
 UPDATE step_edge SET next_step_name='data_evaluation_request_form' WHERE workflow_id='0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce' AND step_name='ornl_service_trigger';
 UPDATE step_edge SET step_name='data_evaluation_request_form' WHERE workflow_id='0c1aa7d8-d45b-44ad-ab63-5bf6e40b2bce' AND step_name='data_accession_request_form';
 UPDATE step_edge SET next_step_name='data_evaluation_request_form' WHERE workflow_id='ca34ea28-07f8-4edf-a73a-d6ee8a86f1c7' AND step_name='init';
