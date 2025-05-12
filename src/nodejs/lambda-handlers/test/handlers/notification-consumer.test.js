@@ -39,7 +39,7 @@ describe('notification-consumer', () => {
           data: {
             type: 'form',
             form_id: '6c544723-241c-4896-a38c-adbc0a364293',
-            rollback: 'data_accession_request_form'
+            rollback: 'data_evaluation_request_form'
           }
         })
       }
@@ -63,10 +63,9 @@ describe('notification-consumer', () => {
       expect(emailPayload).toEqual({
         submission_id: 'f68a54ba-0411-47ad-934b-42fa552b6fe5',
         workflow_name: 'test workflow',
-        conversation_last_message: 'Data Accession Request Form review completed; please click on the green button on the far right of your submission’s row to complete the next action, if applicable.',
+        conversation_last_message: 'Data Evaluation Request Form review completed; please click on the green button on the far right of your request’s row to complete the next action, if applicable.',
         event_type: 'review_approved',
         submission_name: 'test product',
-        daac_name: 'test daac',
         user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17'
       });
       return {};

@@ -1,5 +1,5 @@
 const formObj = {
-  '6c544723-241c-4896-a38c-adbc0a364293': 'Data Accession Request',
+  '6c544723-241c-4896-a38c-adbc0a364293': 'Data Evaluation Request',
   '19025579-99ca-4344-8610-704dae626343': 'Data Publication Request'
 };
 

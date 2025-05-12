@@ -57,11 +57,38 @@ async function resumeMethod(event, user, silent = false) {
   return status;
 }
 
-async function initializeMethod(event, user) {
-  const submission = await db.submission.initialize({
+async function validateCodeMethod(event) {
+  const { code } = event;
+  const codeData = await db.submission.checkCode({ code });
+
+  // If we get anything but the expected return of daac_id and submission_id the validation failed
+  if (codeData.daac_id) {
+    return {
+      is_valid: true,
+      ...codeData
+    };
+  }
+
+  return { is_valid: false };
+}
+
+async function initializeMethod(event, user, skipCopy = false) {
+  const initializationData = {
     user_id: user.id,
     ...event
-  });
+  };
+  const codeData = event.code ? await validateCodeMethod({ code: event.code }) : null;
+  const accessionSubmissionId = codeData && codeData.submission_id ? codeData.submission_id : null;
+
+  if (codeData && codeData.is_valid === true) {
+    // Add code table properties in order to populate the publication_accession_association table
+    initializationData.daac_id = codeData.daac_id;
+    initializationData.accession_submission_id = accessionSubmissionId;
+  } else if (codeData) {
+    return { error: 'Invalid Code' };
+  }
+
+  const submission = await db.submission.initialize(initializationData);
   const status = await db.submission.getState(submission);
   const eventMessage = {
     event_type: 'request_initialized',
@@ -71,13 +98,25 @@ async function initializeMethod(event, user) {
     step_name: 'init',
     user_id: user.id
   };
-  const staff = await db.user.getManagerIds({ daac_id: event.daac_id });
+  let staff;
+  if (!submission.daac_id) {
+    staff = await db.user.getRootGroupObserverIds();
+  } else {
+    staff = await db.user.getManagerIds({ daac_id: submission.daac_id });
+  }
   const staffIds = staff.map((usr) => usr.id);
   await db.note.addUsersToConversation({
     conversation_id: status.conversation_id,
     user_list: staffIds
   });
   db.submission.addContributors({ id: status.id, contributor_ids: staffIds });
+
+  // If initializing a Publication Form, Pre-populate data w/ content from accession form
+  if (accessionSubmissionId && !skipCopy) {
+    // eslint-disable-next-line
+    await copySubmissionMethod({ id: accessionSubmissionId }, user, status.id);
+  }
+
   await msg.sendEvent(eventMessage);
   return status;
 }
@@ -121,7 +160,8 @@ async function metadataMethod(event, user) {
 async function saveMethod(event) {
   const { form_id: formId, daac_id: daacId, data } = event;
   const { id } = event;
-  const { data_product_name_value: dataProduct, data_producer_info_name: dataProducer } = data;
+  const { data_producer_info_name: dataProducer } = data;
+  const dataProduct = data.data_product_name_value || data.dar_form_project_name_info;
   await db.submission.updateFormData({ id, form_id: formId, data: JSON.stringify(data) });
   await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
   await db.submission.updateMetadata({ id, metadata: JSON.stringify(await mapEDPubToUmmc(data)) });
@@ -258,6 +298,25 @@ async function changeStepMethod(event, user) {
   return db.submission.findById({ id, user_id: user.id });
 }
 
+async function promoteStepMethod(event, user) {
+  const { id } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
+  if ((user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege)))) {
+    const status = await db.submission.getState({ id });
+    const eventMessage = {
+      event_type: 'workflow_promote_step',
+      submission_id: id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      user_id: user.id,
+      data: status.step.data,
+      step_name: status.step_name
+    };
+    await msg.sendEvent(eventMessage);
+  }
+  return db.submission.findById({ id, user_id: user.id });
+}
+
 async function addContributorsMethod(event, user) {
   const { id, contributor_ids: contributorIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_ADDUSER'];
@@ -286,14 +345,30 @@ async function removeContributorMethod(event, user) {
   return db.submission.findById({ id, user_id: user.id });
 }
 
-async function copySubmissionMethod(event, user) {
+async function copySubmissionMethod(event, user, newSubmissionId) {
   const {
     id: originId, copy_context: copyContext, copy_filter: copyFilter, action_copy: actionCopy
   } = event;
-  const { form_data: formData, daac_id: daacId } = await db.submission.findById(
+  const { form_data: formData, code } = await db.submission.findById(
     { id: originId, user_id: user.id }
   );
-  const { id } = await initializeMethod({ daac_id: daacId }, user);
+
+  /*
+  This is used to handle the two ways we enter this function:
+  1) From initializeMethod
+    - user created a new DPR submission from the dashboard/api which triggered initializeMethod()
+    - initializeMethod created the new submission so we have the new id, just need to copy the data
+  2) Directly from API
+    - user cloned either a DAR or DPR submission
+    - Need to initialize the new submission with the code value from the base submission
+  */
+  let id;
+  if (newSubmissionId) {
+    id = newSubmissionId;
+  } else {
+    const result = await initializeMethod({ code }, user, true);
+    id = result.id;
+  }
 
   const filteredFormData = !copyFilter ? formData
     : filterObject(formData, copyFilter);
@@ -395,18 +470,179 @@ async function deleteStepReviewApprovalMethod(event, user) {
   return { error: 'Not Authorized' };
 }
 
-async function validateCodeMethod(event) {
-  const { code } = event.params;
+async function assignDaacsMethod(event, user) {
+  const { id, daacs, requires_review: requiresReview } = event;
+  const approvedUserPrivileges = ['ADMIN', 'REQUEST_ASSIGNDAAC'];
 
-  const codeData = await db.submission.checkCode({ code });
-  const validationResponse = { isValid: false };
-
-  // If we get anything but the expected return of daac_id and submission_id the validation failed
-  if (codeData.daac_id) {
-    validationResponse.isValid = true;
+  if (!user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return { error: 'Invalid permissions.' };
   }
 
-  return validationResponse;
+  let submission = await db.submission.findById({ id, user_id: user.id });
+
+  if (submission.error) {
+    return { error: 'Invalid permissions.' };
+  }
+
+  // Check current step - only proceed if on DAAC assignment step
+  if (!submission.step_name.match(/daac_assignment(_final)?/g)) {
+    return { error: 'Invalid workflow step. Unable to assign DAACs.' };
+  }
+
+  // If the submission requires a daac review - assign the daac and move to the next step
+  if (requiresReview) {
+    // Double check that only one DAAC was chosen
+    // should not be an issue comming from the dashboard but ensure is the case from the API
+    if (daacs && daacs.length > 1) {
+      return { error: 'Invalid number of DAACS selected. Only 1 DAAC may be selected when needs review is true.' };
+    }
+
+    // Assign Daac to the submission
+    const daacId = daacs[0];
+    await db.submission.updateDaac({ id, daac_id: daacId });
+  } else {
+    // If the submission does not require a daac review - assign the codes for all daacs selected
+    // If there are existing codes - remove any not in the new list
+    if (submission.assigned_daacs !== null) {
+      const removedDaacs = submission.assigned_daacs
+        .filter((daacObj) => !daacs.includes(daacObj.daac_id))
+        .map((daacObj) => daacObj.daac_id);
+      await db.submission.deleteCodes({ submissionId: id, daacs: removedDaacs });
+    }
+
+    // Generate a code for each daac to be assigned
+    // eslint-disable-next-line
+    for (const daacId of daacs) {
+      await db.submission.createCode({ submissionId: id, daacID: daacId });
+    }
+
+    submission = await db.submission.findById({ id, user_id: user.id });
+
+    // Send notification emails to the following
+    // - the point of contact of the submission (form response),
+    // - the assigned DAAC's Data Managers,
+
+    const userIds = [];
+
+    // Get the assigned DAAC's Data Managers Ids
+    // eslint-disable-next-line
+    for (const assignedDaac of submission.assigned_daacs) {
+      const managerList = await db.user.getManagerIds({ daac_id: assignedDaac.daac_id });
+
+      if (Array.isArray(managerList)) {
+        managerList.forEach((entry) => userIds.push(entry.id));
+      }
+    }
+
+    const pocRecipients = [];
+
+    // Add the POC from the first form
+    if (submission.form_data.dar_form_data_submission_poc_email) {
+      pocRecipients.push({
+        name: submission.form_data.dar_form_data_submission_poc_name
+          ? submission.form_data.dar_form_data_submission_poc_name : '',
+        email: submission.form_data.dar_form_data_submission_poc_email
+      });
+    }
+
+    const eventMessage = {
+      event_type: 'daac_assignment',
+      submission_id: submission.id,
+      conversation_id: submission.conversation_id,
+      submission_name: submission.form_data.dar_form_project_name_info,
+      step_name: submission.step_name,
+      assigned_daacs: submission.assigned_daacs,
+      ...(userIds.length > 0 && { userIds }),
+      ...(pocRecipients.length > 0 && { additional_recipients: pocRecipients }),
+      emailPayloadProvided: 'true'
+    };
+
+    await msg.sendEvent(eventMessage);
+  }
+
+  // Promote to the next workflow step
+  const eventMessage = {
+    event_type: 'workflow_promote_step',
+    submission_id: submission.id,
+    conversation_id: submission.conversation_id,
+    workflow_id: submission.workflow_id,
+    user_id: user.id,
+    data: submission.step_data.data,
+    step_name: submission.step_name
+  };
+  await msg.sendEvent(eventMessage);
+
+  return db.submission.findById({ id, user_id: user.id });
+}
+
+async function esdisReviewMethod(event, user) {
+  const approvedUserPrivileges = ['ADMIN'];
+  const conditionalUserPrivileges = ['REQUEST_REVIEW_ESDIS'];
+  const validWorkflowSteps = ['esdis_final_review'];
+  const { id, action } = event;
+  if (
+    user.id?.includes('service-authorizer')
+    || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))
+    || (user.user_privileges.some((privilege) => conditionalUserPrivileges.includes(privilege))
+    && user.user_groups.some((group) => group.short_name === 'root_group'))
+  ) {
+    const status = await db.submission.getState({ id });
+    if (!validWorkflowSteps.includes(status.step_name)) {
+      return { error: 'Invalid workflow step. Unable to complete review.' };
+    }
+    let eventType;
+    let param;
+    let nextStep;
+    if (action === 'reject') {
+      eventType = 'review_rejected';
+      nextStep = 'close';
+    } else if (action === 'approve') {
+      eventType = 'review_approved';
+    } else if (action === 'reassign') {
+      eventType = 'workflow_step_change';
+
+      // reset any current review requirements (assignees) for the DAR review step
+      const currentReviewers = await db.submission.getStepReviewApproval({ id });
+      const userIds = currentReviewers.map((reviewer) => reviewer.edpuser_id);
+      const deleteReviewStep = 'data_evaluation_request_form_review';
+
+      // eslint-disable-next-line
+      for (const userId of userIds) {
+        const eventData = {
+          submissionId: id,
+          userIds: [userId],
+          stepName: deleteReviewStep
+        };
+        await deleteStepReviewApprovalMethod(eventData, user);
+      }
+
+      // remove the currently assigned DAAC value
+      await db.submission.updateDaac({ id, daac_id: null });
+
+      // reset the current step to the DAAC Assignment Prompt step
+      param = {
+        id,
+        step_name: 'daac_assignment'
+      };
+      await changeStepMethod(param, user);
+    } else {
+      return { error: 'Invalid review action' };
+    }
+    const eventMessage = {
+      event_type: eventType,
+      submission_id: id,
+      conversation_id: status.conversation_id,
+      workflow_id: status.workflow_id,
+      user_id: user.id,
+      data: status.step.data,
+      step_name: status.step_name,
+      ...(nextStep && { next_step: nextStep })
+    };
+    if (status.step.step_message) eventMessage.step_message = status.step.step_message;
+    await msg.sendEvent(eventMessage);
+    return db.submission.getState({ id });
+  }
+  return { error: 'Not Authorized' };
 }
 
 const operations = {
@@ -418,12 +654,14 @@ const operations = {
   submit: submitMethod,
   save: saveMethod,
   review: reviewMethod,
+  esdisReview: esdisReviewMethod,
   resume: resumeMethod,
   lock: lockMethod,
   unlock: unlockMethod,
   withdraw: withdrawMethod,
   restore: restoreMethod,
   changeStep: changeStepMethod,
+  promoteStep: promoteStepMethod,
   addContributors: addContributorsMethod,
   removeContributor: removeContributorMethod,
   copySubmission: copySubmissionMethod,
@@ -432,7 +670,8 @@ const operations = {
   createStepReviewApproval: createStepReviewApprovalMethod,
   getStepReviewApproval: getStepReviewApprovalMethod,
   deleteStepReviewApproval: deleteStepReviewApprovalMethod,
-  validateCode: validateCodeMethod
+  validateCode: validateCodeMethod,
+  assignDaacs: assignDaacsMethod
 };
 
 async function handler(event) {
