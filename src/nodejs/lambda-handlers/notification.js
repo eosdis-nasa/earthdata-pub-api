@@ -47,6 +47,11 @@ async function addUserMethod(params) {
   return response;
 }
 
+async function removeUserMethod(params) {
+  const response = await db.note.removeUserFromConversation(params);
+  return response;
+}
+
 async function conversationsMethod(params) {
   const userInfo = await db.user.findById({ id: params.context.user_id });
   if (userInfo.user_privileges.includes('ADMIN')
@@ -144,6 +149,7 @@ const operations = {
   send: sendMethod,
   reply: replyMethod,
   add_user: addUserMethod,
+  remove_user: removeUserMethod,
   conversations: conversationsMethod,
   conversation: conversationMethod,
   add_viewers: addViewersMethod,

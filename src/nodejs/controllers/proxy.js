@@ -562,6 +562,18 @@ module.exports.notificationAddUser = function notificationAddUser(req, res, next
   });
 };
 
+module.exports.notificationRemoveUser = function notificationRemoveUser(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'remove_user',
+    ...params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.notificationConversations = function notificationConversations(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

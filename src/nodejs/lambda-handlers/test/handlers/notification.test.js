@@ -8,6 +8,7 @@ jest.mock('message-util', () => jest.fn());
 msg.sendEvent = jest.fn();
 db.note = jest.fn();
 db.note.addUserToConversation = jest.fn();
+db.note.removeUserFromConversation = jest.fn();
 db.note.getPrivilegedConversationList = jest.fn();
 db.note.getConversationList = jest.fn();
 db.note.readConversation = jest.fn();
@@ -77,6 +78,19 @@ describe('notification', () => {
     };
     db.note.addUserToConversation.mockResolvedValue({ message: 'Successfully added user.' });
     expect(await notification.handler(params)).toEqual({ message: 'Successfully added user.' });
+  });
+
+  it('should remove a user to a conversation', async () => {
+    const params = {
+      operation: 'remove_user',
+      conversation_id: 'test conversation',
+      user_id: 'test user',
+      context: {
+        user_id: 'test user'
+      }
+    };
+    db.note.removeUserFromConversation.mockResolvedValue({ message: 'Successfully removed user.' });
+    expect(await notification.handler(params)).toEqual({ message: 'Successfully removed user.' });
   });
 
   it('should get a list of conversations', async () => {
