@@ -615,6 +615,3 @@ UPDATE input SET control_id='dar_form_project_documentation' WHERE control_id='a
 UPDATE input SET control_id='dar_form_project_documentation_url' WHERE control_id='assignment_form_project_documentation_url';
 UPDATE input SET control_id='dar_form_project_documentation_web' WHERE control_id='assignment_form_project_documentation_web';
 UPDATE input SET control_id='dar_form_data_producers_table' WHERE control_id='assignment_form_data_producers_table';
-
-
-UPDATE question SET long_name = 'Related Projects' WHERE id ='4ecc885f-daf8-4bc6-a8cd-d30c2a54d733';
