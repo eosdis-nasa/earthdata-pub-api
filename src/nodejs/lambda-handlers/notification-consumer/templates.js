@@ -15,11 +15,11 @@ const templates = {
   action_request_no_id: (e) => ({
     text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your request's row to work on this action, if applicable`
   }),
-  workflow_started: (e) => ({
-    text: `The request has started.`
+  workflow_started: () => ({
+    text: 'The request has started.'
   }),
-  workflow_completed: (e) => ({
-    text: `The request has completed.`
+  workflow_completed: () => ({
+    text: 'The request has completed.'
   }),
   form_request: (e) => ({
     text: `Progress for Workflow ID ${e.workflow_id} has halted pending submission of Form ID ${e.form_id}.`
