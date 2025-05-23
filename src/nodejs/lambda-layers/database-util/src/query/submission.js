@@ -11,7 +11,7 @@ const customFields = ['id', 'name', 'data_producer_name', 'initiator', 'workflow
 const fieldMap = {
   id: 'submission.id',
   name: 'submission.name',
-    data_producer_name: 'submission.data_producer_name',
+  data_producer_name: 'submission.data_producer_name',
   initiator: 'initiator_ref.initiator',
   user_id: 'submission.initiator_edpuser_id user_id',
   daac_id: 'submission.daac_id',
