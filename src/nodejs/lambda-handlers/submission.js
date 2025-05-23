@@ -79,13 +79,14 @@ async function initializeMethod(event, user, skipCopy = false) {
   };
   const codeData = event.code ? await validateCodeMethod({ code: event.code }) : null;
   const accessionSubmissionId = codeData && codeData.submission_id ? codeData.submission_id : null;
-
+  const formD = event.formData;
+  const nameInfo = formD?.data_product_name_value ?? formD?.dar_form_project_name_info ?? null;
+  initializationData.name = nameInfo;
+  initializationData.data_producer_name = formD?.data_producer_info_name ?? null;
   if (codeData && codeData.is_valid === true) {
     // Add code table properties in order to populate the publication_accession_association table
     initializationData.daac_id = codeData.daac_id;
     initializationData.accession_submission_id = accessionSubmissionId;
-    initializationData.data_producer_name = event.formData.data_producer_info_name;
-    initializationData.name = event.formData.data_product_name_value || event.formData.dar_form_project_name_info;
   } else if (codeData) {
     return { error: 'Invalid Code' };
   }
