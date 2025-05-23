@@ -84,6 +84,8 @@ async function initializeMethod(event, user, skipCopy = false) {
     // Add code table properties in order to populate the publication_accession_association table
     initializationData.daac_id = codeData.daac_id;
     initializationData.accession_submission_id = accessionSubmissionId;
+    initializationData.data_producer_name = event.formData.data_producer_info_name;
+    initializationData.name = event.formData.data_product_name_value || event.formData.dar_form_project_name_info;
   } else if (codeData) {
     return { error: 'Invalid Code' };
   }
@@ -366,7 +368,7 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
   if (newSubmissionId) {
     id = newSubmissionId;
   } else {
-    const result = await initializeMethod({ code }, user, true);
+    const result = await initializeMethod({ formData, code }, user, true);
     id = result.id;
   }
 
