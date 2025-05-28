@@ -1,10 +1,11 @@
 const formObj = {
   '6c544723-241c-4896-a38c-adbc0a364293': 'Data Evaluation Request',
-  '19025579-99ca-4344-8610-704dae626343': 'Data Publication Request'
+  '19025579-99ca-4344-8610-704dae626343': 'Data Publication Request',
+  '19025579-99ca-4344-8611-704dae626343': 'Data Accession Request'
 };
 
 const getReviewerAddedTemplate = (params, envUrl) => {
-  const text = `Hello ${params.user.name},\n\nYou have been added as a reviewer to an Earthdata Pub request.\nYour review can be added at ${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}.`;
+  const text = `Hello ${params.user.name},\n\nYou have been added as a reviewer to an Earthdata Pub request.\nYour review can be added at ${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submission_id}.`;
   const html = `
     <html>
        <body style="background: white">
@@ -26,7 +27,7 @@ const getReviewerAddedTemplate = (params, envUrl) => {
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
                  <p>${params.eventMessage.submitted_by_name} has requested that you review a ${formObj[params.eventMessage.formId]} submitted via Earthdata Pub.
-                 Please access the submission at <a aria-label="Visit Earthdata Pub Request Review Page" href="${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}">${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submissionId}</a>.
+                 Please access the submission at <a aria-label="Visit Earthdata Pub Request Review Page" href="${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submission_id}">${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submission_id}</a>.
                  Specific review instructions (if any) are viewable in the comments section at the bottom of the ${formObj[params.eventMessage.formId]} page. Please note that any comments you leave in the form are viewable by NASA staff, DAAC User Working Group members, and the data producer who submitted the request.</p><br>
                  <p>Thank you.</p><br>
                  <br>
