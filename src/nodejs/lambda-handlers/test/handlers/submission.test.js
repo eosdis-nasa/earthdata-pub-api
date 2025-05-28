@@ -39,6 +39,7 @@ db.metrics = jest.fn();
 db.metrics.getSubmissions = jest.fn();
 db.service = jest.fn();
 db.service.deleteSecret = jest.fn();
+db.service.deleteSubmissionSecrets = jest.fn();
 
 msg.sendEvent = jest.fn();
 
