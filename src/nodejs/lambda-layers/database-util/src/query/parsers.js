@@ -63,6 +63,7 @@ module.exports.inputFindAll = many;
 module.exports.findSecret = one;
 module.exports.createSecret = one;
 module.exports.deleteSecret = one;
+module.exports.deleteSubmissionSecrets = one;
 module.exports.deleteInput = one;
 module.exports.updateWorkflowMetaData = one;
 module.exports.setStep = one;

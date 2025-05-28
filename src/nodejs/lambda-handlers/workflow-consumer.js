@@ -123,6 +123,7 @@ async function uploadMethod(status) {
 }
 
 async function closeMethod(status) {
+  await db.service.deleteSubmissionSecrets({ submissionId: status.id });
   const submissionMetrics = await db.metrics.getSubmissions({
     submissionId: status.id
   });
