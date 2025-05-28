@@ -40,7 +40,7 @@ const templates = {
     text: `The Collection level metadata for Request ID ${e.submission_id} has been updated.`
   }),
   review_required: (e) => ({
-    text: `Your review is required for Request ID ${e.submission_id}`
+    text: `One or more reviewers have been added to the ${parseStepName(e.step_name)}`
   }),
   upload_step_completed: (e) => ({
     text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your request's row to work on this action, if applicable`
