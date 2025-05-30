@@ -380,6 +380,8 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
 
   filteredFormData.data_product_name_value = filteredFormData.data_product_name_value
     ? `Copy of ${filteredFormData.data_product_name_value}` : '';
+  filteredFormData.dar_form_project_name_info = filteredFormData.dar_form_project_name_info
+    ? `Copy of ${filteredFormData.dar_form_project_name_info}` : '';
   await db.submission.copyFormData({
     id,
     data: JSON.stringify(filteredFormData),
