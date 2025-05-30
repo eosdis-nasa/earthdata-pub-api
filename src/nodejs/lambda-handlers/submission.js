@@ -82,7 +82,7 @@ async function initializeMethod(event, user, skipCopy = false) {
   const formD = event.formData;
   const nameInfo = formD?.data_product_name_value ?? formD?.dar_form_project_name_info ?? null;
   initializationData.name = nameInfo;
-  initializationData.data_producer_name = formD?.data_producer_info_name ?? null;
+  initializationData.data_producer_name = formD?.data_producer_info_name ?? formD?.dar_form_principal_investigator ?? null;
   if (codeData && codeData.is_valid === true) {
     // Add code table properties in order to populate the publication_accession_association table
     initializationData.daac_id = codeData.daac_id;
