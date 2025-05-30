@@ -165,7 +165,7 @@ async function saveMethod(event) {
   const { form_id: formId, daac_id: daacId, data } = event;
   const { id } = event;
   const dataProduct = data.data_product_name_value || data.dar_form_project_name_info;
-  const dataProducer = data.data_producer_info_name || dar_form_principal_investigator_fullname;
+  const dataProducer = data.data_producer_info_name || data.dar_form_principal_investigator_fullname;
   await db.submission.updateFormData({ id, form_id: formId, data: JSON.stringify(data) });
   await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
   await db.submission.updateMetadata({ id, metadata: JSON.stringify(await mapEDPubToUmmc(data)) });
