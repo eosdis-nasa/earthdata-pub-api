@@ -375,13 +375,16 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
     id = result.id;
   }
 
-  const filteredFormData = !copyFilter ? formData
+  let filteredFormData = !copyFilter ? formData
     : filterObject(formData, copyFilter);
 
   filteredFormData.data_product_name_value = filteredFormData.data_product_name_value
     ? `Copy of ${filteredFormData.data_product_name_value}` : '';
-  filteredFormData.dar_form_project_name_info = filteredFormData.dar_form_project_name_info
-    ? `Copy of ${filteredFormData.dar_form_project_name_info}` : '';
+
+  filteredFormData = {
+    ...filteredFormData,
+    ...(filteredFormData.dar_form_project_name_info ? { dar_form_project_name_info: `Copy of ${filteredFormData.dar_form_project_name_info}` } : {})
+  };
   await db.submission.copyFormData({
     id,
     data: JSON.stringify(filteredFormData),
