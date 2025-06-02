@@ -32,7 +32,6 @@ data "template_file" "edpub_oas" {
     workflow_lambda_arn           = var.workflow_lambda_arn
     file_upload_lambda_arn        = var.file_upload_lambda_arn
     edpub_dashboard_s3_bucket     = var.edpub_dashboard_s3_bucket
-    edpub_overview_s3_bucket      = var.edpub_overview_s3_bucket
     edpub_metrics_s3_bucket       = var.edpub_metrics_s3_bucket
     edpub_apigateway_s3_role_arn  = var.edpub_apigateway_s3_role_arn
     cognito_user_pool_arn         = var.cognito_user_pool_arn
