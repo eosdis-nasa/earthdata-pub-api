@@ -269,6 +269,7 @@ async function withdrawMethod(event, user) {
   if (user.id?.includes('service-authorizer') || approvedUserPrivileges.some((privilege) => user.user_privileges.includes(privilege))) {
     const submission = await db.submission.withdrawSubmission({ id });
     const submissionMetrics = await db.metrics.getSubmissions({ submissionId: id });
+    await db.service.deleteSubmissionSecrets({ submissionId: id });
     await msg.sendEvent({
       event_type: 'workflow_completed',
       submission_id: id,
