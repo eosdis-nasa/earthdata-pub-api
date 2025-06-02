@@ -432,6 +432,9 @@ async function createStepReviewApprovalMethod(event, user) {
   const { submissionId, stepName, userIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
   if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const {
+      conversation_id: conversationId
+    } = await db.submission.getConversationId({ id: submissionId });
     const formData = await db.submission.createStepReviewApproval({
       submission_id: submissionId,
       step_name: stepName,
@@ -443,7 +446,9 @@ async function createStepReviewApprovalMethod(event, user) {
       event_type: 'review_required',
       formId: formData?.length > 0 ? formData[0].form_id : '',
       userIds,
-      submissionId,
+      conversation_id: conversationId,
+      submission_id: submissionId,
+      step_name: stepName,
       submitted_by_name: user.name,
       // Have to use string here because SNS doesn't support boolean type
       emailPayloadProvided: 'true'
