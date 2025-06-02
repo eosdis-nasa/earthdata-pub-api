@@ -80,10 +80,10 @@ async function initializeMethod(event, user, skipCopy = false) {
   const codeData = event.code ? await validateCodeMethod({ code: event.code }) : null;
   const accessionSubmissionId = codeData && codeData.submission_id ? codeData.submission_id : null;
   const formD = event.formData;
-  const nameInfo = formD?.data_product_name_value ?? formD?.dar_form_project_name_info ?? null;
-  initializationData.name = nameInfo;
+  initializationData.name = (formD?.data_product_name_value || formD?.dar_form_project_name_info
+    || null);
   initializationData.data_producer_name = (formD?.data_producer_info_name
-    ?? formD?.dar_form_principal_investigator_fullname ?? null);
+    || formD?.dar_form_principal_investigator_fullname || null);
   if (codeData && codeData.is_valid === true) {
     // Add code table properties in order to populate the publication_accession_association table
     initializationData.daac_id = codeData.daac_id;
@@ -358,6 +358,17 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
     { id: originId, user_id: user.id }
   );
 
+  let filteredFormData = !copyFilter ? formData
+    : filterObject(formData, copyFilter);
+
+  filteredFormData.data_product_name_value = filteredFormData.data_product_name_value
+    ? `Copy of ${filteredFormData.data_product_name_value}` : '';
+
+  filteredFormData = {
+    ...filteredFormData,
+    ...(filteredFormData.dar_form_project_name_info ? { dar_form_project_name_info: `Copy of ${filteredFormData.dar_form_project_name_info}` } : {})
+  };
+
   /*
   This is used to handle the two ways we enter this function:
   1) From initializeMethod
@@ -371,20 +382,10 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
   if (newSubmissionId) {
     id = newSubmissionId;
   } else {
-    const result = await initializeMethod({ formData, code }, user, true);
+    const result = await initializeMethod({ formData: filteredFormData, code }, user, true);
     id = result.id;
   }
 
-  let filteredFormData = !copyFilter ? formData
-    : filterObject(formData, copyFilter);
-
-  filteredFormData.data_product_name_value = filteredFormData.data_product_name_value
-    ? `Copy of ${filteredFormData.data_product_name_value}` : '';
-
-  filteredFormData = {
-    ...filteredFormData,
-    ...(filteredFormData.dar_form_project_name_info ? { dar_form_project_name_info: `Copy of ${filteredFormData.dar_form_project_name_info}` } : {})
-  };
   await db.submission.copyFormData({
     id,
     data: JSON.stringify(filteredFormData),
