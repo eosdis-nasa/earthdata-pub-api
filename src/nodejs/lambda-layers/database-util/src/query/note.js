@@ -162,7 +162,7 @@ const refs = {
           where: { 
             filters: [
               ...([{
-                cmd: `({{user_id}}=ANY(note_scope.user_ids) OR note.id IN (${sql.select({
+                cmd: `(note.sender_edpuser_id = {{user_id}} OR {{user_id}}=ANY(note_scope.user_ids) OR note.id IN (${sql.select({
                   fields: ['note.id'],
                   from: {
                     base: 'note',
@@ -274,7 +274,7 @@ const refs = {
           where: { 
             filters: [
               ...([{
-                cmd: `({{user_id}}=ANY(note_scope.user_ids) OR note.id IN (${sql.select({
+                cmd: `(note.sender_edpuser_id = {{user_id}} OR {{user_id}}=ANY(note_scope.user_ids) OR note.id IN (${sql.select({
                   fields: ['note.id'],
                   from: {
                     base: 'note',
