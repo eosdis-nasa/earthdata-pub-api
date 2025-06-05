@@ -80,8 +80,8 @@ const getEmailTemplate = async (eventMessage, message) => {
       submitted_by_name: eventMessage.submitted_by_name
     };
 
-    if (formData?.data_product_name_value) {
-      emailPayload.submission_name = formData.data_product_name_value;
+    if (formData?.data_product_name_value || formData?.dar_form_project_name_info) {
+      emailPayload.submission_name = formData.data_product_name_value || formData.dar_form_project_name_info;
     } else { (emailPayload.submission_name = `Request Initialized by ${(await db.submission.getCreatorName({ id: eventMessage.submission_id })).name}`); }
   } else {
     emailPayload = {

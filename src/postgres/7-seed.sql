@@ -479,19 +479,19 @@ INSERT INTO step(step_name, type, data) VALUES ('map_from_mmt', 'action', '{"rol
 INSERT INTO step(step_name, type, data) VALUES ('publish_to_cmr', 'action', '{"rollback":"map_from_mmt","type": "action"}');
 INSERT INTO step(step_name, type, action_id) VALUES ('send_to_mmt', 'action', '3fe93672-cd91-45d4-863b-c6d0d63f8c8c');
 INSERT INTO step (step_name, type, data) VALUES ('cost_model', 'upload', '{"rollback":"data_evaluation_request_form_review","type": "review"}');
-INSERT INTO step(step_name, type, data) VALUES ('daac_assignment', 'action', '{"rollback":"additional_review_question","type": "action"}');
+INSERT INTO step(step_name, type, data) VALUES ('daac_assignment', 'action', '{"rollback":"esdis_additional_review_assessment","type": "action"}');
 INSERT INTO step(step_name, step_status_label, type, data) VALUES ('daac_assignment_final', 'Final DAAC Assignment', 'action', '{"rollback":"esdis_final_review","type": "review"}');
 INSERT INTO step(step_name, step_status_label, type, data) VALUES ('esdis_final_review', 'ESDIS Final Review', 'review', '{"rollback":"data_evaluation_request_form_review","type": "review", "form_id":"6c544723-241c-4896-a38c-adbc0a364293"}');
 INSERT INTO step(step_name, type, form_id) VALUES ('data_accession_request_form', 'form', '19025579-99ca-4344-8611-704dae626343');
 INSERT INTO step(step_name, type, data) VALUES ('data_accession_request_form_review', 'review', '{"rollback":"data_accession_request_form","type": "form", "form_id":"19025579-99ca-4344-8611-704dae626343"}');
-INSERT INTO step(step_name, type, data) VALUES ('additional_review_question', 'action', '{"rollback":"data_accession_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8611-704dae626343"}');
+INSERT INTO step(step_name, type, data) VALUES ('esdis_additional_review_assessment', 'action', '{"rollback":"data_accession_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8611-704dae626343"}');
 
 -- Accession Workflow
 -- StepEdge(workflow_id, step_name, next_step_name)
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'init', 'data_accession_request_form');
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form', 'data_accession_request_form_review');
-INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form_review', 'additional_review_question');
-INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'additional_review_question', 'daac_assignment');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_accession_request_form_review', 'esdis_additional_review_assessment');
+INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'esdis_additional_review_assessment', 'daac_assignment');
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'daac_assignment', 'data_evaluation_request_form');
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_evaluation_request_form', 'data_evaluation_request_form_review');
 INSERT INTO step_edge VALUES ('3335970e-8a9b-481b-85b7-dfaaa3f5dbd9', 'data_evaluation_request_form_review', 'esdis_final_review');
