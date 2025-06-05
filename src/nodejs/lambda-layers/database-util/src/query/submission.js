@@ -10,25 +10,8 @@ const customFields = ['id', 'name', 'data_producer_name', 'initiator', 'workflow
 
 const fieldMap = {
   id: 'submission.id',
-  name: `
-    COALESCE(
-    (SELECT 
-      COALESCE(
-        data->>'dar_form_project_name_info', 
-        data->>'data_product_name_value'
-      )
-      FROM submission_form_data_pool 
-      WHERE submission_form_data_pool.id = submission.id
-    ),
-    submission.name
-    ) AS name`,
-  data_producer_name: `
-    COALESCE(
-      (SELECT data->>'data_producer_info_name'
-      FROM submission_form_data_pool 
-      WHERE submission_form_data_pool.id = submission.id),
-      submission.data_producer_name
-    ) AS data_producer_name`,
+  name: 'submission.name',
+  data_producer_name: 'submission.data_producer_name',
   initiator: 'initiator_ref.initiator',
   user_id: 'submission.initiator_edpuser_id user_id',
   daac_id: 'submission.daac_id',
@@ -481,12 +464,26 @@ WHERE submission.id = {{id}}`;
 
 const initialize = (params) => `
 WITH new_submission AS (
-  INSERT INTO submission(initiator_edpuser_id${params.daac_id ? ', daac_id' : ''}${params.name ? ', name' : ''}, contributor_ids)
-  VALUES ({{user_id}}${params.daac_id ? ', {{daac_id}}' : ''}${params.name ? ', {{name}}' : ''}, ARRAY[{{user_id}}::UUID])
+  INSERT INTO submission (
+    initiator_edpuser_id
+    ${params.daac_id ? ', daac_id' : ''}
+    ${params.name ? ', name' : ''}
+    ${params.data_producer_name ? ', data_producer_name' : ''},
+    contributor_ids
+  )
+  VALUES (
+    {{user_id}}
+    ${params.daac_id ? ', {{daac_id}}' : ''}
+    ${params.name ? ', {{name}}' : ''}
+    ${params.data_producer_name ? ', {{data_producer_name}}' : ''},
+    ARRAY[{{user_id}}::UUID]
+  )
   RETURNING *
 )
 ${params.code ? ', association AS (INSERT INTO publication_accession_association SELECT new_submission.id, {{accession_submission_id}}, {{code}} FROM new_submission)' : ''}
-SELECT * FROM new_submission`;
+SELECT * FROM new_submission;
+`;
+
 
 const updateName = () => `
 UPDATE submission
@@ -773,8 +770,8 @@ SELECT submission.id id, conversation_id, submission.created_at created_at,
 submission.hidden hidden,
 JSONB_BUILD_OBJECT('name', edpuser1.name, 'id', edpuser1.id) initiator,
 submission_status.last_change last_change,
-submission_form_data_pool.data::json->'data_producer_info_name' data_producer_name, 
-submission_form_data_pool.data::json->'data_product_name_value' data_product_name, 
+submission.data_producer_name data_producer_name,
+submission.name data_product_name,
 array_agg(DISTINCT JSONB_BUILD_OBJECT('id', edpuser2.id, 'name', edpuser2.name)) as contributors,
 JSONB_BUILD_OBJECT('id', workflow.id, 'name', workflow.long_name, 'steps',
 array_agg(DISTINCT step_edge.step_name)) workflow,

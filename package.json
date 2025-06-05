@@ -15,7 +15,13 @@
     "lint": "eslint ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
     "lint-fix": "eslint --fix ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
     "test": "jest -c jest.config.js --all",
-    "generate-docs": "bash ./scripts/generate-jsdoc.sh && bash ./scripts/generate-apidoc.sh"
+    "generate-docs": "bash ./scripts/generate-jsdoc.sh && bash ./scripts/generate-apidoc.sh",
+    "start-api": "npm run start:detached",
+    "stop-api": "npm run stop",
+    "start-dashboard": "cd ../earthdata-pub-dashboard && npm run start-dashboard",
+    "stop-dashboard": "cd ../earthdata-pub-dashboard && npm run stop-dashboard",
+    "start-dev": "npm run start-api && npm run start-dashboard",
+    "stop-dev": "npm run stop-api && npm run stop-dashboard"
   },
   "author": "Brian Ellingson",
   "license": "BSD 3-Clause License",

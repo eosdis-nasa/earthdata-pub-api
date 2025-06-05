@@ -79,7 +79,11 @@ async function initializeMethod(event, user, skipCopy = false) {
   };
   const codeData = event.code ? await validateCodeMethod({ code: event.code }) : null;
   const accessionSubmissionId = codeData && codeData.submission_id ? codeData.submission_id : null;
-
+  const formD = event.formData;
+  initializationData.name = (formD?.data_product_name_value || formD?.dar_form_project_name_info
+    || null);
+  initializationData.data_producer_name = (formD?.data_producer_info_name
+    || formD?.dar_form_principal_investigator_fullname || null);
   if (codeData && codeData.is_valid === true) {
     // Add code table properties in order to populate the publication_accession_association table
     initializationData.daac_id = codeData.daac_id;
@@ -160,8 +164,9 @@ async function metadataMethod(event, user) {
 async function saveMethod(event) {
   const { form_id: formId, daac_id: daacId, data } = event;
   const { id } = event;
-  const { data_producer_info_name: dataProducer } = data;
   const dataProduct = data.data_product_name_value || data.dar_form_project_name_info;
+  const dataProducer = (data.data_producer_info_name
+    || data.dar_form_principal_investigator_fullname);
   await db.submission.updateFormData({ id, form_id: formId, data: JSON.stringify(data) });
   await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
   await db.submission.updateMetadata({ id, metadata: JSON.stringify(await mapEDPubToUmmc(data)) });
@@ -264,6 +269,7 @@ async function withdrawMethod(event, user) {
   if (user.id?.includes('service-authorizer') || approvedUserPrivileges.some((privilege) => user.user_privileges.includes(privilege))) {
     const submission = await db.submission.withdrawSubmission({ id });
     const submissionMetrics = await db.metrics.getSubmissions({ submissionId: id });
+    await db.service.deleteSubmissionSecrets({ submissionId: id });
     await msg.sendEvent({
       event_type: 'workflow_completed',
       submission_id: id,
@@ -353,6 +359,17 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
     { id: originId, user_id: user.id }
   );
 
+  let filteredFormData = !copyFilter ? formData
+    : filterObject(formData, copyFilter);
+
+  filteredFormData.data_product_name_value = filteredFormData.data_product_name_value
+    ? `Copy of ${filteredFormData.data_product_name_value}` : '';
+
+  filteredFormData = {
+    ...filteredFormData,
+    ...(filteredFormData.dar_form_project_name_info ? { dar_form_project_name_info: `Copy of ${filteredFormData.dar_form_project_name_info}` } : {})
+  };
+
   /*
   This is used to handle the two ways we enter this function:
   1) From initializeMethod
@@ -366,15 +383,10 @@ async function copySubmissionMethod(event, user, newSubmissionId) {
   if (newSubmissionId) {
     id = newSubmissionId;
   } else {
-    const result = await initializeMethod({ code }, user, true);
+    const result = await initializeMethod({ formData: filteredFormData, code }, user, true);
     id = result.id;
   }
 
-  const filteredFormData = !copyFilter ? formData
-    : filterObject(formData, copyFilter);
-
-  filteredFormData.data_product_name_value = filteredFormData.data_product_name_value
-    ? `Copy of ${filteredFormData.data_product_name_value}` : '';
   await db.submission.copyFormData({
     id,
     data: JSON.stringify(filteredFormData),
@@ -421,6 +433,9 @@ async function createStepReviewApprovalMethod(event, user) {
   const { submissionId, stepName, userIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
   if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const {
+      conversation_id: conversationId
+    } = await db.submission.getConversationId({ id: submissionId });
     const formData = await db.submission.createStepReviewApproval({
       submission_id: submissionId,
       step_name: stepName,
@@ -432,7 +447,9 @@ async function createStepReviewApprovalMethod(event, user) {
       event_type: 'review_required',
       formId: formData?.length > 0 ? formData[0].form_id : '',
       userIds,
-      submissionId,
+      conversation_id: conversationId,
+      submission_id: submissionId,
+      step_name: stepName,
       submitted_by_name: user.name,
       // Have to use string here because SNS doesn't support boolean type
       emailPayloadProvided: 'true'
