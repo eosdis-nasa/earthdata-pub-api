@@ -618,3 +618,22 @@ UPDATE input SET control_id='dar_form_data_producers_table' WHERE control_id='as
 
 -- EDPUB-1553 typo fix
 UPDATE question SET long_name = 'Related Projects' WHERE id ='4ecc885f-daf8-4bc6-a8cd-d30c2a54d733';
+
+-- EDPUB-1500 Address issues found in UAT testing
+INSERT INTO step(step_name, type, data) VALUES ('esdis_additional_review_assessment', 'action', '{"rollback":"data_accession_request_form_review","type": "review", "form_id":"19025579-99ca-4344-8611-704dae626343"}');
+UPDATE step SET data='{"rollback":"esdis_additional_review_assessment","type": "action"}' WHERE step_name='daac_assignment';
+
+-- Update all references in step_edge
+UPDATE step_edge
+SET step_name = 'esdis_additional_review_assessment'
+WHERE step_name = 'additional_review_question';
+
+UPDATE step_edge
+SET next_step_name = 'esdis_additional_review_assessment'
+WHERE next_step_name = 'additional_review_question';
+
+UPDATE step_metrics SET step_name='esdis_additional_review_assessment' WHERE step_name='additional_review_question';
+
+-- safely delete the old step
+DELETE FROM step
+WHERE step_name = 'additional_review_question';
