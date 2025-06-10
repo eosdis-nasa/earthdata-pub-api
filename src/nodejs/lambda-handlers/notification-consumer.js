@@ -38,7 +38,7 @@ async function sendEmailNotification({
       userRole = [roles.data_producer];
       break;
     case 'form_submitted':
-      userRole = [roles.daac_staff, roles.daac_manager];
+      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer];
       break;
     case 'review_approved':
       userRole = [roles.data_producer];
@@ -50,7 +50,7 @@ async function sendEmailNotification({
       userRole = [roles.data_producer];
       break;
     case 'action_request_no_id':
-      userRole = [roles.daac_staff, roles.daac_manager];
+      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer];
       break;
     case 'direct_message':
       userRole = [
