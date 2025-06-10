@@ -31,6 +31,9 @@ const StepReviewCreateDelete = require('./stepreview-create-delete.js')
 const Submission = require('./submission.js');
 const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
+const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
+const SubmissionOperationEsdisReview = require('./submission-operation-esdis-review.js');
+const SubmissionInitializationRequest = require('./submission-initialization-request.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const User = require('./user.js');
@@ -50,6 +53,7 @@ const GroupUpload = require('./group-upload.js');
 const Step = require('./step.js');
 const Section = require('./section.js');
 const AttachmentUpload = require('./attachment-upload.js');
+const StepUpload = require('./step-upload.js');
 
 const models = {
   Action,
@@ -85,7 +89,10 @@ const models = {
   Submission,
   SubmissionOperationMapMetadata,
   SubmissionOperationRequest,
+  SubmissionOperationEsdisReview,
+  SubmissionInitializationRequest,
   SubscribeRequest,
+  SubmissionOperationAssignDaacs,
   Subscription,
   User,
   UUID,
@@ -101,7 +108,8 @@ const models = {
   GroupUpload,
   Step,
   Section,
-  AttachmentUpload
+  AttachmentUpload,
+  StepUpload
 
 };
 

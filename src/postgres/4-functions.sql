@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION init_workflow_id()
+CREATE OR REPLACE FUNCTION accession_workflow_id()
 RETURNS UUID
 LANGUAGE plpgsql
 AS $$
@@ -7,7 +7,7 @@ workflow_id UUID;
 BEGIN
   SELECT workflow.id INTO workflow_id
   FROM workflow
-  WHERE workflow.short_name = 'init_workflow'
+  WHERE workflow.short_name = 'accession_workflow'
   ORDER BY workflow.version DESC
   LIMIT 1;
 RETURN workflow_id;
@@ -36,9 +36,9 @@ BEGIN
 INSERT INTO submission_metadata(id)
   VALUES(NEW.id);
 INSERT INTO submission_status(id, workflow_id, step_name)
-  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), init_workflow_id()), 'init');
+  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), accession_workflow_id()), 'init');
 INSERT INTO submission_workflow(id, workflow_id)
-  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), init_workflow_id()));
+  VALUES(NEW.id, COALESCE(daac_workflow_id(NEW.daac_id), accession_workflow_id()));
 RETURN NEW;
 END;
 $$;

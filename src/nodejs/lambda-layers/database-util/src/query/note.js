@@ -160,11 +160,9 @@ const refs = {
           },
           alias: 'note_visibility',
           where: { 
-            conjunction: 'OR',
             filters: [
-              ...([{cmd: `{{user_id}}=ANY(note_scope.user_ids)` }]),
               ...([{
-                cmd: `note.id IN (${sql.select({
+                cmd: `(note.sender_edpuser_id = {{user_id}} OR {{user_id}}=ANY(note_scope.user_ids) OR note.id IN (${sql.select({
                   fields: ['note.id'],
                   from: {
                     base: 'note',
@@ -210,8 +208,17 @@ const refs = {
                       }])
                     ]
                   }
-                })})`
-              }])
+                })}))`
+              }]),
+              ...([{cmd: `(note.daac_id IS NULL OR note.daac_id=(${sql.select({
+                fields: [
+                  'daac_id',
+                ],
+                from: {
+                  base: 'submission'
+                },
+                where: { filters: [{ field: 'submission.conversation_id', param: 'conversation_id' }] } 
+              })}))`}])
             ]
            }
         }),
@@ -265,11 +272,9 @@ const refs = {
           },
           alias: 'note_visibility',
           where: { 
-            conjunction: 'OR',
             filters: [
-              ...([{cmd: `{{user_id}}=ANY(note_scope.user_ids)` }]),
               ...([{
-                cmd: `note.id IN (${sql.select({
+                cmd: `(note.sender_edpuser_id = {{user_id}} OR {{user_id}}=ANY(note_scope.user_ids) OR note.id IN (${sql.select({
                   fields: ['note.id'],
                   from: {
                     base: 'note',
@@ -315,8 +320,17 @@ const refs = {
                       }])
                     ]
                   }
-                })})`
-              }])
+                })}))`
+              }]),
+              ...([{cmd: `(note.daac_id IS NULL OR note.daac_id=(${sql.select({
+                fields: [
+                  'daac_id',
+                ],
+                from: {
+                  base: 'submission'
+                },
+                where: { filters: [{ field: 'submission.conversation_id', param: 'conversation_id' }] } 
+              })}))`}])
             ]
            }
         }),
@@ -448,9 +462,9 @@ SELECT note.*
 FROM note 
 LEFT join submission ON note.conversation_id = submission.conversation_id
 LEFT JOIN note_scope ON note.id = note_scope.note_id
-WHERE note.id = '${params.id}' AND (
-	'${params.user_id}' = ANY(SELECT edpuser_id FROM edpuser_edprole NATURAL JOIN edprole_privilege WHERE privilege = 'ADMIN') OR (
-		( '${params.user_id}' = ANY(submission.contributor_ids) OR '${params.user_id}' = ANY(
+WHERE note.id = {{id}} AND (
+	  {{user_id}} = ANY(SELECT edpuser_id FROM edpuser_edprole NATURAL JOIN edprole_privilege WHERE privilege = 'ADMIN') OR (
+		( {{user_id}} = ANY(submission.contributor_ids) OR {{user_id}} = ANY(
 			SELECT id
 			FROM edpuser
 			LEFT JOIN edpuser_edpgroup ON edpuser.id = edpuser_edpgroup.edpuser_id 
@@ -461,10 +475,10 @@ WHERE note.id = '${params.id}' AND (
 					FROM note
 					LEFT join submission ON note.conversation_id = submission.conversation_id 
 					LEFT JOIN daac ON submission.daac_id = daac.id 
-					WHERE note.id = '${params.id}')
+					WHERE note.id = {{id}})
 			)
 		) AND (
-			'${params.user_id}' =ANY(note_scope.user_ids) 
+			({{user_id}} =ANY(note_scope.user_ids) 
 			OR note.id in (
 				SELECT note.id
 				FROM note
@@ -478,10 +492,13 @@ WHERE note.id = '${params.id}' AND (
 						WHERE unraveled.role_id IN (
 								SELECT edprole_id 
 								FROM edpuser_edprole WHERE 
-								edpuser_id = '${params.user_id}'
+								edpuser_id = {{user_id}}
 						)
 					)			
 				)
+      ) AND (
+        note.daac_id IS NULL 
+        OR note.daac_id=(SELECT daac_id FROM submission WHERE conversation_id = (SELECT conversation_id FROM note WHERE note.id={{id}})))
 		)
 	)
 )
@@ -639,8 +656,10 @@ ${params.user_id && !params.daac ?
 `;
 
 const reply = (params) => `
-WITH new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text${params.step_name?`, step_name`:''}) VALUES
- ({{conversation_id}}, {{user_id}}, {{text}}${params.step_name?`, {{step_name}}`:''})
+WITH submission_daac AS (SELECT daac_id FROM submission WHERE conversation_id = {{conversation_id}}), 
+new_note AS (INSERT INTO note(conversation_id, sender_edpuser_id, text${params.step_name?`, step_name`:''}, daac_id) VALUES
+ ({{conversation_id}}, {{user_id}}, {{text}}${params.step_name?`, {{step_name}}`:''}, 
+ ${params.user_id === '1b10a09d-d342-4eee-a9eb-c99acd2dde17' ?  null : `(SELECT daac_id FROM submission_daac)`})
 RETURNING *),
 conversation_update AS (UPDATE conversation SET
  last_change = new_note.created_at

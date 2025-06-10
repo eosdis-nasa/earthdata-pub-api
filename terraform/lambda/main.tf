@@ -712,6 +712,7 @@ resource "aws_lambda_function" "submission" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      ROOT_URL       = var.client_root_url
     }
   }
   vpc_config {
@@ -993,7 +994,6 @@ resource "aws_lambda_function" "remap_statics" {
       REGION           = var.region
       STAGE            = var.stage
       DASHBOARD_BUCKET = var.edpub_dashboard_s3_bucket
-      OVERVIEW_BUCKET  = var.edpub_overview_s3_bucket
       API_ID           = var.api_id
     }
   }

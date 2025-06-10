@@ -6,8 +6,6 @@ const {
   GetUserCommand
 } = require('@aws-sdk/client-cognito-identity-provider');
 
-const db = require('database-util');
-
 const userPoolId = process.env.CUP_ID;
 
 async function getUser(idp, accessToken) {
@@ -53,7 +51,6 @@ async function setMFAPreferenceMethod(event) {
   };
   const command = new AdminSetUserMFAPreferenceCommand(payload);
   const resp = await idp.send(command);
-  db.user.enableMFA({ id: user.id });
   return resp;
 }
 

@@ -1,6 +1,5 @@
 /**
- * Lambda to update request templates in the api after redeploying the overview,
- * dashboard, and/or forms apps
+ * Lambda to update request templates in the api after redeploying the dashboard app
  * @module RemapStatics
  */
 
@@ -12,7 +11,6 @@ const stage = process.env.STAGE;
 const apiId = process.env.API_ID;
 
 const staticSites = {
-  overview: { bucket: process.env.OVERVIEW_BUCKET, path: '/{key+}' },
   dashboard: { bucket: process.env.DASHBOARD_BUCKET, path: '/dashboard/{key+}' }
 };
 

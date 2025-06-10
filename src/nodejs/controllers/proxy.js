@@ -438,7 +438,7 @@ module.exports.validateCode = function validateCode(req, res, next) {
     resource: 'submission',
     operation: 'validateCode',
     context: { user_id: req.user_id },
-    params: { code: params.code.value }
+    code: params.code.value
   };
   handlers.submission(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
@@ -554,6 +554,18 @@ module.exports.notificationAddUser = function notificationAddUser(req, res, next
   const { params } = req.swagger;
   const lambdaEvent = {
     operation: 'add_user',
+    ...params.payload.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.notification(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.notificationRemoveUser = function notificationRemoveUser(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'remove_user',
     ...params.payload.value,
     context: { user_id: req.user_id }
   };
@@ -794,6 +806,19 @@ module.exports.submissionOperationReview = function submissionOperationReview(re
   });
 };
 
+module.exports.submissionOperationEsdisReview = function submissionOperationEsdisReview(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'esdisReview',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.submissionOperationResume = function submissionOperationResume(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
@@ -872,6 +897,19 @@ module.exports.submissionOperationChangeStep = function submissionOperationChang
   });
 };
 
+module.exports.submissionOperationPromoteStep = function submissionOperationPromoteStep(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'promoteStep',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.submissionOperationAddContributors = function submissionOperationAddContributors(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
@@ -916,6 +954,19 @@ module.exports.submissionOperationMapMetadata = function submissionOperationMapM
   const { payload } = params;
   const lambdaEvent = {
     operation: 'mapMetadata',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.submissionOperationAssignDaacs = function submissionOperationAssignDaacs(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'assignDaacs',
     context: { user_id: req.user_id },
     ...payload.value
   };
@@ -1161,10 +1212,36 @@ module.exports.attachmentFileUpload = function attachmentFileUpload(req, res, ne
   });
 };
 
+module.exports.uploadStepUrl = function uploadStepUrl(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: 'getUploadStepUrl',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.listFiles = function listFiles(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     operation: 'listFiles',
+    submission_id: params.submission_id.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.listStepFiles = function listStepFiles(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'listStepFiles',
     submission_id: params.submission_id.value,
     context: { user_id: req.user_id }
   };
@@ -1184,6 +1261,19 @@ module.exports.getDownloadUrl = function getDownloadUrl(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 }
+
+module.exports.getUploadStep = function getUploadStep(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'upload',
+    operation: 'getUploadStep',
+    upload_step_id: params.upload_step_id.value,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
 
 module.exports.getOverviewApp = function getOverviewApp(req, res, next) {
   res.send({
@@ -1212,6 +1302,18 @@ module.exports.getOverviewAppDataPublicationGuidelines = function getOverviewApp
 module.exports.getDashboardApp = function getDashboardApp(req, res, next) {
   res.send({
     message: 'Placeholder for dashboard app root endpoint.'
+  });
+};
+
+module.exports.getGettingStartedPage = function getGettingStartedPage(req, res, next) {
+  res.send({
+    message: 'Placeholder for Getting Started Page.'
+  });
+};
+
+module.exports.getDataPubGuidelinesPage = function getDataPubGuidelinesPage(req, res, next) {
+  res.send({
+    message: 'Placeholder for Data Pub Guidelines Page.'
   });
 };
 
