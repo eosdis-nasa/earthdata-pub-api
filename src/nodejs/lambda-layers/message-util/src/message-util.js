@@ -100,6 +100,17 @@ async function getSecretsValues() {
   }
 }
 
+function exponential_backoff(increment) {
+    // Base the backoff on 5 seconds per try
+    base = 5000
+    max_backoff = 60000 // 1 minute max  - wont trigger with 5s base and only 3 retry limit, but safety net
+    // Not implementing a Jitter because this is expected to be rare. 
+    // If backoffs becomes a common thing implementing a jitter would be recommended.
+    backoff_val = Math.min(base * Math.pow(2, increment), max_backoff)
+
+    return new Promise(resolve => setTimeout(resolve, backoff_val));
+}
+
 async function send(user, eventMessage, customTemplateFunction, ses) {
   try {
     const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
@@ -130,9 +141,27 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       ConfigurationSetName: sesCreds.ses_configuration_set_name,
       FromEmailAddressIdentityArn: sesCreds.ses_secret_sender_arn
     });
-
-    await ses.send(command);
-    return { success: true };
+    const maxRetries = 3;
+    let currentTry = 0;
+    do {
+      try {
+        await ses.send(command)
+        return { success: true };
+      } catch (e) {
+        if (e.name === 'ThrottlingException' && e.message.includes('Maximum sending rate exceeded')){
+          console.log("Maximum send rate exceeded when sending email. Backing off.");
+          await exponential_backoff(currentTry);
+        } else {
+          throw e;
+        } 
+      } 
+      currentTry++;
+    } while (currentTry < maxRetries)
+    // If we've broken out of the loop because we've exceeded the num max retries log an error
+    if (currentTry >= maxRetries){
+      console.error(`Backoff Limits reached. Unable to send email to ${user.email}`);
+      return ({ error: 'Error sending email ' });
+    }
   } catch (err) {
     console.error(`Error sending email to ${user.email}:`, err);
     return ({ error: 'Error sending email ' });

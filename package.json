@@ -26,6 +26,8 @@
   "author": "Brian Ellingson",
   "license": "BSD 3-Clause License",
   "devDependencies": {
+    "@smithy/util-stream": "^4.2.2",
+    "aws-sdk-client-mock": "^4.1.0",
     "eslint": "^7.27.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
