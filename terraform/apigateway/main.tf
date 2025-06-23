@@ -47,5 +47,10 @@ data "local_file" "edpub_api_policy" {
 
 resource "aws_api_gateway_deployment" "earthdatapub_api_gateway_deployment" {
   rest_api_id = aws_api_gateway_rest_api.EarthdataPub.id
-  stage_name  = var.stage
+}
+
+resource "aws_api_gateway_stage" "earthdatapub_api_gateway_stage" {
+  deployment_id = aws_api_gateway_deployment.earthdatapub_api_gateway_deployment.id
+  rest_api_id = aws_api_gateway_rest_api.EarthdataPub.id
+  stage_name    = var.stage
 }
