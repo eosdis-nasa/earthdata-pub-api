@@ -637,3 +637,12 @@ UPDATE step_metrics SET step_name='esdis_additional_review_assessment' WHERE ste
 -- safely delete the old step
 DELETE FROM step
 WHERE step_name = 'additional_review_question';
+
+-- EDPUB-1566 Update Open Data Policy question 
+UPDATE question 
+SET text = 'Considering ALL the data you plan to submit, can your data be publicly released in compliance with NASA''s Open Data Policy?'
+WHERE long_name = 'Open Data Policy';
+
+UPDATE input
+SET label = 'If no, or not sure, please list the restricted products and provide a brief explanation'
+WHERE control_id in ('data_product_restrictions_explanation','dar_form_open_data_policy_info_no');
