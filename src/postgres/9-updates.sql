@@ -679,3 +679,9 @@ UPDATE question
 SET short_name = 'dar_form_data_acc_req_approval',
     long_name = 'Dependencies for Data Accession Request Approval'
 WHERE id = '4ecc885f-daf8-4bc6-a8cd-d30c2a54d738';
+
+-- EDPUB-1567: Update Upper and Lower Limits Inputs to Remove Minimum Value Restriction
+UPDATE input
+SET attributes = '{}'
+WHERE control_id IN ('spatial_vertical_details_upper', 'spatial_vertical_details_lower')
+  AND attributes::text = '{"min": "1"}';
