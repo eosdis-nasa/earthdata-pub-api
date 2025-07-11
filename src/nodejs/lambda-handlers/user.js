@@ -152,6 +152,35 @@ async function getUsersMethod(params) {
   return (resp);
 }
 
+async function getDetailedUsersMethod(event, privileges) {
+  const { params } = event;
+  if (privileges.includes('ADMIN') || privileges.includes('USER_READ')) {
+    const response = await db.user.getDetailedUsers(params);
+    if (params.role_id || params.group_id) {
+      let filteredResponse = response;
+
+      if (params.role_id) {
+        const roleResponse = await db.role.findById({ id: params.role_id });
+        filteredResponse = response.filter(
+          (user) => user.user_roles.includes(roleResponse.long_name)
+        );
+      }
+
+      if (params.group_id) {
+        const groupResponse = await db.group.findById({ id: params.group_id });
+        filteredResponse = filteredResponse.filter(
+          (user) => user.user_groups.includes(groupResponse.long_name)
+        );
+      }
+
+      return filteredResponse;
+    }
+
+    return response;
+  }
+  return { error: 'No privilege' };
+}
+
 const operations = {
   create: createMethod,
   find: findMethod,
@@ -161,7 +190,8 @@ const operations = {
   add_role: addRoleMethod,
   remove_role: removeRoleMethod,
   get_users: getUsersMethod,
-  update_username: updateUsername
+  update_username: updateUsername,
+  getDetailedUsers: getDetailedUsersMethod
 };
 
 async function handler(event) {
