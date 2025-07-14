@@ -31,7 +31,7 @@ const getDMTemplate = (params, envUrl) => {
              <tr>
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
-                 <p>You have received a direct message on the Earthdata Pub Dashboard.</p>
+                 <p>You have received a direct message on the Earthdata Pub Dashboard from ${params.eventMessage.user_name}.</p>
                  <h2>Message:</h2>
                  <p style="white-space: pre;">${decodeURI(params.eventMessage.conversation_last_message)}</p><br><br>
                  ${attachmentsHtml}
