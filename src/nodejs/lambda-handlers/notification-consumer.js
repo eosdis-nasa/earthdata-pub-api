@@ -122,12 +122,11 @@ async function processRecord(record) {
       if (!message.user_id) {
         const systemUser = await db.user.findSystemUser();
         message.user_id = systemUser.id;
-        message.user_name = systemUser.name;
       }
 
       if (!message.user_name) {
-        const systemUser = await db.user.findSystemUser();
-        message.user_name = systemUser.name;
+        const user = await db.user.findById({ id: message.user_id });
+        message.user_name = user.name;
       }
 
       if (operation === 'sendNote' && !message.subject) {
