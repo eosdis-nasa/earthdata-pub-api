@@ -121,7 +121,7 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
     });
 
     const rawEmail = getRawFromTemplate({
-      subject: 'EDPUB Notification',
+      subject: 'Earthdata Pub Notification',
       from: sourceEmail,
       to: user.email,
       image: nasaLogo,
