@@ -147,7 +147,7 @@ async function processRecord(record) {
       if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
         const emailPayload = eventMessage.emailPayloadProvided ? eventMessage
           : await getEmailTemplate(eventMessage, message);
-        emailPayload.user_name = message.user_name; 
+        emailPayload.user_name = message.user_name;
         await sendEmailNotification({
           note,
           emailPayload,
