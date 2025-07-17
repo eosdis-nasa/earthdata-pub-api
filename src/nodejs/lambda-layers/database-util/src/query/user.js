@@ -8,6 +8,7 @@ const fieldMap = {
   id: 'edpuser.id',
   name: 'edpuser.name',
   email: 'edpuser.email',
+  extension: 'substring(edpuser.email from \'@.*\') AS extension',
   registered: 'edpuser.registered',
   last_login: 'edpuser.last_login',
   refresh_token: 'edpuser.refresh_token',
@@ -75,6 +76,11 @@ const refs = {
     src: group.userJoin,
     on: { left: fieldMap.id, right: 'group_agg.edpuser_id' }
   },
+  groupList: {
+    type: 'left_join',
+    src: group.userJoinList,
+    on: { left: fieldMap.id, right: 'group_agg.edpuser_id' }
+  },
   simple_group: {
     type: 'left_join',
     src: 'edpuser_edpgroup',
@@ -83,6 +89,11 @@ const refs = {
   role: {
     type: 'left_join',
     src: role.userJoin,
+    on: { left: fieldMap.id, right: 'role_agg.edpuser_id' }
+  },
+  roleList: {
+    type: 'left_join',
+    src: role.userJoinList,
     on: { left: fieldMap.id, right: 'role_agg.edpuser_id' }
   },
   simple_role: {
@@ -248,6 +259,30 @@ const findAll = ({name, email, sort, order, per_page, page, group_id, role_id, r
     ]
   },
   group: 'id',
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
+});
+
+const getDetailedUsers = ({id, name, email, sort, order, per_page, page, group_id, role_id}) => sql.select({
+  fields: fields(['id', 'name', 'email', 'extension', 'user_groups', 'user_roles']),
+  from: {
+    base: table,
+    joins: [
+      refs.groupList,
+      refs.roleList
+    ]
+  },
+  ...(id || name || email || group_id || role_id? {
+    where: {
+      filters: [
+        ...(id ? [{ field: 'edpuser.id', param: 'id' }] : []),
+        ...(name ? [{ field: 'edpuser.name', like: 'name' }] : []),
+        ...(email ? [{ field: 'edpuser.email', like: 'email' }] : []),
+      ]
+    }
+  } : {}),
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
@@ -485,3 +520,4 @@ module.exports.updateUsername = updateUsername;
 module.exports.getManagerIds = getManagerIds;
 module.exports.getRootGroupObserverIds = getRootGroupObserverIds;
 module.exports.getObserverIds = getObserverIds;
+module.exports.getDetailedUsers = getDetailedUsers;
