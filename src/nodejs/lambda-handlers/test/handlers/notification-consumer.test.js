@@ -17,6 +17,7 @@ db.submission.getFormData = jest.fn();
 db.submission.getStepName = jest.fn();
 db.submission.getCreatorName = jest.fn();
 db.submission.getSubmissionDaac = jest.fn();
+db.user.findById = jest.fn();
 
 jest.mock('message-util', () => jest.fn());
 msg.parseRecord = jest.fn();
@@ -50,6 +51,7 @@ describe('notification-consumer', () => {
       JSON.parse(params.Sns.Message)
     }));
     db.user.findSystemUser.mockImplementation(async () => ({ id: '1043c36e-3b6b-48c3-b1fa-8277fe65589f' }));
+    db.user.findById.mockReturnValueOnce({ id: '1043c36e-3b6b-48c3-b1fa-8277fe65589f' });
     process.env.AWS_EXECUTION_ENV = 'test';
     db.workflow.getLongName.mockImplementation(async () => ({ long_name: 'test workflow' }));
     db.submission.getFormData.mockImplementation(async () => ({ data: { data_product_name_value: 'test product' } }));

@@ -31,6 +31,12 @@ const fieldMap = {
     distinct: true,
     alias: 'user_roles'
   },
+  role_list: {
+    type: 'json_agg',
+    src: 'edprole.long_name',
+    distinct: true,
+    alias: 'user_roles'
+  },
   privilege_agg: {
     type: 'json_agg',
     src: 'edprole_privilege.privilege',
@@ -82,6 +88,13 @@ const userJoin = {
   group: fieldMap.user_id,
   alias: 'role_agg'
 };
+const userJoinList = {
+  type: 'select',
+  fields: fields(['user_id', 'role_list']),
+  from: { base: table, joins: [refs.user_role] },
+  group: fieldMap.user_id,
+  alias: 'role_agg'
+};
 const findAll = ({ short_name, long_name, sort, order, per_page, page }) => sql.select({
   fields: ['edprole.*'],
   from: { base: table },
@@ -120,3 +133,4 @@ module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByName = findByName;
 module.exports.userJoin = userJoin;
+module.exports.userJoinList = userJoinList;

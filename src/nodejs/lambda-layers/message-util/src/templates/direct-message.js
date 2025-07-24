@@ -6,7 +6,7 @@ const getDMTemplate = (params, envUrl) => {
       ${params.eventMessage.attachments.map((fileName) => `<p><a style="text-align: left;" href="${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}" aria-label="Download ${fileName}">${fileName}</a></p>`).join('')}`;
   }
 
-  const text = `Hello ${params.user.name},\n\nYou have received a direct message on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}\n\nAttachments:\n${
+  const text = `Hello ${params.user.name},\n\nYou have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}\n\nAttachments:\n${
     params.eventMessage.attachments && params.eventMessage.attachments.length > 0
       ? params.eventMessage.attachments.map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`).join('\n') : 'None'
   }`;
@@ -31,7 +31,7 @@ const getDMTemplate = (params, envUrl) => {
              <tr>
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
-                 <p>You have received a direct message on the Earthdata Pub Dashboard.</p>
+                 <p>You have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.</p>
                  <h2>Message:</h2>
                  <p style="white-space: pre;">${decodeURI(params.eventMessage.conversation_last_message)}</p><br><br>
                  ${attachmentsHtml}
