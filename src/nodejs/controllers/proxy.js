@@ -1560,3 +1560,16 @@ module.exports.sectionFindById = function sectionFindById(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 };
+
+module.exports.getCodesBySubmissionId = function getCodesBySubmissionId(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'getCodesBySubmissionId',
+     params: { id: params.id.value },
+     context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};

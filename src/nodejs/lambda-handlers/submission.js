@@ -662,6 +662,12 @@ async function esdisReviewMethod(event, user) {
   return { error: 'Not Authorized' };
 }
 
+async function getCodesBySubmissionIdMethod(event) {
+  const { id } = event.params;
+  // need to check with Eddie if the user has permission to view codes
+  return db.submission.getCodesBySubmissionId({ id });
+}
+
 const operations = {
   initialize: initializeMethod,
   active: statusMethod,
@@ -688,7 +694,8 @@ const operations = {
   getStepReviewApproval: getStepReviewApprovalMethod,
   deleteStepReviewApproval: deleteStepReviewApprovalMethod,
   validateCode: validateCodeMethod,
-  assignDaacs: assignDaacsMethod
+  assignDaacs: assignDaacsMethod,
+  getCodesBySubmissionId: getCodesBySubmissionIdMethod
 };
 
 async function handler(event) {

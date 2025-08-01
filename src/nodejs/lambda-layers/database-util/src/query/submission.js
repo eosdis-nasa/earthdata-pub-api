@@ -902,6 +902,17 @@ FROM code
 WHERE code = {{code}}
 `;
 
+const getCodesBySubmissionId = () => `
+SELECT 
+  code.code,
+  code.daac_id, 
+  daac.short_name, 
+  daac.long_name
+FROM code
+JOIN daac ON code.daac_id = daac.id
+WHERE code.submission_id = {{id}};
+`;
+
 const createCode = () => `
 INSERT INTO code(submission_id, daac_id)
 Values({{submissionId}}, {{daacID}})
@@ -964,3 +975,4 @@ module.exports.stepCleanup = stepCleanup;
 module.exports.checkCode = checkCode;
 module.exports.createCode = createCode;
 module.exports.deleteCodes = deleteCodes;
+module.exports.getCodesBySubmissionId = getCodesBySubmissionId;
