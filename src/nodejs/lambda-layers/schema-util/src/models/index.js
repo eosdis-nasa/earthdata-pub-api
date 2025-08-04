@@ -8,6 +8,7 @@ const FormCreate = require('./form-create.js');
 const FormSections = require('./form-sections.js');
 const FormUpdate = require('./form-update.js');
 const Group = require('./group.js');
+const GroupDetails = require('./group-details.js');
 const LogEvent = require('./log-event.js');
 const LogEventList = require('./log-event-list.js');
 const LogEventRequest = require('./log-event-request.js');
@@ -69,6 +70,7 @@ const models = {
   FormSections,
   FormUpdate,
   Group,
+  GroupDetails,
   LogEvent,
   LogEventList,
   LogEventRequest,
