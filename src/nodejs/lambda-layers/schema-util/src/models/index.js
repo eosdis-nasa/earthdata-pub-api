@@ -30,6 +30,7 @@ const QuestionAdd = require('./question-add.js');
 const QuestionInputs = require('./question-inputs.js');
 const Input = require('./input.js')
 const Role = require('./role.js');
+const RoleDetails = require('./role-details.js');
 const Service = require('./service.js');
 const StepReviewCreateDelete = require('./stepreview-create-delete.js')
 const Submission = require('./submission.js');
@@ -92,6 +93,7 @@ const models = {
   QuestionInputs,
   Input,
   Role,
+  RoleDetails,
   Service,
   StepReviewCreateDelete,
   Submission,
