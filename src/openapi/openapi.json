@@ -576,7 +576,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Action"
+                    "$ref": "#/components/schemas/DAAC"
                   }
                 }
               }
