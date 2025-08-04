@@ -665,26 +665,26 @@
       }
     },
     "/api/data/form/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "description": "UUID of entity",
-          "required": true,
-          "schema": {
-            "$ref": "#/components/schemas/UUID"
-          }
-        },
-        {
-          "name": "daac_id",
-          "in": "query",
-          "description": "DAAC ID to filter form sections",
-          "schema": {
-            "$ref": "#/components/schemas/UUID"
-          }
-        }
-      ],
       "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of entity",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "daac_id",
+            "in": "query",
+            "description": "DAAC ID to filter form sections",
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
         "tags": [
           "data"
         ],
@@ -714,7 +714,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Form"
+                  "$ref": "#/components/schemas/FormSections"
                 }
               }
             }
@@ -761,7 +761,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Form"
+                "$ref": "#/components/schemas/FormUpdate"
               }
             }
           }
@@ -789,7 +789,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Form"
                 }
               }
             }
@@ -1032,7 +1032,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Form"
+                "$ref": "#/components/schemas/FormCreate"
               }
             }
           }
@@ -1060,7 +1060,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Form"
                 }
               }
             }

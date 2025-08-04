@@ -4,6 +4,9 @@ const ActionRegisterRequest = require('./action-register-request.js');
 const DAAC = require('./daac.js');
 const DataRequest = require('./data-request.js');
 const Form = require('./form.js');
+const FormCreate = require('./form-create.js');
+const FormSections = require('./form-sections.js');
+const FormUpdate = require('./form-update.js');
 const Group = require('./group.js');
 const LogEvent = require('./log-event.js');
 const LogEventList = require('./log-event-list.js');
@@ -62,6 +65,9 @@ const models = {
   DAAC,
   DataRequest,
   Form,
+  FormCreate,
+  FormSections,
+  FormUpdate,
   Group,
   LogEvent,
   LogEventList,
