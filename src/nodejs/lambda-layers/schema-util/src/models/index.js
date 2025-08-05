@@ -28,6 +28,7 @@ const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
 const QuestionAdd = require('./question-add.js');
 const QuestionInputs = require('./question-inputs.js');
+const QuestionUpdate = require('./question-update.js');
 const Input = require('./input.js')
 const Role = require('./role.js');
 const RoleDetails = require('./role-details.js');
@@ -91,6 +92,7 @@ const models = {
   QuestionList,
   QuestionAdd,
   QuestionInputs,
+  QuestionUpdate,
   Input,
   Role,
   RoleDetails,

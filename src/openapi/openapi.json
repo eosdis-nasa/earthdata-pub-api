@@ -2238,18 +2238,18 @@
       }
     },
     "/api/data/question/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "description": "UUID of entity",
-          "required": true,
-          "schema": {
-            "$ref": "#/components/schemas/UUID"
+        "get": {
+          "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of entity",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
           }
-        }
-      ],
-      "get": {
+        ],
         "tags": [
           "data"
         ],
@@ -2326,7 +2326,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Question"
+                "$ref": "#/components/schemas/QuestionUpdate"
               }
             }
           }
@@ -2354,7 +2354,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Question"
                 }
               }
             }
