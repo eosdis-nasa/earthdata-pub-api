@@ -2469,7 +2469,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Input"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Input"
+                  }
                 }
               }
             }
@@ -2544,7 +2547,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Input"
                 }
               }
             }
@@ -2633,7 +2636,7 @@
         {
           "name": "id",
           "in": "path",
-          "description": "UUID of entity",
+          "description": "UUID of question",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/UUID"
@@ -2642,7 +2645,7 @@
         {
           "name": "controlId",
           "in": "path",
-          "description": "UUID of entity",
+          "description": "Control id for the desired input",
           "required": true,
          "schema": {
             "type": "string"
@@ -2726,7 +2729,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Input"
+                "$ref": "#/components/schemas/InputUpdate"
               }
             }
           }
@@ -2754,7 +2757,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Input"
                 }
               }
             }
@@ -2843,7 +2846,7 @@
         {
           "name": "id",
           "in": "path",
-          "description": "UUID of entity",
+          "description": "UUID of question",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/UUID"
@@ -2862,7 +2865,10 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Input"
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InputUpdate"
+                }
               }
             }
           }
@@ -2890,7 +2896,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/QuestionInputs"
                 }
               }
             }
