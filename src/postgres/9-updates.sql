@@ -637,3 +637,51 @@ UPDATE step_metrics SET step_name='esdis_additional_review_assessment' WHERE ste
 -- safely delete the old step
 DELETE FROM step
 WHERE step_name = 'additional_review_question';
+
+-- EDPUB-1566 Update Open Data Policy question 
+UPDATE question 
+SET text = 'Considering ALL the data you plan to submit, can your data be publicly released in compliance with NASA''s Open Data Policy?'
+WHERE long_name = 'Open Data Policy';
+
+UPDATE input
+SET label = 'If no, or not sure, please list the restricted products and provide a brief explanation'
+WHERE control_id in ('data_product_restrictions_explanation','dar_form_open_data_policy_info_no');
+
+-- EDPUB-1568: Update Submission References in DAR to Accession
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_name'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4' AND list_order = 0;
+
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_organization'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4' AND list_order = 1;
+
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_email'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4' AND list_order = 2;
+
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_orcid'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4' AND list_order = 3;
+
+UPDATE question
+SET short_name = 'dar_form_data_accession_poc',
+    long_name = 'Data Accession Point of Contact',
+    text = 'Who should ESDIS contact with questions regarding this data accession request?'
+WHERE id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4';
+
+UPDATE question
+SET short_name = 'dar_form_data_acc_req',
+    long_name = 'Reason for Data Accession Request'
+WHERE id = '4ecc885f-daf8-4bc6-a8cd-d30c2a54d737';
+
+UPDATE question
+SET short_name = 'dar_form_data_acc_req_approval',
+    long_name = 'Dependencies for Data Accession Request Approval'
+WHERE id = '4ecc885f-daf8-4bc6-a8cd-d30c2a54d738';
+
+-- EDPUB-1567: Update Upper and Lower Limits Inputs to Remove Minimum Value Restriction
+UPDATE input
+SET attributes = '{}'
+WHERE control_id IN ('spatial_vertical_details_upper', 'spatial_vertical_details_lower')
+  AND attributes::text = '{"min": "1"}';

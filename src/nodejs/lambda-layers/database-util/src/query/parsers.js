@@ -131,3 +131,4 @@ module.exports.createSection = one;
 module.exports.addAttachments = one;
 module.exports.findAllUploadSteps = many;
 module.exports.findUploadStepById = one;
+module.exports.getDetailedUsers = many;

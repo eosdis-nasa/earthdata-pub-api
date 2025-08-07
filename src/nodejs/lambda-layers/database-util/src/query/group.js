@@ -64,6 +64,11 @@ const fieldMap = {
         ['description', 'edpgroup.description']]
     },
     alias: 'user_groups'
+  },
+  group_list: {
+    type: 'json_agg',
+    src: 'edpgroup.long_name',
+    alias: 'user_groups'
   }
 };
 const fields = (list) => list.map((field) => fieldMap[field]);
@@ -207,6 +212,13 @@ const userJoin = {
   group: fieldMap.user_id,
   alias: 'group_agg'
 };
+const userJoinList = {
+  type: 'select',
+  fields: fields(['user_id', 'group_list']),
+  from: { base: table, joins: [refs.user_group] },
+  group: fieldMap.user_id,
+  alias: 'group_agg'
+};
 const findAll = ({ short_name, long_name, sort, order, per_page, page }) => sql.select({
   fields: ['edpgroup.*'],
   from: { base: table },
@@ -267,3 +279,4 @@ module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByName = findByName;
 module.exports.userJoin = userJoin;
+module.exports.userJoinList = userJoinList;

@@ -480,6 +480,28 @@ module.exports.userFindAll = function userFindAll(req, res, next) {
   });
 };
 
+module.exports.userDetails = function userDetails(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    resource: 'user',
+    operation: 'getDetailedUsers',
+    params: {
+          name: params.name.value,
+          email: params.email.value,
+          sort: params.sort.value,
+          order: params.order.value,
+          per_page: params.per_page.value,
+          page: params.page.value,
+          group_id: params.group_id.value,
+          role_id: params.role_id.value
+    },
+    context: { user_id: req.user_id }
+  };
+  handlers.user(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.workflowFindById = function workflowFindById(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

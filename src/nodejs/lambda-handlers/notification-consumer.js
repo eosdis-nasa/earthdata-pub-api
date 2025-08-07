@@ -66,7 +66,7 @@ async function sendEmailNotification({
       userRole = [roles.data_producer, roles.daac_staff, roles.daac_manager];
       break;
   }
-  let users = usersList ? await db.user.getEmails({ user_list: usersList })
+  const users = usersList ? await db.user.getEmails({ user_list: usersList })
     : await db.note.getEmails({
       noteId: note.id,
       conversationId: note.conversation_id,
@@ -79,7 +79,6 @@ async function sendEmailNotification({
     users.push(...additionalContacts);
   }
 
-  if (emailPayload.event_type === 'request_initialized') users = users.map((user) => ({ name: user.name, email: user.email, initiator: user.id === emailPayload.user_id }));
   await msg.sendEmail(users, emailPayload);
 }
 
@@ -123,6 +122,12 @@ async function processRecord(record) {
         const systemUser = await db.user.findSystemUser();
         message.user_id = systemUser.id;
       }
+
+      if (!message.user_name) {
+        const user = await db.user.findById({ id: message.user_id });
+        message.user_name = user.name;
+      }
+
       if (operation === 'sendNote' && !message.subject) {
         message.subject = 'No Subject';
       }
@@ -137,9 +142,10 @@ async function processRecord(record) {
         });
         await db.note.addAttachments({ noteId: note.id, attachments });
       }
-      if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request') {
+      if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request' && eventMessage.event_type !== 'request_initialized') {
         const emailPayload = eventMessage.emailPayloadProvided ? eventMessage
           : await getEmailTemplate(eventMessage, message);
+        emailPayload.user_name = message.user_name;
         await sendEmailNotification({
           note,
           emailPayload,

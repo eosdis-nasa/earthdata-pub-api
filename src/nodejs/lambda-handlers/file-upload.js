@@ -270,7 +270,7 @@ async function getDownloadUrlMethod(event, user) {
     region
   });
 
-  const submissionId = key.split('/')[1];
+  const submissionId = key.split('/')[0];
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
   const userDaacs = groupIds.length > 0 ? await db.daac.getIds({ group_ids: groupIds }) : [];

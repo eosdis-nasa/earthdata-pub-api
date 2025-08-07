@@ -100,6 +100,18 @@ async function getSecretsValues() {
   }
 }
 
+function exponentialBackoff(increment) {
+  // Base the backoff on 5 seconds per try
+  const base = 5000;
+  // 1 minute max  - wont trigger with 5s base and only 3 retry limit, but safety net
+  const maxBackoff = 60000;
+  // Not implementing a Jitter because this is expected to be rare.
+  // If backoffs becomes a common thing implementing a jitter would be recommended.
+  const backoffVal = Math.min(base * 2 ** increment, maxBackoff);
+
+  return new Promise((resolve) => setTimeout(resolve, backoffVal));
+}
+
 async function send(user, eventMessage, customTemplateFunction, ses) {
   try {
     const bodyArray = await createEmailHtml({ user, eventMessage, customTemplateFunction });
@@ -109,7 +121,7 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
     });
 
     const rawEmail = getRawFromTemplate({
-      subject: 'EDPUB Notification',
+      subject: 'Earthdata Pub Notification',
       from: sourceEmail,
       to: user.email,
       image: nasaLogo,
@@ -130,13 +142,32 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       ConfigurationSetName: sesCreds.ses_configuration_set_name,
       FromEmailAddressIdentityArn: sesCreds.ses_secret_sender_arn
     });
-
-    await ses.send(command);
-    return { success: true };
+    const maxRetries = 3;
+    let currentTry = 0;
+    do {
+      try {
+        await ses.send(command);
+        return { success: true };
+      } catch (e) {
+        if (e.name === 'ThrottlingException' && e.message.includes('Maximum sending rate exceeded')) {
+          // eslint-disable-next-line
+          console.log('Maximum send rate exceeded when sending email. Backing off.');
+          await exponentialBackoff(currentTry);
+        } else {
+          throw e;
+        }
+      }
+      currentTry += 1;
+    } while (currentTry < maxRetries);
+    // If we've broken out of the loop because we've exceeded the num max retries log an error
+    if (currentTry >= maxRetries) {
+      throw new Error('Backoff limits exceeded');
+    }
   } catch (err) {
     console.error(`Error sending email to ${user.email}:`, err);
-    return ({ error: 'Error sending email ' });
+    throw err;
   }
+  return ({ error: 'Error sending email ' });
 }
 
 async function sendEmail(users, eventMessage, customTemplateFunction) {
@@ -145,7 +176,17 @@ async function sendEmail(users, eventMessage, customTemplateFunction) {
       region: 'us-east-1'
     });
     const promises = users.map((user) => send(user, eventMessage, customTemplateFunction, ses));
-    await Promise.all(promises);
+    let rejectedCount = 0;
+    await Promise.allSettled(promises).then((results) => {
+      results.forEach((result) => {
+        if (result.status === 'rejected') {
+          rejectedCount += 1;
+        }
+      });
+    });
+    if (rejectedCount > 0) {
+      return { error: `${rejectedCount} errors encountered in sendEmail` };
+    }
     return { success: true };
   } catch (err) {
     console.error('Error in sendEmail:', err);
