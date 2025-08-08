@@ -76,6 +76,7 @@ module.exports.removeContributor = one;
 module.exports.getConversationId = one;
 module.exports.createForm = one;
 module.exports.getFormData = one;
+module.exports.updateForm = one;
 module.exports.getUsers = many;
 module.exports.setDetail = one;
 module.exports.getStepMessage = one;

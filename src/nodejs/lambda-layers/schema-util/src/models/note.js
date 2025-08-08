@@ -3,12 +3,16 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
-    recipient_id: { $ref: `#${path}UUID` },
-    source_id: { $ref: `#${path}UUID` },
-    source_type: { type: 'string' },
-    subject: { type: 'string' },
+    conversation_id: { $ref: `#${path}UUID` },
+    sender_edpuser_id: { $ref: `#${path}UUID` },
     text: { type: 'string' },
-    timestamp: { type: 'string' }
+    created_at: { type: 'string' },
+    step_name: { type: 'string' },
+    attachments : { 
+      type: 'array', 
+      items: { type: 'string'}
+    },
+    daac_id: { $ref: `#${path}UUID` }
   }
 });
 

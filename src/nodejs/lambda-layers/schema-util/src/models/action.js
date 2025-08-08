@@ -3,11 +3,12 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
-    action_name: { type: 'string' },
+    short_name: { type: 'string' },
     version: { type: 'number' },
+    long_name: { type: 'string' },
     description: { type: 'string' },
-    file_key: { type: 'string' },
-    input_schema: { type: 'object' }
+    source: { type: 'object' },
+    created_at: { type: 'string' }
   }
 });
 
