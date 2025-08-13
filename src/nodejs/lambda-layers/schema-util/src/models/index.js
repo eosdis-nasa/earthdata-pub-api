@@ -34,6 +34,7 @@ const SubmissionOperationRequest = require('./submission-operation-request.js');
 const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
 const SubmissionOperationEsdisReview = require('./submission-operation-esdis-review.js');
 const SubmissionInitializationRequest = require('./submission-initialization-request.js');
+const SubmissionStatus = require('./submission-status.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const User = require('./user.js');
@@ -93,6 +94,7 @@ const models = {
   SubmissionInitializationRequest,
   SubscribeRequest,
   SubmissionOperationAssignDaacs,
+  SubmissionStatus,
   Subscription,
   User,
   UUID,
