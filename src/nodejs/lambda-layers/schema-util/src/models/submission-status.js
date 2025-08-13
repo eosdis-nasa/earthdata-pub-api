@@ -13,6 +13,7 @@ module.exports.model = (path) => ({
       properties: {
         name: { type: 'string' },
         type: { type: 'string' },
+        form_id: { $ref: `#${path}UUID` },
         step_message: { type: 'string' }
       }
     },
@@ -22,7 +23,8 @@ module.exports.model = (path) => ({
         type: 'object', 
         properties: {
           start_time: { type: 'string' },
-          workflow_id: { $ref: `#${path}UUID` }
+          workflow_id: { $ref: `#${path}UUID` },
+          complete_time: { type: 'string' }
         }
       }
     }
