@@ -264,11 +264,35 @@ async function listStepFilesMethod(event, user) {
   return ({ error: 'Not Authorized' });
 }
 
+async function getAttachmentDownloadUrlMethod(event, user, s3Client) {
+  // TODO - Write a proper query to check if user has permissions to view note instead of relying
+  // on larger find query
+  const noteId = event.key.split('/')[1];
+  const { id } = await db.note.findById({id: noteId, user_id: user});
+  if (id) {
+    const payload = {
+      Bucket: ingestBucket,
+      Key: event.key
+    };
+
+    try {
+      const command = new GetObjectCommand(payload);
+      return getSignedUrl(s3Client, command, { expiresIn: 60 });
+    } catch (err) {
+      console.error(err);
+      return ({ error: 'Failed to download' });
+    }
+  }
+  return ({ error: 'Not Authorized' });
+}
+
 async function getDownloadUrlMethod(event, user) {
   const { key } = event;
   const s3Client = new S3Client({
     region
   });
+
+  if (key.split('/')[0] === 'attachments') return getAttachmentDownloadUrlMethod(event, user, s3Client);
 
   const submissionId = key.split('/')[0];
   const userInfo = await db.user.findById({ id: user });
