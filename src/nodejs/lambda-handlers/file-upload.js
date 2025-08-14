@@ -268,7 +268,7 @@ async function getAttachmentDownloadUrlMethod(event, user, s3Client) {
   // TODO - Write a proper query to check if user has permissions to view note instead of relying
   // on larger find query
   const noteId = event.key.split('/')[1];
-  const { id } = await db.note.findById({id: noteId, user_id: user});
+  const { id } = await db.note.findById({ id: noteId, user_id: user });
   if (id) {
     const payload = {
       Bucket: ingestBucket,
