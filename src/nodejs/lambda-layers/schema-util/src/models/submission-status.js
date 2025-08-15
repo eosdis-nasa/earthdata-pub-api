@@ -11,6 +11,7 @@ module.exports.model = (path) => ({
     step: { 
       type: 'object',
       properties: {
+        data: { type: 'object' },
         name: { type: 'string' },
         type: { type: 'string' },
         form_id: { $ref: `#${path}UUID` },

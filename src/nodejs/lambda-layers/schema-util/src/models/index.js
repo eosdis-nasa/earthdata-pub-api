@@ -34,6 +34,7 @@ const SubmissionOperationCustomResponse = require('./submission-operation-custom
 const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
 const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
+const SubmissionOperationSubmit = require('./submission-operation-submit.js');
 const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
 const SubmissionOperationEsdisReview = require('./submission-operation-esdis-review.js');
 const SubmissionInitializationRequest = require('./submission-initialization-request.js');
@@ -96,6 +97,7 @@ const models = {
   SubmissionOperationMapMetadata,
   SubmissionOperationMetadata,
   SubmissionOperationRequest,
+  SubmissionOperationSubmit,
   SubmissionOperationEsdisReview,
   SubmissionInitializationRequest,
   SubscribeRequest,
