@@ -27,7 +27,10 @@ const QuestionInputs = require('./question-inputs.js');
 const Input = require('./input.js')
 const Role = require('./role.js');
 const Service = require('./service.js');
+const StepReview = require('./step-review.js');
 const StepReviewCreateDelete = require('./stepreview-create-delete.js')
+const StepReviewCreateResponse = require('./step-review-create-resp.js');
+const StepReviewDeleteResponse = require('./step-review-delete-resp.js');
 const Submission = require('./submission.js');
 const SubmissionOperationApply = require('./submission-operation-apply.js');
 const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js')
@@ -90,7 +93,10 @@ const models = {
   Input,
   Role,
   Service,
+  StepReview,
   StepReviewCreateDelete,
+  StepReviewCreateResponse,
+  StepReviewDeleteResponse,
   Submission,
   SubmissionOperationApply,
   SubmissionOperationCustomResponse,
