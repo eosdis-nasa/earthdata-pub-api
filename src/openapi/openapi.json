@@ -6402,7 +6402,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationMapMetadata"
+                "$ref": "#/components/schemas/SubmissionOperationId"
               }
             }
           }
@@ -6426,7 +6426,14 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
             }
+          }
           }
         },
         "security": [
