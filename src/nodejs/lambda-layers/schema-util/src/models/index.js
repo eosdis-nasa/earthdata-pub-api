@@ -39,6 +39,7 @@ const SubmissionOperationCustomResponse = require('./submission-operation-custom
 const SubmissionOperationId = require('./submission-operation-id.js');
 const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
 const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
+const SubmissionOperationRemoveContributor = require('./submission-operation-remove-contributor.js')
 const SubmissionOperationRequest = require('./submission-operation-request.js');
 const SubmissionOperationReview = require('./submission-operation-review.js')
 const SubmissionOperationSubmit = require('./submission-operation-submit.js');
@@ -110,6 +111,7 @@ const models = {
   SubmissionOperationId,
   SubmissionOperationMapMetadata,
   SubmissionOperationMetadata,
+  SubmissionOperationRemoveContributor,
   SubmissionOperationRequest,
   SubmissionOperationReview,
   SubmissionOperationSubmit,
