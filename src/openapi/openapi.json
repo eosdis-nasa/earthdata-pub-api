@@ -3310,7 +3310,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Submission"
+                  "$ref": "#/components/schemas/SubmissionOperationAll"
                 }
               }
             }

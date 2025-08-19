@@ -3,53 +3,18 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
-    name: { type: 'string' },
-    initiator: {
-      type: 'object',
-      properties: {
-        id: { $ref: `#${path}UUID` },
-        name: { type: 'string' },
-        email: { type: 'string' }
-      }
-    },
-    workflow_id: { $ref: `#${path}UUID` },
-    hidden: { type: 'boolean' },
     conversation_id: { $ref: `#${path}UUID` },
+    workflow_id: { $ref: `#${path}UUID` },
     workflow_name: { type: 'string' },
-    daac_id: { $ref: `#${path}UUID` },
-    daac_name: { type: 'string' },
-    code: { $ref: `#${path}UUID` },
-    assigned_daacs: {
-      type: 'array',
-      items: { 
-        type: 'object',
-        properties: {
-          code: { $ref: `#${path}UUID` },
-          daac_id: { $ref: `#${path}UUID` },
-          daac_name: { type: 'string' }
-        }
-      }
-    },
-    step_data: { type: 'object' },
-    step_status_label: { type: 'string' },
+    daac_id: { type: 'string' },
     step_name: { type: 'string' },
-    status: { type: 'string' },
-    forms: {
-      type: 'array',
-      items: { type: 'object' }
-    },
-    action_data: { type: 'object' },
-    form_data: { type: 'object' },
-    metadata: { type: 'object' },
+    step: { type: 'string' },
     created_at: { type: 'string' },
     last_change: { type: 'string' },
-    lock: { type: 'boolean' },
-    contributor_ids: {
-      type: 'array',
-      items: { type: 'string' }
-    },
-    copy: { type: 'boolean' },
-    origin_id: { $ref: `#${path}UUID` }
+    metadata: { type: 'object' },
+    action_data: { type: 'object' },
+    form_data: { type: 'object' },
+    lock: { type: 'boolean' }
   }
 });
 

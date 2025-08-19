@@ -37,6 +37,7 @@ const RoleDetails = require('./role-details.js');
 const Service = require('./service.js');
 const StepReviewCreateDelete = require('./stepreview-create-delete.js')
 const Submission = require('./submission.js');
+const SubmissionOperationAll = require('./submission-operation-all.js');
 const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
 const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
@@ -104,6 +105,7 @@ const models = {
   Service,
   StepReviewCreateDelete,
   Submission,
+  SubmissionOperationAll,
   SubmissionOperationMapMetadata,
   SubmissionOperationRequest,
   SubmissionOperationEsdisReview,
