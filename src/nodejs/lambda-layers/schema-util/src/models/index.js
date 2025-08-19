@@ -34,6 +34,7 @@ const StepReviewDeleteResponse = require('./step-review-delete-resp.js');
 const Submission = require('./submission.js');
 const SubmissionOperationApply = require('./submission-operation-apply.js');
 const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js')
+const SubmissionOperationId = require('./submission-operation-id.js');
 const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
 const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
@@ -101,6 +102,7 @@ const models = {
   Submission,
   SubmissionOperationApply,
   SubmissionOperationCustomResponse,
+  SubmissionOperationId,
   SubmissionOperationMapMetadata,
   SubmissionOperationMetadata,
   SubmissionOperationRequest,
