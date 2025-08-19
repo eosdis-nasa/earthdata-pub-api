@@ -33,6 +33,7 @@ const StepReviewCreateResponse = require('./step-review-create-resp.js');
 const StepReviewDeleteResponse = require('./step-review-delete-resp.js');
 const Submission = require('./submission.js');
 const SubmissionOperationApply = require('./submission-operation-apply.js');
+const SubmissionOperationChangeStep = require('./submission-operation-change-step.js');
 const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js')
 const SubmissionOperationId = require('./submission-operation-id.js');
 const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
@@ -43,6 +44,7 @@ const SubmissionOperationSubmit = require('./submission-operation-submit.js');
 const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
 const SubmissionOperationEsdisReview = require('./submission-operation-esdis-review.js');
 const SubmissionInitializationRequest = require('./submission-initialization-request.js');
+const SubmissionState = require('./submission-state.js');
 const SubmissionStatus = require('./submission-status.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
@@ -101,6 +103,7 @@ const models = {
   StepReviewDeleteResponse,
   Submission,
   SubmissionOperationApply,
+  SubmissionOperationChangeStep,
   SubmissionOperationCustomResponse,
   SubmissionOperationId,
   SubmissionOperationMapMetadata,
@@ -112,6 +115,7 @@ const models = {
   SubmissionInitializationRequest,
   SubscribeRequest,
   SubmissionOperationAssignDaacs,
+  SubmissionState,
   SubmissionStatus,
   Subscription,
   User,
