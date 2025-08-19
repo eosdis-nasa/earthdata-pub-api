@@ -1,5 +1,5 @@
 module.exports.model = (path) => ({
-  description: 'Request body sent for changing the current workflow step of a submission',
+  description: 'Request body sent for adding contributors to a submission',
   type: 'object',
   properties: {
     id: {
