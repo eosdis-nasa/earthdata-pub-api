@@ -3,22 +3,12 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
+    short_name: { type: 'string' },
     version: { type: 'number' },
-    workflow_name: { type: 'string' },
+    long_name: { type: 'string' },
     description: { type: 'string' },
-    created_at: { type: 'string' },
-    steps: {
-      type: 'object',
-      additionalProperties: {
-        anyOf: [
-          { $ref: `#${path}WorkflowActionStep` },
-          { $ref: `#${path}WorkflowFormStep` },
-          { $ref: `#${path}WorkflowReviewStep` },
-          { $ref: `#${path}WorkflowServiceStep` }
-        ]
-      }
-    }
+    created_at: { type: 'string' }
   }
 });
 
-module.exports.refs = ['UUID', 'WorkflowFormStep', 'WorkflowInitStep', 'WorkflowCloseStep', 'WorkflowActionStep', 'WorkflowReviewStep', 'WorkflowServiceStep'];
+module.exports.refs = ['UUID'];

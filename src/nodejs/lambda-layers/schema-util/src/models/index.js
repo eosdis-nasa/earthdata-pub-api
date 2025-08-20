@@ -63,6 +63,7 @@ const WorkflowFormStep = require('./workflow-form-step.js');
 const WorkflowInitStep = require('./workflow-init-step.js');
 const WorkflowReviewStep = require('./workflow-review-step.js');
 const WorkflowServiceStep = require('./workflow-service-step.js');
+const WorkflowSteps = require('./workflow-steps.js');
 const UMMC = require('./umm-c.js');
 const UMMCMN = require('./umm-cmn.js');
 const Upload = require('./upload.js');
@@ -138,6 +139,7 @@ const models = {
   WorkflowInitStep,
   WorkflowReviewStep,
   WorkflowServiceStep,
+  WorkflowSteps,
   Upload,
   GroupUpload,
   Step,

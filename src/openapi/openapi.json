@@ -7321,7 +7321,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Workflow"
+                  "$ref": "#/components/schemas/WorkflowSteps"
                 }
               }
             }
@@ -7368,7 +7368,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Workflow"
+                "$ref": "#/components/schemas/WorkflowSteps"
               }
             }
           }
@@ -7396,7 +7396,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "oneOf": [
+                    {"$ref": "#/components/schemas/Workflow"},
+                    {"$ref": "#/components/schemas/WorkflowSteps"}
+                  ]
+                  
                 }
               }
             }
