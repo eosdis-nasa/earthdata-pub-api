@@ -5,21 +5,28 @@ module.exports.model = (path) => ({
     id: {
       $ref: `#${path}UUID`
     },
-    user_name: {
+    name: {
       type: 'string'
     },
     email: {
       type: 'string'
     },
-    roles: {
-      type: 'array',
-      items: { $ref: `#${path}Role` }
+    refresh_token: { 
+      type: 'string'
     },
-    groups: {
-      type: 'array',
-      items: { $ref: `#${path}Group` }
+    registered: { 
+      type: 'string' 
+    },
+    last_login: { 
+      type: 'string' 
+    },
+    detailed: { 
+      type: 'boolean' 
     }
   }
 });
 
 module.exports.refs = ['UUID'];
+
+
+  
