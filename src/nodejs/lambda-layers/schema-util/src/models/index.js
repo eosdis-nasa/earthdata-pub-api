@@ -32,6 +32,7 @@ const StepReviewCreateDelete = require('./stepreview-create-delete.js')
 const StepReviewCreateResponse = require('./step-review-create-resp.js');
 const StepReviewDeleteResponse = require('./step-review-delete-resp.js');
 const Submission = require('./submission.js');
+const SubmissionDetails = require('./submission-details.js');
 const SubmissionOperationAddContributors = require('./submission-operation-add-contributors.js');
 const SubmissionOperationApply = require('./submission-operation-apply.js');
 const SubmissionOperationChangeStep = require('./submission-operation-change-step.js');
@@ -104,6 +105,7 @@ const models = {
   StepReviewCreateResponse,
   StepReviewDeleteResponse,
   Submission,
+  SubmissionDetails,
   SubmissionOperationAddContributors,
   SubmissionOperationApply,
   SubmissionOperationChangeStep,
