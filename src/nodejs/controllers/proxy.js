@@ -1128,7 +1128,7 @@ module.exports.refreshToken = function refreshToken(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
     refresh: true,
-    context: { user_id: req.user_id }
+    context: { user_id: req.user_id, logout: params.logout.value }
   };
   handlers.auth(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);

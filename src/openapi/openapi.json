@@ -12506,6 +12506,16 @@
         "tags": [
           "token"
         ],
+        "parameters": [
+          {
+            "name": "logout",
+            "in": "query",
+            "description": "Set to true to get redirect uri to logout through identity provider.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "summary": "Authentication and token management",
         "description": "Handles authentication and token management with an identity provider.",
         "operationId": "refreshToken",
@@ -12542,7 +12552,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req=$input.params()) { \"refresh\": true, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($req=$input.params()) { \"refresh\": true, \"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end}, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
