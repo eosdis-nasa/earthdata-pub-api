@@ -53,6 +53,7 @@ const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const User = require('./user.js');
 const UserAllFields = require('./user-all-fields.js');
+const UserDetails = require('./user-details.js');
 const UUID = require('./uuid.js');
 const Version = require('./version.js');
 const Workflow = require('./workflow.js');
@@ -127,6 +128,7 @@ const models = {
   Subscription,
   User,
   UserAllFields,
+  UserDetails,
   UUID,
   Version,
   Workflow,
