@@ -2,6 +2,7 @@ module.exports.model = (path) => ({
     description: 'A step used to describe the transition within workflows of',
     type: 'object',
     properties: {
+        step_id: { $ref: `#${path}UUID` },
         step_name: { type: 'string' },
         step_status_label: { type: 'string' },
         type: { type: 'string', enum: ['init', 'action', 'form', 'review', 'service', 'upload', 'close'] },
