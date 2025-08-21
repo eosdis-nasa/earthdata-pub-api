@@ -765,6 +765,20 @@ filteredForms AS (
   LEFT JOIN form ON submission_form_data.form_id = form.id
   WHERE submission_form_data.id= {{id}} ${params.privilegedUser === false ? `AND form.daac_only=false`: ``}
   GROUP BY submission_form_data.id
+),
+daac_codes AS (
+  SELECT 
+    code.submission_id,
+    JSONB_AGG(DISTINCT JSONB_BUILD_OBJECT(
+      'code', code.code,
+      'daac_id', code.daac_id,
+      'short_name', daac.short_name,
+      'long_name', daac.long_name
+    )) AS codes
+  FROM code
+  JOIN daac ON code.daac_id = daac.id
+  WHERE code.submission_id = {{id}}
+  GROUP BY code.submission_id
 )
 SELECT submission.id id, conversation_id, submission.created_at created_at,
 submission.hidden hidden,
@@ -781,7 +795,9 @@ CASE
   WHEN filteredForms.forms is null THEN '[]'
   ELSE
     filteredForms.forms 
-END forms, submission_metadata.metadata metadata
+END forms, 
+COALESCE(daac_codes.codes, '[]') AS codes,
+submission_metadata.metadata metadata
 FROM submission
 JOIN edpuser edpuser1
 ON submission.initiator_edpuser_id = edpuser1.id
@@ -799,13 +815,15 @@ JOIN step_visibility
 ON submission_status.step_name = step_visibility.step_name
 LEFT JOIN filteredForms
 ON submission.id = filteredForms.id
+LEFT JOIN daac_codes
+ON submission.id = daac_codes.submission_id
 JOIN submission_metadata
 ON submission.id = submission_metadata.id
 WHERE submission.id= {{id}}
 GROUP BY submission.id, edpuser1.name, edpuser1.id,
 submission_status.last_change, workflow.long_name, workflow.id,
 submission_form_data_pool.data, step_visibility.type, step_visibility.step_name, step_visibility.action_id, step_visibility.upload_step_id,
-step_visibility.form_id, step_visibility.service_id, step_visibility.data, step_visibility.daac_only, filteredForms.forms, submission_metadata.metadata;
+step_visibility.form_id, step_visibility.service_id, step_visibility.data, step_visibility.daac_only, filteredForms.forms, daac_codes.codes, submission_metadata.metadata;
 `;
 
 const getSubmissionDaac = () => sql.select({
