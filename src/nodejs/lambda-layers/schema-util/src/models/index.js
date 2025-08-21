@@ -59,6 +59,7 @@ const Version = require('./version.js');
 const Workflow = require('./workflow.js');
 const WorkflowActionStep = require('./workflow-action-step.js');
 const WorkflowCloseStep = require('./workflow-close-step.js');
+const WorkflowCreate = require('./workflow-create.js');
 const WorkflowFormStep = require('./workflow-form-step.js');
 const WorkflowInitStep = require('./workflow-init-step.js');
 const WorkflowReviewStep = require('./workflow-review-step.js');
@@ -136,6 +137,7 @@ const models = {
   Workflow,
   WorkflowActionStep,
   WorkflowCloseStep,
+  WorkflowCreate,
   WorkflowFormStep,
   WorkflowInitStep,
   WorkflowReviewStep,
