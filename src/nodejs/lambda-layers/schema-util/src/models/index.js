@@ -69,6 +69,7 @@ const UMMCMN = require('./umm-cmn.js');
 const Upload = require('./upload.js');
 const GroupUpload = require('./group-upload.js');
 const Step = require('./step.js');
+const StepUpdate = require('./step-update.js');
 const Section = require('./section.js');
 const AttachmentUpload = require('./attachment-upload.js');
 const StepUpload = require('./step-upload.js');
@@ -143,6 +144,7 @@ const models = {
   Upload,
   GroupUpload,
   Step,
+  StepUpdate,
   Section,
   AttachmentUpload,
   StepUpload

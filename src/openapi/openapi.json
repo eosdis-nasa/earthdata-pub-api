@@ -7807,7 +7807,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Step"
+                "$ref": "#/components/schemas/StepUpdate"
               }
             }
           }
