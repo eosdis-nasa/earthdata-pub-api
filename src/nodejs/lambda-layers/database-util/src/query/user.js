@@ -327,6 +327,12 @@ const getRefreshToken = () => sql.select({
   }
 });
 
+const clearRefreshToken = () => `
+UPDATE edpuser SET
+refresh_token = NULL
+WHERE edpuser.id = {{id}}
+RETURNING *`;
+
 const addRole = (params) => sql.insert({
   table: 'edpuser_edprole',
   values: {
@@ -501,6 +507,7 @@ module.exports.find = find;
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getRefreshToken = getRefreshToken;
+module.exports.clearRefreshToken = clearRefreshToken;
 module.exports.findByGroupId = findByGroupId;
 module.exports.findByGroupName = findByGroupName;
 module.exports.loginUser = loginUser;
