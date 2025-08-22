@@ -576,7 +576,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Action"
+                    "$ref": "#/components/schemas/DAAC"
                   }
                 }
               }
@@ -665,26 +665,26 @@
       }
     },
     "/api/data/form/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "description": "UUID of entity",
-          "required": true,
-          "schema": {
-            "$ref": "#/components/schemas/UUID"
-          }
-        },
-        {
-          "name": "daac_id",
-          "in": "query",
-          "description": "DAAC ID to filter form sections",
-          "schema": {
-            "$ref": "#/components/schemas/UUID"
-          }
-        }
-      ],
       "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of entity",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          },
+          {
+            "name": "daac_id",
+            "in": "query",
+            "description": "DAAC ID to filter form sections",
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
+          }
+        ],
         "tags": [
           "data"
         ],
@@ -714,7 +714,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Form"
+                  "$ref": "#/components/schemas/FormSections"
                 }
               }
             }
@@ -761,7 +761,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Form"
+                "$ref": "#/components/schemas/FormUpdate"
               }
             }
           }
@@ -789,7 +789,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Form"
                 }
               }
             }
@@ -1032,7 +1032,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Form"
+                "$ref": "#/components/schemas/FormCreate"
               }
             }
           }
@@ -1060,7 +1060,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Form"
                 }
               }
             }
@@ -1186,7 +1186,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Group"
+                  "$ref": "#/components/schemas/GroupDetails"
                 }
               }
             }
@@ -1490,7 +1490,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Role"
+                  "$ref": "#/components/schemas/RoleDetails"
                 }
               }
             }
@@ -2238,18 +2238,18 @@
       }
     },
     "/api/data/question/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "description": "UUID of entity",
-          "required": true,
-          "schema": {
-            "$ref": "#/components/schemas/UUID"
+        "get": {
+          "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "UUID of entity",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UUID"
+            }
           }
-        }
-      ],
-      "get": {
+        ],
         "tags": [
           "data"
         ],
@@ -2326,7 +2326,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Question"
+                "$ref": "#/components/schemas/QuestionUpdate"
               }
             }
           }
@@ -2354,7 +2354,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Question"
                 }
               }
             }
@@ -2469,7 +2469,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Input"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Input"
+                  }
                 }
               }
             }
@@ -2544,7 +2547,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Input"
                 }
               }
             }
@@ -2633,7 +2636,7 @@
         {
           "name": "id",
           "in": "path",
-          "description": "UUID of entity",
+          "description": "UUID of question",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/UUID"
@@ -2642,7 +2645,7 @@
         {
           "name": "controlId",
           "in": "path",
-          "description": "UUID of entity",
+          "description": "Control id for the desired input",
           "required": true,
          "schema": {
             "type": "string"
@@ -2726,7 +2729,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Input"
+                "$ref": "#/components/schemas/InputUpdate"
               }
             }
           }
@@ -2754,7 +2757,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Input"
                 }
               }
             }
@@ -2843,7 +2846,7 @@
         {
           "name": "id",
           "in": "path",
-          "description": "UUID of entity",
+          "description": "UUID of question",
           "required": true,
           "schema": {
             "$ref": "#/components/schemas/UUID"
@@ -2862,7 +2865,10 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Input"
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/InputUpdate"
+                }
               }
             }
           }
@@ -2890,7 +2896,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/QuestionInputs"
                 }
               }
             }
@@ -3304,7 +3310,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Submission"
+                  "$ref": "#/components/schemas/SubmissionOperationAll"
                 }
               }
             }
@@ -3696,7 +3702,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Submission"
+                  "$ref": "#/components/schemas/SubmissionStepReview"
                 }
               }
             }
@@ -3819,6 +3825,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CodeValidation"
                 }
               }
             }
