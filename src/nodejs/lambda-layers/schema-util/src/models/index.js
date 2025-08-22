@@ -1,6 +1,7 @@
 const Action = require('./action.js');
 const ActionInvokeRequest = require('./action-invoke-request.js');
 const ActionRegisterRequest = require('./action-register-request.js');
+const BasicResponse = require('./basic-response.js');
 const DAAC = require('./daac.js');
 const DataRequest = require('./data-request.js');
 const Form = require('./form.js');
@@ -79,6 +80,7 @@ const models = {
   Action,
   ActionInvokeRequest,
   ActionRegisterRequest,
+  BasicResponse,
   DAAC,
   DataRequest,
   Form,

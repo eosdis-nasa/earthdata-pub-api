@@ -8319,6 +8319,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicResponse"
+                }
+              }
             }
           }
         },
@@ -8435,6 +8442,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicResponse"
                 }
               }
             }
