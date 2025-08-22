@@ -34,7 +34,9 @@ module.exports.model = (path) => ({
                 }
             }
         },
-        required: { type: 'boolean' }
+        required: { type: 'boolean' },
+        old_question_id: { $ref: `#${path}UUID` },
+        old_control_id: { type: 'string' }
     }
 
 });

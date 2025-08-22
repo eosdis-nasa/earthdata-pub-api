@@ -2,10 +2,15 @@ const Action = require('./action.js');
 const ActionInvokeRequest = require('./action-invoke-request.js');
 const ActionRegisterRequest = require('./action-register-request.js');
 const BasicResponse = require('./basic-response.js');
+const CodeValidation = require('./code-validation.js');
 const DAAC = require('./daac.js');
 const DataRequest = require('./data-request.js');
 const Form = require('./form.js');
+const FormCreate = require('./form-create.js');
+const FormSections = require('./form-sections.js');
+const FormUpdate = require('./form-update.js');
 const Group = require('./group.js');
+const GroupDetails = require('./group-details.js');
 const LogEvent = require('./log-event.js');
 const LogEventList = require('./log-event-list.js');
 const LogEventRequest = require('./log-event-request.js');
@@ -25,14 +30,18 @@ const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
 const QuestionAdd = require('./question-add.js');
 const QuestionInputs = require('./question-inputs.js');
+const QuestionUpdate = require('./question-update.js');
 const Input = require('./input.js');
+const InputUpdate = require('./input-update.js');
 const Role = require('./role.js');
+const RoleDetails = require('./role-details.js');
 const Service = require('./service.js');
 const StepReview = require('./step-review.js');
 const StepReviewCreateDelete = require('./stepreview-create-delete.js');
 const StepReviewCreateResponse = require('./step-review-create-resp.js');
 const StepReviewDeleteResponse = require('./step-review-delete-resp.js');
 const Submission = require('./submission.js');
+const SubmissionOperationAll = require('./submission-operation-all.js');
 const SubmissionDetails = require('./submission-details.js');
 const SubmissionOperationAddContributors = require('./submission-operation-add-contributors.js');
 const SubmissionOperationApply = require('./submission-operation-apply.js');
@@ -50,6 +59,7 @@ const SubmissionOperationEsdisReview = require('./submission-operation-esdis-rev
 const SubmissionInitializationRequest = require('./submission-initialization-request.js');
 const SubmissionState = require('./submission-state.js');
 const SubmissionStatus = require('./submission-status.js');
+const SubmissionStepReview = require('./submission-step-review.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const User = require('./user.js');
@@ -81,10 +91,15 @@ const models = {
   ActionInvokeRequest,
   ActionRegisterRequest,
   BasicResponse,
+  CodeValidation,
   DAAC,
   DataRequest,
   Form,
+  FormCreate,
+  FormSections,
+  FormUpdate,
   Group,
+  GroupDetails,
   LogEvent,
   LogEventList,
   LogEventRequest,
@@ -104,14 +119,18 @@ const models = {
   QuestionList,
   QuestionAdd,
   QuestionInputs,
+  QuestionUpdate,
   Input,
+  InputUpdate,
   Role,
+  RoleDetails,
   Service,
   StepReview,
   StepReviewCreateDelete,
   StepReviewCreateResponse,
   StepReviewDeleteResponse,
   Submission,
+  SubmissionOperationAll,
   SubmissionDetails,
   SubmissionOperationAddContributors,
   SubmissionOperationApply,
@@ -130,6 +149,7 @@ const models = {
   SubmissionOperationAssignDaacs,
   SubmissionState,
   SubmissionStatus,
+  SubmissionStepReview,
   Subscription,
   User,
   UserAllFields,
