@@ -9,7 +9,6 @@ module.exports.model = () => ({
     error: {
       description: 'Message describing the error encountered',
       type: 'string'
-    },
-
+    }
   }
 });

@@ -8,7 +8,7 @@ module.exports.model = (path) => ({
     },
     action: {
       description: 'UUID of Workflow to apply to Submission',
-      type: 'string', 
+      type: 'string',
       enum: ['approve', 'reject', 'reassign']
     }
   }

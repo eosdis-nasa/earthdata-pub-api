@@ -8,8 +8,8 @@ module.exports.model = (path) => ({
     daac_id: { $ref: `#${path}UUID` },
     conversation_id: { $ref: `#${path}UUID` },
     contributor_ids: {
-        type: 'array',
-        items: { $ref: `#${path}UUID` }
+      type: 'array',
+      items: { $ref: `#${path}UUID` }
     },
     created_at: { type: 'string' },
     data_producer_name: { type: 'string' },

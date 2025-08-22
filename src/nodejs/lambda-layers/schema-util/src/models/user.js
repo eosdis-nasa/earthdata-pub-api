@@ -11,22 +11,19 @@ module.exports.model = (path) => ({
     email: {
       type: 'string'
     },
-    refresh_token: { 
+    refresh_token: {
       type: 'string'
     },
-    registered: { 
-      type: 'string' 
+    registered: {
+      type: 'string'
     },
-    last_login: { 
-      type: 'string' 
+    last_login: {
+      type: 'string'
     },
-    detailed: { 
-      type: 'boolean' 
+    detailed: {
+      type: 'boolean'
     }
   }
 });
 
 module.exports.refs = ['UUID'];
-
-
-  

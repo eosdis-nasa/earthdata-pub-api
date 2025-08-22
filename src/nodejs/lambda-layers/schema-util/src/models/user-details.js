@@ -9,7 +9,7 @@ module.exports.model = (path) => ({
     user_groups: {
       type: 'array',
       items: { type: 'string' }
-    }, 
+    },
     user_roles: {
       type: 'array',
       items: { type: 'string' }

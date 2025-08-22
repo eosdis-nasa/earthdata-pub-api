@@ -8,7 +8,7 @@ module.exports.model = (path) => ({
     workflow_id: { $ref: `#${path}UUID` },
     step_name: { type: 'string' },
     last_change: { type: 'string' },
-    step: { 
+    step: {
       type: 'object',
       properties: {
         data: { type: 'object' },
@@ -20,8 +20,8 @@ module.exports.model = (path) => ({
     },
     workflows: {
       type: 'array',
-      items: { 
-        type: 'object', 
+      items: {
+        type: 'object',
         properties: {
           start_time: { type: 'string' },
           workflow_id: { $ref: `#${path}UUID` },

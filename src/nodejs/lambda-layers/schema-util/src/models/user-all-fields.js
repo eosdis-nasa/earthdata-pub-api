@@ -10,15 +10,15 @@ module.exports.model = (path) => ({
     user_groups: {
       type: 'array',
       items: { $ref: `#${path}Group` }
-    }, 
+    },
     user_roles: {
       type: 'array',
       items: { $ref: `#${path}Role` }
-    }, 
+    },
     permissions: {
       type: 'array',
       items: { type: 'string' }
-    }, 
+    },
     user_privileges: {
       type: 'array',
       items: { type: 'string' }

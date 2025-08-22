@@ -31,13 +31,13 @@ module.exports.model = (path) => ({
       properties: {
         id: { $ref: `#${path}UUID` },
         name: { type: 'string' },
-        steps: { 
-          type: 'array', 
+        steps: {
+          type: 'array',
           items: { type: 'string' }
         }
       }
     },
-    step_data: { 
+    step_data: {
       type: 'object',
       properties: {
         data: { type: 'object' },
@@ -52,7 +52,7 @@ module.exports.model = (path) => ({
     },
     forms: {
       type: 'array',
-      items: { type: 'object'}
+      items: { type: 'object' }
     },
     codes: {
       type: 'array',
