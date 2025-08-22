@@ -3963,7 +3963,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($elem = $util.parseJson($input.json('$'))) {\"operation\":\"initialize\", #foreach($field in $elem.keySet()) \"$field\": $input.json('$.$field') #if($foreach.hasNext),#end #end, \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
+            "application/json": "#set($body = $util.parseJson($input.body)) {\"operation\":\"initialize\", #if($body.containsKey('code'))\"code\":\"$body.get('code')\",#end #if ($body.containsKey('formData'))\"formData\":$input.json('$.formData'), #end \"context\":{\"user_id\":\"$context.authorizer.claims.sub\", \"user_email\": \"$context.authorizer.claims.email\"}}"
           },
           "responses": {
             "default": {
