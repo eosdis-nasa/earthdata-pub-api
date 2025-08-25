@@ -545,7 +545,7 @@ resource "aws_lambda_permission" "oidc_authorizer" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.oidc_authorizer.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/oidc_authorizer/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/authorizers/*"
 }
 
 # RDS Backup Lambda
@@ -716,7 +716,7 @@ resource "aws_lambda_permission" "service_authorizer" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.service_authorizer.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/service_authorizer/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/authorizers/*"
 }
 
 # Submission Lambda
