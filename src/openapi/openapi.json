@@ -4065,7 +4065,7 @@
         },
         "security": [
           {
-            "Cognito_Authorizer": ["openid"]
+            "OIDC_Authorizer": []
           }
         ],
         "x-amazon-apigateway-integration": {
@@ -14948,6 +14948,20 @@
           "authorizerUri" : "${service_authorizer_lambda_arn}",
           "authorizerPayloadFormatVersion" : "1.0",
           "identitySource" : "method.request.header.authorization, method.request.header.submissionid",
+          "authorizerResultTtlInSeconds" : "300"
+        }
+      },
+      "OIDC_Authorizer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "This authorizer is used to authorize against IDFS",
+        "x-amazon-apigateway-authtype" : "custom",
+        "x-amazon-apigateway-authorizer" : {
+          "type" : "request",
+          "authorizerUri" : "${oidc_authorizer_lambda_arn}",
+          "authorizerPayloadFormatVersion" : "1.0",
+          "identitySource" : "method.request.header.authorization",
           "authorizerResultTtlInSeconds" : "300"
         }
       }

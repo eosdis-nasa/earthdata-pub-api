@@ -83,6 +83,7 @@ module "lambda_functions" {
   auth_client_id = var.auth_client_id
   auth_client_secret = var.auth_client_secret
   auth_client_path = var.auth_client_path
+  auth_introspect_path = var.auth_introspect_path
   meditor_service_username = var.meditor_service_username
   meditor_service_password = var.meditor_service_password
   ses_from_email = var.ses_from_email
@@ -118,7 +119,8 @@ module "apigateway_endpoints" {
   vpc_endpoint_id = var.vpc_endpoint_id
   region = var.region
   service_authorizer_lambda_arn = module.lambda_functions.service_authorizer_lambda_arn
-  mfa_auth_lambda_arn = module.lambda_functions.mfa_auth_lambda_arn
+  mfa_auth_lambda_arn = module.lambda_functions.mfa_auth_lambda_arn,
+  oidc_authorizer_lambda_arn = module.lambda_functions.oidc_authorizer_lambda_arn
 }
 
 module "rds" {

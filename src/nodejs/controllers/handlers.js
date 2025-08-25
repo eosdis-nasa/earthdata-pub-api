@@ -21,3 +21,4 @@ module.exports.rdsBackup = require('../lambda-handlers/rds-backup').handler;
 module.exports.workflow = require('../lambda-handlers/workflow.js').handler;
 module.exports.fileUpload = require('../lambda-handlers/file-upload.js').handler;
 module.exports.form = require('../lambda-handlers/form.js').handler;
+module.exports.oidcAuthorizer = require('../lambda-handlers/oidc-authorizer.js').handler;
