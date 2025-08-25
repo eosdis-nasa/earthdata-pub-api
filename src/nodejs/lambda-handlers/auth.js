@@ -6,11 +6,11 @@ const db = require('database-util');
 
 const auth = require('auth-util');
 
-const {
-  CognitoIdentityProviderClient,
-  AssociateSoftwareTokenCommand,
-  GetUserCommand
-} = require('@aws-sdk/client-cognito-identity-provider');
+// const {
+//   CognitoIdentityProviderClient,
+//   AssociateSoftwareTokenCommand,
+//   GetUserCommand
+// } = require('@aws-sdk/client-cognito-identity-provider');
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);

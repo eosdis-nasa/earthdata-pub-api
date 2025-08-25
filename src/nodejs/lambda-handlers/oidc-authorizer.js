@@ -17,19 +17,20 @@ function encodeBase64(data) {
 }
 
 const validateAuthentication = async (token) => {
-    const basic_auth = encodeBase64(`${clientId}:${clientSecret}`);
-    const response = await fetch(`${providerUrl}${introspectionPath}`, {
-        method: 'POST',
-        headers: { 'Authorization': `Basic ${basic_auth}` },
-        body: new URLSearchParams({token})
-    });
-    const response_text = await response.text()
-    try {
-      return JSON.parse(response_text);
-    } catch(err) {
-      console.log(`Invalid JSON response: ${response_text}`);
-      return { active: false }
-    }
+  const basicAuth = encodeBase64(`${clientId}:${clientSecret}`);
+  const response = await fetch(`${providerUrl}${introspectionPath}`, {
+    method: 'POST',
+    headers: { Authorization: `Basic ${basicAuth}` },
+    body: new URLSearchParams({ token })
+  });
+  const responseText = await response.text();
+  try {
+    return JSON.parse(responseText);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log(`Invalid JSON response: ${responseText}`);
+    return { active: false };
+  }
 };
 
 const generatePolicy = (principalId, effect, resource) => {
@@ -53,15 +54,15 @@ const generatePolicy = (principalId, effect, resource) => {
 const generateAllow = (principalId, resource) => generatePolicy(principalId, 'Allow', resource);
 
 exports.handler = async (event, context, callback) => {
-    console.info(`[EVENT]\n${JSON.stringify(event)}`);
-    const { headers } = event;
-    const accessToken = (headers.Authorization || headers.authorization || '').split(' ')[1] || '';
+  console.info(`[EVENT]\n${JSON.stringify(event)}`);
+  const { headers } = event;
+  const accessToken = (headers.Authorization || headers.authorization || '').split(' ')[1] || '';
 
-    const userInfo = await validateAuthentication(accessToken);
-  
-    if (userInfo.active) {
-        callback(null, generateAllow(`oidc-authorizer`, event.methodArn));
-    } else {
-        callback('Unauthorized');
-    }
+  const userInfo = await validateAuthentication(accessToken);
+
+  if (userInfo.active) {
+    callback(null, generateAllow('oidc-authorizer', event.methodArn));
+  } else {
+    callback('Unauthorized');
+  }
 };
