@@ -119,7 +119,7 @@ module "apigateway_endpoints" {
   vpc_endpoint_id = var.vpc_endpoint_id
   region = var.region
   service_authorizer_lambda_arn = module.lambda_functions.service_authorizer_lambda_arn
-  mfa_auth_lambda_arn = module.lambda_functions.mfa_auth_lambda_arn,
+  mfa_auth_lambda_arn = module.lambda_functions.mfa_auth_lambda_arn
   oidc_authorizer_lambda_arn = module.lambda_functions.oidc_authorizer_lambda_arn
 }
 
