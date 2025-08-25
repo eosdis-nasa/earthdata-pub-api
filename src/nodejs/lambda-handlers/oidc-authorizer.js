@@ -61,7 +61,7 @@ exports.handler = async (event, context, callback) => {
   const userInfo = await validateAuthentication(accessToken);
 
   if (userInfo.active) {
-    callback(null, generateAllow('oidc-authorizer', event.methodArn));
+    callback(null, generateAllow(userInfo.sub, event.methodArn));
   } else {
     callback('Unauthorized');
   }
