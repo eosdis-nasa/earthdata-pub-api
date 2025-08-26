@@ -1,15 +1,14 @@
 module.exports.model = (path) => ({
-  description: 'Request body sent for ESDIS review ',
+  description: 'Request body sent for review ',
   type: 'object',
   properties: {
     id: {
       description: 'UUID of the Submission on which to execute operation',
       $ref: `#${path}UUID`
     },
-    action: {
-      description: 'UUID of Workflow to apply to Submission',
-      type: 'string',
-      enum: ['approve', 'reject', 'reassign']
+    approve: {
+      description: 'Boolean value indicating user\'s decision to approve or not',
+      type: 'boolean'
     }
   }
 });
