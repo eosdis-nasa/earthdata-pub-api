@@ -1,13 +1,14 @@
 module.exports.model = (path) => ({
-  description: 'A series of steps for processing a Submission',
+  description: 'A template for updating a form',
   type: 'object',
   properties: {
-    id: { $ref: `#${path}UUID` },
     short_name: { type: 'string' },
     version: { type: 'number' },
     long_name: { type: 'string' },
     description: { type: 'string' },
-    created_at: { type: 'string' }
+    daac_only: { type: 'boolean' },
+    original_shortname: { type: 'string' },
+    original_version: { type: 'number' }
   }
 });
 
