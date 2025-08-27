@@ -214,7 +214,7 @@ const mapEDPubToUmmc = async (formData) => {
     spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles = spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.concat(tmpArr);
   } else {
     // Otherwise, remove empty metadata field
-    for (let element in spatialExtent) delete spatialExtent[element];
+    Object.keys(spatialExtent).forEach((key) => { delete spatialExtent[key]; });
   }
 
   // Delete spatial extent information
