@@ -20,20 +20,6 @@ async function handler(event) {
     const user = await db.user.findById({ id: decoded.sub });
     if (process.env.AUTH_PROVIDER_URL === 'http://localhost:8080') return { token: access, state: event.state, user };
     const userResp = { ...user, ...{ issuer: process.env.AUTH_PROVIDER_URL, username: decoded['cognito:username'] } };
-    // TODO - Replace with IDFS based MFA
-    // const idp = new CognitoIdentityProviderClient();
-    // const getUserCommand = new GetUserCommand({
-    //   AccessToken: access
-    // });
-    // let resp = { token: access, state: event.state, user: userResp };
-    // if (!('UserMFASettingList' in await idp.send(getUserCommand))) {
-    //   const AssociateTokenCommand = new AssociateSoftwareTokenCommand({
-    //     AccessToken: access
-    //   });
-    //   const { SecretCode } = await idp.send(AssociateTokenCommand);
-    //   resp = { ...resp, ...{ mfaSecretCode: SecretCode } };
-    // }
-    // return resp;
     return { token: access, state: event.state, user: userResp };
   }
   if (event.refresh && event.context) {
