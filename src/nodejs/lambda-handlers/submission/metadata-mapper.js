@@ -208,7 +208,15 @@ const mapEDPubToUmmc = async (formData) => {
 
   // Strip nulls and empty objects
   tmpArr = tmpArr.filter((value) => Object.keys(stripNullsFromObject(value)).length !== 0);
-  spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles = spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.concat(tmpArr);
+
+  if (tmpArr.length > 0) {
+    // If coordinate array not empty, populate metadata object
+    spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles = spatialExtent.SpatialExtent.HorizontalSpatialDomain.Geometry.BoundingRectangles.concat(tmpArr);
+  } else {
+    // Otherwise, remove empty metadata field
+    for (let element in spatialExtent) delete spatialExtent[element];
+  }
+
   // Delete spatial extent information
   ['west', 'north', 'east', 'south'].forEach((direction) => {
     [1, 2, 3].forEach((directionSet) => {
@@ -630,14 +638,6 @@ const mapEDPubToUmmc = async (formData) => {
     ]
   };
 
-  const metadataSpecification = {
-    MetadataSpecification: {
-      URL: 'https://cdn.earthdata.nasa.gov/umm/collection/v1.17.0',
-      Name: 'UMM-C',
-      Version: '1.17.0'
-    }
-  };
-
   // Added to capture DAAC specific questions
   Object.keys(formData).forEach((extra) => {
     additionalAttributes.push({
@@ -662,8 +662,7 @@ const mapEDPubToUmmc = async (formData) => {
     ...(temporalExtent || {}),
     ...(spatialExtent || {}),
     ...(additionalAttributes ? { AdditionalAttributes: additionalAttributes } : {}),
-    ...(metadataDates || {}),
-    ...(metadataSpecification || {})
+    ...(metadataDates || {})
   }));
 };
 
