@@ -9,11 +9,18 @@ const auth = require('auth-util');
 const {
   CognitoIdentityProviderClient,
   AssociateSoftwareTokenCommand,
-  GetUserCommand
+  GetUserCommand,
+  GlobalSignOutCommand
 } = require('@aws-sdk/client-cognito-identity-provider');
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
+  if (event.params && event.params.logout) {
+    const idp = new CognitoIdentityProviderClient();
+    await idp.send(new GlobalSignOutCommand({ AccessToken: event.token }));
+    return { ok: true, message: 'User signed out globally' };
+  }
+
   if (event.code) {
     const { access, refresh, decoded } = await auth.getToken(event);
     await db.user.loginUser({ ...decoded, refresh_token: refresh });
