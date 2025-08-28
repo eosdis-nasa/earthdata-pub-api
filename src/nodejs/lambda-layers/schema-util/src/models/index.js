@@ -1,6 +1,7 @@
 const Action = require('./action.js');
 const ActionInvokeRequest = require('./action-invoke-request.js');
 const ActionRegisterRequest = require('./action-register-request.js');
+const BasicResponse = require('./basic-response.js');
 const CodeValidation = require('./code-validation.js');
 const DAAC = require('./daac.js');
 const DataRequest = require('./data-request.js');
@@ -30,37 +31,57 @@ const QuestionList = require('./question-list.js');
 const QuestionAdd = require('./question-add.js');
 const QuestionInputs = require('./question-inputs.js');
 const QuestionUpdate = require('./question-update.js');
-const Input = require('./input.js')
+const Input = require('./input.js');
 const InputUpdate = require('./input-update.js');
 const Role = require('./role.js');
 const RoleDetails = require('./role-details.js');
 const Service = require('./service.js');
-const StepReviewCreateDelete = require('./stepreview-create-delete.js')
+const StepReview = require('./step-review.js');
+const StepReviewCreateDelete = require('./stepreview-create-delete.js');
+const StepReviewCreateResponse = require('./step-review-create-resp.js');
+const StepReviewDeleteResponse = require('./step-review-delete-resp.js');
 const Submission = require('./submission.js');
 const SubmissionOperationAll = require('./submission-operation-all.js');
-const SubmissionOperationMapMetadata = require('./submission-operation-map-metadata.js');
+const SubmissionDetails = require('./submission-details.js');
+const SubmissionOperationAddContributors = require('./submission-operation-add-contributors.js');
+const SubmissionOperationApply = require('./submission-operation-apply.js');
+const SubmissionOperationChangeStep = require('./submission-operation-change-step.js');
+const SubmissionOperationCopySubmission = require('./submission-operation-copy-submission.js');
+const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js');
+const SubmissionOperationId = require('./submission-operation-id.js');
+const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
+const SubmissionOperationRemoveContributor = require('./submission-operation-remove-contributor.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
+const SubmissionOperationReview = require('./submission-operation-review.js');
+const SubmissionOperationSubmit = require('./submission-operation-submit.js');
 const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
 const SubmissionOperationEsdisReview = require('./submission-operation-esdis-review.js');
 const SubmissionInitializationRequest = require('./submission-initialization-request.js');
+const SubmissionState = require('./submission-state.js');
+const SubmissionStatus = require('./submission-status.js');
 const SubmissionStepReview = require('./submission-step-review.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const User = require('./user.js');
+const UserAllFields = require('./user-all-fields.js');
+const UserDetails = require('./user-details.js');
 const UUID = require('./uuid.js');
 const Version = require('./version.js');
 const Workflow = require('./workflow.js');
 const WorkflowActionStep = require('./workflow-action-step.js');
 const WorkflowCloseStep = require('./workflow-close-step.js');
+const WorkflowCreate = require('./workflow-create.js');
 const WorkflowFormStep = require('./workflow-form-step.js');
 const WorkflowInitStep = require('./workflow-init-step.js');
 const WorkflowReviewStep = require('./workflow-review-step.js');
 const WorkflowServiceStep = require('./workflow-service-step.js');
+const WorkflowSteps = require('./workflow-steps.js');
 const UMMC = require('./umm-c.js');
 const UMMCMN = require('./umm-cmn.js');
 const Upload = require('./upload.js');
 const GroupUpload = require('./group-upload.js');
 const Step = require('./step.js');
+const StepUpdate = require('./step-update.js');
 const Section = require('./section.js');
 const AttachmentUpload = require('./attachment-upload.js');
 const StepUpload = require('./step-upload.js');
@@ -69,6 +90,7 @@ const models = {
   Action,
   ActionInvokeRequest,
   ActionRegisterRequest,
+  BasicResponse,
   CodeValidation,
   DAAC,
   DataRequest,
@@ -103,30 +125,50 @@ const models = {
   Role,
   RoleDetails,
   Service,
+  StepReview,
   StepReviewCreateDelete,
+  StepReviewCreateResponse,
+  StepReviewDeleteResponse,
   Submission,
   SubmissionOperationAll,
-  SubmissionOperationMapMetadata,
+  SubmissionDetails,
+  SubmissionOperationAddContributors,
+  SubmissionOperationApply,
+  SubmissionOperationChangeStep,
+  SubmissionOperationCopySubmission,
+  SubmissionOperationCustomResponse,
+  SubmissionOperationId,
+  SubmissionOperationMetadata,
+  SubmissionOperationRemoveContributor,
   SubmissionOperationRequest,
+  SubmissionOperationReview,
+  SubmissionOperationSubmit,
   SubmissionOperationEsdisReview,
   SubmissionInitializationRequest,
   SubscribeRequest,
   SubmissionOperationAssignDaacs,
+  SubmissionState,
+  SubmissionStatus,
   SubmissionStepReview,
   Subscription,
   User,
+  UserAllFields,
+  UserDetails,
   UUID,
   Version,
   Workflow,
   WorkflowActionStep,
   WorkflowCloseStep,
+  WorkflowCreate,
   WorkflowFormStep,
   WorkflowInitStep,
   WorkflowReviewStep,
   WorkflowServiceStep,
+  WorkflowSteps,
   Upload,
   GroupUpload,
   Step,
+  StepUpdate,
   Section,
   AttachmentUpload,
   StepUpload

@@ -738,12 +738,9 @@ module.exports.submissionOperationInitialize = function submissionOperationIniti
 };
 
 module.exports.submissionOperationActive = function submissionOperationActive(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
   const lambdaEvent = {
     operation: 'active',
-    context: { user_id: req.user_id },
-    ...payload.value
+    context: { user_id: req.user_id }
   };
   handlers.submission(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
@@ -751,12 +748,9 @@ module.exports.submissionOperationActive = function submissionOperationActive(re
 };
 
 module.exports.submissionOperationInactive = function submissionOperationInactive(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
   const lambdaEvent = {
     operation: 'inactive',
-    context: { user_id: req.user_id },
-    ...payload.value
+    context: { user_id: req.user_id }
   };
   handlers.submission(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);

@@ -1,20 +1,19 @@
 module.exports.model = (path) => ({
-  description: 'An archival request submission.',
+  description: 'Submission information as returned from the submission table',
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
+    name: { type: 'string' },
+    initiator_edpuser_id: { $ref: `#${path}UUID` },
+    daac_id: { $ref: `#${path}UUID` },
     conversation_id: { $ref: `#${path}UUID` },
-    workflow_id: { $ref: `#${path}UUID` },
-    workflow_name: { type: 'string' },
-    daac_id: { type: 'string' },
-    step_name: { type: 'string' },
-    step: { type: 'string' },
+    contributor_ids: {
+      type: 'array',
+      items: { $ref: `#${path}UUID` }
+    },
     created_at: { type: 'string' },
-    last_change: { type: 'string' },
-    metadata: { type: 'object' },
-    action_data: { type: 'object' },
-    form_data: { type: 'object' },
-    lock: { type: 'boolean' }
+    data_producer_name: { type: 'string' },
+    hidden: { type: 'boolean' }
   }
 });
 
