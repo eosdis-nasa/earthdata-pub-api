@@ -327,12 +327,6 @@ const getRefreshToken = () => sql.select({
   }
 });
 
-const clearRefreshToken = () => `
-UPDATE edpuser SET
-refresh_token = NULL
-WHERE edpuser.id = {{id}}
-RETURNING *`;
-
 const addRole = (params) => sql.insert({
   table: 'edpuser_edprole',
   values: {

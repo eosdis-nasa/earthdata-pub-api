@@ -1129,18 +1129,6 @@ module.exports.refreshToken = function refreshToken(req, res, next) {
   });
 };
 
-module.exports.invalidateToken = function invalidateToken(req, res, next) {
-  const { params } = req.swagger;
-  console.log('params', params)
-  const lambdaEvent = {
-    refresh: true,
-    context: { user_id: req.user_id, access: params.payload.value.token , logout : true}
-  };
-  handlers.auth(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.getVersion = function getVersion(req, res, next) {
   const lambdaEvent = {};
   handlers.version(lambdaEvent).then((body) => {

@@ -30,7 +30,6 @@ module.exports.applyWorkflow = one;
 module.exports.rollback = one;
 module.exports.loginUser = one;
 module.exports.getRefreshToken = one;
-module.exports.clearRefreshToken = one;
 module.exports.refreshUser = one;
 module.exports.addRole = one;
 module.exports.addRoles = one;
