@@ -501,7 +501,6 @@ module.exports.find = find;
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.getRefreshToken = getRefreshToken;
-module.exports.clearRefreshToken = clearRefreshToken;
 module.exports.findByGroupId = findByGroupId;
 module.exports.findByGroupName = findByGroupName;
 module.exports.loginUser = loginUser;
