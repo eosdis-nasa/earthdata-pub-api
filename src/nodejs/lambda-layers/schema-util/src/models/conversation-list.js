@@ -1,5 +1,5 @@
 module.exports.model = (path) => ({
-  description: 'Response returned from removing one or more reviewers to a submission step',
+  description: 'Response returned from requesting a list of conversations',
   type: 'array',
   items: {
     type: 'object',
