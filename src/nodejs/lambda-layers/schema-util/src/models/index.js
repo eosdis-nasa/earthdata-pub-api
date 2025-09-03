@@ -3,8 +3,10 @@ const ActionInvokeRequest = require('./action-invoke-request.js');
 const ActionRegisterRequest = require('./action-register-request.js');
 const BasicResponse = require('./basic-response.js');
 const CodeValidation = require('./code-validation.js');
+const Conversation = require('./conversation.js');
 const ConversationAddRemoveUser = require('./conversation-add-remove-user.js');
 const ConversationEdpuser = require('./conversation-edpuser.js');
+const ConversationList = require('./conversation-list.js');
 const DAAC = require('./daac.js');
 const DataRequest = require('./data-request.js');
 const Form = require('./form.js');
@@ -94,8 +96,10 @@ const models = {
   ActionRegisterRequest,
   BasicResponse,
   CodeValidation,
+  Conversation,
   ConversationAddRemoveUser,
   ConversationEdpuser,
+  ConversationList,
   DAAC,
   DataRequest,
   Form,
