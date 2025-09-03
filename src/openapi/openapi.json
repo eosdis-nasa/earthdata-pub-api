@@ -8558,7 +8558,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/ConversationAddRemoveUser"
               }
             }
           }
@@ -8580,6 +8580,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationEdpuser"
                 }
               }
             }
@@ -8668,15 +8675,15 @@
         "tags": [
           "notification"
         ],
-        "summary": "Add a user to a conversation.",
-        "description": "Add a user to a conversation.",
+        "summary": "Remove a user from a conversation.",
+        "description": "Remove a user from a conversation.",
         "operationId": "notificationRemoveUser",
         "requestBody": {
           "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/ConversationAddRemoveUser"
               }
             }
           }
@@ -8698,6 +8705,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicResponse"
                 }
               }
             }
