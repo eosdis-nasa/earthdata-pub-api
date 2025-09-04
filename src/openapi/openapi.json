@@ -15117,7 +15117,7 @@
           "authorizerUri" : "${service_authorizer_lambda_arn}",
           "authorizerPayloadFormatVersion" : "1.0",
           "identitySource" : "method.request.header.authorization, method.request.header.submissionid",
-          "authorizerResultTtlInSeconds" : "300"
+          "authorizerResultTtlInSeconds" : "0"
         }
       },
       "OIDC_Authorizer": {
@@ -15131,7 +15131,7 @@
           "authorizerUri" : "${oidc_authorizer_lambda_arn}",
           "authorizerPayloadFormatVersion" : "1.0",
           "identitySource" : "method.request.header.authorization",
-          "authorizerResultTtlInSeconds" : "300"
+          "authorizerResultTtlInSeconds" : "0"
         }
       }
     },
