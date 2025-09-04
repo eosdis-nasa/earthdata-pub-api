@@ -9339,6 +9339,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteScope"
+                }
+              }
             }
           }
         },
@@ -9433,7 +9440,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NoteRemoveViewer"
+                "$ref": "#/components/schemas/NoteRemoveViewerRole"
               }
             }
           }
@@ -9455,6 +9462,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteScope"
                 }
               }
             }
