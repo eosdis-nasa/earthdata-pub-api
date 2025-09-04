@@ -3,7 +3,9 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
-    service_name: { type: 'string' },
+    short_name: { type: 'string' },
+    long_name: { type: 'string'},
+    description: { type: 'string' },
     endpoint: { type: 'string' },
     options: { type: 'object' },
     headers: { type: 'object' },
