@@ -4,7 +4,7 @@ module.exports.model = (path) => ({
   properties: {
     submission_id: { $ref: `#${path}UUID` },
     action_id: { $ref: `#${path}UUID` },
-    input: { type: 'object' }
+    data: { type: 'object' }
   }
 });
 

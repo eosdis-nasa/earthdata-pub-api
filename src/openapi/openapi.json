@@ -5534,7 +5534,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationId"
+                "$ref": "#/components/schemas/Id"
               }
             }
           }
@@ -5659,7 +5659,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationId"
+                "$ref": "#/components/schemas/Id"
               }
             }
           }
@@ -5909,7 +5909,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationId"
+                "$ref": "#/components/schemas/Id"
               }
             }
           }
@@ -6415,7 +6415,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationId"
+                "$ref": "#/components/schemas/Id"
               }
             }
           }
@@ -8558,7 +8558,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/ConversationAddRemoveUser"
               }
             }
           }
@@ -8580,6 +8580,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationEdpuser"
                 }
               }
             }
@@ -8668,15 +8675,15 @@
         "tags": [
           "notification"
         ],
-        "summary": "Add a user to a conversation.",
-        "description": "Add a user to a conversation.",
+        "summary": "Remove a user from a conversation.",
+        "description": "Remove a user from a conversation.",
         "operationId": "notificationRemoveUser",
         "requestBody": {
           "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/ConversationAddRemoveUser"
               }
             }
           }
@@ -8698,6 +8705,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicResponse"
                 }
               }
             }
@@ -8806,6 +8820,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationList"
                 }
               }
             }
@@ -8943,6 +8964,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversationNotes"
+                }
+              }
             }
           }
         },
@@ -9059,6 +9087,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteScope"
                 }
               }
             }
@@ -9179,6 +9214,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteScope"
+                }
+              }
             }
           }
         },
@@ -9297,6 +9339,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteScope"
+                }
+              }
             }
           }
         },
@@ -9391,7 +9440,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NoteRemoveViewer"
+                "$ref": "#/components/schemas/NoteRemoveViewerRole"
               }
             }
           }
@@ -9413,6 +9462,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoteScope"
                 }
               }
             }
@@ -10172,18 +10228,6 @@
       }
     },
     "/api/user/{operation}": {
-      "parameters": [
-        {
-          "name": "operation",
-          "in": "path",
-          "description": "Which user operation to perform.",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "add_permission", "create", "get_users", "update_username"]
-          }
-        }
-      ],
       "get": {
         "tags": [
           "data"
@@ -10251,6 +10295,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "operation",
+            "in": "path",
+            "description": "Which user operation to perform.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["find"]
+            }
           }
         ],
         "responses": {
@@ -10276,10 +10330,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/User"
-                  }
+                  "oneOf": [
+                    {"$ref": "#/components/schemas/UserAllFields"},
+                    {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/UserAllFields"}
+                    }
+                  ]
                 }
               }
             }
@@ -10321,12 +10378,31 @@
         "summary": "Perform an operation on a User",
         "description": "Perform an operation for a User account, i.e. add or remove a Group, add or remove a Role.",
         "operationId": "userOperationPost",
+        "parameters": [
+          {
+            "name": "operation",
+            "in": "path",
+            "description": "Which user operation to perform.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["find", "add_group", "remove_group", "add_role", "remove_role", "create", "get_users", "update_username"]
+            }
+          }
+        ],
         "requestBody": {
           "x-name": "payload",
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "oneOf": [
+                  {"$ref": "#/components/schemas/Id"},
+                  {"$ref": "#/components/schemas/UserAddRemoveGroup"},
+                  {"$ref": "#/components/schemas/UserAddRemoveRole"},
+                  {"$ref": "#/components/schemas/UserCreate"},
+                  {"$ref": "#/components/schemas/UserGetUsersRequest"},
+                  {"$ref": "#/components/schemas/UserUpdateName"}
+                ]
               }
             }
           }
@@ -10348,6 +10424,23 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {"$ref": "#/components/schemas/UserAllFields"},
+                    {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/UserAllFields"}
+                    },
+                    {"$ref": "#/components/schemas/UserGroup"},
+                    {"$ref": "#/components/schemas/UserRole"},
+                    {"$ref": "#/components/schemas/User"},
+                    {"$ref": "#/components/schemas/UserGetUsersResponse"}
+                  ]
                 }
               }
             }
@@ -12152,7 +12245,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/MetricsEventCount"
                 }
               }
             }

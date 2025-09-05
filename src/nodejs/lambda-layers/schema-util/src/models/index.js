@@ -3,6 +3,11 @@ const ActionInvokeRequest = require('./action-invoke-request.js');
 const ActionRegisterRequest = require('./action-register-request.js');
 const BasicResponse = require('./basic-response.js');
 const CodeValidation = require('./code-validation.js');
+const Conversation = require('./conversation.js');
+const ConversationAddRemoveUser = require('./conversation-add-remove-user.js');
+const ConversationEdpuser = require('./conversation-edpuser.js');
+const ConversationList = require('./conversation-list.js');
+const ConversationNotes = require('./conversation-notes.js');
 const DAAC = require('./daac.js');
 const DataRequest = require('./data-request.js');
 const Form = require('./form.js');
@@ -11,6 +16,7 @@ const FormSections = require('./form-sections.js');
 const FormUpdate = require('./form-update.js');
 const Group = require('./group.js');
 const GroupDetails = require('./group-details.js');
+const Id = require('./id.js');
 const LogEvent = require('./log-event.js');
 const LogEventList = require('./log-event-list.js');
 const LogEventRequest = require('./log-event-request.js');
@@ -19,8 +25,10 @@ const NoteAddViewers = require('./note-add-viewers.js');
 const NoteRemoveViewer = require('./note-remove-viewer.js');
 const NoteAddViewerRoles = require('./note-add-viewer-roles.js');
 const NoteRemoveViewerRole = require('./note-remove-viewer-role.js');
+const NoteScope = require('./note-scope.js');
 const NotificationReplyRequest = require('./notification-reply-request.js');
 const NotificationSendRequest = require('./notification-send-request.js');
+const MetricsEventCount = require('./metrics-event-count.js');
 const MetricsGenerateReport = require('./metrics-generate-report.js');
 const MetricsGenerateReportResp = require('./metrics-generate-report-resp.js');
 const MetricsGetDaacsResp = require('./metrics-get-daacs-resp.js');
@@ -48,7 +56,6 @@ const SubmissionOperationApply = require('./submission-operation-apply.js');
 const SubmissionOperationChangeStep = require('./submission-operation-change-step.js');
 const SubmissionOperationCopySubmission = require('./submission-operation-copy-submission.js');
 const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js');
-const SubmissionOperationId = require('./submission-operation-id.js');
 const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
 const SubmissionOperationRemoveContributor = require('./submission-operation-remove-contributor.js');
 const SubmissionOperationRequest = require('./submission-operation-request.js');
@@ -63,8 +70,16 @@ const SubmissionStepReview = require('./submission-step-review.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const User = require('./user.js');
+const UserAddRemoveGroup = require('./user-add-remove-group.js');
+const UserAddRemoveRole = require('./user-add-remove-role.js');
 const UserAllFields = require('./user-all-fields.js');
+const UserCreate = require('./user-create.js');
 const UserDetails = require('./user-details.js');
+const UserGetUsersRequest = require('./user-get-users-request.js');
+const UserGetUsersResponse = require('./user-get-users-response.js');
+const UserGroup = require('./edpuser-edpgroup.js');
+const UserRole = require('./edpuser-edprole.js');
+const UserUpdateName = require('./user-update-name.js');
 const UUID = require('./uuid.js');
 const Version = require('./version.js');
 const Workflow = require('./workflow.js');
@@ -92,6 +107,11 @@ const models = {
   ActionRegisterRequest,
   BasicResponse,
   CodeValidation,
+  Conversation,
+  ConversationAddRemoveUser,
+  ConversationEdpuser,
+  ConversationList,
+  ConversationNotes,
   DAAC,
   DataRequest,
   Form,
@@ -100,6 +120,7 @@ const models = {
   FormUpdate,
   Group,
   GroupDetails,
+  Id,
   LogEvent,
   LogEventList,
   LogEventRequest,
@@ -108,8 +129,10 @@ const models = {
   NoteRemoveViewer,
   NoteAddViewerRoles,
   NoteRemoveViewerRole,
+  NoteScope,
   NotificationReplyRequest,
   NotificationSendRequest,
+  MetricsEventCount,
   MetricsGenerateReport,
   MetricsGenerateReportResp,
   MetricsGetDaacsResp,
@@ -137,7 +160,6 @@ const models = {
   SubmissionOperationChangeStep,
   SubmissionOperationCopySubmission,
   SubmissionOperationCustomResponse,
-  SubmissionOperationId,
   SubmissionOperationMetadata,
   SubmissionOperationRemoveContributor,
   SubmissionOperationRequest,
@@ -152,8 +174,16 @@ const models = {
   SubmissionStepReview,
   Subscription,
   User,
+  UserAddRemoveGroup,
+  UserAddRemoveRole,
   UserAllFields,
+  UserCreate,
   UserDetails,
+  UserGetUsersRequest,
+  UserGetUsersResponse,
+  UserGroup,
+  UserRole,
+  UserUpdateName,
   UUID,
   Version,
   Workflow,
