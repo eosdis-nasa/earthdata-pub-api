@@ -64,6 +64,7 @@ const SubmissionStepReview = require('./submission-step-review.js');
 const SubscribeRequest = require('./subscribe-request.js');
 const Subscription = require('./subscription.js');
 const TokenRefreshResponse = require('./token-refresh-response.js');
+const UploadStep = require('./upload-step.js');
 const User = require('./user.js');
 const UserAllFields = require('./user-all-fields.js');
 const UserDetails = require('./user-details.js');
@@ -155,6 +156,7 @@ const models = {
   SubmissionStepReview,
   Subscription,
   TokenRefreshResponse,
+  UploadStep,
   User,
   UserAllFields,
   UserDetails,
