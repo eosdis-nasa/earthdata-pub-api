@@ -1,4 +1,4 @@
-module.exports.model = (path) => ({
+module.exports.model = () => ({
   description: 'An object containing versioning information of the API.',
   type: 'object',
   properties: {
