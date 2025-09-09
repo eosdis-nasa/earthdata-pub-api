@@ -730,11 +730,6 @@ WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
   AND control_id = 'data_producer_info_name';
 
 UPDATE input
-SET control_id = 'dar_form_data_accession_poc_organization'
-WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
-  AND control_id = 'data_producer_info_organization';
-
-UPDATE input
 SET control_id = 'dar_form_principal_investigator_email'
 WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
   AND control_id = 'data_producer_info_email';
