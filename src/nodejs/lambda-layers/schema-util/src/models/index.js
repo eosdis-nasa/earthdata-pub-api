@@ -5,6 +5,7 @@ const BasicResponse = require('./basic-response.js');
 const CodeValidation = require('./code-validation.js');
 const DAAC = require('./daac.js');
 const DataRequest = require('./data-request.js');
+const FileUploadResponse = require('./file-upload-response.js');
 const Form = require('./form.js');
 const FormCreate = require('./form-create.js');
 const FormSections = require('./form-sections.js');
@@ -95,6 +96,7 @@ const models = {
   CodeValidation,
   DAAC,
   DataRequest,
+  FileUploadResponse,
   Form,
   FormCreate,
   FormSections,
