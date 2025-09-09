@@ -735,6 +735,11 @@ WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
   AND control_id = 'data_producer_info_email';
 
 UPDATE input
+SET control_id = 'dar_form_principal_investigator_organization'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
+  AND control_id = 'data_producer_info_organization';
+
+UPDATE input
 SET control_id = 'dar_form_principal_investigator_orcid'
 WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
   AND control_id = 'data_producer_info_orcid';
@@ -860,10 +865,10 @@ WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
   AND control_id = 'data_format_other_info';
 
 UPDATE input
-SET enums = '[{"key":"form_data_product_name","label":"Name of data product: How do you refer to the data product?","type":"text","editable":true},
-              {"key":"form_data_prod_timeline","label":"Data Production Timeline: Include the start date and when do you expect data production to be complete.","type":"text","editable":true},
-              {"key":"form_data_prod_volume","label":"Data Product Volume: What is the estimated or actual total volume of the data product upon completion of production?","type":"text","editable":true},
-              {"key":"form_instrument_collect_data","label":"Instrument: What instrument  is used to collect data?","type":"text","editable":true},
+SET enums = '[{"key":"data_product_name","label":"Name of data product: How do you refer to the data product?","type":"text","editable":true},
+              {"key":"data_prod_timeline","label":"Data Production Timeline: Include the start date and when do you expect data production to be complete.","type":"text","editable":true},
+              {"key":"data_prod_volume","label":"Data Product Volume: What is the estimated or actual total volume of the data product upon completion of production?","type":"text","editable":true},
+              {"key":"instrument_collect_data","label":"Instrument: What instrument  is used to collect data?","type":"text","editable":true},
               {"key":"data_prod_doi","label":"Data Product DOI(s): If applicable, for any existing Data Products. Do not list any journal article DOI''s here.","type":"text","editable":true},
               {"key":"data_prod_grid","label":"Gridded Data Product?","type":"text","editable":true},
               {"key":"data_prod_file_format","label":"Data Product File Format","type":"text","editable":true},
