@@ -685,3 +685,198 @@ UPDATE input
 SET attributes = '{}'
 WHERE control_id IN ('spatial_vertical_details_upper', 'spatial_vertical_details_lower')
   AND attributes::text = '{"min": "1"}';
+
+
+-- move all list_order values out of range to avoid conflicts
+UPDATE section
+SET list_order = list_order + 100
+WHERE form_id = '6c544723-241c-4896-a38c-adbc0a364293';
+
+INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '6c544723-241c-4896-a38c-adbc0a364293', 'Data Products', 0, '[]', '[]', NULL);
+UPDATE section SET list_order = 1  WHERE id = '1b4f110b-fea3-444f-b52c-c85008cf3b50';
+UPDATE section SET list_order = 2  WHERE id = 'e2b23c21-32cc-4423-9363-61887abe29c7';
+UPDATE section SET list_order = 3  WHERE id = '049e63e8-018d-4c3f-96f1-80c73e0f4287';
+UPDATE section SET list_order = 4  WHERE id = '2ba04d20-5473-42b7-907c-10ef384f90c8';
+UPDATE section SET list_order = 5  WHERE id = '608df644-d1ed-4aa4-9bb9-4907f3e9ce9d';
+UPDATE section SET list_order = 6  WHERE id = '30727449-9617-4765-83b0-d4637936710d';
+UPDATE section SET list_order = 7  WHERE id = 'a9e1a611-9435-4f21-b074-09b9f502e79c';
+UPDATE section SET list_order = 8  WHERE id = 'caaa6d32-0bd5-45a9-8511-defca7405dcb';
+UPDATE section SET list_order = 9  WHERE id = '5d30eb76-631e-4591-9782-8422250cd89e';
+UPDATE section SET list_order = 10 WHERE id = '3095e7ac-25be-4bd2-a5cd-47de253d06af';
+UPDATE section SET list_order = 11 WHERE id = 'ec1fbb1e-8d4d-4646-a20c-b5fb68135403';
+UPDATE section SET list_order = 12 WHERE id = '11bac86a-b284-47b3-aaee-855859f56c0a';
+UPDATE section SET list_order = 13 WHERE id = 'bd4fe63a-ba32-475b-a665-e593dd2d6916';
+UPDATE section SET list_order = 14 WHERE id = 'a02e43ac-80e8-422e-b2aa-639b2a1da64a';
+UPDATE section SET list_order = 15 WHERE id = 'a2d9ec2b-7e78-427f-ab2e-6f9c8405b79e';
+UPDATE section SET list_order = 16 WHERE id = 'e738f09c-6982-4ec1-a0e0-916b1f5645ab';
+
+INSERT INTO question VALUES ('d6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 'additional_comments_data_prod', 1, 'Additional comments regarding expected data products', '', '', True);
+
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', 'd6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 2, '[]', '[]');
+
+DELETE FROM section_question WHERE section_id = '2ba04d20-5473-42b7-907c-10ef384f90c8' AND question_id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3';
+
+
+INSERT INTO input VALUES ('d6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 'additional_comments', 0, '', 'text', '{}', '{}', '[]','[]',  True);
+DELETE FROM input WHERE control_id = 'poc_department';
+DELETE FROM input WHERE control_id = 'data_producer_info_department';
+
+
+UPDATE input
+SET control_id = 'dar_form_principal_investigator_fullname'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
+  AND control_id = 'data_producer_info_name';
+
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_organization'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
+  AND control_id = 'data_producer_info_organization';
+
+UPDATE input
+SET control_id = 'dar_form_principal_investigator_email'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
+  AND control_id = 'data_producer_info_email';
+
+UPDATE input
+SET control_id = 'dar_form_principal_investigator_orcid'
+WHERE question_id = '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2'
+  AND control_id = 'data_producer_info_orcid';
+
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_name'
+WHERE question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333'
+  AND control_id = 'poc_name';
+
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_organization'
+WHERE question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333'
+  AND control_id = 'poc_organization';
+
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_email'
+WHERE question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333'
+  AND control_id = 'poc_email';
+
+UPDATE input
+SET control_id = 'dar_form_data_accession_poc_orcid'
+WHERE question_id = 'f3e2eab9-6375-4e53-9cc2-3d16f318d333'
+  AND control_id = 'poc_orcid';
+
+UPDATE input
+SET control_id = 'dar_form_funding_nasa'
+WHERE question_id = '8a364184-42ac-48fe-b831-acb2eb08c728'
+  AND control_id = 'funding_nasa';
+
+UPDATE input
+SET control_id = 'dar_form_funding_noaa'
+WHERE question_id = '8a364184-42ac-48fe-b831-acb2eb08c728'
+  AND control_id = 'funding_noaa';
+
+UPDATE input
+SET control_id = 'dar_form_funding_nsf'
+WHERE question_id = '8a364184-42ac-48fe-b831-acb2eb08c728'
+  AND control_id = 'funding_nsf';
+
+UPDATE input
+SET control_id = 'dar_form_funding_usgs'
+WHERE question_id = '8a364184-42ac-48fe-b831-acb2eb08c728'
+  AND control_id = 'funding_usgs';
+
+UPDATE input
+SET control_id = 'dar_form_funding_university'
+WHERE question_id = '8a364184-42ac-48fe-b831-acb2eb08c728'
+  AND control_id = 'funding_university';
+
+UPDATE input
+SET control_id = 'dar_form_funding_other'
+WHERE question_id = '8a364184-42ac-48fe-b831-acb2eb08c728'
+  AND control_id = 'funding_other';
+
+UPDATE input
+SET control_id = 'dar_form_funding_organization_other'
+WHERE question_id = '8a364184-42ac-48fe-b831-acb2eb08c728'
+  AND control_id = 'funding_organization_other';
+
+UPDATE input
+SET control_id = 'dar_form_funding_program_name'
+WHERE question_id = '4ecc885f-daf8-4bc6-a8cd-d30c2a54d085'
+  AND control_id = 'funding_program_name';
+
+UPDATE input
+SET control_id = 'dar_form_project_name_info'
+WHERE question_id = 'f74c6c20-7483-40f9-a63e-58cc20ae8c8f'
+  AND control_id = 'data_product_name_value';
+
+UPDATE input
+SET control_id = 'dar_form_project_desc_info'
+WHERE question_id = '39701413-ac96-4b66-9c2f-2d9c08a18ed9'
+  AND control_id = 'data_product_description';
+
+UPDATE input
+SET control_id = 'dar_form_science_value_info'
+WHERE question_id = '7fd7bccf-5065-4033-9956-9e80bc99c205'
+  AND control_id = 'science_value_description';
+
+UPDATE input
+SET control_id = 'assignment_data_format_ascii'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_ascii';
+
+UPDATE input
+SET control_id = 'assignment_data_format_geotiff'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_geotiff';
+
+UPDATE input
+SET control_id = 'assignment_data_format_hdf5'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_hdf5';
+
+UPDATE input
+SET control_id = 'assignment_data_format_hdf_eos'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_hdf_eos';
+
+UPDATE input
+SET control_id = 'assignment_data_format_ogc_kml'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_ogc_kml';
+
+UPDATE input
+SET control_id = 'assignment_data_format_netcdf_4'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_netcdf_4';
+
+UPDATE input
+SET control_id = 'assignment_data_format_netcdf_classic'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_netcdf_classic';
+
+UPDATE input
+SET control_id = 'assignment_data_format_other'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_other';
+
+UPDATE input
+SET control_id = 'assignment_data_format_other_info'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27'
+  AND control_id = 'data_format_other_info';
+
+UPDATE input
+SET enums = '[{"key":"form_data_product_name","label":"Name of data product: How do you refer to the data product?","type":"text","editable":true},
+              {"key":"form_data_prod_timeline","label":"Data Production Timeline: Include the start date and when do you expect data production to be complete.","type":"text","editable":true},
+              {"key":"form_data_prod_volume","label":"Data Product Volume: What is the estimated or actual total volume of the data product upon completion of production?","type":"text","editable":true},
+              {"key":"form_instrument_collect_data","label":"Instrument: What instrument  is used to collect data?","type":"text","editable":true},
+              {"key":"data_prod_doi","label":"Data Product DOI(s): If applicable, for any existing Data Products. Do not list any journal article DOI''s here.","type":"text","editable":true},
+              {"key":"data_prod_grid","label":"Gridded Data Product?","type":"text","editable":true},
+              {"key":"data_prod_file_format","label":"Data Product File Format","type":"text","editable":true},
+              {"key":"data_prod_granule","label":"Data Product Granule/File Size","type":"text","editable":true},
+              {"key":"data_prod_params","label":"Data Product Parameters/Science Variables: List all parameters/science variable names found within each data product.","type":"text","editable":true},
+              {"key":"data_prod_temporal_coverage","label":"Data Product Temporal Coverage and Resolution","type":"text","editable":true},
+              {"key":"data_prod_spatial_coverage","label":"Spatial Coverage and Resolution","type":"text","editable":true},
+              {"key":"data_prod_ingest_frequency","label":"Ingest Frequency: List how often each Data Product will be delivered","type":"text","editable":true},
+              {"key":"data_prod_comments","label":"Comments","type":"text","editable":true}]'
+WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35'
+  AND control_id = 'dar_form_data_producers_table';
