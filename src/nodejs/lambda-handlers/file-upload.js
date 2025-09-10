@@ -1,46 +1,71 @@
-const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
+// const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const {
   S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand
 } = require('@aws-sdk/client-s3');
+const path = require('path');
 
 const db = require('database-util');
 
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
+const cueAPIToken = process.env.CUE_API_TOKEN;
+const cueRootUrl = process.env.CUE_ROOT_URL;
+
 const categoryEnums = ['documentation', 'sample'];
 
 async function generateUploadUrl(params) {
   const { key, checksumValue, fileType } = params;
-  const checksumAlgo = 'SHA256';
+  // const checksumAlgo = 'SHA256';
   if (!fileType) return ({ error: 'invalid file type' });
-  const s3Client = new S3Client({
-    region
-  });
+  // const s3Client = new S3Client({
+  //   region
+  // });
 
-  const payload = {
-    Bucket: ingestBucket,
-    Key: key,
-    Conditions: [
-      { 'x-amz-meta-checksumalgorithm': checksumAlgo },
-      { 'x-amz-meta-checksumvalue': checksumValue },
-      { 'x-amz-checksum-sha256': checksumValue }
-    ],
-    Fields: {
-      'x-amz-meta-checksumalgorithm': checksumAlgo,
-      'x-amz-meta-checksumvalue': checksumValue,
-      'x-amz-checksum-sha256': checksumValue
-    },
-    Expires: 60
-  };
+  // const payload = {
+  //   Bucket: ingestBucket,
+  //   Key: key,
+  //   Conditions: [
+  //     { 'x-amz-meta-checksumalgorithm': checksumAlgo },
+  //     { 'x-amz-meta-checksumvalue': checksumValue },
+  //     { 'x-amz-checksum-sha256': checksumValue }
+  //   ],
+  //   Fields: {
+  //     'x-amz-meta-checksumalgorithm': checksumAlgo,
+  //     'x-amz-meta-checksumvalue': checksumValue,
+  //     'x-amz-checksum-sha256': checksumValue
+  //   },
+  //   Expires: 60
+  // };
 
+  // try {
+  //   const resp = await createPresignedPost(s3Client, payload);
+  //   return (resp);
+  // } catch (err) {
+  //   console.error(err);
+  //   return ({ error: 'Error generating upload url' });
+  // }
   try {
-    const resp = await createPresignedPost(s3Client, payload);
-    return (resp);
+    const response = await fetch(`${cueRootUrl}/v2/upload/prepare-single`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${cueAPIToken}`
+      },
+      body: JSON.stringify({
+        collection_name: "demo_collection",
+        file_name: path.basename(key),
+        file_size_bytes: 4198,
+        checksum: checksumValue,
+        collection_path: path.dirname(key),
+        content_type: fileType
+      })
+    });
+    console.log(response);
+    return response;
   } catch (err) {
     console.error(err);
-    return ({ error: 'Error generating upload url' });
+    return ({error: 'Error in getting upload url'});
   }
 }
 
