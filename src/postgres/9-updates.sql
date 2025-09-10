@@ -686,7 +686,7 @@ SET attributes = '{}'
 WHERE control_id IN ('spatial_vertical_details_upper', 'spatial_vertical_details_lower')
   AND attributes::text = '{"min": "1"}';
 
-
+-- EDPUB-1573: Dev team updates for DER based on Info Team feedback
 -- move all list_order values out of range to avoid conflicts
 UPDATE section
 SET list_order = list_order + 100
