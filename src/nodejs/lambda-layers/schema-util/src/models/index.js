@@ -25,6 +25,7 @@ const NotificationSendRequest = require('./notification-send-request.js');
 const MetricsGenerateReport = require('./metrics-generate-report.js');
 const MetricsGenerateReportResp = require('./metrics-generate-report-resp.js');
 const MetricsGetDaacsResp = require('./metrics-get-daacs-resp.js');
+const MfaVerifyRequest = require('./mfa-verify-request.js');
 const Page = require('./page.js');
 const Permission = require('./permission.js');
 const Question = require('./question.js');
@@ -117,6 +118,7 @@ const models = {
   MetricsGenerateReport,
   MetricsGenerateReportResp,
   MetricsGetDaacsResp,
+  MfaVerifyRequest,
   Page,
   Permission,
   Question,
