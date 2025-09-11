@@ -12,40 +12,14 @@ const region = process.env.REGION;
 
 const cueAPIToken = process.env.CUE_API_TOKEN;
 const cueRootUrl = process.env.CUE_ROOT_URL;
+const cueCollection = process.env.CUE_COLLECTION;
 
 const categoryEnums = ['documentation', 'sample'];
 
 async function generateUploadUrl(params) {
-  const { key, checksumValue, fileType } = params;
-  // const checksumAlgo = 'SHA256';
+  const { key, checksumValue, fileType, fileSize } = params;
   if (!fileType) return ({ error: 'invalid file type' });
-  // const s3Client = new S3Client({
-  //   region
-  // });
 
-  // const payload = {
-  //   Bucket: ingestBucket,
-  //   Key: key,
-  //   Conditions: [
-  //     { 'x-amz-meta-checksumalgorithm': checksumAlgo },
-  //     { 'x-amz-meta-checksumvalue': checksumValue },
-  //     { 'x-amz-checksum-sha256': checksumValue }
-  //   ],
-  //   Fields: {
-  //     'x-amz-meta-checksumalgorithm': checksumAlgo,
-  //     'x-amz-meta-checksumvalue': checksumValue,
-  //     'x-amz-checksum-sha256': checksumValue
-  //   },
-  //   Expires: 60
-  // };
-
-  // try {
-  //   const resp = await createPresignedPost(s3Client, payload);
-  //   return (resp);
-  // } catch (err) {
-  //   console.error(err);
-  //   return ({ error: 'Error generating upload url' });
-  // }
   try {
     const response = await fetch(`${cueRootUrl}/v2/upload/prepare-single`, {
       method: 'POST',
@@ -53,16 +27,16 @@ async function generateUploadUrl(params) {
         Authorization: `Bearer ${cueAPIToken}`
       },
       body: JSON.stringify({
-        collection_name: "demo_collection",
+        collection_name: cueCollection,
         file_name: path.basename(key),
-        file_size_bytes: 4198,
+        file_size_bytes: fileSize,
         checksum: checksumValue,
         collection_path: path.dirname(key),
         content_type: fileType
       })
     });
-    console.log(response);
-    return response;
+    const responseText = await response.text();
+    return JSON.parse(responseText);
   } catch (err) {
     console.error(err);
     return ({error: 'Error in getting upload url'});
@@ -70,7 +44,7 @@ async function generateUploadUrl(params) {
 }
 
 async function getPostUrlMethod(event, user) {
-  const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
+  const { file_name: fileName, file_type: fileType, checksum_value: checksumValue, file_size_bytes: fileSize } = event;
   const { file_category: fileCategory } = event;
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
@@ -98,7 +72,8 @@ async function getPostUrlMethod(event, user) {
         key: `${submissionId}/${fileCategory}/${user}/${fileName}`,
         checksumValue,
         fileType,
-        fileCategory
+        fileCategory,
+        fileSize
       });
     }
   }
@@ -106,13 +81,14 @@ async function getPostUrlMethod(event, user) {
     key: `${fileCategory}/${user}/${fileName}`,
     checksumValue,
     fileType,
-    fileCategory
+    fileCategory,
+    fileSize
   });
 }
 
 async function getGroupUploadUrlMethod(event, user) {
   const {
-    file_name: fileName, file_type: fileType, checksum_value: checksumValue, prefix
+    file_name: fileName, file_type: fileType, checksum_value: checksumValue, prefix, file_size_bytes: fileSize
   } = event;
   const { group_id: groupId } = event;
   const userInfo = await db.user.findById({ id: user });
@@ -128,7 +104,8 @@ async function getGroupUploadUrlMethod(event, user) {
   return generateUploadUrl({
     key,
     checksumValue,
-    fileType
+    fileType,
+    fileSize
   });
 }
 
@@ -137,7 +114,8 @@ async function getAttachmentUploadUrlMethod(event, user) {
     file_name: fileName,
     file_type: fileType,
     checksum_value: checksumValue,
-    conversation_id: conversationId
+    conversation_id: conversationId,
+    file_size_bytes: fileSize
   } = event;
   const userInfo = await db.user.findById({ id: user });
 
@@ -148,7 +126,8 @@ async function getAttachmentUploadUrlMethod(event, user) {
   return generateUploadUrl({
     key,
     checksumValue,
-    fileType
+    fileType,
+    fileSize
   });
 }
 
@@ -159,14 +138,16 @@ async function getUploadStepUrlMethod(event, user) {
     checksum_value: checksumValue,
     file_category: fileCategory,
     destination: uploadDestination,
-    submission_id: submissionId
+    submission_id: submissionId,
+    file_size_bytes: fileSize
   } = event;
 
   const key = `${uploadDestination.replace(/^\/?/, '').replace(/\/?$/, '')}/${submissionId}/${fileCategory}/${user}/${fileName}`;
   return generateUploadUrl({
     key,
     checksumValue,
-    fileType
+    fileType,
+    fileSize
   });
 }
 
