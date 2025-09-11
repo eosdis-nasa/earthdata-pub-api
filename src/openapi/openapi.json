@@ -13774,6 +13774,13 @@
                 }
                 
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileListResponse"
+                }
+              }
             }
           }
       },
@@ -13893,6 +13900,13 @@
                   "type": "string"
                 }
                 
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileListResponse"
+                }
               }
             }
           }
