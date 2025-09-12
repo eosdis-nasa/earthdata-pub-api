@@ -36,7 +36,12 @@ async function generateUploadUrl(params) {
       })
     });
     const responseText = await response.text();
-    return JSON.parse(responseText);
+    return {
+      ...JSON.parse(responseText),
+      ...{
+        collection_path: path.dirname(key)
+      }
+    };
   } catch (err) {
     console.error(err);
     return ({error: 'Error in getting upload url'});
