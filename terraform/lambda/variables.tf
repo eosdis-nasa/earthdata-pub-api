@@ -162,6 +162,10 @@ variable "auth_client_path" {
   type = string
 }
 
+variable "auth_introspect_path" {
+  type = string
+}
+
 variable "meditor_service_username" {
   type = string
 }
