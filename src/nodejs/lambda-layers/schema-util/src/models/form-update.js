@@ -1,4 +1,4 @@
-module.exports.model = (path) => ({
+module.exports.model = () => ({
   description: 'A template for updating a form',
   type: 'object',
   properties: {
