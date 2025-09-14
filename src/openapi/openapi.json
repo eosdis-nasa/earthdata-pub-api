@@ -10537,7 +10537,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/SubmissionOperationApply"
               }
             }
           }
@@ -10561,6 +10561,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionState"
+                }
+              }
             }
           }
         },
@@ -10575,7 +10582,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10655,7 +10662,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/SubmissionOperationSubmit"
               }
             }
           }
@@ -10679,6 +10686,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionState"
+                }
+              }
             }
           }
         },
@@ -10693,7 +10707,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10773,7 +10787,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/SubmissionOperationSubmit"
               }
             }
           }
@@ -10797,6 +10811,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionState"
+                }
+              }
             }
           }
         },
@@ -10811,7 +10832,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10891,7 +10912,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/SubmissionOperationReview"
               }
             }
           }
@@ -10915,6 +10936,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionState"
+                }
+              }
             }
           }
         },
@@ -10929,7 +10957,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"review\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"review\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11127,7 +11155,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/Id"
               }
             }
           }
@@ -11151,6 +11179,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
             }
           }
         },
@@ -11165,7 +11200,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11245,7 +11280,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/Id"
               }
             }
           }
@@ -11269,6 +11304,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
             }
           }
         },
@@ -11283,7 +11325,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"restore\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"restore\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11363,7 +11405,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/SubmissionOperationChangeStep"
               }
             }
           }
@@ -11387,6 +11429,13 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionStatus"
+                }
+              }
             }
           }
         },
@@ -11401,7 +11450,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11481,7 +11530,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/SubmissionOperationAddContributors"
               }
             }
           }
@@ -11505,6 +11554,16 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {"$ref": "#/components/schemas/Submission"},
+                    {"$ref": "#/components/schemas/SubmissionOperationAll"}
+                  ]
+                }
+              }
             }
           }
         },
@@ -11519,7 +11578,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11599,7 +11658,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SubmissionOperationRequest"
+                "$ref": "#/components/schemas/SubmissionOperationRemoveContributor"
               }
             }
           }
@@ -11623,6 +11682,16 @@
                   "type": "string"
                 }
               }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {"$ref": "#/components/schemas/Submission"},
+                    {"$ref": "#/components/schemas/SubmissionOperationAll"}
+                  ]
+                }
+              }
             }
           }
         },
@@ -11637,7 +11706,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11739,6 +11808,16 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StepReviewCreateResponse"
+                  }
                 }
               }
             }
@@ -11857,6 +11936,16 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StepReviewDeleteResponse"
+                  }
                 }
               }
             }
