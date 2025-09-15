@@ -53,6 +53,7 @@ install_lambda questions
 install_lambda workflow
 install_lambda file-upload
 install_lambda mfa-auth
+install_lambda oidc-authorizer
 #Add more lambda functions here <--
 
 #Change back to root directory and remove temp folder

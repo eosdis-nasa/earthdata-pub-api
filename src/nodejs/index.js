@@ -49,8 +49,8 @@ const oasOptions = {
   validator: true,
   oasSecurity: true,
   securityFile: {
-    Cognito_Authorizer: local.check,
-    Service_Authorizer: local.checkService
+    Service_Authorizer: local.checkService,
+    OIDC_Authorizer: local.check
   }
 };
 
