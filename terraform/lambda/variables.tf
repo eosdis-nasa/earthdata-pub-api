@@ -189,3 +189,19 @@ variable "ornl_endpoint_arn" {
 variable "gesdisc_endpoint_arn"{
   type = string
 }
+
+variable "cue_api_token" {
+  type = string
+}
+
+variable "cue_root_url" {
+  type = string
+}
+
+variable "cue_collection" {
+  type = string
+}
+
+variable "multipart_upload_limit_bytes" {
+  type = number
+}
