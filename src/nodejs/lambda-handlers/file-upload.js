@@ -14,34 +14,44 @@ const cueAPIToken = process.env.CUE_API_TOKEN;
 const cueRootUrl = process.env.CUE_ROOT_URL;
 const cueCollection = process.env.CUE_COLLECTION;
 
+const multipartUploadLimitBytes = process.env.MULTIPART_UPLOAD_LIMIT_BYTES;
+
 const categoryEnums = ['documentation', 'sample'];
 
-async function generateUploadUrl(params) {
-  const { key, checksumValue, fileType, fileSize } = params;
-  if (!fileType) return ({ error: 'invalid file type' });
-
-  try {
-    const response = await fetch(`${cueRootUrl}/v2/upload/prepare-single`, {
+async function cuePostQuery(params) {
+  const { endpoint, payload } = params;
+    const response = await fetch(`${cueRootUrl}${endpoint}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${cueAPIToken}`
       },
-      body: JSON.stringify({
+      body: JSON.stringify(payload)
+    });
+    const responseText = await response.text();
+    try {
+      return  JSON.parse(responseText);
+    } catch (err) {
+      console.error(err);
+      return ({error: 'Error parsing CUE API response.'})
+    }
+}
+
+async function generateUploadUrl(params) {
+  const { key, checksumValue, fileType, fileSize } = params;
+  if (!fileType) return ({ error: 'invalid file type' });
+  try {
+    const response = await cuePostQuery({endpoints: '/v2/upload/prepare-single', payload: {
         collection_name: cueCollection,
         file_name: path.basename(key),
         file_size_bytes: fileSize,
         checksum: checksumValue,
         collection_path: path.dirname(key),
         content_type: fileType
-      })
-    });
-    const responseText = await response.text();
+      }});
     return {
-      ...JSON.parse(responseText),
-      ...{
-        collection_path: path.dirname(key)
-      }
-    };
+      ...response,
+      ...{ collection_path: path.dirname(key)}
+    }
   } catch (err) {
     console.error(err);
     return ({error: 'Error in getting upload url'});
@@ -338,6 +348,62 @@ async function getUploadStepMethod(event) {
   return db.upload.findUploadStepById({ id: uploadStepId });
 }
 
+async function completeUploadMethod(event) {
+  const {
+    file_size_bytes: fileSize,
+    upload_id: uploadId,
+    etags
+  } = event;
+
+  const commonPayload = {
+    file_id: event.file_id,
+    collection_name: cueCollection,
+    file_name: event.file_name,
+    collection_path: event.collection_path,
+    content_type: event.content_type,
+    checksum: event.checksum
+  };
+
+  if (file_size_bytes < 0) return {error: "Invalid file_size_types size."};
+  let response;
+  if (file_size_bytes > multipartUploadLimitBytes) {
+    // Use multipart upload endpoint
+    response = await cuePostQuery({endpoint: '/v2/upload/multipart/complete', payload: {
+      ...commonPayload,
+      ...{
+        upload_id: uploadId,
+        parts: etags,
+        final_file_size: fileSize
+      }}});
+  } else {
+    if (etags.length > 1) return { error: 'Too many objects provided within etag array for single file upload.' }
+    // Use single part upload endpoint
+    response = await cuePostQuery({endpoint: '/v2/upload/complete-single', payload: {
+      ...commonPayload,
+      ...{
+        file_size_bytes: fileSize,
+        s3_etag: etags[0].Etag    // Single file upload should only contain 1 object within the etag array
+      }}});
+  }
+  return response;
+}
+
+async function startMultipartUploadMethod(event) {
+  delete event.operation;
+  delete event.context;
+  let response;
+  try {
+    response = await cuePostQuery({endpoint: '/v2/upload/multipart/start', payload: {
+      ...event,
+      ...{
+      collection_name: cueCollection
+    }}});
+  } catch (err) {
+    console.error({error: 'Error starting multipart upload.'})
+  }
+  return response;
+}
+
 const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
@@ -346,7 +412,9 @@ const operations = {
   getGroupUploadUrl: getGroupUploadUrlMethod,
   getAttachmentUploadUrl: getAttachmentUploadUrlMethod,
   getUploadStepUrl: getUploadStepUrlMethod,
-  getUploadStep: getUploadStepMethod
+  getUploadStep: getUploadStepMethod,
+  completeUpload: completeUploadMethod,
+  startMultipartUpload: startMultipartUploadMethod
 };
 
 async function handler(event) {

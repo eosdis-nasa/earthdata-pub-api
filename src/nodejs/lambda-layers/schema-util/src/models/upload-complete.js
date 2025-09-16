@@ -41,8 +41,12 @@ module.exports.model = (path) => ({
                         description: 'The etag value assigned to this multi-part upload part by AWS S3. If a single part upload, the single part upload should be added here as the first and only entry'
                     }
                 },
-                required: [ 'Etag' ]
+                required: [ 'PartNumber', 'Etag']
             }
+        },
+        content_type: {
+            description: 'Media type describing the nature and format of the file.',
+            type: 'string'
         }
     },
     required: [
