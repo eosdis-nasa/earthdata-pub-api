@@ -41,7 +41,7 @@ async function generateUploadUrl(params) {
   const { key, checksumValue, fileType, fileSize } = params;
   if (!fileType) return ({ error: 'invalid file type' });
   try {
-    const response = await cuePostQuery({endpoints: '/v2/upload/prepare-single', payload: {
+    const response = await cuePostQuery({endpoint: '/v2/upload/prepare-single', payload: {
         collection_name: cueCollection,
         file_name: path.basename(key),
         file_size_bytes: fileSize,
