@@ -720,9 +720,6 @@ DELETE FROM section_question WHERE section_id = '2ba04d20-5473-42b7-907c-10ef384
 
 
 INSERT INTO input VALUES ('d6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 'additional_comments', 0, '', 'text', '{}', '{}', '[]','[]',  True);
-DELETE FROM input WHERE control_id = 'poc_department';
-DELETE FROM input WHERE control_id = 'data_producer_info_department';
-
 
 UPDATE input
 SET control_id = 'dar_form_principal_investigator_fullname'
