@@ -12,7 +12,7 @@ module.exports.model = (path) => ({
         },
         file_size_bytes: {
             description: 'Size of the file uploaded in bytes.',
-            type: 'int'
+            type: 'number'
         },
         collection_path: {
             description: 'The key prefix used for staging the uploaded file in S3.',
@@ -35,7 +35,7 @@ module.exports.model = (path) => ({
                 properties: {
                     PartNumber: { 
                         description: 'The part number assigned to this multi-part upload part by AWS S3. If a single part upload, this value is not used by the API.',
-                        type: 'int'
+                        type: 'number'
                     },
                     ETag: {
                         description: 'The etag value assigned to this multi-part upload part by AWS S3. If a single part upload, the single part upload should be added here as the first and only entry'
