@@ -13809,7 +13809,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/completeUpload"
+                "$ref": "#/components/schemas/UploadComplete"
               }
             }
           }
@@ -13927,7 +13927,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/startMultipartUpload"
+                "$ref": "#/components/schemas/UploadMultipartStart"
               }
             }
           }
