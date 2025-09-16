@@ -32,6 +32,7 @@ async function cuePostQuery(params) {
       return  JSON.parse(responseText);
     } catch (err) {
       console.error(err);
+      console.log(responseText);
       return ({error: 'Error parsing CUE API response.'})
     }
 }
