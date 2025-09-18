@@ -516,6 +516,38 @@ resource "aws_lambda_event_source_mapping" "notification_consumer_sqs_event" {
   function_name    = aws_lambda_function.notification_consumer.function_name
 }
 
+# OIDC Authorizer Lambda
+
+resource "aws_lambda_function" "oidc_authorizer" {
+  filename      = "../artifacts/oidc-authorizer-lambda.zip"
+  function_name = "oidc_authorizer"
+  role          = var.edpub_lambda_role_arn
+  handler       = "oidc-authorizer.handler"
+  runtime          = "nodejs22.x"
+  source_code_hash = filesha256("../artifacts/oidc-authorizer-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      AUTH_PROVIDER_URL     = var.auth_provider_url
+      AUTH_INTROSPECT_PATH  = var.auth_introspect_path
+      AUTH_CLIENT_ID        = var.auth_client_id
+      AUTH_CLIENT_SECRET    = var.auth_client_secret
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
+resource "aws_lambda_permission" "oidc_authorizer" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.oidc_authorizer.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/authorizers/*"
+}
+
 # RDS Backup Lambda
 
 resource "aws_lambda_function" "rds_backup" {
@@ -684,7 +716,7 @@ resource "aws_lambda_permission" "service_authorizer" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.service_authorizer.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/service_authorizer/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/authorizers/*"
 }
 
 # Submission Lambda

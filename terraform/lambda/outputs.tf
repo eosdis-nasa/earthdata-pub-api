@@ -77,3 +77,7 @@ output "file_upload_lambda_arn" {
 output "mfa_auth_lambda_arn" {
   value = aws_lambda_function.mfa_auth.invoke_arn
 }
+
+output "oidc_authorizer_lambda_arn" {
+  value = aws_lambda_function.oidc_authorizer.invoke_arn
+}
