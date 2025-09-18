@@ -709,8 +709,8 @@ INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b54', '50
 INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b54', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 1, '[]', '[]');
 
 INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', 'd6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', 'd6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 2, '[]', '[]');
 
 -- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_fullname', 0, 'Full Name', 'text', '{}', '{}', '[]','[]',  True);

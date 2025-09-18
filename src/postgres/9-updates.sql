@@ -713,8 +713,8 @@ UPDATE section SET list_order = 16 WHERE id = 'e738f09c-6982-4ec1-a0e0-916b1f564
 INSERT INTO question VALUES ('d6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 'additional_comments_data_prod', 1, 'Additional comments regarding expected data products', '', '', True);
 
 INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', 'd6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', 'd6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 2, '[]', '[]');
 
 DELETE FROM section_question WHERE section_id = '2ba04d20-5473-42b7-907c-10ef384f90c8' AND question_id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3';
 
