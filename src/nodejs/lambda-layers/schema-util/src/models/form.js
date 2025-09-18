@@ -3,26 +3,13 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     id: { $ref: `#${path}UUID` },
+    short_name: { type: 'string' },
     version: { type: 'number' },
+    long_name: { type: 'string' },
     description: { type: 'string' },
-    form_name: { type: 'string' },
-    text: { type: 'string' },
-    daac_id: { $ref: `#${path}UUID` },
-    sections: {
-      type: 'array',
-      items: {
-        type: 'object',
-        description: 'A group of related questions.',
-        properties: {
-          heading: { type: 'string' },
-          questions: {
-            type: 'array',
-            items: { $ref: `#${path}Question` }
-          }
-        }
-      }
-    }
+    daac_only: { type: 'boolean' },
+    created_at: { type: 'string' }
   }
 });
 
-module.exports.refs = ['UUID', 'Question'];
+module.exports.refs = ['UUID'];
