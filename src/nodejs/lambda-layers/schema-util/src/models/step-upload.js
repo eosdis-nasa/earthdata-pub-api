@@ -4,16 +4,16 @@ module.exports.model = (path) => ({
   allOf: [{ $ref: `#${path}Upload` }],
   properties: {
     destination: {
-        description: 'Location to upload files for this step',
-        type: 'string', 
+      description: 'Location to upload files for this step',
+      type: 'string'
     }
   },
   required: [
-      'submission_id',
-      'file_name',
-      'file_type',
-      'file_category',
-      'destination'
+    'submission_id',
+    'file_name',
+    'file_type',
+    'file_category',
+    'destination'
   ]
 });
 
