@@ -55,12 +55,12 @@ async function generateUploadUrl(params) {
       }
     });
     return {
-      ...response,
-      ...{ collection_path: path.dirname(key) }
+      ...(response.error ? {} : { collection_path: path.dirname(key) }),
+      ...response
     };
   } catch (err) {
     console.error(err);
-    return ({ error: 'Error in getting upload url' });
+    return ({ error: 'Error getting upload url' });
   }
 }
 
