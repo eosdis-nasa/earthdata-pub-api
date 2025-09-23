@@ -14,7 +14,6 @@ module "iam_roles" {
   edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
   lambda_execution_policy_arn = var.lambda_execution_policy_arn
-  permissions_boundary_arn = var.permissions_boundary_arn
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
   gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
