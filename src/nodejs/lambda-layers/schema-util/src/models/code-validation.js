@@ -4,7 +4,7 @@ module.exports.model = (path) => ({
   properties: {
     is_valid: { type: 'boolean' },
     submission_id: { $ref: `#${path}UUID` },
-    daac_id: { $ref: `#${path}UUID` },
+    daac_id: { $ref: `#${path}UUID` }
   }
 });
 

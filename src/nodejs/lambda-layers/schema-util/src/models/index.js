@@ -9,7 +9,8 @@ const ConversationEdpuser = require('./conversation-edpuser.js');
 const ConversationList = require('./conversation-list.js');
 const ConversationNotes = require('./conversation-notes.js');
 const DAAC = require('./daac.js');
-const DataRequest = require('./data-request.js');
+const FileListResponse = require('./file-list-response.js');
+const FileUploadResponse = require('./file-upload-response.js');
 const Form = require('./form.js');
 const FormCreate = require('./form-create.js');
 const FormSections = require('./form-sections.js');
@@ -18,7 +19,6 @@ const Group = require('./group.js');
 const GroupDetails = require('./group-details.js');
 const Id = require('./id.js');
 const LogEvent = require('./log-event.js');
-const LogEventList = require('./log-event-list.js');
 const LogEventRequest = require('./log-event-request.js');
 const Note = require('./note.js');
 const NoteAddViewers = require('./note-add-viewers.js');
@@ -32,8 +32,8 @@ const MetricsEventCount = require('./metrics-event-count.js');
 const MetricsGenerateReport = require('./metrics-generate-report.js');
 const MetricsGenerateReportResp = require('./metrics-generate-report-resp.js');
 const MetricsGetDaacsResp = require('./metrics-get-daacs-resp.js');
+const MfaVerifyRequest = require('./mfa-verify-request.js');
 const Page = require('./page.js');
-const Permission = require('./permission.js');
 const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
 const QuestionAdd = require('./question-add.js');
@@ -68,7 +68,8 @@ const SubmissionState = require('./submission-state.js');
 const SubmissionStatus = require('./submission-status.js');
 const SubmissionStepReview = require('./submission-step-review.js');
 const SubscribeRequest = require('./subscribe-request.js');
-const Subscription = require('./subscription.js');
+const TokenRefreshResponse = require('./token-refresh-response.js');
+const UploadStep = require('./upload-step.js');
 const User = require('./user.js');
 const UserAddRemoveGroup = require('./user-add-remove-group.js');
 const UserAddRemoveRole = require('./user-add-remove-role.js');
@@ -113,7 +114,8 @@ const models = {
   ConversationList,
   ConversationNotes,
   DAAC,
-  DataRequest,
+  FileListResponse,
+  FileUploadResponse,
   Form,
   FormCreate,
   FormSections,
@@ -122,7 +124,6 @@ const models = {
   GroupDetails,
   Id,
   LogEvent,
-  LogEventList,
   LogEventRequest,
   Note,
   NoteAddViewers,
@@ -136,8 +137,8 @@ const models = {
   MetricsGenerateReport,
   MetricsGenerateReportResp,
   MetricsGetDaacsResp,
+  MfaVerifyRequest,
   Page,
-  Permission,
   Question,
   QuestionList,
   QuestionAdd,
@@ -172,7 +173,8 @@ const models = {
   SubmissionState,
   SubmissionStatus,
   SubmissionStepReview,
-  Subscription,
+  TokenRefreshResponse,
+  UploadStep,
   User,
   UserAddRemoveGroup,
   UserAddRemoveRole,

@@ -4,7 +4,7 @@ module.exports.model = (path) => ({
   properties: {
     id: { $ref: `#${path}UUID` },
     short_name: { type: 'string' },
-    long_name: { type: 'string'},
+    long_name: { type: 'string' },
     description: { type: 'string' },
     endpoint: { type: 'string' },
     options: { type: 'object' },

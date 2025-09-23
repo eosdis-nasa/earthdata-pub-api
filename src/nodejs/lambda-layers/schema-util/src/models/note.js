@@ -8,9 +8,9 @@ module.exports.model = (path) => ({
     text: { type: 'string' },
     created_at: { type: 'string' },
     step_name: { type: 'string' },
-    attachments : { 
-      type: 'array', 
-      items: { type: 'string'}
+    attachments: {
+      type: 'array',
+      items: { type: 'string' }
     },
     daac_id: { $ref: `#${path}UUID` }
   }

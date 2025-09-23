@@ -1,4 +1,4 @@
-module.exports.model = (path) => ({
+module.exports.model = () => ({
   description: 'A template for creating a form.',
   type: 'object',
   properties: {
@@ -6,7 +6,7 @@ module.exports.model = (path) => ({
     version: { type: 'number' },
     long_name: { type: 'string' },
     description: { type: 'string' },
-    daac_only: { type: 'boolean' },
+    daac_only: { type: 'boolean' }
   }
 });
 

@@ -21,7 +21,7 @@ module.exports.model = (path) => ({
     code: { $ref: `#${path}UUID` },
     assigned_daacs: {
       type: 'array',
-      items: { 
+      items: {
         type: 'object',
         properties: {
           code: { $ref: `#${path}UUID` },

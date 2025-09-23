@@ -11,6 +11,9 @@ const getDMTemplate = (params, envUrl) => {
       ? params.eventMessage.attachments.map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`).join('\n') : 'None'
   }`;
 
+  // Decode message & convert newlines to <br> for html email formatting
+  const message = decodeURI(params.eventMessage.conversation_last_message).replace(/(?:\r\n|\r|\n)/g, '<br>');
+
   const html = `
     <html>
        <body>
@@ -33,7 +36,7 @@ const getDMTemplate = (params, envUrl) => {
                  <h1>Hello ${params.user.name},</h1><br><br>
                  <p>You have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.</p>
                  <h2>Message:</h2>
-                 <p style="white-space: pre;">${decodeURI(params.eventMessage.conversation_last_message)}</p><br><br>
+                 <p style="white-space: pre-wrap;">${message}</p><br><br>
                  ${attachmentsHtml}
                  <br><br>
                  <h3>Dashboard:</h3>
