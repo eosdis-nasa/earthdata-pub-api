@@ -28,9 +28,6 @@ variable "subnet_ids" {
 variable "lambda_execution_policy_arn" {
   type = string
 }
-variable "permissions_boundary_arn" {
-  type = string
-}
 variable "edpub_dashboard_s3_bucket" {
   type = string
 }
