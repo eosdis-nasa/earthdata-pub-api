@@ -379,9 +379,9 @@ async function completeUploadMethod(event) {
     checksum: event.checksum_value
   };
 
-  if (fileSize < 0) return { error: 'Invalid file_size_types size.' };
+  if (Number(fileSize) < 0) return { error: 'Invalid file_size_types size.' };
   let response;
-  if (fileSize > multipartUploadLimitBytes) {
+  if (Number(fileSize) > Number(multipartUploadLimitBytes)) {
     // Use multipart upload endpoint
     response = await cuePostQuery({
       endpoint: '/v2/upload/multipart/complete',
