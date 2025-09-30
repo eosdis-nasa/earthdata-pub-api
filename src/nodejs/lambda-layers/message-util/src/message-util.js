@@ -109,7 +109,7 @@ function exponentialBackoff(increment) {
   // If backoffs becomes a common thing implementing a jitter would be recommended.
   const backoffVal = Math.min(base * 2 ** increment, maxBackoff);
 
-  return new Promise((resolve) => setTimeout(resolve, backoffVal));
+  return new Promise((resolve) => { setTimeout(resolve, backoffVal); });
 }
 
 async function send(user, eventMessage, customTemplateFunction, ses) {

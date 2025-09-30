@@ -21,7 +21,7 @@ async function sendEmailNotification({
   emailPayload,
   usersList,
   additionalContacts,
-  form_id
+  formId
 }) {
   const roles = {
     data_producer: '804b335c-f191-4d26-9b98-1ec1cb62b97d',
@@ -40,7 +40,7 @@ async function sendEmailNotification({
       break;
     case 'form_submitted':
       userRole = [roles.daac_staff, roles.daac_manager];
-      if (form_id === '19025579-99ca-4344-8611-704dae626343') userRole.push(roles.daac_observer);
+      if (formId === '19025579-99ca-4344-8611-704dae626343') userRole.push(roles.daac_observer);
       break;
     case 'review_approved':
       userRole = [roles.data_producer];
@@ -154,7 +154,7 @@ async function processRecord(record) {
           emailPayload,
           usersList: eventMessage.userIds,
           additionalContacts: eventMessage.additional_recipients,
-          form_id: eventMessage.form_id
+          formId: eventMessage.form_id
         });
       }
     }
