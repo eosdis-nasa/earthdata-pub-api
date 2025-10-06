@@ -5,8 +5,6 @@ exports.handler = async (event) => {
 
   try {
     console.info('Fetching users inactive for more than 1 year...');
-
-    // Uses existing database-util function
     const inactiveUsers = await db.user.getInactiveUsers();
 
     if (!inactiveUsers || inactiveUsers.length === 0) {
