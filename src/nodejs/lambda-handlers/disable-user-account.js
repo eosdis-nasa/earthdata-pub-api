@@ -13,18 +13,7 @@ exports.handler = async (event) => {
       console.info('No inactive users found.');
       return { message: 'No inactive users found' };
     }
-
-    console.info(`Found ${inactiveUsers.length} inactive users:`);
-    inactiveUsers.forEach((user, index) => {
-      console.log(`${index + 1}. ${user.name} (${user.email || 'no email'}) — Last login: ${user.last_login}`);
-    });
-
-    return {
-      statusCode: 200,
-      count: inactiveUsers.length,
-      users: inactiveUsers
-    };
-
+    return {};
   } catch (error) {
     console.error('Error while fetching inactive users:', error);
     return {
