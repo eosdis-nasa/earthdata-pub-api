@@ -755,6 +755,13 @@ const getStepName = () => `
 SELECT step_name FROM submission_status WHERE id = {{id}}
 `;
 
+const getSubmissionCountByWorkflowId = () => `
+SELECT COUNT(s.id) AS submission_count
+FROM submission s
+JOIN submission_status ss ON s.id = ss.id
+WHERE ss.workflow_id = {{workflowId}};
+`;
+
 // TODO - Update this query's complexity and to use sql builder
 const getSubmissionDetailsById = (params) => `
 WITH step_visibility AS (SELECT step.*, upload_step.id AS upload_step_id, form.daac_only FROM step LEFT JOIN form ON step.form_id = form.id LEFT JOIN upload_step ON step.step_name = upload_step.step_name),
@@ -971,6 +978,7 @@ module.exports.getStepMessage = getStepMessage;
 module.exports.getCreatorName = getCreatorName;
 module.exports.getStepName = getStepName;
 module.exports.getSubmissionDetailsById = getSubmissionDetailsById;
+module.exports.getSubmissionCountByWorkflowId = getSubmissionCountByWorkflowId;
 module.exports.getSubmissionDaac = getSubmissionDaac;
 module.exports.getStepReviewApproval = getStepReviewApproval;
 module.exports.createStepReviewApproval = createStepReviewApproval;

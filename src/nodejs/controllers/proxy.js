@@ -1454,6 +1454,19 @@ module.exports.createStepReviewApproval = function createStepReviewApproval(req,
   });
 };
 
+module.exports.getSubmissionCountByWorkflowId = function getSubmissionCountByWorkflowId(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'getSubmissionCountByWorkflowId',
+    params: { workflowId: params.id.value },
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.getStepReviewApproval = function getStepReviewApproval(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

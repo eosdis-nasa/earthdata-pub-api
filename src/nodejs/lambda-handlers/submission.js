@@ -412,6 +412,16 @@ async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-
   return db.submission.getSubmissionDetailsById({ id, privilegedUser });
 }
 
+async function getSubmissionByWorkflowIdMethod(event, user) { // eslint-disable-line no-unused-vars
+  const { params: { workflowId } } = event;
+  const approvedUserPrivileges = ['ADMIN'];
+  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    return db.submission.getSubmissionCountByWorkflowId({ workflowId });
+  }
+
+  return { error: 'Not Authorized' };
+}
+
 async function mapMetadataMethod(event, user) {
   const { id: submissionId } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
@@ -688,7 +698,8 @@ const operations = {
   getStepReviewApproval: getStepReviewApprovalMethod,
   deleteStepReviewApproval: deleteStepReviewApprovalMethod,
   validateCode: validateCodeMethod,
-  assignDaacs: assignDaacsMethod
+  assignDaacs: assignDaacsMethod,
+  getSubmissionCountByWorkflowId: getSubmissionByWorkflowIdMethod
 };
 
 async function handler(event) {
