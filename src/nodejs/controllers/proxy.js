@@ -1458,7 +1458,7 @@ module.exports.getSubmissionCountByWorkflowId = function getSubmissionCountByWor
   const { params } = req.swagger;
   const lambdaEvent = {
     operation: 'getSubmissionCountByWorkflowId',
-    params: { workflowId: params.id.value },
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   };
 

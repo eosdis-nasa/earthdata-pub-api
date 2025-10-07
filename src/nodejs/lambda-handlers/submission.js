@@ -413,10 +413,10 @@ async function getDetailsMethod(event, user) { // eslint-disable-line no-unused-
 }
 
 async function getSubmissionByWorkflowIdMethod(event, user) { // eslint-disable-line no-unused-vars
-  const { params: { workflowId } } = event;
+  const { id } = event.params;
   const approvedUserPrivileges = ['ADMIN'];
   if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
-    return db.submission.getSubmissionCountByWorkflowId({ workflowId });
+    return db.submission.getSubmissionCountByWorkflowId({ id });
   }
 
   return { error: 'Not Authorized' };

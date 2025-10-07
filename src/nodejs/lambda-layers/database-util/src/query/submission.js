@@ -759,7 +759,7 @@ const getSubmissionCountByWorkflowId = () => `
 SELECT COUNT(s.id) AS submission_count
 FROM submission s
 JOIN submission_status ss ON s.id = ss.id
-WHERE ss.workflow_id = {{workflowId}};
+WHERE ss.workflow_id = {{id}};
 `;
 
 // TODO - Update this query's complexity and to use sql builder
