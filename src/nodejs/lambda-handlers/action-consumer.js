@@ -56,13 +56,13 @@ async function processRecord(record) {
   await fetchAction(new Buffer.from(action.source).toString(), local);
   // eslint-disable-next-line
   const { execute } = require(local);
-  const output = await execute({
-    submission, data, DatabaseUtil, MessageUtil, Schema
-  });
   if (process.env.DEBUG === 'true') {
     // eslint-disable-next-line
     console.log('Calling action ', actionId, ' with submission: ', submission, ' , data: ', data);
   }
+  const output = await execute({
+    submission, data, DatabaseUtil, MessageUtil, Schema
+  });
   Object.assign(action, { output });
   await DatabaseUtil.execute({ resource: 'submission', operation: 'updateActionData' },
     { id: submissionId, action_id: actionId, data: action });
