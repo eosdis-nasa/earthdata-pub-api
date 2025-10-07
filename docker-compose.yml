@@ -33,7 +33,7 @@ services:
       - AUTH_CLIENT_PATH=auth
       - CLIENT_ROOT_URL=http://localhost:3000
       - DEVELOPMENT=true
-      - DEBUG=true
+      - DEBUG=false
     command: ["npm", "start"]
     ports:
       - 8080:8080
