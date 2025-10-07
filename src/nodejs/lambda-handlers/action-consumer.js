@@ -59,6 +59,10 @@ async function processRecord(record) {
   const output = await execute({
     submission, data, DatabaseUtil, MessageUtil, Schema
   });
+  if (process.env.DEBUG === 'true') {
+    // eslint-disable-next-line
+    console.log('Calling action ', actionId, ' with submission: ', submission, ' , data: ', data);
+  }
   Object.assign(action, { output });
   await DatabaseUtil.execute({ resource: 'submission', operation: 'updateActionData' },
     { id: submissionId, action_id: actionId, data: action });

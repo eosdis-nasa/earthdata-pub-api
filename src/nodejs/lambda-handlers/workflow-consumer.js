@@ -93,6 +93,10 @@ async function serviceMethod(status) {
   if (headersAuthKey) {
     service.headers[headersAuthKey] = await getServiceAuthSecret(service.headers[headersAuthKey]);
   }
+  if (process.env.DEBUG === 'true') {
+    // eslint-disable-next-line
+    console.log('Service Secret Info - SubmissionId: ', status.id, ' SubmissionSecret: ', submissionSecret);
+  }
   await sendSecret(service, submissionSecret, status.id);
   const eventMessage = {
     event_type: 'service_call',
