@@ -20,7 +20,8 @@ async function sendEmailNotification({
   note,
   emailPayload,
   usersList,
-  additionalContacts
+  additionalContacts,
+  formId
 }) {
   const roles = {
     data_producer: '804b335c-f191-4d26-9b98-1ec1cb62b97d',
@@ -38,7 +39,8 @@ async function sendEmailNotification({
       userRole = [roles.data_producer];
       break;
     case 'form_submitted':
-      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer];
+      userRole = [roles.daac_staff, roles.daac_manager];
+      if (formId === '19025579-99ca-4344-8611-704dae626343') userRole.push(roles.daac_observer);
       break;
     case 'review_approved':
       userRole = [roles.data_producer];
@@ -66,6 +68,7 @@ async function sendEmailNotification({
       userRole = [roles.data_producer, roles.daac_staff, roles.daac_manager];
       break;
   }
+
   const users = usersList ? await db.user.getEmails({ user_list: usersList })
     : await db.note.getEmails({
       noteId: note.id,
@@ -142,7 +145,7 @@ async function processRecord(record) {
         });
         await db.note.addAttachments({ noteId: note.id, attachments });
       }
-      if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_submitted' && eventMessage.event_type !== 'form_request' && eventMessage.event_type !== 'request_initialized') {
+      if (process.env.AWS_EXECUTION_ENV && eventMessage.event_type !== 'form_request' && eventMessage.event_type !== 'request_initialized') {
         const emailPayload = eventMessage.emailPayloadProvided ? eventMessage
           : await getEmailTemplate(eventMessage, message);
         emailPayload.user_name = message.user_name;
@@ -150,7 +153,8 @@ async function processRecord(record) {
           note,
           emailPayload,
           usersList: eventMessage.userIds,
-          additionalContacts: eventMessage.additional_recipients
+          additionalContacts: eventMessage.additional_recipients,
+          formId: eventMessage.form_id
         });
       }
     }

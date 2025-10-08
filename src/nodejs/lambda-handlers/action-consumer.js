@@ -46,10 +46,14 @@ async function fetchAction(key, local) {
 async function processRecord(record) {
   const { eventMessage } = MessageUtil.parseRecord(record);
   const { action_id: actionId, submission_id: submissionId, data } = eventMessage;
-  const action = await DatabaseUtil.execute({ resource: 'action', operation: 'findById' },
-    { id: actionId });
-  const submission = await DatabaseUtil.execute({ resource: 'submission', operation: 'findById' },
-    { id: submissionId, user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' });
+  const action = await DatabaseUtil.execute(
+    { resource: 'action', operation: 'findById' },
+    { id: actionId }
+  );
+  const submission = await DatabaseUtil.execute(
+    { resource: 'submission', operation: 'findById' },
+    { id: submissionId, user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' }
+  );
   const local = `/tmp/${Schema.generateId()}`;
   // fs.writeFileSync(local, action.source);
   // eslint-disable-next-line
@@ -60,10 +64,14 @@ async function processRecord(record) {
     submission, data, DatabaseUtil, MessageUtil, Schema
   });
   Object.assign(action, { output });
-  await DatabaseUtil.execute({ resource: 'submission', operation: 'updateActionData' },
-    { id: submissionId, action_id: actionId, data: action });
-  const status = await DatabaseUtil.execute({ resource: 'submission', operation: 'findById' },
-    { id: submissionId, user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' });
+  await DatabaseUtil.execute(
+    { resource: 'submission', operation: 'updateActionData' },
+    { id: submissionId, action_id: actionId, data: action }
+  );
+  const status = await DatabaseUtil.execute(
+    { resource: 'submission', operation: 'findById' },
+    { id: submissionId, user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' }
+  );
   const newEventMessage = {
     event_type: 'workflow_promote_step',
     submission_id: status.id,
