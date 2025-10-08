@@ -14,7 +14,6 @@ module "iam_roles" {
   edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
   lambda_execution_policy_arn = var.lambda_execution_policy_arn
-  permissions_boundary_arn = var.permissions_boundary_arn
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
   gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
@@ -83,6 +82,7 @@ module "lambda_functions" {
   auth_client_id = var.auth_client_id
   auth_client_secret = var.auth_client_secret
   auth_client_path = var.auth_client_path
+  auth_introspect_path = var.auth_introspect_path
   meditor_service_username = var.meditor_service_username
   meditor_service_password = var.meditor_service_password
   ses_from_email = var.ses_from_email
@@ -119,6 +119,7 @@ module "apigateway_endpoints" {
   region = var.region
   service_authorizer_lambda_arn = module.lambda_functions.service_authorizer_lambda_arn
   mfa_auth_lambda_arn = module.lambda_functions.mfa_auth_lambda_arn
+  oidc_authorizer_lambda_arn = module.lambda_functions.oidc_authorizer_lambda_arn
 }
 
 module "rds" {

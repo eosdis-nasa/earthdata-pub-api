@@ -38,6 +38,7 @@ data "template_file" "edpub_oas" {
     region                        = var.region
     service_authorizer_lambda_arn = var.service_authorizer_lambda_arn
     mfa_auth_lambda_arn           = var.mfa_auth_lambda_arn
+    oidc_authorizer_lambda_arn    = var.oidc_authorizer_lambda_arn
   }
 }
 

@@ -6,7 +6,7 @@ module.exports.model = (path) => ({
       description: 'UUID of note',
       $ref: `#${path}UUID`
     },
-    viewer_ids:  {
+    viewer_ids: {
       description: 'List of UUIDs of Users to have visibility on the note',
       type: 'array',
       items: { $ref: `#${path}UUID` }

@@ -10,6 +10,7 @@ const metrics = require('../metrics.js');
 const model = require('../model.js');
 const notificationConsumer = require('../notification-consumer.js');
 const notification = require('../notification.js');
+const oidcAuthorizer = require('../oidc-authorizer.js');
 const questions = require('../questions.js');
 const rdsBackup = require('../rds-backup.js');
 const register = require('../register.js');
@@ -91,6 +92,12 @@ describe('Notification Consumer', () => {
 describe('Notification', () => {
   it('should import without error', () => {
     expect(notification).toBeTruthy();
+  });
+});
+
+describe('OIDC Authorizer', () => {
+  it('should import without error', () => {
+    expect(oidcAuthorizer).toBeTruthy();
   });
 });
 
