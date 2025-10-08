@@ -83,9 +83,9 @@ describe('action-consumer', () => {
     expect(result).toEqual({ statusCode: 200 });
     expect(MessageUtil.parseRecord).toHaveBeenCalledWith(event.Records[0]);
     expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'action', operation: 'findById' }, { id: 'action-id' });
-    expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'findById' }, { id: 'submission-id' });
+    expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'findById' }, { id: 'submission-id', user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' });
     expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'updateActionData' }, { id: 'submission-id', action_id: 'action-id', data: { output: { output: 'output' }, source: 'source' } });
-    expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'findById' }, { id: 'submission-id' });
+    expect(DatabaseUtil.execute).toHaveBeenCalledWith({ resource: 'submission', operation: 'findById' }, { id: 'submission-id', user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' });
     expect(MessageUtil.sendEvent).toHaveBeenCalledWith(newEventMessage);
     expect(Schema.generateId).toHaveBeenCalled();
   });

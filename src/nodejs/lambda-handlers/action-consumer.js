@@ -52,7 +52,7 @@ async function processRecord(record) {
   );
   const submission = await DatabaseUtil.execute(
     { resource: 'submission', operation: 'findById' },
-    { id: submissionId }
+    { id: submissionId, user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' }
   );
   const local = `/tmp/${Schema.generateId()}`;
   // fs.writeFileSync(local, action.source);
@@ -70,7 +70,7 @@ async function processRecord(record) {
   );
   const status = await DatabaseUtil.execute(
     { resource: 'submission', operation: 'findById' },
-    { id: submissionId }
+    { id: submissionId, user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17' }
   );
   const newEventMessage = {
     event_type: 'workflow_promote_step',
