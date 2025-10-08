@@ -1,6 +1,6 @@
-const getNewSubmissionDAACTemplate = (params, envUrl) => {
-  const newSubmissionDAACText = `Hello ${params.user.name},\n\nA request has been submitted to Earthdata Pub. The submission has received the following temporary name:\n\n${params.eventMessage.submission_name}\n\nThank you for using Earthdata Pub.`;
-  const newSubmissionDAACHTML = `
+const getNewSubmissionInternalTemplate = (params, envUrl) => {
+  const newSubmissionInternalText = `Hello ${params.user.name},\n\nA request has been submitted to Earthdata Pub. The submission has received the following name:\n\n${params.eventMessage.submission_name}\n\nThank you for using Earthdata Pub.`;
+  const newSubmissionInternalHTML = `
     <html>
     <body>
         <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style>
@@ -17,7 +17,7 @@ const getNewSubmissionDAACTemplate = (params, envUrl) => {
                 <td colspan="2" style="padding:20px;">
                     <h1>Hello ${params.user.name},</h1><br>
                     <br>
-                    <p>A request has been submitted to Earthdata Pub. The submission has received the following temporary name:</p>
+                    <p>A request has been submitted to Earthdata Pub. The submission has received the following name:</p>
                     <p><a style="text-align: left;" href="${envUrl}/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">
                     ${params.eventMessage.submission_name}</a></p>
                     <p>Thank you for using Earthdata Pub.</p>
@@ -28,7 +28,7 @@ const getNewSubmissionDAACTemplate = (params, envUrl) => {
     </html> 
     `;
 
-  return [newSubmissionDAACText, newSubmissionDAACHTML];
+  return [newSubmissionInternalText, newSubmissionInternalHTML];
 };
 
-module.exports.getNewSubmissionDAACTemplate = getNewSubmissionDAACTemplate;
+module.exports.getNewSubmissionInternalTemplate = getNewSubmissionInternalTemplate;
