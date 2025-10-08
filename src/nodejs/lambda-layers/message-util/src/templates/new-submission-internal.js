@@ -1,6 +1,6 @@
-const getNewSubmissionDARTemplate = (params, envUrl) => {
-  const newSubmissionDARText = `Hello ${params.user.name},\n\nA request has been submitted to Earthdata Pub. The submission has received the following name:\n\n${params.eventMessage.submission_name}\n\nThank you for using Earthdata Pub.`;
-  const newSubmissionDARHTML = `
+const getNewSubmissionInternalTemplate = (params, envUrl) => {
+  const newSubmissionInternalText = `Hello ${params.user.name},\n\nA request has been submitted to Earthdata Pub. The submission has received the following name:\n\n${params.eventMessage.submission_name}\n\nThank you for using Earthdata Pub.`;
+  const newSubmissionInternalHTML = `
     <html>
     <body>
         <style>td h1 { margin: 0; padding: 0; font-size: 22px; }</style>
@@ -28,7 +28,7 @@ const getNewSubmissionDARTemplate = (params, envUrl) => {
     </html> 
     `;
 
-  return [newSubmissionDARText, newSubmissionDARHTML];
+  return [newSubmissionInternalText, newSubmissionInternalHTML];
 };
 
-module.exports.getNewSubmissionDARTemplate = getNewSubmissionDARTemplate;
+module.exports.getNewSubmissionInternalTemplate = getNewSubmissionInternalTemplate;
