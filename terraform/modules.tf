@@ -89,6 +89,7 @@ module "lambda_functions" {
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
   gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
+  debug = var.debug
 }
 
 module "apigateway_endpoints" {
