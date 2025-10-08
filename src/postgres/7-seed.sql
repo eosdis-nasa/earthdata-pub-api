@@ -15,22 +15,24 @@ INSERT INTO action VALUES ('09293035-2d31-44d3-a6b0-675f10dc34bf', 'push_metadat
 INSERT INTO action VALUES ('50ed996d-22b7-4aa7-a88b-8c4b539fa5df', 'email_daac_staff', 1, 'Send Email to DAAC Staff', 'This action is used to send an email to all DAAC staff', 'emailDaacStaff.js');
 
 -- Section(id, form_id, heading, list_order, daac_id)
-INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 0, '[]', '[]', NULL);
-INSERT INTO section VALUES ('e2b23c21-32cc-4423-9363-61887abe29c7', '6c544723-241c-4896-a38c-adbc0a364293', 'Funding Information', 1, '[]', '[]', NULL);
-INSERT INTO section VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', '6c544723-241c-4896-a38c-adbc0a364293', 'General Information', 2, '[]', '[]', NULL);
-INSERT INTO section VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '6c544723-241c-4896-a38c-adbc0a364293', 'Technical Information', 3, '[]', '[]', NULL);
-INSERT INTO section VALUES ('608df644-d1ed-4aa4-9bb9-4907f3e9ce9d', '6c544723-241c-4896-a38c-adbc0a364293', 'ASDC Additional Questions', 4, '[]', '[]', '40397fe8-4841-4e4c-b84a-6ece359ff5ff');
-INSERT INTO section VALUES ('30727449-9617-4765-83b0-d4637936710d', '6c544723-241c-4896-a38c-adbc0a364293', 'ASF DAAC Additional Questions', 5, '[]', '[]', 'c606afba-725b-4ae4-9557-1fd33260ae12');
-INSERT INTO section VALUES ('a9e1a611-9435-4f21-b074-09b9f502e79c', '6c544723-241c-4896-a38c-adbc0a364293', 'CDDIS Additional Questions', 6, '[]', '[]', 'd551380f-8813-40e4-9763-2a5bb6007cd0');
-INSERT INTO section VALUES ('caaa6d32-0bd5-45a9-8511-defca7405dcb', '6c544723-241c-4896-a38c-adbc0a364293', 'GES DISC Additional Questions', 7, '[]', '[]', '1ea1da68-cb95-431f-8dd8-a2cf16d7ef98');
-INSERT INTO section VALUES ('5d30eb76-631e-4591-9782-8422250cd89e', '6c544723-241c-4896-a38c-adbc0a364293', 'GHRC DAAC Additional Questions', 8, '[]', '[]', 'ef229725-1cad-485e-a72b-a276d2ca3175');
-INSERT INTO section VALUES ('3095e7ac-25be-4bd2-a5cd-47de253d06af', '6c544723-241c-4896-a38c-adbc0a364293', 'LAADS DAAC Additional Questions', 9, '[]', '[]', '9e0628f1-0dde-4ed2-b1e3-690c70326f25');
-INSERT INTO section VALUES ('ec1fbb1e-8d4d-4646-a20c-b5fb68135403', '6c544723-241c-4896-a38c-adbc0a364293', 'LP DAAC Additional Questions', 10, '[]', '[]', 'de6d5ec9-4728-4f2b-9d43-ae2f0fdac96a');
-INSERT INTO section VALUES ('11bac86a-b284-47b3-aaee-855859f56c0a', '6c544723-241c-4896-a38c-adbc0a364293', 'NSIDC DAAC Additional Questions', 11, '[]', '[]', 'aec3724f-b30b-4b3f-9b9a-e0907d9d14b3');
-INSERT INTO section VALUES ('bd4fe63a-ba32-475b-a665-e593dd2d6916', '6c544723-241c-4896-a38c-adbc0a364293', 'OB.DAAC Additional Questions', 12, '[]', '[]', 'fe75c306-ac04-4689-a702-073d9cb071fe');
-INSERT INTO section VALUES ('a02e43ac-80e8-422e-b2aa-639b2a1da64a', '6c544723-241c-4896-a38c-adbc0a364293', 'ORNL DAAC Additional Questions', 13, '[]', '[]', '15df4fda-ed0d-417f-9124-558fb5e5b561');
-INSERT INTO section VALUES ('a2d9ec2b-7e78-427f-ab2e-6f9c8405b79e', '6c544723-241c-4896-a38c-adbc0a364293', 'PO.DAAC Additional Questions', 14, '[]', '[]', '6b3ea184-57c5-4fc5-a91b-e49708f91b67');
-INSERT INTO section VALUES ('e738f09c-6982-4ec1-a0e0-916b1f5645ab', '6c544723-241c-4896-a38c-adbc0a364293', 'SEDAC Additional Questions', 15, '[]', '[]', '00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1');
+INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '6c544723-241c-4896-a38c-adbc0a364293', 'Data Products', 0, '[]', '[]', NULL);
+INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '6c544723-241c-4896-a38c-adbc0a364293', 'Contact Information', 1, '[]', '[]', NULL);
+INSERT INTO section VALUES ('e2b23c21-32cc-4423-9363-61887abe29c7', '6c544723-241c-4896-a38c-adbc0a364293', 'Funding Information', 2, '[]', '[]', NULL);
+INSERT INTO section VALUES ('7c9e2f41-3d85-4f7a-a2c1-9b8d4f6e2a77', '6c544723-241c-4896-a38c-adbc0a364293', 'General Information', 3, '[]', '[]', NULL);
+INSERT INTO section VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '6c544723-241c-4896-a38c-adbc0a364293', 'Technical Information', 4, '[]', '[]', NULL);
+INSERT INTO section VALUES ('608df644-d1ed-4aa4-9bb9-4907f3e9ce9d', '6c544723-241c-4896-a38c-adbc0a364293', 'ASDC Additional Questions', 5, '[]', '[]', '40397fe8-4841-4e4c-b84a-6ece359ff5ff');
+INSERT INTO section VALUES ('30727449-9617-4765-83b0-d4637936710d', '6c544723-241c-4896-a38c-adbc0a364293', 'ASF DAAC Additional Questions', 6, '[]', '[]', 'c606afba-725b-4ae4-9557-1fd33260ae12');
+INSERT INTO section VALUES ('a9e1a611-9435-4f21-b074-09b9f502e79c', '6c544723-241c-4896-a38c-adbc0a364293', 'CDDIS Additional Questions', 7, '[]', '[]', 'd551380f-8813-40e4-9763-2a5bb6007cd0');
+INSERT INTO section VALUES ('caaa6d32-0bd5-45a9-8511-defca7405dcb', '6c544723-241c-4896-a38c-adbc0a364293', 'GES DISC Additional Questions', 8, '[]', '[]', '1ea1da68-cb95-431f-8dd8-a2cf16d7ef98');
+INSERT INTO section VALUES ('5d30eb76-631e-4591-9782-8422250cd89e', '6c544723-241c-4896-a38c-adbc0a364293', 'GHRC DAAC Additional Questions', 9, '[]', '[]', 'ef229725-1cad-485e-a72b-a276d2ca3175');
+INSERT INTO section VALUES ('3095e7ac-25be-4bd2-a5cd-47de253d06af', '6c544723-241c-4896-a38c-adbc0a364293', 'LAADS DAAC Additional Questions', 10, '[]', '[]', '9e0628f1-0dde-4ed2-b1e3-690c70326f25');
+INSERT INTO section VALUES ('ec1fbb1e-8d4d-4646-a20c-b5fb68135403', '6c544723-241c-4896-a38c-adbc0a364293', 'LP DAAC Additional Questions', 11, '[]', '[]', 'de6d5ec9-4728-4f2b-9d43-ae2f0fdac96a');
+INSERT INTO section VALUES ('11bac86a-b284-47b3-aaee-855859f56c0a', '6c544723-241c-4896-a38c-adbc0a364293', 'NSIDC DAAC Additional Questions', 12, '[]', '[]', 'aec3724f-b30b-4b3f-9b9a-e0907d9d14b3');
+INSERT INTO section VALUES ('bd4fe63a-ba32-475b-a665-e593dd2d6916', '6c544723-241c-4896-a38c-adbc0a364293', 'OB.DAAC Additional Questions', 13, '[]', '[]', 'fe75c306-ac04-4689-a702-073d9cb071fe');
+INSERT INTO section VALUES ('a02e43ac-80e8-422e-b2aa-639b2a1da64a', '6c544723-241c-4896-a38c-adbc0a364293', 'ORNL DAAC Additional Questions', 14, '[]', '[]', '15df4fda-ed0d-417f-9124-558fb5e5b561');
+INSERT INTO section VALUES ('a2d9ec2b-7e78-427f-ab2e-6f9c8405b79e', '6c544723-241c-4896-a38c-adbc0a364293', 'PO.DAAC Additional Questions', 15, '[]', '[]', '6b3ea184-57c5-4fc5-a91b-e49708f91b67');
+INSERT INTO section VALUES ('e738f09c-6982-4ec1-a0e0-916b1f5645ab', '6c544723-241c-4896-a38c-adbc0a364293', 'SEDAC Additional Questions', 16, '[]', '[]', '00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1');
+
 INSERT INTO section VALUES ('6cabfad8-912c-4f9b-bf96-78d7145787c9', '19025579-99ca-4344-8610-704dae626343', 'Contact Information', 0, '[]', '[]', NULL);
 INSERT INTO section VALUES ('e169a5b4-da2e-4893-9481-1b9351cd9707', '19025579-99ca-4344-8610-704dae626343', 'Funding Information', 1, '[]', '[]', NULL);
 INSERT INTO section VALUES ('768a6b51-4864-458c-b20d-fb8b4c7dc606', '19025579-99ca-4344-8610-704dae626343', 'General Information', 2, '[]', '[]', NULL);
@@ -49,6 +51,7 @@ INSERT INTO section VALUES ('36d021d3-c527-419b-9b77-a48d535c12a8', '19025579-99
 INSERT INTO section VALUES ('f1a2136a-7245-4462-a175-40164db59c7b', '19025579-99ca-4344-8610-704dae626343', 'ORNL DAAC Additional Questions', 15, '[]', '[]', '15df4fda-ed0d-417f-9124-558fb5e5b561');
 INSERT INTO section VALUES ('0f6771e5-a6e4-4f19-ac85-cc48f526c146', '19025579-99ca-4344-8610-704dae626343', 'PO.DAAC Additional Questions', 16, '[]', '[]', '6b3ea184-57c5-4fc5-a91b-e49708f91b67');
 INSERT INTO section VALUES ('e9675ba5-e494-4275-8778-cd3fa68371e3', '19025579-99ca-4344-8610-704dae626343', 'SEDAC Additional Questions', 17, '[]', '[]', '00dcf32a-a4e2-4e55-a0d1-3a74cf100ca1');
+-- DAR Form
 INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b51', '19025579-99ca-4344-8611-704dae626343', 'Contact Information', 0, '[]', '[]', NULL);
 INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b52', '19025579-99ca-4344-8611-704dae626343', 'Funding Information', 1, '[]', '[]', NULL);
 INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b53', '19025579-99ca-4344-8611-704dae626343', 'General Information', 2, '[]', '[]', NULL);
@@ -155,28 +158,6 @@ INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', 'b8
 INSERT INTO section_question VALUES ('b0934ecc-1aa1-4e07-9cbc-f1299126aee0', '8c331721-541c-45a4-b95a-4b9b4557eae2', 15, '[]', '[]');
 -- END GESDISC
 
-
--- SectionQuestion(section_id, question_id, list_order, required_if, show_if))
-INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', 'f3e2eab9-6375-4e53-9cc2-3d16f318d333', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('e2b23c21-32cc-4423-9363-61887abe29c7', '8a364184-42ac-48fe-b831-acb2eb08c728', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('e2b23c21-32cc-4423-9363-61887abe29c7', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', '39701413-ac96-4b66-9c2f-2d9c08a18ed9', 1, '[]', '[]');
--- INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'c9c73e88-837a-42d2-aa1a-50874a333607', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'c3af2edf-d912-40ce-990d-e8b4f86d1ad3', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', '7fd7bccf-5065-4033-9956-9e80bc99c205', 3, '[]', '[]');
-INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'bd00dbb7-1d3c-46fa-82a4-734236f4e06c', 4, '[]', '[]');
-INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'f40956c3-9af8-400e-8dd8-c5e2965dcb8a', 5, '[]', '[]');
-INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', '2dd6c8b1-22a8-4866-91c3-da9b4ce849dc', 6, '[]', '[]');
-INSERT INTO section_question VALUES ('049e63e8-018d-4c3f-96f1-80c73e0f4287', 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9', 7, '[]', '[]');
-INSERT INTO section_question VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d27', 0, '[]', '[]');
-INSERT INTO section_question VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '228cb0d6-78fb-449a-8061-b1e6fb3f59d1', 1, '[]', '[]');
-INSERT INTO section_question VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '4f2dd369-d865-47ba-8504-8694493f129f', 2, '[]', '[]');
-INSERT INTO section_question VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', 'dbf70495-433a-439e-8173-0cb20f972c16', 3, '[]', '[]');
-INSERT INTO section_question VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '4c42796a-8ff1-444e-8fc5-82ccad82e5fb', 4, '[]', '[{"field":"data_product_status","value":"Yes"}]');
-INSERT INTO section_question VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '40672516-2220-4edc-8c1b-fd9f7e0b978f', 5, '[]', '[]');
-INSERT INTO section_question VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3', 6, '[]', '[]');
 INSERT INTO section_question VALUES ('6cabfad8-912c-4f9b-bf96-78d7145787c9', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 0, '[]', '[]');
 INSERT INTO section_question VALUES ('6cabfad8-912c-4f9b-bf96-78d7145787c9', 'f3e2eab9-6375-4e53-9cc2-3d16f318d333', 1, '[]', '[]');
 INSERT INTO section_question VALUES ('6cabfad8-912c-4f9b-bf96-78d7145787c9', 'f3e2eab9-6375-4e53-9cc2-3d16f318d332', 2, '[]', '[]');
@@ -753,4 +734,47 @@ INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d28', 'assignment_da
 INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d28', 'assignment_data_format_dont_know', 8, 'Don`t know yet', 'checkbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d28', 'assignment_data_format_other_info', 9, 'If Other, please provide the data format(s)', 'text', '{}', '{}', '[{"field":"assignment_data_format_other","value":"true"}]','[]',  False);
 
-INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 'dar_form_data_producers_table', 0, '', 'table', '[{"key":"data_product_name","label":"Name of data product: How do you refer to the data product?","type":"text","editable":true},{"key": "data_prod_timeline","label": "Data Production Timeline: Include the start date and when do you expect data production to be complete.","type": "text","editable": true},{"key":"data_prod_volume","label":"Data Product Volume: What is the estimated or actual total volume of the data product upon completion of production?","type":"text","editable":true},{"key":"instrument_collect_data","label":"Instrument: What instrument  is used to collect data?","type":"text","editable":true}]', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 'dar_form_data_producers_table', 0, '', 'table', '[{"key":"data_product_name","label":"Name of data product: How do you refer to the data product?","type":"text","editable":true},
+              {"key":"data_prod_timeline","label":"Data Production Timeline: Include the start date and when do you expect data production to be complete.","type":"text","editable":true},
+              {"key":"data_prod_volume","label":"Data Product Volume: What is the estimated or actual total volume of the data product upon completion of production?","type":"text","editable":true},
+              {"key":"instrument_collect_data","label":"Instrument: What instrument  is used to collect data?","type":"text","editable":true},
+              {"key":"data_prod_doi","label":"Data Product DOI(s): If applicable, for any existing Data Products. Do not list any journal article DOI''s here.","type":"text","editable":true},
+              {"key":"data_prod_grid","label":"Gridded Data Product?","type":"text","editable":true},
+              {"key":"data_prod_file_format","label":"Data Product File Format","type":"text","editable":true},
+              {"key":"data_prod_granule","label":"Data Product Granule/File Size","type":"text","editable":true},
+              {"key":"data_prod_params","label":"Data Product Parameters/Science Variables: List all parameters/science variable names found within each data product.","type":"text","editable":true},
+              {"key":"data_prod_temporal_coverage","label":"Data Product Temporal Coverage and Resolution","type":"text","editable":true},
+              {"key":"data_prod_spatial_coverage","label":"Spatial Coverage and Resolution","type":"text","editable":true},
+              {"key":"data_prod_ingest_frequency","label":"Ingest Frequency: List how often each Data Product will be delivered","type":"text","editable":true},
+              {"key":"data_prod_comments","label":"Comments","type":"text","editable":true}]', '{}', '[]','[]',  True);
+
+-- DER
+INSERT INTO question VALUES ('d6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 'additional_comments_data_prod', 1, 'Additional comments regarding expected data products', '', '', True);
+INSERT INTO question VALUES ('9f3d4e12-7b29-45ce-bf21-6c018b9d6f54', 'der_sample_data_file', 1, 'Sample Data File(s)', 'Please upload a sample file(s).', 'Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content. If more than 5 sample data files are necessary to represent the data product, please contact the DAAC for assistance.  Files must be less than 5 GB and cannot include .exe or .dll extensions.', False);
+
+INSERT INTO input VALUES ('9f3d4e12-7b29-45ce-bf21-6c018b9d6f54', 'der_example_files', 0, '', 'file', '{}', '{}', '[]','[]',  False);
+
+INSERT INTO input VALUES ('d6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 'additional_comments', 0, '', 'text', '{}', '{}', '[]','[]',  True);
+
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', 'd6a7a9f3-5c8a-44d3-8e21-3f4a2f8b09f2', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b60', '9f3d4e12-7b29-45ce-bf21-6c018b9d6f54', 2, '[]', '[]');
+
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b50', '80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 1, '[]', '[]');
+
+INSERT INTO section_question VALUES ('e2b23c21-32cc-4423-9363-61887abe29c7', '8a364184-42ac-48fe-b831-acb2eb08c730', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('e2b23c21-32cc-4423-9363-61887abe29c7', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d731', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('e2b23c21-32cc-4423-9363-61887abe29c7', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d732', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('e2b23c21-32cc-4423-9363-61887abe29c7', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d733', 3, '[]', '[]');
+
+
+INSERT INTO section_question VALUES ('7c9e2f41-3d85-4f7a-a2c1-9b8d4f6e2a77', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d734', 0, '[]', '[]');
+INSERT INTO section_question VALUES ('7c9e2f41-3d85-4f7a-a2c1-9b8d4f6e2a77', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d735', 1, '[]', '[]');
+INSERT INTO section_question VALUES ('7c9e2f41-3d85-4f7a-a2c1-9b8d4f6e2a77', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d736', 2, '[]', '[]');
+INSERT INTO section_question VALUES ('7c9e2f41-3d85-4f7a-a2c1-9b8d4f6e2a77', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d737', 3, '[]', '[]');
+INSERT INTO section_question VALUES ('7c9e2f41-3d85-4f7a-a2c1-9b8d4f6e2a77', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d738', 4, '[]', '[]');
+INSERT INTO section_question VALUES ('7c9e2f41-3d85-4f7a-a2c1-9b8d4f6e2a77', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d739', 5, '[]', '[]');
+INSERT INTO section_question VALUES ('7c9e2f41-3d85-4f7a-a2c1-9b8d4f6e2a77', '4ecc885f-daf8-4bc6-a8cd-d30c2a54d740', 6, '[]', '[]');
+
+INSERT INTO section_question VALUES ('2ba04d20-5473-42b7-907c-10ef384f90c8', '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d28', 0, '[]', '[]');
