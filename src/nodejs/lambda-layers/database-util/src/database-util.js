@@ -20,12 +20,12 @@ async function execute({ resource, operation }, params) {
     const { parser, ...query } = queryBuilder[resource][operation](params);
     if (process.env.DEBUG === 'true') {
       // eslint-disable-next-line
-      console.log('DB QUERY: ', query);
+      console.debug('DB QUERY: ', query);
     }
     const data = parser(await pool.query(query));
     if (process.env.DEBUG === 'true') {
       // eslint-disable-next-line
-      console.log('DB RESPONSE: ', data);
+      console.debug('DB RESPONSE: ', data);
     }
     if (data) {
       Object.assign(response, { data });

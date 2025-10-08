@@ -58,7 +58,7 @@ async function processRecord(record) {
   const { execute } = require(local);
   if (process.env.DEBUG === 'true') {
     // eslint-disable-next-line
-    console.log('Calling action ', actionId, ' with submission: ', submission, ' , data: ', data);
+    console.debug('Calling action ', actionId, ' with submission: ', submission, ' , data: ', data);
   }
   const output = await execute({
     submission, data, DatabaseUtil, MessageUtil, Schema
