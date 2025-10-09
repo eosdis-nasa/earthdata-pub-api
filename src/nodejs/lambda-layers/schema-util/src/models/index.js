@@ -101,6 +101,7 @@ const StepUpdate = require('./step-update.js');
 const Section = require('./section.js');
 const AttachmentUpload = require('./attachment-upload.js');
 const StepUpload = require('./step-upload.js');
+const SubmissionCountByWorkflow = require('./submission-count-by-workflow.js');
 
 const models = {
   Action,
@@ -154,6 +155,7 @@ const models = {
   StepReviewCreateResponse,
   StepReviewDeleteResponse,
   Submission,
+  SubmissionCountByWorkflow,
   SubmissionOperationAll,
   SubmissionDetails,
   SubmissionOperationAddContributors,

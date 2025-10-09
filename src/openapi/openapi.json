@@ -3704,7 +3704,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Submission"
+                    "$ref": "#/components/schemas/SubmissionCountByWorkflow"
                   }
                 }
               }
