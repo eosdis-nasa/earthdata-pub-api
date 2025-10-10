@@ -60,6 +60,10 @@ async function processRecord(record) {
   await fetchAction(new Buffer.from(action.source).toString(), local);
   // eslint-disable-next-line
   const { execute } = require(local);
+  if (process.env.DEBUG === 'true') {
+    // eslint-disable-next-line
+    console.debug('Calling action ', actionId, ' with submission: ', submission, ' , data: ', data);
+  }
   const output = await execute({
     submission, data, DatabaseUtil, MessageUtil, Schema
   });

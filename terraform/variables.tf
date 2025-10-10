@@ -133,3 +133,7 @@ variable "ornl_service_authorization_secret" {
 variable "ses_alarm_email" {
   type = string
 }
+
+variable "debug" {
+  type = string
+}

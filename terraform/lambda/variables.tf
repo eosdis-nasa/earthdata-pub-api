@@ -189,3 +189,7 @@ variable "ornl_endpoint_arn" {
 variable "gesdisc_endpoint_arn"{
   type = string
 }
+
+variable "debug" {
+  type = string
+}
