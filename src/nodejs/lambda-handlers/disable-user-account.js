@@ -58,10 +58,10 @@ exports.handler = async (event) => {
       Array.from(cognitoUsers.entries()).map(async ([sub, cognitoUser]) => {
         if (!inactiveSubs.has(sub)) return null; // Skip non-matching users
         try {
-          // await cognito.adminDisableUser({
-          //   UserPoolId: userPoolId,
-          //   Username: cognitoUser.username
-          // });
+          await cognito.adminDisableUser({
+            UserPoolId: userPoolId,
+            Username: cognitoUser.username
+          });
           return { id: sub, username: cognitoUser.username, disabled: true };
         } catch (err) {
           console.error(`Failed to disable ${cognitoUser.username}:`, err.message);
