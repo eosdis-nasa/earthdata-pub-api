@@ -56,12 +56,12 @@ exports.handler = async (event) => {
     // Step 3: Check Cognito for each inactive user
     const results = await Promise.all(
       Array.from(cognitoUsers.entries()).map(async ([sub, cognitoUser]) => {
-        if (!inactiveSubs.has(sub)) return;  // Skip non-matching users
+        if (!inactiveSubs.has(sub)) return null; // Skip non-matching users
         try {
-          await cognito.adminDisableUser({
-            UserPoolId: userPoolId,
-            Username: cognitoUser.username
-          });
+          // await cognito.adminDisableUser({
+          //   UserPoolId: userPoolId,
+          //   Username: cognitoUser.username
+          // });
           return { id: sub, username: cognitoUser.username, disabled: true };
         } catch (err) {
           console.error(`Failed to disable ${cognitoUser.username}:`, err.message);
@@ -70,7 +70,7 @@ exports.handler = async (event) => {
       })
     );
 
-    const disabledResults = results.filter(result => result !== undefined);
+    const disabledResults = results.filter((result) => result !== null);
 
     return {
       message: `Disabled ${disabledResults.length} inactive users.`,
