@@ -66,11 +66,10 @@ exports.handler = async (event) => {
         }
 
         try {
-          // Uncomment to actually disable the user
-          // await cognito.adminDisableUser({
-          //   UserPoolId: userPoolId,
-          //   Username: cognitoUser.username
-        // });
+          await cognito.adminDisableUser({
+            UserPoolId: userPoolId,
+            Username: cognitoUser.username
+          });
 
           return { id: user.id, disabled: true };
         } catch (err) {
