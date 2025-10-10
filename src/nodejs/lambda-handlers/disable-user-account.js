@@ -1,46 +1,41 @@
+/* eslint-disable no-await-in-loop */
 const { CognitoIdentityProvider } = require('@aws-sdk/client-cognito-identity-provider');
 const db = require('database-util');
 
-// Initialize AWS Cognito client
 const cognito = new CognitoIdentityProvider({ region: process.env.REGION });
 const userPoolId = process.env.USER_POOL_ID;
 
 /**
- * Get Cognito user by sub (UUID) and return info if enabled.
+ * Fetch all enabled Cognito users.
  */
-async function getEnabledUserBySub(sub) {
-  try {
+async function listAllEnabledUsers() {
+  const users = [];
+  let paginationToken;
+
+  do {
     const res = await cognito.listUsers({
       UserPoolId: userPoolId,
-      Filter: `sub = "${sub}"`
+      Filter: 'status = "Enabled"',
+      PaginationToken: paginationToken
     });
 
-    if (!res.Users || res.Users.length === 0) {
-      return null;
-    }
+    if (res.Users) users.push(...res.Users);
+    paginationToken = res.PaginationToken;
+  } while (paginationToken);
 
-    const [user] = res.Users;
-
-    const attrs = {};
-    user.Attributes.forEach((attr) => {
-      attrs[attr.Name] = attr.Value;
-    });
-
-    if (!user.Enabled) return null;
+  return users.reduce((map, user) => {
+    const attrs = Object.fromEntries(user.Attributes.map((a) => [a.Name, a.Value]));
     // included more attributes in case required but everything below is not needed
-    return {
-      sub,
-      username: user.Username,
-      enabled: user.Enabled,
-      name: attrs.name || 'N/A',
-      email: attrs.email || 'N/A',
-      status: user.UserStatus
-    };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(`Error fetching Cognito user for sub ${sub}:`, err);
-    return null;
-  }
+    if (attrs.sub) {
+      map.set(attrs.sub, {
+        username: user.Username,
+        enabled: user.Enabled,
+        email: attrs.email || 'N/A',
+        status: user.UserStatus
+      });
+    }
+    return map;
+  }, new Map());
 }
 
 /**
@@ -53,36 +48,34 @@ exports.handler = async (event) => {
   try {
     // Step 1: Get inactive users from DB
     const inactiveUsers = await db.user.getInactiveUsers();
+    const inactiveSubs = new Set(inactiveUsers.map((u) => u.id));
 
-    const skipped = [];
+    // Step 2: Fetch all enabled Cognito users
+    const cognitoUsers = await listAllEnabledUsers();
 
-    // Step 2: Check Cognito for each inactive user
+    // Step 3: Check Cognito for each inactive user
     const results = await Promise.all(
-      inactiveUsers.map(async (user) => {
-        const cognitoUser = await getEnabledUserBySub(user.id);
-        if (!cognitoUser) {
-          skipped.push(user.id);
-          return null;
-        }
-
+      Array.from(cognitoUsers.entries()).map(async ([sub, cognitoUser]) => {
+        if (!inactiveSubs.has(sub)) return;  // Skip non-matching users
         try {
           await cognito.adminDisableUser({
             UserPoolId: userPoolId,
             Username: cognitoUser.username
           });
-
-          return { id: user.id, disabled: true };
+          return { id: sub, username: cognitoUser.username, disabled: true };
         } catch (err) {
-          // eslint-disable-next-line no-console
-          console.error(`Failed to disable user ${cognitoUser.username}:`, err);
-          return { id: user.id, disabled: false };
+          console.error(`Failed to disable ${cognitoUser.username}:`, err.message);
+          return { id: sub, username: cognitoUser.username, disabled: false };
         }
       })
     );
 
-    const disabledCount = results.filter((r) => r && r.disabled).length;
+    const disabledResults = results.filter(result => result !== undefined);
 
-    return { message: `Processed ${inactiveUsers.length} users. ${disabledCount} should be disabled.` };
+    return {
+      message: `Disabled ${disabledResults.length} inactive users.`,
+      results: disabledResults
+    };
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('Error running maintainUserAccount:', err);
