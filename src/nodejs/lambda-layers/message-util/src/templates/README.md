@@ -1,8 +1,8 @@
 # message-util templates
 The templates in this folder allow developers to provide additional context to messages sent via email to end users as well as control how the emails are formatted. 
 
-[!IMPORTANT] 
-Templates in this folder are used for email purposes only and do not automatically get added to the conversations page.
+> [!IMPORTANT]
+> Templates in this folder are used for email purposes only and do not automatically get added to the conversations page.
 
 ## When to use these templates
 These templates should be used when the answer to any of the following questions is "Yes".
