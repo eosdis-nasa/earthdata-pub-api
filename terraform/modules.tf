@@ -94,6 +94,7 @@ module "lambda_functions" {
   cue_root_url = var.cue_root_url
   cue_collection = var.cue_collection
   multipart_upload_limit_bytes = var.multipart_upload_limit_bytes
+  use_cue_upload = var.use_cue_upload
 }
 
 module "apigateway_endpoints" {

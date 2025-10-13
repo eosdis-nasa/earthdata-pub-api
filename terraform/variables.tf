@@ -155,3 +155,7 @@ variable "multipart_upload_limit_bytes" {
   default = 104857600
   description = "Threshold value between single file uploads and multipart uploads to CUE. Defaults to 100MB"
 }
+
+variable "use_cue_upload" {
+  type = string
+}

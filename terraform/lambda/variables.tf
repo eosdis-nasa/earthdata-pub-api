@@ -209,3 +209,7 @@ variable "cue_collection" {
 variable "multipart_upload_limit_bytes" {
   type = number
 }
+
+variable "use_cue_upload" {
+  type = string
+}

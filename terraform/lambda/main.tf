@@ -1147,6 +1147,7 @@ resource "aws_lambda_function" "file_upload" {
       CUE_ROOT_URL                  = var.cue_root_url
       CUE_COLLECTION                = var.cue_collection
       MULTIPART_UPLOAD_LIMIT_BYTES  = var.multipart_upload_limit_bytes
+      USE_CUE_UPLOAD                = var.use_cue_upload
     }
   }
   vpc_config {

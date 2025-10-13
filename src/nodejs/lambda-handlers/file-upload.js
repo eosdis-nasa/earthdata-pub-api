@@ -1,3 +1,4 @@
+const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const {
   S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand
@@ -15,7 +16,42 @@ const cueCollection = process.env.CUE_COLLECTION;
 
 const multipartUploadLimitBytes = process.env.MULTIPART_UPLOAD_LIMIT_BYTES;
 
+const useCUEUpload = process.env.USE_CUE_UPLOAD;
+
 const categoryEnums = ['documentation', 'sample'];
+
+async function legacyGenerateUploadUrl(params) {
+  const { key, checksumValue, fileType } = params;
+  const checksumAlgo = 'SHA256';
+  if (!fileType) return ({ error: 'invalid file type' });
+  const s3Client = new S3Client({
+    region
+  });
+
+  const payload = {
+    Bucket: ingestBucket,
+    Key: key,
+    Conditions: [
+      { 'x-amz-meta-checksumalgorithm': checksumAlgo },
+      { 'x-amz-meta-checksumvalue': checksumValue },
+      { 'x-amz-checksum-sha256': checksumValue }
+    ],
+    Fields: {
+      'x-amz-meta-checksumalgorithm': checksumAlgo,
+      'x-amz-meta-checksumvalue': checksumValue,
+      'x-amz-checksum-sha256': checksumValue
+    },
+    Expires: 60
+  };
+
+  try {
+    const resp = await createPresignedPost(s3Client, payload);
+    return (resp);
+  } catch (err) {
+    console.error(err);
+    return ({ error: 'Error generating upload url' });
+  }
+}
 
 async function cuePostQuery(params) {
   const { endpoint, payload } = params;
@@ -38,6 +74,7 @@ async function cuePostQuery(params) {
 }
 
 async function generateUploadUrl(params) {
+  if (useCUEUpload?.toLowerCase?.() === 'false') return legacyGenerateUploadUrl(params);
   const {
     key, checksumValue, fileType, fileSize
   } = params;
