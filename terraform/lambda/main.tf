@@ -1141,7 +1141,7 @@ resource "aws_lambda_function" "file_upload" {
       PG_HOST                       = var.db_host
       PG_DB                         = var.db_database
       PG_PASS                       = var.db_password
-      PG_PORT                       = var.
+      PG_PORT                       = var.db_port
       DEBUG                         = var.debug
       CUE_API_TOKEN                 = var.cue_api_token
       CUE_ROOT_URL                  = var.cue_root_url
