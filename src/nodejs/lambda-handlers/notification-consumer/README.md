@@ -14,3 +14,9 @@ In most cases it is desired that messages should be added to the conversations p
 
 - Does the information contained in this message need to be emailed directly to user(s)
 - Is there additional context that should be sent to the user, but does not need to be included in the conversations page
+
+## How to add a new template
+1. Decide on the `event type` you want to use to trigger this notification
+2. Add a new object with that event type to the templates object in [templates.js](templates.js)
+3. Update the text value with whatever text you would like added to the conversations page. 
+4. Ensure that the new event type is being used and that the variables needed to render the message are passed as part of the triggerering event.
