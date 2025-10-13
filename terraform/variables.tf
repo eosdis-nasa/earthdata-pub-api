@@ -158,4 +158,5 @@ variable "multipart_upload_limit_bytes" {
 
 variable "use_cue_upload" {
   type = string
+  default = "true"
 }
