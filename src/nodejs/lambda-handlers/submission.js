@@ -294,12 +294,12 @@ async function restoreMethod(event, user) {
 
 async function changeStepMethod(event, user) {
   // eslint-disable-next-line
-  const { id, step_name } = event;
-  const validStep = await db.submission.checkWorkflow({ step_name, id });
+  const { id, step_name: stepName } = event;
+  const validStep = await db.submission.checkWorkflow({ stepName, id });
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
   if ((user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege)))
                                                && await validStep.step_name) {
-    return db.submission.setStep({ step_name, id });
+    return db.submission.setStep({ stepName, id });
   }
   return db.submission.findById({ id, user_id: user.id });
 }

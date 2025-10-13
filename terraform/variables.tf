@@ -114,7 +114,7 @@ variable "ornl_endpoint_url" {
   type = string
 }
 
-variable "ornl_endpoint_access_token" {
+variable "ornl_endpoint_access_token_secret" {
   type = string
 }
 
@@ -122,7 +122,7 @@ variable "gesdisc_endpoint_url"{
   type = string
 }
 
-variable "gesdisc_endpoint_access_token"{
+variable "gesdisc_endpoint_access_token_secret"{
   type = string
 }
 
@@ -131,6 +131,10 @@ variable "ornl_service_authorization_secret" {
 }
 
 variable "ses_alarm_email" {
+  type = string
+}
+
+variable "debug" {
   type = string
 }
 

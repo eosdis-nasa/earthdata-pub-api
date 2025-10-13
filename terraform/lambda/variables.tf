@@ -190,6 +190,10 @@ variable "gesdisc_endpoint_arn"{
   type = string
 }
 
+variable "debug" {
+  type = string
+}
+
 variable "cue_api_token" {
   type = string
 }
