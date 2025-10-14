@@ -101,6 +101,8 @@ const StepUpdate = require('./step-update.js');
 const Section = require('./section.js');
 const AttachmentUpload = require('./attachment-upload.js');
 const StepUpload = require('./step-upload.js');
+const UploadComplete = require('./upload-complete.js');
+const UploadMultipartStart = require('./upload-multipart-start.js');
 
 const models = {
   Action,
@@ -203,8 +205,9 @@ const models = {
   StepUpdate,
   Section,
   AttachmentUpload,
-  StepUpload
-
+  StepUpload,
+  UploadComplete,
+  UploadMultipartStart
 };
 
 function collectionMetadata() {

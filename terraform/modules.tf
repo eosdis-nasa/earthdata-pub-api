@@ -90,6 +90,11 @@ module "lambda_functions" {
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
   gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
   debug = var.debug
+  cue_api_token = var.cue_api_token
+  cue_root_url = var.cue_root_url
+  cue_collection = var.cue_collection
+  multipart_upload_limit_bytes = var.multipart_upload_limit_bytes
+  use_cue_upload = var.use_cue_upload
 }
 
 module "apigateway_endpoints" {

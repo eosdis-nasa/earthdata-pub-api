@@ -1135,14 +1135,19 @@ resource "aws_lambda_function" "file_upload" {
   ]
   environment {
     variables = {
-      REGION          = var.region
-      INGEST_BUCKET   = var.edpub_upload_s3_bucket
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      DEBUG          = var.debug
+      REGION                        = var.region
+      INGEST_BUCKET                 = var.edpub_upload_s3_bucket
+      PG_USER                       = var.db_user
+      PG_HOST                       = var.db_host
+      PG_DB                         = var.db_database
+      PG_PASS                       = var.db_password
+      PG_PORT                       = var.db_port
+      DEBUG                         = var.debug
+      CUE_API_TOKEN                 = var.cue_api_token
+      CUE_ROOT_URL                  = var.cue_root_url
+      CUE_COLLECTION                = var.cue_collection
+      MULTIPART_UPLOAD_LIMIT_BYTES  = var.multipart_upload_limit_bytes
+      USE_CUE_UPLOAD                = var.use_cue_upload
     }
   }
   vpc_config {
