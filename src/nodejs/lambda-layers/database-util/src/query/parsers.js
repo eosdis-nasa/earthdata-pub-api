@@ -134,3 +134,4 @@ module.exports.addAttachments = one;
 module.exports.findAllUploadSteps = many;
 module.exports.findUploadStepById = one;
 module.exports.getDetailedUsers = many;
+module.exports.getInactiveUsers = many;

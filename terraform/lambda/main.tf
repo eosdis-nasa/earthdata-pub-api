@@ -1202,3 +1202,56 @@ resource "aws_lambda_permission" "mfa_auth" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/mfa/*"
 }
+
+# Disable User Account Lambda
+
+resource "aws_lambda_function" "disable_user_account" {
+  filename         = "../artifacts/disable-user-account-lambda.zip"
+  function_name    = "disable_user_account"
+  role             = var.edpub_lambda_role_arn
+  layers = [
+    aws_lambda_layer_version.database_util.arn
+  ]
+  handler          = "disable-user-account.handler"
+  runtime          = "nodejs22.x"
+  source_code_hash = filesha256("../artifacts/disable-user-account-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION       = var.region
+      USER_POOL_ID = var.cognito_user_pool_id
+      PG_USER      = var.db_user
+      PG_HOST      = var.db_host
+      PG_DB        = var.db_database
+      PG_PASS      = var.db_password
+      PG_PORT      = var.db_port
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
+# CloudWatch Event Rule (Monthly)
+resource "aws_cloudwatch_event_rule" "disable_user_account_monthly_cron" {
+  name                = "disable-user-account-monthly-cron"
+  description         = "Triggers disable_user_account Lambda monthly at 11PM UTC to disable inactive users."
+  schedule_expression = "cron(0 23 1 * ? *)" # Runs monthly on the 1st day at 11PM UTC
+}
+
+# Event Target for Lambda
+resource "aws_cloudwatch_event_target" "disable_user_account_trigger_monthly" {
+  rule      = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name}"
+  target_id = "lambda"
+  arn       = "${aws_lambda_function.disable_user_account.arn}"
+}
+
+# Allow CloudWatch to Invoke Lambda
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_disable_user_account" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.disable_user_account.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.disable_user_account_monthly_cron.arn}"
+}
