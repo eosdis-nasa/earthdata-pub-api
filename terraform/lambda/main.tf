@@ -65,6 +65,7 @@ resource "aws_lambda_function" "action_consumer" {
       MEDITOR_PASS   = var.meditor_service_password
       ROOT_URL       = var.client_root_url
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -112,6 +113,7 @@ resource "aws_lambda_function" "data" {
       PG_PASS         = var.db_password
       PG_PORT         = var.db_port
       SOURCE_EMAIL    = var.ses_from_email
+      DEBUG           = var.debug
     }
   }
   vpc_config {
@@ -153,6 +155,7 @@ resource "aws_lambda_function" "form" {
       PG_DB           = var.db_database
       PG_PASS         = var.db_password
       PG_PORT         = var.db_port
+      DEBUG           = var.debug
     }
   }
   vpc_config {
@@ -193,6 +196,7 @@ resource "aws_lambda_function" "inbound_consumer" {
       PG_PASS       = var.db_password
       PG_PORT       = var.db_port
       SOURCE_EMAIL  = var.ses_from_email
+      DEBUG         = var.debug
     }
   }
   vpc_config {
@@ -240,6 +244,7 @@ resource "aws_lambda_function" "invoke" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -283,6 +288,7 @@ resource "aws_lambda_function" "metrics" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -325,6 +331,7 @@ resource "aws_lambda_function" "metrics_consumer" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -371,6 +378,7 @@ resource "aws_lambda_function" "model" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -408,6 +416,7 @@ resource "aws_lambda_function" "module" {
       PG_DB   = var.db_database
       PG_PASS = var.db_password
       PG_PORT = var.db_port
+      DEBUG   = var.debug
     }
   }
   vpc_config {
@@ -449,6 +458,7 @@ resource "aws_lambda_function" "notification" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -495,6 +505,7 @@ resource "aws_lambda_function" "notification_consumer" {
       SOURCE_EMAIL          = var.ses_from_email
       ROOT_URL              = var.client_root_url
       DASHBOARD_BUCKET      = var.edpub_dashboard_s3_bucket
+      DEBUG                 = var.debug
     }
   }
   vpc_config {
@@ -610,6 +621,7 @@ resource "aws_lambda_function" "step_cleanup" {
       PG_DB          = var.db_database
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -663,6 +675,7 @@ resource "aws_lambda_function" "register" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -703,6 +716,7 @@ resource "aws_lambda_function" "service_authorizer" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -745,6 +759,7 @@ resource "aws_lambda_function" "submission" {
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
       ROOT_URL       = var.client_root_url
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -787,6 +802,7 @@ resource "aws_lambda_function" "subscribe" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -830,6 +846,7 @@ resource "aws_lambda_function" "user" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -871,6 +888,7 @@ resource "aws_lambda_function" "workflow_consumer" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -917,6 +935,7 @@ resource "aws_lambda_function" "workflow" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -965,6 +984,7 @@ resource "aws_lambda_function" "auth" {
       AUTH_CLIENT_ID     = var.auth_client_id
       AUTH_CLIENT_SECRET = var.auth_client_secret
       AUTH_CLIENT_PATH   = var.auth_client_path
+      DEBUG              = var.debug
     }
   }
   vpc_config {
@@ -1085,6 +1105,7 @@ resource "aws_lambda_function" "questions" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       SOURCE_EMAIL   = var.ses_from_email
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -1114,13 +1135,19 @@ resource "aws_lambda_function" "file_upload" {
   ]
   environment {
     variables = {
-      REGION          = var.region
-      INGEST_BUCKET   = var.edpub_upload_s3_bucket
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
+      REGION                        = var.region
+      INGEST_BUCKET                 = var.edpub_upload_s3_bucket
+      PG_USER                       = var.db_user
+      PG_HOST                       = var.db_host
+      PG_DB                         = var.db_database
+      PG_PASS                       = var.db_password
+      PG_PORT                       = var.db_port
+      DEBUG                         = var.debug
+      CUE_API_TOKEN                 = var.cue_api_token
+      CUE_ROOT_URL                  = var.cue_root_url
+      CUE_COLLECTION                = var.cue_collection
+      MULTIPART_UPLOAD_LIMIT_BYTES  = var.multipart_upload_limit_bytes
+      USE_CUE_UPLOAD                = var.use_cue_upload
     }
   }
   vpc_config {
@@ -1159,6 +1186,7 @@ resource "aws_lambda_function" "mfa_auth" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       CUP_ID         = var.cognito_user_pool_id
+      DEBUG          = var.debug
     }
   }
   vpc_config {
@@ -1173,4 +1201,57 @@ resource "aws_lambda_permission" "mfa_auth" {
   function_name = aws_lambda_function.mfa_auth.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/mfa/*"
+}
+
+# Disable User Account Lambda
+
+resource "aws_lambda_function" "disable_user_account" {
+  filename         = "../artifacts/disable-user-account-lambda.zip"
+  function_name    = "disable_user_account"
+  role             = var.edpub_lambda_role_arn
+  layers = [
+    aws_lambda_layer_version.database_util.arn
+  ]
+  handler          = "disable-user-account.handler"
+  runtime          = "nodejs22.x"
+  source_code_hash = filesha256("../artifacts/disable-user-account-lambda.zip")
+  timeout          = 180
+  environment {
+    variables = {
+      REGION       = var.region
+      USER_POOL_ID = var.cognito_user_pool_id
+      PG_USER      = var.db_user
+      PG_HOST      = var.db_host
+      PG_DB        = var.db_database
+      PG_PASS      = var.db_password
+      PG_PORT      = var.db_port
+    }
+  }
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = var.security_group_ids
+  }
+}
+
+# CloudWatch Event Rule (Monthly)
+resource "aws_cloudwatch_event_rule" "disable_user_account_monthly_cron" {
+  name                = "disable-user-account-monthly-cron"
+  description         = "Triggers disable_user_account Lambda monthly at 11PM UTC to disable inactive users."
+  schedule_expression = "cron(0 23 1 * ? *)" # Runs monthly on the 1st day at 11PM UTC
+}
+
+# Event Target for Lambda
+resource "aws_cloudwatch_event_target" "disable_user_account_trigger_monthly" {
+  rule      = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name}"
+  target_id = "lambda"
+  arn       = "${aws_lambda_function.disable_user_account.arn}"
+}
+
+# Allow CloudWatch to Invoke Lambda
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_disable_user_account" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.disable_user_account.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.disable_user_account_monthly_cron.arn}"
 }

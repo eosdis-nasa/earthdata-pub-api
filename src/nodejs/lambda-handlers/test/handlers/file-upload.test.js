@@ -1,9 +1,25 @@
 const db = require('database-util');
-const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const fileUpload = require('../../file-upload.js');
 
-jest.mock('@aws-sdk/client-s3');
-jest.mock('@aws-sdk/s3-presigned-post');
+jest.mock('@aws-sdk/client-s3', () => {
+  class mockS3Client {
+    send() {
+      return {
+        Contents: [{
+          Key: '/fake/path/documentation/FakeS3Key.txt',
+          LastModified: 'fake_last_modified_string',
+          Size: 1234
+        }]
+      };
+    }
+  }
+  return {
+    ...jest.requireActual('@aws-sdk/client-s3'),
+    S3Client: mockS3Client
+  };
+});
+jest.mock('@aws-sdk/s3-request-presigner');
 
 jest.mock('database-util', () => jest.fn());
 db.user = jest.fn();
@@ -14,11 +30,51 @@ db.submission = jest.fn();
 db.submission.findById = jest.fn();
 db.group = jest.fn();
 db.group.findById = jest.fn();
+db.upload = jest.fn();
+db.upload.findUploadStepById = jest.fn();
 
 describe('file-upload', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
+  db.user.findById.mockReturnValue({
+    user_groups: [{ id: 'daac_id' }],
+    user_privileges: ['ADMIN']
+  });
+
+  jest.spyOn(global, 'fetch').mockImplementation((url) => {
+    if (url === 'https://fake-cue-url.com/v2/upload/prepare-single') {
+      return (new Response(JSON.stringify({
+        file_id: 'file_id',
+        presigned_url: 'https://s3-bucket.s3.amazonaws.com/fake'
+      })));
+    } if (url === 'https://fake-cue-url.com/v2/upload/multipart/complete' || url === 'https://fake-cue-url.com/v2/upload/complete-single') {
+      return (new Response(JSON.stringify({
+        file_id: 'file_id',
+        status: 'unscanned',
+        message: 'upload_message'
+      })));
+    } if (url === 'https://fake-cue-url.com/v2/upload/multipart/start') {
+      return (new Response(JSON.stringify({
+        file_id: 'file_id',
+        upload_id: 'upload_id'
+      })));
+    } return (new Response(JSON.stringify({ error: 'URL not mocked in test.' })));
+  });
+
+  const expectUploadResponse = expect.objectContaining({
+    file_id: expect.any(String),
+    presigned_url: expect.any(String),
+    collection_path: expect.any(String)
+  });
+
+  const expectCompleteResponse = expect.objectContaining({
+    file_id: expect.any(String),
+    status: expect.any(String),
+    message: expect.any(String)
+  });
+
   it('should generate an upload url', async () => {
     const payload = {
       file_name: 'test.txt',
@@ -29,35 +85,13 @@ describe('file-upload', () => {
       context: { user_id: 'user_id' },
       operation: 'getPostUrl'
     };
-    db.user.findById.mockReturnValueOnce({
-      user_groups: [{ id: 'daac_id' }],
-      user_privileges: ['ADMIN']
-    });
     db.submission.findById.mockReturnValueOnce({
       daac_id: 'daac_id',
       contributor_ids: ['contributor_id']
     });
     db.daac.getIds.mockReturnValueOnce([{ id: 'daac_id' }]);
-    createPresignedPost.mockImplementationOnce((client, functPayload) => {
-      expect(functPayload).toEqual({
-        Bucket: 'TEST_BUCKET',
-        Key: 'some_id/sample/user_id/test.txt',
-        Conditions: [
-          { 'x-amz-meta-checksumalgorithm': 'SHA256' },
-          { 'x-amz-meta-checksumvalue': '1234567890' },
-          { 'x-amz-checksum-sha256': '1234567890' }
-        ],
-        Fields: {
-          'x-amz-meta-checksumalgorithm': 'SHA256',
-          'x-amz-meta-checksumvalue': '1234567890',
-          'x-amz-checksum-sha256': '1234567890'
-        },
-        Expires: 60
-      });
-      return Promise.resolve('success');
-    });
     const response = await fileUpload.handler(payload);
-    expect(response).toEqual('success');
+    expect(response).toEqual(expectUploadResponse);
   });
   it('should generate an upload url with no submission id', async () => {
     const payload = {
@@ -68,30 +102,8 @@ describe('file-upload', () => {
       context: { user_id: 'user_id' },
       operation: 'getPostUrl'
     };
-    db.user.findById.mockReturnValueOnce({
-      user_groups: [{ id: 'daac_id' }],
-      user_privileges: ['ADMIN']
-    });
-    createPresignedPost.mockImplementationOnce((client, functPayload) => {
-      expect(functPayload).toEqual({
-        Bucket: 'TEST_BUCKET',
-        Key: 'documentation/user_id/test.txt',
-        Conditions: [
-          { 'x-amz-meta-checksumalgorithm': 'SHA256' },
-          { 'x-amz-meta-checksumvalue': '1234567890' },
-          { 'x-amz-checksum-sha256': '1234567890' }
-        ],
-        Fields: {
-          'x-amz-meta-checksumalgorithm': 'SHA256',
-          'x-amz-meta-checksumvalue': '1234567890',
-          'x-amz-checksum-sha256': '1234567890'
-        },
-        Expires: 60
-      });
-      return Promise.resolve('success');
-    });
     const response = await fileUpload.handler(payload);
-    expect(response).toEqual('success');
+    expect(response).toEqual(expectUploadResponse);
   });
   it('should generate a group upload url with no prefix', async () => {
     const payload = {
@@ -102,32 +114,145 @@ describe('file-upload', () => {
       operation: 'getGroupUploadUrl',
       group_id: 'daac_id'
     };
-    db.user.findById.mockReturnValueOnce({
-      user_groups: [{ id: 'daac_id', short_name: 'daac_name' }],
-      user_privileges: ['GROUP_UPLOAD']
-    });
     db.group.findById.mockReturnValueOnce({
       short_name: 'daac_name'
     });
-    createPresignedPost.mockImplementationOnce((client, functPayload) => {
-      expect(functPayload).toEqual({
-        Bucket: 'TEST_BUCKET',
-        Key: 'group/daac_name/test.txt',
-        Conditions: [
-          { 'x-amz-meta-checksumalgorithm': 'SHA256' },
-          { 'x-amz-meta-checksumvalue': '1234567890' },
-          { 'x-amz-checksum-sha256': '1234567890' }
-        ],
-        Fields: {
-          'x-amz-meta-checksumalgorithm': 'SHA256',
-          'x-amz-meta-checksumvalue': '1234567890',
-          'x-amz-checksum-sha256': '1234567890'
-        },
-        Expires: 60
-      });
-      return Promise.resolve('success');
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual(expectUploadResponse);
+  });
+  it('should generate an attachment url', async () => {
+    const payload = {
+      file_name: 'test.txt',
+      file_type: 'text/plain',
+      checksum_value: '1234567890',
+      conversation_id: '342ba8f5-ea87-4ef4-abf0-8eb0f924115b',
+      file_size_bytes: 1234,
+      context: { user_id: 'user_id' },
+      operation: 'getAttachmentUploadUrl'
+    };
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual(expectUploadResponse);
+  });
+  it('should list request files', async () => {
+    const payload = {
+      operation: 'listFiles',
+      submission_id: '5c3d1baa-a19e-4681-9b2d-216c08762dfb',
+      context: { user_id: 'user_id' }
+    };
+    db.daac.getIds.mockReturnValueOnce([{ id: 'daac_id' }]);
+    db.submission.findById.mockReturnValueOnce({
+      daac_id: 'daac_id',
+      contributor_ids: ['contributor_id']
     });
     const response = await fileUpload.handler(payload);
-    expect(response).toEqual('success');
+    expect(response).toEqual([{
+      category: 'documentation',
+      file_name: 'FakeS3Key.txt',
+      key: '/fake/path/documentation/FakeS3Key.txt',
+      lastModified: 'fake_last_modified_string',
+      size: 1234
+    }]);
+  });
+  it('should list step files', async () => {
+    const payload = {
+      operation: 'listStepFiles',
+      submission_id: '5c3d1baa-a19e-4681-9b2d-216c08762dfb',
+      context: { user_id: 'user_id' }
+    };
+    db.daac.getIds.mockReturnValueOnce([{ id: 'daac_id' }]);
+    db.submission.findById.mockReturnValueOnce({
+      daac_id: 'daac_id',
+      contributor_ids: ['contributor_id'],
+      step_data: { upload_step_id: 'fake_id' }
+    });
+    db.upload.findUploadStepById.mockReturnValueOnce({ upload_destination: 'fake_upload_destination' });
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual([{
+      category: 'documentation',
+      file_name: 'FakeS3Key.txt',
+      key: '/fake/path/documentation/FakeS3Key.txt',
+      lastModified: 'fake_last_modified_string',
+      size: 1234
+    }]);
+  });
+  it('should generate a download url for attachments', async () => {
+    const payload = {
+      operation: 'getDownloadUrl',
+      key: '/attachments/fake/path/file.txt',
+      submission_id: '5c3d1baa-a19e-4681-9b2d-216c08762dfb',
+      context: { user_id: 'user_id' }
+    };
+    db.submission.findById.mockReturnValueOnce({
+      daac_id: 'daac_id',
+      contributor_ids: ['contributor_id']
+    });
+    getSignedUrl.mockReturnValue('https://fake_s3_.s3.us-west-2.amazonaws.com/attachments/file.txt');
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual('https://fake_s3_.s3.us-west-2.amazonaws.com/attachments/file.txt');
+  });
+  it('should generate a download url for non-attachments', async () => {
+    const payload = {
+      operation: 'getDownloadUrl',
+      key: '/submission_id/fake/path/file.txt',
+      submission_id: '5c3d1baa-a19e-4681-9b2d-216c08762dfb',
+      context: { user_id: 'user_id' }
+    };
+    db.submission.findById.mockReturnValueOnce({
+      daac_id: 'daac_id',
+      contributor_ids: ['contributor_id']
+    });
+    db.daac.getIds.mockReturnValueOnce([{ id: 'daac_id' }]);
+    getSignedUrl.mockReturnValue('https://fake_s3_.s3.us-west-2.amazonaws.com/file.txt');
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual('https://fake_s3_.s3.us-west-2.amazonaws.com/file.txt');
+  });
+  it('should complete single file CUE upload', async () => {
+    const payload = {
+      operation: 'completeUpload',
+      file_size_bytes: 1234,
+      upload_id: 'upload_id',
+      etags: [{ PartNumber: 1, Etag: 'etag' }],
+      context: { user_id: 'user_id' }
+    };
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual(expectCompleteResponse);
+  });
+  it('should complete multipart CUE upload', async () => {
+    const payload = {
+      operation: 'completeUpload',
+      file_size_bytes: 104857601,
+      upload_id: 'upload_id',
+      etags: [{ PartNumber: 1, Etag: 'etag' }, { PartNumber: 2, Etag: 'etag_2' }],
+      context: { user_id: 'user_id' }
+    };
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual(expectCompleteResponse);
+  });
+  it('should start multipart upload', async () => {
+    const payload = {
+      operation: 'startMultipartUpload',
+      file_size_bytes: 104857601,
+      upload_id: 'upload_id',
+      etags: [{ PartNumber: 1, Etag: 'etag' }, { PartNumber: 2, Etag: 'etag_2' }],
+      context: { user_id: 'user_id' }
+    };
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual(expect.objectContaining({
+      file_id: expect.any(String),
+      upload_id: expect.any(String)
+    }));
+  });
+  it('should return CUE JSON parsing error', async () => {
+    const payload = {
+      file_name: 'test.txt',
+      file_type: 'text/plain',
+      checksum_value: '1234567890',
+      file_category: 'documentation',
+      context: { user_id: 'user_id' },
+      operation: 'getPostUrl'
+    };
+    jest.spyOn(global, 'fetch').mockImplementation(() => (new Response('<html>Non JSON response</html>')));
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual({ error: 'Error parsing CUE API response.' });
   });
 });
