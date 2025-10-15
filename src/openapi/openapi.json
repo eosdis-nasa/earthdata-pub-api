@@ -13613,7 +13613,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getPostUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_category'))\"file_category\":\"$body.get('file_category')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getPostUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_category'))\"file_category\":\"$body.get('file_category')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -13738,7 +13738,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getGroupUploadUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('prefix'))\"prefix\":\"$body.get('prefix')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getGroupUploadUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('prefix'))\"prefix\":\"$body.get('prefix')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -13863,7 +13863,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getAttachmentUploadUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getAttachmentUploadUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -13988,8 +13988,244 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getUploadStepUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('destination'))\"destination\":\"$body.get('destination')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_category'))\"file_category\":\"$body.get('file_category')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getUploadStepUrl\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('destination'))\"destination\":\"$body.get('destination')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_category'))\"file_category\":\"$body.get('file_category')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
 
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPERATION method for CORS",
+        "operationId": "optionsFileUpload",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/upload/complete": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Send completed status to CUE",
+        "description": "Send a completed status to CUE notifying end of upload. Used for both single and multipart uploads",
+        "operationId": "completeUpload",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadComplete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OIDC_Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${file_upload_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"completeUpload\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end #if($body.containsKey('collection_path'))\"collection_path\":\"$body.get('collection_path')\",#end #if($body.containsKey('content_type'))\"content_type\":\"$body.get('content_type')\",#end #if($body.containsKey('file_id'))\"file_id\":\"$body.get('file_id')\",#end #if($body.containsKey('upload_id'))\"upload_id\":\"$body.get('upload_id')\",#end #if ($body.containsKey('etags'))\"etags\":$inputRoot.etags, #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              }
+            }
+          }
+        },
+        "x-router-controller": "proxy"
+      },
+      "options": {
+        "tags": [
+          "cors"
+        ],
+        "summary": "CORS",
+        "description": "OPERATION method for CORS",
+        "operationId": "optionsFileUpload",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\": 200 }"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Methods": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "x-router-controller": "cors"
+      }
+    },
+    "/api/data/upload/multipart/start": {
+      "post": {
+        "tags": [
+          "data"
+        ],
+        "summary": "Start multipart upload",
+        "description": "Start multipart upload and get upload id.",
+        "operationId": "startMultipartUpload",
+        "requestBody": {
+          "x-name": "payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadMultipartStart"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OIDC_Authorizer": []
+          }
+        ],
+        "x-amazon-apigateway-integration": {
+          "uri": "${file_upload_lambda_arn}",
+          "passthroughBehavior": "when_no_match",
+          "httpMethod": "POST",
+          "type": "aws",
+          "requestTemplates": {
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"startMultipartUpload\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('collection_path'))\"collection_path\":\"$body.get('collection_path')\",#end #if($body.containsKey('content_type'))\"content_type\":\"$body.get('content_type')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {

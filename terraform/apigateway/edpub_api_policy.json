@@ -176,17 +176,6 @@
                     "aws:SourceIp": "198.118.198.210/32"
                 }
             }
-        },
-        {
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": "*",
-            "Resource": "*",
-            "Condition": {
-                "StringEquals": {
-                    "aws:SourceVpc": "vpc-0a6566cf7a25ab38e"
-                }
-            }
         }
     ]
 }

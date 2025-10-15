@@ -114,7 +114,7 @@ variable "ornl_endpoint_url" {
   type = string
 }
 
-variable "ornl_endpoint_access_token" {
+variable "ornl_endpoint_access_token_secret" {
   type = string
 }
 
@@ -122,7 +122,7 @@ variable "gesdisc_endpoint_url"{
   type = string
 }
 
-variable "gesdisc_endpoint_access_token"{
+variable "gesdisc_endpoint_access_token_secret"{
   type = string
 }
 
@@ -132,4 +132,31 @@ variable "ornl_service_authorization_secret" {
 
 variable "ses_alarm_email" {
   type = string
+}
+
+variable "debug" {
+  type = string
+}
+
+variable "cue_api_token" {
+  type = string
+}
+
+variable "cue_root_url" {
+  type = string
+}
+
+variable "cue_collection" {
+  type = string
+}
+
+variable "multipart_upload_limit_bytes" {
+  type = number
+  default = 104857600
+  description = "Threshold value between single file uploads and multipart uploads to CUE. Defaults to 100MB"
+}
+
+variable "use_cue_upload" {
+  type = string
+  default = "true"
 }
