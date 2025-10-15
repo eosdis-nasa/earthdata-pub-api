@@ -11,7 +11,7 @@ These templates should be used when the answer to any of the following questions
 - Does the user need information or additional context that the [notification-consumer templates](../../../../lambda-handlers/notification-consumer/templates.js) did not provide
 
 ## When to use in combination with the [notification-consumer templates](../../../../lambda-handlers/notification-consumer/templates.js)
-In most cases it is desired that messages should be added to the conversations page as well as emailed directly to the user. This is achieved using a combination of notification-consumer templates and message-util templates. It is recommended to use the template strings from the notification-consumer file as part of the message-util templates in order to maintain consistancy and reduce redundancy. If the answer to any of the following questions is "Yes" you should use these templates in combination with the message-util templates.
+In most cases it is desired that messages should be added to the conversations page as well as emailed directly to the user. This is achieved using a combination of notification-consumer templates and message-util templates. It is recommended to use the template strings from the notification-consumer file as part of the message-util templates in order to maintain consistency and reduce redundancy. If the answer to any of the following questions is "Yes" you should use these templates in combination with the message-util templates.
 
 - Is the information I want to convey already covered in a notification-consumer template string
 - Am I only adding email formatting / boilerplate information
