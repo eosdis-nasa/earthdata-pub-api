@@ -956,8 +956,8 @@ RETURNING *;
 `
 
 const createTempUploadFile = () => `
-INSERT INTO temp_upload_file(file_id, submission_id)
-Values({{file_id}}, {{submission_id}})
+INSERT INTO temp_upload_file(file_id, submission_id, file_name, category, size, status)
+Values({{file_id}}, {{submission_id}}, {{file_name}}, {{category}}, {{size}}, {{status}})
 ON CONFLICT DO NOTHING
 RETURNING *
 `
