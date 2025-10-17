@@ -135,3 +135,6 @@ module.exports.findAllUploadSteps = many;
 module.exports.findUploadStepById = one;
 module.exports.getDetailedUsers = many;
 module.exports.getInactiveUsers = many;
+module.exports.getTempUploadFiles = many;
+module.exports.updateTempFileById = one;
+module.exports.createTempUploadFile = one;

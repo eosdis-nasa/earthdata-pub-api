@@ -940,6 +940,28 @@ WHERE submission_id={{submissionId}}
 AND daac_id=ANY(ARRAY[${params.daacs.map(id => `'${id}'`).join(',')}]::UUID[])
 `
 
+const getTempUploadFiles = () => `
+SELECT * from temp_upload_file
+`
+
+const updateTempFileById = () => `
+UPDATE temp_upload_file
+SET 
+  file_name = {{file_name}},
+  size = {{size}},
+  category = {{category}},
+  status = {{status}}
+WHERE file_id = {{file_id}}
+RETURNING *;
+`
+
+const createTempUploadFile = () => `
+INSERT INTO temp_upload_file(file_id, submission_id)
+Values({{file_id}}, {{submission_id}})
+ON CONFLICT DO NOTHING
+RETURNING *
+`
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -990,3 +1012,6 @@ module.exports.stepCleanup = stepCleanup;
 module.exports.checkCode = checkCode;
 module.exports.createCode = createCode;
 module.exports.deleteCodes = deleteCodes;
+module.exports.getTempUploadFiles = getTempUploadFiles;
+module.exports.updateTempFileById = updateTempFileById;
+module.exports.createTempUploadFile = createTempUploadFile;
