@@ -1136,43 +1136,6 @@ module.exports.getVersion = function getVersion(req, res, next) {
   });
 };
 
-module.exports.pageFindById = function pageFindById(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'page',
-    operation: 'findById',
-    params: { page_key: params.page_key.value }
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.pageFindAll = function pageFindAll(req, res, next) {
-  const lambdaEvent = {
-    resource: 'page',
-    operation: 'findAll'
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.pagePut = function pagePut(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'page',
-    operation: 'update',
-    params: {
-      payload: params.payload.value,
-    },
-    context: { user_id: req.user_id }
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.editWorkflow = function editWorkflow(req, res, next){
   const { params } = req.swagger;
   const lambdaEvent = {

@@ -33,7 +33,6 @@ const MetricsGenerateReport = require('./metrics-generate-report.js');
 const MetricsGenerateReportResp = require('./metrics-generate-report-resp.js');
 const MetricsGetDaacsResp = require('./metrics-get-daacs-resp.js');
 const MfaVerifyRequest = require('./mfa-verify-request.js');
-const Page = require('./page.js');
 const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
 const QuestionAdd = require('./question-add.js');
@@ -141,7 +140,6 @@ const models = {
   MetricsGenerateReportResp,
   MetricsGetDaacsResp,
   MfaVerifyRequest,
-  Page,
   Question,
   QuestionList,
   QuestionAdd,
