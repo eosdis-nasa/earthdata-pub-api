@@ -17,7 +17,6 @@ const register = require('../register.js');
 const remapStatics = require('../remap-statics.js');
 const serviceAuthorizer = require('../service-authorizer.js');
 const submission = require('../submission.js');
-const subscribe = require('../subscribe.js');
 const user = require('../user.js');
 const version = require('../version.js');
 const workflow = require('../workflow.js');
@@ -134,12 +133,6 @@ describe('Service Authorizer', () => {
 describe('Submission', () => {
   it('should import without error', () => {
     expect(submission).toBeTruthy();
-  });
-});
-
-describe('Subscribe', () => {
-  it('should import without error', () => {
-    expect(subscribe).toBeTruthy();
   });
 });
 

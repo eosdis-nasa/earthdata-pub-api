@@ -23,7 +23,6 @@ data "template_file" "edpub_oas" {
     metrics_lambda_arn            = var.metrics_lambda_arn
     module_lambda_arn             = var.module_lambda_arn
     model_lambda_arn              = var.model_lambda_arn
-    subscribe_lambda_arn          = var.subscribe_lambda_arn
     submission_lambda_arn         = var.submission_lambda_arn
     user_lambda_arn               = var.user_lambda_arn
     register_lambda_arn           = var.register_lambda_arn

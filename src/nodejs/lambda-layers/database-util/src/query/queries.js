@@ -12,7 +12,6 @@ module.exports.section = require('./section.js');
 module.exports.service = require('./service.js');
 module.exports.step = require('./step.js');
 module.exports.submission = require('./submission.js');
-module.exports.subscription = require('./subscription.js');
 module.exports.upload = require('./upload.js');
 module.exports.user = require('./user.js');
 module.exports.workflow = require('./workflow.js');

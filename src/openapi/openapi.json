@@ -20,7 +20,7 @@
     },
     {
       "name": "notification",
-      "description": "Interact with the notification system. Send a note, subscribe or unsubscribe to events.",
+      "description": "Interact with the notification system.",
       "externalDocs": {
         "description": "Read the docs",
         "url": "http://database.docs/#TODO"
@@ -9278,124 +9278,6 @@
         "summary": "CORS",
         "description": "OPTIONS method for CORS",
         "operationId": "optionsNotify",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\"statusCode\": 200 }"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              },
-              "responseTemplates": {
-                "application/json": "{}"
-              }
-            }
-          }
-        },
-        "x-router-controller": "cors"
-      }
-    },
-    "/api/notification/subscribe": {
-      "post": {
-        "tags": [
-          "notification"
-        ],
-        "summary": "Subscribe or unsubscribe to an event",
-        "description": "Subscribe or unsubscribe to events raised by given entities.",
-        "operationId": "subscribe",
-        "requestBody": {
-          "x-name": "payload",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SubscribeRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "OIDC_Authorizer": []
-          }
-        ],
-        "x-amazon-apigateway-integration": {
-          "uri": "${subscribe_lambda_arn}",
-          "passthroughBehavior": "when_no_match",
-          "httpMethod": "POST",
-          "type": "aws",
-          "requestTemplates": {
-            "application/json": "#set($req=$input.params()) { #foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end,\"context\":{\"user_id\": \"$context.authorizer.principalId\"}}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Methods": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              }
-            }
-          }
-        },
-        "x-router-controller": "proxy"
-      },
-      "options": {
-        "tags": [
-          "cors"
-        ],
-        "summary": "CORS",
-        "description": "OPTIONS method for CORS",
-        "operationId": "optionsSubscribe",
         "responses": {
           "200": {
             "description": "OK",

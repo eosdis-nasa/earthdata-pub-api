@@ -676,15 +676,6 @@ module.exports.getSubscriptions = function getSubscriptions(req, res, next) {
   setTimeout(() => res.send(body), latency);
 };
 
-module.exports.subscribe = function subscribe(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = params.payload.value;
-  Object.assign(lambdaEvent, { context: { user_id: req.user_id } });
-  handlers.subscribe(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.actionInvoke = function actionInvoke(req, res, next) {
   const body = { message: 'Not implemented' };
   setTimeout(() => res.send(body), latency);

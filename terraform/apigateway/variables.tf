@@ -46,10 +46,6 @@ variable "submission_lambda_arn" {
   type = string
 }
 
-variable "subscribe_lambda_arn" {
-  type = string
-}
-
 variable "user_lambda_arn" {
   type = string
 }

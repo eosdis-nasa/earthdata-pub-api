@@ -66,7 +66,6 @@ const SubmissionInitializationRequest = require('./submission-initialization-req
 const SubmissionState = require('./submission-state.js');
 const SubmissionStatus = require('./submission-status.js');
 const SubmissionStepReview = require('./submission-step-review.js');
-const SubscribeRequest = require('./subscribe-request.js');
 const TokenRefreshResponse = require('./token-refresh-response.js');
 const UploadStep = require('./upload-step.js');
 const User = require('./user.js');
@@ -170,7 +169,6 @@ const models = {
   SubmissionOperationSubmit,
   SubmissionOperationEsdisReview,
   SubmissionInitializationRequest,
-  SubscribeRequest,
   SubmissionOperationAssignDaacs,
   SubmissionState,
   SubmissionStatus,
