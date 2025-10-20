@@ -6,7 +6,6 @@ module.exports.model = require('../lambda-handlers/model.js').handler;
 module.exports.module = require('../lambda-handlers/module.js').handler;
 module.exports.notification = require('../lambda-handlers/notification.js').handler;
 module.exports.questions = require('../lambda-handlers/questions.js').handler;
-module.exports.register = require('../lambda-handlers/register.js').handler;
 module.exports.submission = require('../lambda-handlers/submission.js').handler;
 module.exports.user = require('../lambda-handlers/user.js').handler;
 module.exports.version = require('../lambda-handlers/version.js').handler;

@@ -38,10 +38,6 @@ variable "model_lambda_arn" {
   type = string
 }
 
-variable "register_lambda_arn" {
-  type = string
-}
-
 variable "submission_lambda_arn" {
   type = string
 }

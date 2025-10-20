@@ -13,7 +13,6 @@ const notification = require('../notification.js');
 const oidcAuthorizer = require('../oidc-authorizer.js');
 const questions = require('../questions.js');
 const rdsBackup = require('../rds-backup.js');
-const register = require('../register.js');
 const remapStatics = require('../remap-statics.js');
 const serviceAuthorizer = require('../service-authorizer.js');
 const submission = require('../submission.js');
@@ -109,12 +108,6 @@ describe('Questions', () => {
 describe('RDS Backup', () => {
   it('should import without error', () => {
     expect(rdsBackup).toBeTruthy();
-  });
-});
-
-describe('Register', () => {
-  it('should import without error', () => {
-    expect(register).toBeTruthy();
   });
 });
 

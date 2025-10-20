@@ -1,6 +1,5 @@
 const Action = require('./action.js');
 const ActionInvokeRequest = require('./action-invoke-request.js');
-const ActionRegisterRequest = require('./action-register-request.js');
 const BasicResponse = require('./basic-response.js');
 const CodeValidation = require('./code-validation.js');
 const Conversation = require('./conversation.js');
@@ -106,7 +105,6 @@ const UploadMultipartStart = require('./upload-multipart-start.js');
 const models = {
   Action,
   ActionInvokeRequest,
-  ActionRegisterRequest,
   BasicResponse,
   CodeValidation,
   Conversation,

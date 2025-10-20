@@ -111,7 +111,6 @@ module "apigateway_endpoints" {
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn
   user_lambda_arn = module.lambda_functions.user_lambda_arn
-  register_lambda_arn = module.lambda_functions.register_lambda_arn
   version_lambda_arn = module.lambda_functions.version_lambda_arn
   questions_lambda_arn = module.lambda_functions.questions_lambda_arn
   workflow_lambda_arn = module.lambda_functions.workflow_lambda_arn

@@ -681,11 +681,6 @@ module.exports.actionInvoke = function actionInvoke(req, res, next) {
   setTimeout(() => res.send(body), latency);
 };
 
-module.exports.actionRegister = function actionRegister(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
-};
-
 module.exports.userOperationGet = function userOperationGet(req, res, next) {
   const params = Object.entries(req.swagger.params).reduce((acc, [key, value]) => {
     Object.assign(acc, { [key]: value.value });
