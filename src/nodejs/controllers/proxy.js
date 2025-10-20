@@ -848,32 +848,6 @@ module.exports.submissionOperationResume = function submissionOperationResume(re
   });
 };
 
-module.exports.submissionOperationLock = function submissionOperationLock(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: 'lock',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.submission(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.submissionOperationUnlock = function submissionOperationUnlock(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: 'unlock',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.submission(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.submissionOperationWithdraw = function submissionOperationWithdraw(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
