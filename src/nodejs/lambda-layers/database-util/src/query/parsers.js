@@ -138,3 +138,5 @@ module.exports.getInactiveUsers = many;
 module.exports.getTempUploadFiles = many;
 module.exports.updateTempFileById = one;
 module.exports.createTempUploadFile = one;
+module.exports.deleteTempUploadFiles = one;
+module.exports.deleteTempUploadFilesByIds = one;
