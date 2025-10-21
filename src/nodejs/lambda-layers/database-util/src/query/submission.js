@@ -946,14 +946,14 @@ const getTempUploadFiles = () => `
   WHERE submission_id = {{submissionId}} and lastmodified >= NOW() - INTERVAL '10 minutes'
 `;
 
-const deleteTempUploadFiles = () => `
+const deleteTempUploadFiles = (params) => `
  DELETE FROM temp_upload_file
-  WHERE file_name IN (${fileNames.map(name => `'${name}'`).join(', ')});
+  WHERE file_name IN (${params.fileNames.map(name => `'${name}'`).join(', ')});
 `;
 
-const deleteTempUploadFilesByIds = () => `
+const deleteTempUploadFilesByIds = (params) => `
   DELETE FROM temp_upload_file
-  WHERE file_id = ANY(ARRAY[${fileIds.map(id => `'${id}'`).join(', ')}]::UUID[])
+  WHERE file_id = ANY(ARRAY[${params.fileIds.map(id => `'${id}'`).join(', ')}]::UUID[])
 `;
 
 const updateTempFileById = () => `
