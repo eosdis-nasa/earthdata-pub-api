@@ -1259,32 +1259,6 @@ module.exports.getFormsAppSubpath = function getFormsAppSubpath(req, res, next) 
   });
 };
 
-module.exports.onboardDaac = function onboardDaac(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: 'onboardDaac',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.offboardDaac = function offboardDaac(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: 'offboardDaac',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.createStep = function createStep(req, res, next){
   const { params } = req.swagger;
   const lambdaEvent = {

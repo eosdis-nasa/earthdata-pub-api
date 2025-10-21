@@ -8,8 +8,6 @@
 
 const db = require('database-util');
 
-const msg = require('message-util');
-
 async function getPrivileges(context) {
   const user = await db.user.findById({ id: context.user_id });
   return user.user_privileges;
@@ -58,41 +56,13 @@ async function updateInputs({ resource, params }) {
   return Promise.all(promises);
 }
 
-async function onboardDaac({ id, context }) {
-  const privileges = await getPrivileges(context);
-  if (!privileges.includes('ADMIN')) {
-    return ({ error: 'Not Authorized' });
-  }
-  const response = await db.daac.onboard({ id });
-  await msg.sendEvent({
-    daac_name: response.short_name,
-    event_type: 'daac_onboard'
-  });
-  return response;
-}
-
-async function offboardDaac({ id, context }) {
-  const privileges = await getPrivileges(context);
-  if (!privileges.includes('ADMIN')) {
-    return ({ error: 'Not Authorized' });
-  }
-  const response = await db.daac.offboard({ id });
-  await msg.sendEvent({
-    daac_name: response.short_name,
-    event_type: 'daac_offboard'
-  });
-  return response;
-}
-
 const operations = {
   findById,
   findAll,
   seed,
   update,
   add,
-  updateInputs,
-  onboardDaac,
-  offboardDaac
+  updateInputs
 };
 
 async function handler(event) {
