@@ -3,7 +3,6 @@ module.exports.daac = require('./daac.js');
 module.exports.form = require('./form.js');
 module.exports.group = require('./group.js');
 module.exports.metrics = require('./metrics.js');
-module.exports.module = require('./module.js');
 module.exports.note = require('./note.js');
 module.exports.permission = require('./permission.js');
 module.exports.question = require('./question.js');

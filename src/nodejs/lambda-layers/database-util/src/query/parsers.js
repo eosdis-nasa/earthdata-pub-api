@@ -12,7 +12,6 @@ module.exports.updateUsername = one;
 module.exports.findByName = one;
 module.exports.findAll = many;
 module.exports.findAllEx = many;
-module.exports.findAllWithInterface = many;
 module.exports.putItem = one;
 module.exports.update = one;
 module.exports.updateName = one;

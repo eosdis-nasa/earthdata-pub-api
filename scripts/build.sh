@@ -36,7 +36,6 @@ install_lambda invoke
 install_lambda metrics
 install_lambda metrics-consumer
 install_lambda model
-install_lambda module
 install_lambda notification
 install_lambda notification-consumer
 install_lambda rds-backup
