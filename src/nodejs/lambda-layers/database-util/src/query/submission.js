@@ -941,8 +941,11 @@ AND daac_id=ANY(ARRAY[${params.daacs.map(id => `'${id}'`).join(',')}]::UUID[])
 `
 
 const getTempUploadFiles = () => `
-SELECT * from temp_upload_file
-`
+  SELECT *
+  FROM temp_upload_file
+  WHERE submission_id = {{submissionId}} and lastmodified >= NOW() - INTERVAL '10 minutes'
+`;
+
 
 const updateTempFileById = () => `
 UPDATE temp_upload_file
