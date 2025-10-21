@@ -1379,18 +1379,6 @@ module.exports.deleteStepReviewApproval = function deleteStepReviewApproval(req,
   });
 };
 
-module.exports.associateMfa = function associateMfa(req, res, next) {
-  res.send({
-    message: 'Local placeholder for associate MFA function.'
-  });
-}
-
-module.exports.verifyMfa = function verifyMfa(req, res, next) {
-  res.send({
-    message: 'Local placeholder for verify MFA function.'
-  });
-}
-
 module.exports.editSection = function editSection(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {

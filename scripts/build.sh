@@ -49,7 +49,6 @@ install_lambda workflow-consumer
 install_lambda questions
 install_lambda workflow
 install_lambda file-upload
-install_lambda mfa-auth
 install_lambda oidc-authorizer
 install_lambda disable-user-account
 #Add more lambda functions here <--

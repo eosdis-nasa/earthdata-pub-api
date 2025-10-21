@@ -82,10 +82,6 @@ variable "service_authorizer_lambda_arn" {
   type = string
 }
 
-variable "mfa_auth_lambda_arn" {
-  type = string
-}
-
 variable "oidc_authorizer_lambda_arn" {
   type = string
 }

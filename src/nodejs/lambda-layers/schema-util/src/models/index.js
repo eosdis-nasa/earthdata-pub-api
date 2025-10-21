@@ -31,7 +31,6 @@ const MetricsEventCount = require('./metrics-event-count.js');
 const MetricsGenerateReport = require('./metrics-generate-report.js');
 const MetricsGenerateReportResp = require('./metrics-generate-report-resp.js');
 const MetricsGetDaacsResp = require('./metrics-get-daacs-resp.js');
-const MfaVerifyRequest = require('./mfa-verify-request.js');
 const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
 const QuestionAdd = require('./question-add.js');
@@ -56,7 +55,6 @@ const SubmissionOperationCopySubmission = require('./submission-operation-copy-s
 const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js');
 const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
 const SubmissionOperationRemoveContributor = require('./submission-operation-remove-contributor.js');
-const SubmissionOperationRequest = require('./submission-operation-request.js');
 const SubmissionOperationReview = require('./submission-operation-review.js');
 const SubmissionOperationSubmit = require('./submission-operation-submit.js');
 const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
@@ -136,7 +134,6 @@ const models = {
   MetricsGenerateReport,
   MetricsGenerateReportResp,
   MetricsGetDaacsResp,
-  MfaVerifyRequest,
   Question,
   QuestionList,
   QuestionAdd,
@@ -162,7 +159,6 @@ const models = {
   SubmissionOperationCustomResponse,
   SubmissionOperationMetadata,
   SubmissionOperationRemoveContributor,
-  SubmissionOperationRequest,
   SubmissionOperationReview,
   SubmissionOperationSubmit,
   SubmissionOperationEsdisReview,
