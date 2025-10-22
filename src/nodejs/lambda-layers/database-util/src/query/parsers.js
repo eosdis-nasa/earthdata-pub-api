@@ -39,7 +39,6 @@ module.exports.removeGroup = one;
 module.exports.getEmails = many;
 module.exports.findSystemUser = one;
 module.exports.metricsFilter = many;
-module.exports.metricsStats = many;
 module.exports.putMetric = one;
 module.exports.getConversationList = many;
 module.exports.getPrivilegedConversationList = many;

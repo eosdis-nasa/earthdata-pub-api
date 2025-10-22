@@ -951,35 +951,6 @@ module.exports.submissionOperationAssignDaacs = function submissionOperationAssi
   });
 };
 
-module.exports.searchMetrics = function searchMetrics(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    operation: 'search',
-    filter: {
-      ...(params.start && { start: params.start.value }),
-      ...(params.end && { end: params.end.value }),
-      ...(params.event_type && { event_type: params.event_type.value }),
-      ...(params.count && { count: params.count.value })
-    },
-    context: { user_id: req.user_id }
-  };
-  handlers.metrics(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.putMetric = function putMetric(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    operation: 'put',
-    data: params.payload.value,
-    context: { user_id: req.user_id }
-  };
-  handlers.metrics(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.getPublicationMetrics = function getPublicationMetrics(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1001,16 +972,6 @@ module.exports.metricsGetDaacs = function metricsGetDaacs(req, res, next) {
   handlers.metrics(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
-};
-
-module.exports.metricsListReports = function metricsListReports(req, res, next) {
-  const body = ["2021-06-20", "2021-06-21", "2021-06-22"];
-  setTimeout(() => res.send(body), latency);
-};
-
-module.exports.metricsGetReport = function putMetric(req, res, next) {
-  const file = `${__dirname}/static/2021-06-20.json`
-  setTimeout(() => res.sendFile(file), latency);
 };
 
 module.exports.getModel = function getModel(req, res, next) {

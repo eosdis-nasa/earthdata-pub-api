@@ -17,8 +17,6 @@ const FormUpdate = require('./form-update.js');
 const Group = require('./group.js');
 const GroupDetails = require('./group-details.js');
 const Id = require('./id.js');
-const LogEvent = require('./log-event.js');
-const LogEventRequest = require('./log-event-request.js');
 const Note = require('./note.js');
 const NoteAddViewers = require('./note-add-viewers.js');
 const NoteRemoveViewer = require('./note-remove-viewer.js');
@@ -27,7 +25,6 @@ const NoteRemoveViewerRole = require('./note-remove-viewer-role.js');
 const NoteScope = require('./note-scope.js');
 const NotificationReplyRequest = require('./notification-reply-request.js');
 const NotificationSendRequest = require('./notification-send-request.js');
-const MetricsEventCount = require('./metrics-event-count.js');
 const MetricsGenerateReport = require('./metrics-generate-report.js');
 const MetricsGenerateReportResp = require('./metrics-generate-report-resp.js');
 const MetricsGetDaacsResp = require('./metrics-get-daacs-resp.js');
@@ -120,8 +117,6 @@ const models = {
   Group,
   GroupDetails,
   Id,
-  LogEvent,
-  LogEventRequest,
   Note,
   NoteAddViewers,
   NoteRemoveViewer,
@@ -130,7 +125,6 @@ const models = {
   NoteScope,
   NotificationReplyRequest,
   NotificationSendRequest,
-  MetricsEventCount,
   MetricsGenerateReport,
   MetricsGenerateReportResp,
   MetricsGetDaacsResp,
