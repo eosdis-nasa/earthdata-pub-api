@@ -670,14 +670,14 @@ RETURNING *`;
 
 const setStep = () => `
 UPDATE submission_status
-SET step_name = {{step_name}}
+SET step_name = {{stepName}}
 WHERE id = {{id}}
 RETURNING *`;
 
 const checkWorkflow = () => `
 SELECT step_edge.step_name
 FROM step_edge
-WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}} AND submission_workflow.complete_time IS NULL)`;
+WHERE step_edge.step_name = {{stepName}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}} AND submission_workflow.complete_time IS NULL)`;
 
 const addContributors = ({ contributor_ids }) => `
 UPDATE submission
