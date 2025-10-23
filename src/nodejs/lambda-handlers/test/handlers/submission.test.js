@@ -257,7 +257,7 @@ describe('submission', () => {
     db.user.findById.mockReturnValueOnce({ user_privileges: ['NO_PRIVILEGES'] });
     db.submission.setStep.mockReturnValueOnce({ msg: 'step changed' });
     db.submission.findById.mockReturnValueOnce({ msg: 'test submission' });
-    db.submission.checkWorkflow.mockReturnValue({ stepName: true });
+    db.submission.checkWorkflow.mockReturnValue({ step_name: 'test step' });
     expect(await submission.handler(payload)).toEqual({ msg: 'step changed' });
     expect(await submission.handler(payload)).toEqual({ msg: 'test submission' });
   });
