@@ -956,17 +956,6 @@ const deleteTempUploadFilesByIds = (params) => `
   WHERE file_id = ANY(ARRAY[${params.fileIds.map(id => `'${id}'`).join(', ')}]::UUID[])
 `;
 
-const updateTempFileById = () => `
-UPDATE temp_upload_file
-SET 
-  file_name = {{file_name}},
-  size = {{size}},
-  category = {{category}},
-  status = {{status}}
-WHERE file_id = {{file_id}}
-RETURNING *;
-`
-
 const createTempUploadFile = () => `
 INSERT INTO temp_upload_file(file_id, submission_id, file_name, category, size, status)
 Values({{file_id}}, {{submission_id}}, {{file_name}}, {{category}}, {{size}}, {{status}})
@@ -1025,7 +1014,6 @@ module.exports.checkCode = checkCode;
 module.exports.createCode = createCode;
 module.exports.deleteCodes = deleteCodes;
 module.exports.getTempUploadFiles = getTempUploadFiles;
-module.exports.updateTempFileById = updateTempFileById;
 module.exports.createTempUploadFile = createTempUploadFile;
 module.exports.deleteTempUploadFiles = deleteTempUploadFiles;
 module.exports.deleteTempUploadFilesByIds = deleteTempUploadFilesByIds;

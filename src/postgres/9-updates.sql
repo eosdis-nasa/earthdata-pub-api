@@ -146,5 +146,14 @@ SET enums = '[{"key":"data_product_name","label":"Name of data product: How do y
 WHERE question_id = '50e8d566-b9ab-4bd9-9adc-92a3c8fb5d35'
   AND control_id = 'dar_form_data_producers_table';
 
-
-
+-- new table added EDPUB-1524
+CREATE TABLE IF NOT EXISTS temp_upload_file (
+  file_id UUID PRIMARY KEY,                  
+  submission_id UUID NOT NULL,          
+  file_name VARCHAR,
+  category VARCHAR,
+  size BIGINT,
+  lastmodified TIMESTAMP NOT NULL DEFAULT NOW(),
+  status VARCHAR(50) DEFAULT 'Uploading',
+  FOREIGN KEY (submission_id) REFERENCES submission (id)
+);
