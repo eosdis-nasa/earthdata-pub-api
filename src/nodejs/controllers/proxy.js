@@ -1428,12 +1428,10 @@ module.exports.stepFindAll = function stepFindAll(req, res, next) {
     resource: 'step',
     operation: 'stepFindAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
