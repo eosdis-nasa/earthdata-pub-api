@@ -40,13 +40,20 @@ const getRawFromTemplate = ({
   subject,
   from,
   to,
+  bcc = [],
   htmlText,
   nasaLogo
-}) => `MIME-Version: 1.0
+}) => {
+  // Only include Bcc header if we actually have recipients
+  const bccHeader = (Array.isArray(bcc) && bcc.length > 0)
+    ? `Bcc: ${bcc.join(', ')}\r\n`
+    : '';
+
+  return `MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary=EDPUB_BOUNDARY
 From: <${from}>
 To: <${to}>
-Subject: ${subject}
+${bccHeader}Subject: ${subject}
 
 --EDPUB_BOUNDARY
 Content-Type: text/html; charset=utf-8
@@ -62,6 +69,7 @@ Content-Disposition: inline; filename="nasa_logo.png"
 ${nasaLogo}
 
 --EDPUB_BOUNDARY--`;
+};
 
 const sns = new SNS({
   ...(process.env.SNS_ENDPOINT && { endpoint: process.env.SNS_ENDPOINT })
@@ -124,6 +132,7 @@ async function send(user, eventMessage, customTemplateFunction, ses) {
       subject: 'Earthdata Pub Notification',
       from: sourceEmail,
       to: user.email,
+      bcc: eventMessage.bcc_recipients,
       image: nasaLogo,
       imageName: 'nasa_logo.png',
       htmlText: bodyArray[1],
