@@ -19,6 +19,14 @@ const {
 } = require('@aws-sdk/client-secrets-manager');
 
 async function actionMethod(status) {
+  let emailRecipients = [];
+
+  if (!status.step.action_id) {
+    const form = await db.submission.findById({ id: status.id, user_id: status.user_id });
+    const emailPoc = form?.form_data?.dar_form_data_submission_poc_email;
+    emailRecipients = emailPoc ? [emailPoc] : [];
+  }
+
   const eventMessage = {
     event_type: status.step.action_id ? 'action_request' : 'action_request_no_id',
     action_id: status.step.action_id,
@@ -26,8 +34,10 @@ async function actionMethod(status) {
     conversation_id: status.conversation_id,
     workflow_id: status.workflow_id,
     step_name: status.step.name,
-    data: status.step.data
+    data: status.step.data,
+    ...(emailRecipients.length > 0 && { additional_recipients: emailRecipients })
   };
+
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
   Object.keys(eventMessage).forEach((key) => (
     eventMessage[key] === undefined && delete eventMessage[key]));
@@ -157,6 +167,7 @@ async function promoteStepMethod(eventMessage) {
   const { submission_id: id } = eventMessage;
   await db.submission.promoteStep({ id });
   const status = await db.submission.getState({ id });
+  status.user_id = eventMessage.user_id;
   if (!(status.step_name === 'close')) {
     await db.metrics.setStepStartTime({
       step_name: status.step_name,
@@ -176,6 +187,7 @@ async function promoteStepMethod(eventMessage) {
 
 async function workflowStartedMethod(eventMessage) {
   const status = await db.submission.getState({ id: eventMessage.submission_id });
+  status.user_id = eventMessage.user_id;
   const method = stepMethods[status.step.type];
   await method(status);
 }
@@ -246,6 +258,7 @@ async function reviewRejectedMethod(eventMessage) {
 
         if (nextStep === 'close') {
           const status = await db.submission.getState({ id });
+          status.user_id = eventMessage.user_id;
           const method = stepMethods[nextStep];
           await method(status);
         }
