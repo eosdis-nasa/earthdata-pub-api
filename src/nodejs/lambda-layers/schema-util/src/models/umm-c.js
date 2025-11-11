@@ -297,7 +297,7 @@ module.exports.model = (path) => ({
             Description: { $ref: `#${path}UseConstraintsDescType` },
             FreeAndOpenData: { $ref: `#${path}FreeAndOpenDataType` }
           },
-          required: [ 'Description' ]
+          required: ['Description']
         },
         {
           type: 'object',
@@ -311,7 +311,7 @@ module.exports.model = (path) => ({
             },
             FreeAndOpenData: { $ref: `#${path}FreeAndOpenDataType` }
           },
-          required: [ 'LicenseURL' ]
+          required: ['LicenseURL']
         },
         {
           type: 'object',
@@ -327,7 +327,7 @@ module.exports.model = (path) => ({
             },
             FreeAndOpenData: { $ref: `#${path}FreeAndOpenDataType` }
           },
-          required: [ 'LicenseText' ]
+          required: ['LicenseText']
         }
       ]
     },
@@ -343,7 +343,7 @@ module.exports.model = (path) => ({
           $ref: `#${path}LongNameType`
         }
       },
-      required: [ 'ShortName' ]
+      required: ['ShortName']
     },
     ProcessingLevelType: {
       type: 'object',
@@ -363,7 +363,7 @@ module.exports.model = (path) => ({
           maxLength: 80
         }
       },
-      required: [ 'Id' ]
+      required: ['Id']
     },
     PaleoTemporalCoverageType: {
       type: 'object',
@@ -413,7 +413,7 @@ module.exports.model = (path) => ({
           $ref: `#${path}KeywordStringType`
         }
       },
-      required: [ 'Eon' ]
+      required: ['Eon']
     },
     SpatialExtentType: {
       type: 'object',
@@ -432,7 +432,7 @@ module.exports.model = (path) => ({
         OrbitParameters: { $ref: `#${path}OrbitParametersType` },
         GranuleSpatialRepresentation: { $ref: `#${path}GranuleSpatialRepresentationEnum` }
       },
-      required: [ 'GranuleSpatialRepresentation' ]
+      required: ['GranuleSpatialRepresentation']
     },
     SpatialCoverageTypeEnum: {
       type: 'string',
@@ -463,7 +463,7 @@ module.exports.model = (path) => ({
           $ref: `#${path}ResolutionAndCoordinateSystemType`
         }
       },
-      required: [ 'Geometry' ]
+      required: ['Geometry']
     },
     GeometryType: {
       type: 'object',
@@ -491,15 +491,15 @@ module.exports.model = (path) => ({
           minItems: 1
         }
       },
-      required: [ 'CoordinateSystem' ],
+      required: ['CoordinateSystem'],
       anyOf: [
-        { required: [ 'Points' ] },
-        { required: [ 'BoundingRectangles' ] },
-        { required: [ 'GPolygons' ] },
-        { required: [ 'Lines' ] }
+        { required: ['Points'] },
+        { required: ['BoundingRectangles'] },
+        { required: ['GPolygons'] },
+        { required: ['Lines'] }
       ]
     },
-    CoordinateSystemEnum: { type: 'string', enum: [ 'CARTESIAN', 'GEODETIC' ] },
+    CoordinateSystemEnum: { type: 'string', enum: ['CARTESIAN', 'GEODETIC'] },
     PointType: {
       type: 'object',
       additionalProperties: false,
@@ -508,7 +508,7 @@ module.exports.model = (path) => ({
         Longitude: { $ref: `#${path}LongitudeType` },
         Latitude: { $ref: `#${path}LatitudeType` }
       },
-      required: [ 'Longitude', 'Latitude' ]
+      required: ['Longitude', 'Latitude']
     },
     LatitudeType: {
       description: 'The latitude value of a spatially referenced point, in degrees.  Latitude values range from -90 to 90.',
@@ -545,7 +545,7 @@ module.exports.model = (path) => ({
         Boundary: { $ref: `#${path}BoundaryType` },
         ExclusiveZone: { $ref: `#${path}ExclusiveZoneType` }
       },
-      required: [ 'Boundary' ]
+      required: ['Boundary']
     },
     BoundaryType: {
       type: 'object',
@@ -558,7 +558,7 @@ module.exports.model = (path) => ({
           minItems: 4
         }
       },
-      required: [ 'Points' ]
+      required: ['Points']
     },
     ExclusiveZoneType: {
       type: 'object',
@@ -571,7 +571,7 @@ module.exports.model = (path) => ({
           minItems: 1
         }
       },
-      required: [ 'Boundaries' ]
+      required: ['Boundaries']
     },
     LineType: {
       type: 'object',
@@ -583,7 +583,7 @@ module.exports.model = (path) => ({
           minItems: 2
         }
       },
-      required: [ 'Points' ]
+      required: ['Points']
     },
     VerticalSpatialDomainType: {
       type: 'object',
@@ -600,7 +600,7 @@ module.exports.model = (path) => ({
           maxLength: 80
         }
       },
-      required: [ 'Type', 'Value' ]
+      required: ['Type', 'Value']
     },
     VerticalSpatialDomainTypeEnum: {
       type: 'string',
@@ -623,14 +623,14 @@ module.exports.model = (path) => ({
         },
         FootprintUnit: {
           description: "The Footprint value's unit.",
-          enum: [ 'Kilometer', 'Meter' ]
+          enum: ['Kilometer', 'Meter']
         },
         Description: {
           description: 'The description element allows the user of the record to be able to distinguish between the different footprints of an instrument if it has more than 1.',
           type: 'string'
         }
       },
-      required: [ 'Footprint', 'FootprintUnit' ]
+      required: ['Footprint', 'FootprintUnit']
     },
     OrbitParametersType: {
       type: 'object',
@@ -643,7 +643,7 @@ module.exports.model = (path) => ({
         },
         SwathWidthUnit: {
           description: "The SwathWidth value's unit.",
-          enum: [ 'Kilometer', 'Meter' ]
+          enum: ['Kilometer', 'Meter']
         },
         Footprints: {
           description: "A list of instrument footprints or field of views. A footprint holds the largest width of the described footprint as measured on the earths surface along with the width's unit. An optional description element exists to be able to distinguish between the footprints, if that is desired. This element is optional. If this element is used at least 1 footprint must exist in the list.",
@@ -657,7 +657,7 @@ module.exports.model = (path) => ({
         },
         OrbitPeriodUnit: {
           description: "The Orbit Period value's unit.",
-          enum: [ 'Decimal Minute' ]
+          enum: ['Decimal Minute']
         },
         InclinationAngle: {
           description: 'The heading of the satellite as it crosses the equator on the ascending pass. This is the same as (180-declination) and also the same as the highest latitude achieved by the satellite.',
@@ -665,7 +665,7 @@ module.exports.model = (path) => ({
         },
         InclinationAngleUnit: {
           description: "The InclinationAngle value's unit.",
-          enum: [ 'Degree' ]
+          enum: ['Degree']
         },
         NumberOfOrbits: {
           description: 'The number of full orbits composing each granule. This may be a fraction of an orbit.',
@@ -677,12 +677,12 @@ module.exports.model = (path) => ({
         },
         StartCircularLatitudeUnit: {
           description: "The StartCircularLatitude value's unit.",
-          enum: [ 'Degree' ]
+          enum: ['Degree']
         }
       },
       anyOf: [
-        { required: [ 'SwathWidth', 'SwathWidthUnit' ] },
-        { required: [ 'Footprints' ] }
+        { required: ['SwathWidth', 'SwathWidthUnit'] },
+        { required: ['Footprints'] }
       ],
       required: [
         'OrbitPeriod',
@@ -691,11 +691,11 @@ module.exports.model = (path) => ({
         'InclinationAngleUnit',
         'NumberOfOrbits'
       ],
-      dependencies: { StartCircularLatitude: [ 'StartCircularLatitudeUnit' ] }
+      dependencies: { StartCircularLatitude: ['StartCircularLatitudeUnit'] }
     },
     GranuleSpatialRepresentationEnum: {
       type: 'string',
-      enum: [ 'CARTESIAN', 'GEODETIC', 'ORBIT', 'NO_SPATIAL' ]
+      enum: ['CARTESIAN', 'GEODETIC', 'ORBIT', 'NO_SPATIAL']
     },
     TilingIdentificationSystemType: {
       type: 'object',
@@ -748,7 +748,7 @@ module.exports.model = (path) => ({
           maxLength: 80
         }
       },
-      required: [ 'SpatialCoverageType' ]
+      required: ['SpatialCoverageType']
     },
     VerticalCoordinateSystemType: {
       type: 'object',
@@ -761,12 +761,12 @@ module.exports.model = (path) => ({
     AltitudeDistanceUnitsEnum: {
       description: 'The units in which altitude measurements are recorded.',
       type: 'string',
-      enum: [ 'HectoPascals', 'Kilometers', 'Millibars' ]
+      enum: ['HectoPascals', 'Kilometers', 'Millibars']
     },
     DepthDistanceUnitsEnum: {
       description: 'The units in which depth measurements are recorded.',
       type: 'string',
-      enum: [ 'Fathoms', 'Feet', 'HectoPascals', 'Meters', 'Millibars' ]
+      enum: ['Fathoms', 'Feet', 'HectoPascals', 'Meters', 'Millibars']
     },
     AltitudeSystemDefinitionType: {
       type: 'object',
@@ -830,7 +830,7 @@ module.exports.model = (path) => ({
               $ref: `#${path}GeodeticModelType`
             }
           },
-          required: [ 'GeodeticModel' ]
+          required: ['GeodeticModel']
         },
         {
           additionalProperties: false,
@@ -848,7 +848,7 @@ module.exports.model = (path) => ({
               $ref: `#${path}HorizontalDataResolutionType`
             }
           },
-          required: [ 'HorizontalDataResolution' ]
+          required: ['HorizontalDataResolution']
         },
         {
           additionalProperties: false,
@@ -866,7 +866,7 @@ module.exports.model = (path) => ({
               $ref: `#${path}LocalCoordinateSystemType`
             }
           },
-          required: [ 'LocalCoordinateSystem' ]
+          required: ['LocalCoordinateSystem']
         }
       ]
     },
@@ -965,12 +965,12 @@ module.exports.model = (path) => ({
     HorizontalDataResolutionVariesType: {
       description: 'Varies Resolution object describes a data product that has a number of resolution values.',
       type: 'string',
-      enum: [ 'Varies' ]
+      enum: ['Varies']
     },
     HorizontalDataResolutionPointType: {
       description: 'Point Resolution object describes a data product that is from a point source.',
       type: 'string',
-      enum: [ 'Point' ]
+      enum: ['Point']
     },
     HorizontalDataResolutionNonGriddedType: {
       description: 'Non Gridded Resolutions object describes resolution data for non gridded data products.',
@@ -999,8 +999,8 @@ module.exports.model = (path) => ({
         }
       },
       anyOf: [
-        { required: [ 'XDimension', 'Unit' ] },
-        { required: [ 'YDimension', 'Unit' ] }
+        { required: ['XDimension', 'Unit'] },
+        { required: ['YDimension', 'Unit'] }
       ]
     },
     HorizontalDataResolutionNonGriddedRangeType: {
@@ -1039,10 +1039,10 @@ module.exports.model = (path) => ({
       },
       anyOf: [
         {
-          required: [ 'MinimumXDimension', 'MaximumXDimension', 'Unit' ]
+          required: ['MinimumXDimension', 'MaximumXDimension', 'Unit']
         },
         {
-          required: [ 'MinimumYDimension', 'MaximumYDimension', 'Unit' ]
+          required: ['MinimumYDimension', 'MaximumYDimension', 'Unit']
         }
       ]
     },
@@ -1065,8 +1065,8 @@ module.exports.model = (path) => ({
         }
       },
       anyOf: [
-        { required: [ 'XDimension', 'Unit' ] },
-        { required: [ 'YDimension', 'Unit' ] }
+        { required: ['XDimension', 'Unit'] },
+        { required: ['YDimension', 'Unit'] }
       ]
     },
     HorizontalDataResolutionGriddedRangeType: {
@@ -1097,10 +1097,10 @@ module.exports.model = (path) => ({
       },
       anyOf: [
         {
-          required: [ 'MinimumXDimension', 'MaximumXDimension', 'Unit' ]
+          required: ['MinimumXDimension', 'MaximumXDimension', 'Unit']
         },
         {
-          required: [ 'MinimumYDimension', 'MaximumYDimension', 'Unit' ]
+          required: ['MinimumYDimension', 'MaximumYDimension', 'Unit']
         }
       ]
     },
@@ -1123,8 +1123,8 @@ module.exports.model = (path) => ({
         }
       },
       anyOf: [
-        { required: [ 'XDimension', 'Unit' ] },
-        { required: [ 'YDimension', 'Unit' ] }
+        { required: ['XDimension', 'Unit'] },
+        { required: ['YDimension', 'Unit'] }
       ]
     },
     HorizontalDataResolutionUnitEnum: {
@@ -1142,12 +1142,12 @@ module.exports.model = (path) => ({
     HorizontalResolutionViewingAngleType: {
       description: 'This element describes the angle of the measurement with respect to the instrument that give an understanding of the specified resolution.',
       type: 'string',
-      enum: [ 'At Nadir', 'Scan Extremes' ]
+      enum: ['At Nadir', 'Scan Extremes']
     },
     HorizontalResolutionScanDirectionType: {
       description: 'This element describes the instrument scanning direction.',
       type: 'string',
-      enum: [ 'Along Track', 'Cross Track' ]
+      enum: ['Along Track', 'Cross Track']
     },
     LocalCoordinateSystemType: {
       type: 'object',
@@ -1220,12 +1220,12 @@ module.exports.model = (path) => ({
           $ref: `#${path}KeywordStringType`
         }
       },
-      required: [ 'Category' ]
+      required: ['Category']
     },
     ArchiveDistributionFormatTypeEnum: {
       description: 'Defines the possible values for the Archive or Distribution file format type.',
       type: 'string',
-      enum: [ 'Native', 'Supported' ]
+      enum: ['Native', 'Supported']
     },
     ArchiveDistributionFormatDescriptionType: {
       description: 'Allows a data provider to provide supporting information about the stated format.',
@@ -1236,7 +1236,7 @@ module.exports.model = (path) => ({
     ArchiveDistributionUnitEnum: {
       description: 'Defines the possible values for the archive and distribution size units.',
       type: 'string',
-      enum: [ 'KB', 'MB', 'GB', 'TB', 'PB', 'NA' ]
+      enum: ['KB', 'MB', 'GB', 'TB', 'PB', 'NA']
     },
     DistributionMediaType: {
       description: 'This element defines the media by which the end user can obtain the distributable item. Examples of media include: CD-ROM, 9 track tape, diskettes, hard drives, online, transparencies, hardcopy, etc.',
@@ -1288,10 +1288,10 @@ module.exports.model = (path) => ({
               maxLength: 1024
             }
           },
-          required: [ 'Format' ],
+          required: ['Format'],
           dependencies: {
-            AverageFileSize: [ 'AverageFileSizeUnit' ],
-            TotalCollectionFileSize: [ 'TotalCollectionFileSizeUnit' ]
+            AverageFileSize: ['AverageFileSizeUnit'],
+            TotalCollectionFileSize: ['TotalCollectionFileSizeUnit']
           }
         },
         {
@@ -1332,10 +1332,10 @@ module.exports.model = (path) => ({
               maxLength: 1024
             }
           },
-          required: [ 'Format' ],
+          required: ['Format'],
           dependencies: {
-            AverageFileSize: [ 'AverageFileSizeUnit' ],
-            TotalCollectionFileSizeBeginDate: [ 'AverageFileSize' ]
+            AverageFileSize: ['AverageFileSizeUnit'],
+            TotalCollectionFileSizeBeginDate: ['AverageFileSize']
           }
         }
       ]
@@ -1396,10 +1396,10 @@ module.exports.model = (path) => ({
               maxLength: 255
             }
           },
-          required: [ 'Format' ],
+          required: ['Format'],
           dependencies: {
-            AverageFileSize: [ 'AverageFileSizeUnit' ],
-            TotalCollectionFileSize: [ 'TotalCollectionFileSizeUnit' ]
+            AverageFileSize: ['AverageFileSizeUnit'],
+            TotalCollectionFileSize: ['TotalCollectionFileSizeUnit']
           }
         },
         {
@@ -1452,10 +1452,10 @@ module.exports.model = (path) => ({
               maxLength: 255
             }
           },
-          required: [ 'Format' ],
+          required: ['Format'],
           dependencies: {
-            AverageFileSize: [ 'AverageFileSizeUnit' ],
-            TotalCollectionFileSizeBeginDate: [ 'AverageFileSize' ]
+            AverageFileSize: ['AverageFileSizeUnit'],
+            TotalCollectionFileSizeBeginDate: ['AverageFileSize']
           }
         }
       ]
@@ -1479,8 +1479,8 @@ module.exports.model = (path) => ({
         }
       },
       anyOf: [
-        { required: [ 'FileArchiveInformation' ] },
-        { required: [ 'FileDistributionInformation' ] }
+        { required: ['FileArchiveInformation'] },
+        { required: ['FileDistributionInformation'] }
       ]
     },
     DirectDistributionInformationType: {
@@ -1527,7 +1527,7 @@ module.exports.model = (path) => ({
     DirectDistributionInformationRegionEnum: {
       description: 'Defines the possible values for the Amazon Web Service US Regions where the data product resides.',
       type: 'string',
-      enum: [ 'us-east-1', 'us-east-2', 'us-west-1', 'us-west-2' ]
+      enum: ['us-east-1', 'us-east-2', 'us-west-1', 'us-west-2']
     },
     AssociatedDoiType: {
       type: 'object',
@@ -1549,7 +1549,7 @@ module.exports.model = (path) => ({
           $ref: `#${path}AuthorityType`
         }
       },
-      required: [ 'DOI' ]
+      required: ['DOI']
     },
     MetadataSpecificationType: {
       type: 'object',
@@ -1559,23 +1559,22 @@ module.exports.model = (path) => ({
         URL: {
           description: 'This element represents the URL where the schema lives. The schema can be downloaded.',
           type: 'string',
-          enum: [ 'https://cdn.earthdata.nasa.gov/umm/collection/v1.17.0' ]
+          enum: ['https://cdn.earthdata.nasa.gov/umm/collection/v1.17.0']
         },
         Name: {
           description: 'This element represents the name of the schema.',
           type: 'string',
-          enum: [ 'UMM-C' ]
+          enum: ['UMM-C']
         },
         Version: {
           description: 'This element represents the version of the schema.',
           type: 'string',
-          enum: [ '1.17.0' ]
+          enum: ['1.17.0']
         }
       },
-      required: [ 'URL', 'Name', 'Version' ]
+      required: ['URL', 'Name', 'Version']
     }
   }
 });
 
 module.exports.refs = ['UMMCMN'];
-  

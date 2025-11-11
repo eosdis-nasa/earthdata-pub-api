@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 module.exports.model = (path) => ({
   $schema: 'http://json-schema.org/draft-04/schema#',
   definitions: {
