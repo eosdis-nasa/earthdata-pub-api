@@ -92,8 +92,6 @@ const WorkflowInitStep = require('./workflow-init-step.js');
 const WorkflowReviewStep = require('./workflow-review-step.js');
 const WorkflowServiceStep = require('./workflow-service-step.js');
 const WorkflowSteps = require('./workflow-steps.js');
-const UMMC = require('./umm-c.js');
-const UMMCMN = require('./umm-cmn.js');
 const Upload = require('./upload.js');
 const GroupUpload = require('./group-upload.js');
 const Step = require('./step.js');
@@ -212,12 +210,6 @@ const models = {
   UploadMultipartStart
 };
 
-function collectionMetadata() {
-  const metadata = UMMC.model('/definitions/');
-  Object.assign(metadata.definitions, UMMCMN.model('/definitions/').definitions);
-  return metadata;
-}
-
 function allModels(basePath) {
   return Object.entries(models).reduce((acc, [name, { model }]) => {
     acc[name] = model(basePath);
@@ -226,9 +218,6 @@ function allModels(basePath) {
 }
 
 function getModel(name) {
-  if (name === 'UMMC') {
-    return collectionMetadata();
-  }
   const path = '/definitions/';
   const model = models[name].model(path);
   const { refs } = models[name];
