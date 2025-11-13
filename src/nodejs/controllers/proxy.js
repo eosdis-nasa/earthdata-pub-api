@@ -1289,7 +1289,6 @@ module.exports.createTempUploadFile = function createTempUploadFile(req, res, ne
     file_id: payload.value.fileId,
     context: { user_id: req.user_id }
   };
-  console.log('lambdaEvent', lambdaEvent);
   handlers.fileUpload(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
