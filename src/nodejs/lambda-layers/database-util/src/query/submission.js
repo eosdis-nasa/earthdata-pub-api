@@ -946,11 +946,6 @@ const getTempUploadFiles = () => `
   WHERE submission_id = {{submissionId}} and lastmodified >= NOW() - INTERVAL '10 minutes'
 `;
 
-const deleteTempUploadFiles = (params) => `
- DELETE FROM temp_upload_file
-  WHERE file_name IN (${params.fileNames.map(name => `'${name}'`).join(', ')});
-`;
-
 const deleteTempUploadFilesByIds = (params) => `
   DELETE FROM temp_upload_file
   WHERE file_id = ANY(ARRAY[${params.fileIds.map(id => `'${id}'`).join(', ')}]::UUID[])
@@ -1015,5 +1010,4 @@ module.exports.createCode = createCode;
 module.exports.deleteCodes = deleteCodes;
 module.exports.getTempUploadFiles = getTempUploadFiles;
 module.exports.createTempUploadFile = createTempUploadFile;
-module.exports.deleteTempUploadFiles = deleteTempUploadFiles;
 module.exports.deleteTempUploadFilesByIds = deleteTempUploadFilesByIds;
