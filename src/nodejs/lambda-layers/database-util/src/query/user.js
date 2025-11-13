@@ -289,6 +289,12 @@ const getDetailedUsers = ({id, name, email, sort, order, per_page, page, group_i
   ...(page ? { offset: page } : {})
 });
 
+const getInactiveUsers = () => `
+SELECT name, id
+    FROM edpuser
+    WHERE last_login < (NOW() - INTERVAL '365 days');
+`
+
 const findById = () => sql.select({
   fields: fields(allFields),
   from: {
@@ -521,3 +527,4 @@ module.exports.getManagerIds = getManagerIds;
 module.exports.getRootGroupObserverIds = getRootGroupObserverIds;
 module.exports.getObserverIds = getObserverIds;
 module.exports.getDetailedUsers = getDetailedUsers;
+module.exports.getInactiveUsers = getInactiveUsers;

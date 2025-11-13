@@ -32,9 +32,9 @@ module "aws_secrets" {
   ses_secret_sender_arn = var.ses_secret_sender_arn
   ses_configuration_set_name = var.ses_configuration_set_name
   ornl_endpoint_url = var.ornl_endpoint_url
-  ornl_endpoint_access_token = var.ornl_endpoint_access_token
+  ornl_endpoint_access_token = var.ornl_endpoint_access_token_secret
   gesdisc_endpoint_url = var.gesdisc_endpoint_url
-  gesdisc_endpoint_access_token = var.gesdisc_endpoint_access_token
+  gesdisc_endpoint_access_token = var.gesdisc_endpoint_access_token_secret
   ornl_service_authorization = var.ornl_service_authorization_secret
 }
 
@@ -89,6 +89,12 @@ module "lambda_functions" {
   ses_access_creds_arn = module.aws_secrets.ses_access_creds_arn
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
   gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
+  debug = var.debug
+  cue_api_token = var.cue_api_token
+  cue_root_url = var.cue_root_url
+  cue_collection = var.cue_collection
+  multipart_upload_limit_bytes = var.multipart_upload_limit_bytes
+  use_cue_upload = var.use_cue_upload
 }
 
 module "apigateway_endpoints" {

@@ -3,15 +3,24 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const {
   S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand
 } = require('@aws-sdk/client-s3');
+const path = require('path');
 
 const db = require('database-util');
 
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
 
+const cueAPIToken = process.env.CUE_API_TOKEN;
+const cueRootUrl = process.env.CUE_ROOT_URL;
+const cueCollection = process.env.CUE_COLLECTION;
+
+const multipartUploadLimitBytes = process.env.MULTIPART_UPLOAD_LIMIT_BYTES;
+
+const useCUEUpload = process.env.USE_CUE_UPLOAD;
+
 const categoryEnums = ['documentation', 'sample'];
 
-async function generateUploadUrl(params) {
+async function legacyGenerateUploadUrl(params) {
   const { key, checksumValue, fileType } = params;
   const checksumAlgo = 'SHA256';
   if (!fileType) return ({ error: 'invalid file type' });
@@ -44,8 +53,61 @@ async function generateUploadUrl(params) {
   }
 }
 
+async function cuePostQuery(params) {
+  const { endpoint, payload } = params;
+  const response = await fetch(`${cueRootUrl}${endpoint}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${cueAPIToken}`
+    },
+    body: JSON.stringify(payload)
+  });
+  const responseText = await response.text();
+  try {
+    return JSON.parse(responseText);
+  } catch (err) {
+    console.error(err);
+    // eslint-disable-next-line no-console
+    console.log(responseText);
+    return ({ error: 'Error parsing CUE API response.' });
+  }
+}
+
+async function generateUploadUrl(params) {
+  if (useCUEUpload?.toLowerCase?.() === 'false') return legacyGenerateUploadUrl(params);
+  const {
+    key, checksumValue, fileType, fileSize
+  } = params;
+  if (!fileType) return ({ error: 'invalid file type' });
+  try {
+    const response = await cuePostQuery({
+      endpoint: '/v2/upload/prepare-single',
+      payload: {
+        collection_name: cueCollection,
+        file_name: path.basename(key),
+        file_size_bytes: fileSize,
+        checksum: checksumValue,
+        collection_path: path.dirname(key),
+        content_type: fileType
+      }
+    });
+    return {
+      ...(response.error ? {} : { collection_path: path.dirname(key) }),
+      ...response
+    };
+  } catch (err) {
+    console.error(err);
+    return ({ error: 'Error getting upload url' });
+  }
+}
+
 async function getPostUrlMethod(event, user) {
-  const { file_name: fileName, file_type: fileType, checksum_value: checksumValue } = event;
+  const {
+    file_name: fileName,
+    file_type: fileType,
+    checksum_value: checksumValue,
+    file_size_bytes: fileSize
+  } = event;
   const { file_category: fileCategory } = event;
   const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
@@ -73,7 +135,8 @@ async function getPostUrlMethod(event, user) {
         key: `${submissionId}/${fileCategory}/${user}/${fileName}`,
         checksumValue,
         fileType,
-        fileCategory
+        fileCategory,
+        fileSize
       });
     }
   }
@@ -81,13 +144,18 @@ async function getPostUrlMethod(event, user) {
     key: `${fileCategory}/${user}/${fileName}`,
     checksumValue,
     fileType,
-    fileCategory
+    fileCategory,
+    fileSize
   });
 }
 
 async function getGroupUploadUrlMethod(event, user) {
   const {
-    file_name: fileName, file_type: fileType, checksum_value: checksumValue, prefix
+    file_name: fileName,
+    file_type: fileType,
+    checksum_value: checksumValue,
+    prefix,
+    file_size_bytes: fileSize
   } = event;
   const { group_id: groupId } = event;
   const userInfo = await db.user.findById({ id: user });
@@ -103,7 +171,8 @@ async function getGroupUploadUrlMethod(event, user) {
   return generateUploadUrl({
     key,
     checksumValue,
-    fileType
+    fileType,
+    fileSize
   });
 }
 
@@ -112,7 +181,8 @@ async function getAttachmentUploadUrlMethod(event, user) {
     file_name: fileName,
     file_type: fileType,
     checksum_value: checksumValue,
-    conversation_id: conversationId
+    conversation_id: conversationId,
+    file_size_bytes: fileSize
   } = event;
   const userInfo = await db.user.findById({ id: user });
 
@@ -123,7 +193,8 @@ async function getAttachmentUploadUrlMethod(event, user) {
   return generateUploadUrl({
     key,
     checksumValue,
-    fileType
+    fileType,
+    fileSize
   });
 }
 
@@ -134,14 +205,16 @@ async function getUploadStepUrlMethod(event, user) {
     checksum_value: checksumValue,
     file_category: fileCategory,
     destination: uploadDestination,
-    submission_id: submissionId
+    submission_id: submissionId,
+    file_size_bytes: fileSize
   } = event;
 
   const key = `${uploadDestination.replace(/^\/?/, '').replace(/\/?$/, '')}/${submissionId}/${fileCategory}/${user}/${fileName}`;
   return generateUploadUrl({
     key,
     checksumValue,
-    fileType
+    fileType,
+    fileSize
   });
 }
 
@@ -327,6 +400,75 @@ async function getUploadStepMethod(event) {
   return db.upload.findUploadStepById({ id: uploadStepId });
 }
 
+async function completeUploadMethod(event) {
+  const {
+    file_size_bytes: fileSize,
+    upload_id: uploadId,
+    etags
+  } = event;
+
+  const commonPayload = {
+    file_id: event.file_id,
+    collection_name: cueCollection,
+    file_name: event.file_name,
+    collection_path: event.collection_path,
+    content_type: event.content_type,
+    checksum: event.checksum_value
+  };
+
+  if (Number(fileSize) < 0) return { error: 'Invalid file_size_types size.' };
+  let response;
+  if (Number(fileSize) > Number(multipartUploadLimitBytes)) {
+    // Use multipart upload endpoint
+    response = await cuePostQuery({
+      endpoint: '/v2/upload/multipart/complete',
+      payload: {
+        ...commonPayload,
+        ...{
+          upload_id: uploadId,
+          parts: etags,
+          final_file_size: fileSize
+        }
+      }
+    });
+  } else {
+    if (etags.length > 1) return { error: 'Too many objects provided within etag array for single file upload.' };
+    // Use single part upload endpoint
+    response = await cuePostQuery({
+      endpoint: '/v2/upload/complete-single',
+      payload: {
+        ...commonPayload,
+        ...{
+          file_size_bytes: fileSize,
+          // Single file upload should only contain 1 object within the etag array
+          s3_etag: etags[0].Etag
+        }
+      }
+    });
+  }
+  return response;
+}
+
+async function startMultipartUploadMethod(event) {
+  delete event.operation;
+  delete event.context;
+  let response;
+  try {
+    response = await cuePostQuery({
+      endpoint: '/v2/upload/multipart/start',
+      payload: {
+        ...event,
+        ...{
+          collection_name: cueCollection
+        }
+      }
+    });
+  } catch (err) {
+    console.error({ error: 'Error starting multipart upload.' });
+  }
+  return response;
+}
+
 const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
@@ -335,7 +477,9 @@ const operations = {
   getGroupUploadUrl: getGroupUploadUrlMethod,
   getAttachmentUploadUrl: getAttachmentUploadUrlMethod,
   getUploadStepUrl: getUploadStepUrlMethod,
-  getUploadStep: getUploadStepMethod
+  getUploadStep: getUploadStepMethod,
+  completeUpload: completeUploadMethod,
+  startMultipartUpload: startMultipartUploadMethod
 };
 
 async function handler(event) {

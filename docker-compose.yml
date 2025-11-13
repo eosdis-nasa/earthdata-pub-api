@@ -33,6 +33,7 @@ services:
       - AUTH_CLIENT_PATH=auth
       - CLIENT_ROOT_URL=http://localhost:3000
       - DEVELOPMENT=true
+      - DEBUG=false
     command: ["npm", "start"]
     ports:
       - 8080:8080
@@ -59,5 +60,38 @@ services:
       PGADMIN_DEFAULT_EMAIL: edpub@edpub.com
       PGADMIN_DEFAULT_PASSWORD: edpub
       PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: "False"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
+    user: root
     ports:
       - 8001:80
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: pgpass
+        target: /pgpass
+
+
+configs:
+  pgpass:
+    content: "*:5432:*:edpub:edpub"
+  servers.json:
+    content: |
+      {
+        "Servers": {
+            "1": {
+                "Name": "Local EDPub Server",
+                "Group": "Servers",
+                "Port": 5432,
+                "Username": "edpub",
+                "Host": "postgres",
+                "MaintenanceDB": "postgres",
+                "ConnectionParameters": {
+                    "sslmode": "prefer",
+                    "connect_timeout": 10,
+                    "passfile": "/pgpass"
+                }
+            }
+        }
+      }

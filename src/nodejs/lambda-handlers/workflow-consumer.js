@@ -93,6 +93,10 @@ async function serviceMethod(status) {
   if (headersAuthKey) {
     service.headers[headersAuthKey] = await getServiceAuthSecret(service.headers[headersAuthKey]);
   }
+  if (process.env.DEBUG === 'true') {
+    // eslint-disable-next-line
+    console.debug('Service Secret Info - SubmissionId: ', status.id, ' SubmissionSecret: ', submissionSecret);
+  }
   await sendSecret(service, submissionSecret, status.id);
   const eventMessage = {
     event_type: 'service_call',
@@ -236,9 +240,9 @@ async function reviewRejectedMethod(eventMessage) {
       });
     }
     if (typeof nextStep !== 'undefined') {
-      const validStep = await db.submission.checkWorkflow({ step_name: nextStep, id });
+      const validStep = await db.submission.checkWorkflow({ stepName: nextStep, id });
       if (validStep.step_name || nextStep === 'close') {
-        await db.submission.setStep({ id, step_name: nextStep });
+        await db.submission.setStep({ id, stepName: nextStep });
 
         if (nextStep === 'close') {
           const status = await db.submission.getState({ id });

@@ -1242,6 +1242,32 @@ module.exports.uploadStepUrl = function uploadStepUrl(req, res, next) {
   });
 };
 
+module.exports.completeUpload = function completeUpload(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'completeUpload',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.startMultipartUpload = function startMultipartUpload(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'startMultipartUpload',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.listFiles = function listFiles(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1446,6 +1472,19 @@ module.exports.createStepReviewApproval = function createStepReviewApproval(req,
     stepName: payload.value.step_name,
     submissionId: payload.value.id,
     userIds: payload.value.user_list,
+    context: { user_id: req.user_id }
+  };
+
+  handlers.submission(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
+module.exports.getSubmissionCountByWorkflowId = function getSubmissionCountByWorkflowId(req, res, next) {
+  const { params } = req.swagger;
+  const lambdaEvent = {
+    operation: 'getSubmissionCountByWorkflowId',
+    params: { id: params.id.value },
     context: { user_id: req.user_id }
   };
 

@@ -670,14 +670,14 @@ RETURNING *`;
 
 const setStep = () => `
 UPDATE submission_status
-SET step_name = {{step_name}}
+SET step_name = {{stepName}}
 WHERE id = {{id}}
 RETURNING *`;
 
 const checkWorkflow = () => `
 SELECT step_edge.step_name
 FROM step_edge
-WHERE step_edge.step_name = {{step_name}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}} AND submission_workflow.complete_time IS NULL)`;
+WHERE step_edge.step_name = {{stepName}} AND step_edge.workflow_id = (SELECT submission_workflow.workflow_id from submission_workflow WHERE id={{id}} AND submission_workflow.complete_time IS NULL)`;
 
 const addContributors = ({ contributor_ids }) => `
 UPDATE submission
@@ -753,6 +753,13 @@ Where edpuser.id = (select initiator_edpuser_id from submission where id = {{id}
 
 const getStepName = () => `
 SELECT step_name FROM submission_status WHERE id = {{id}}
+`;
+
+const getSubmissionCountByWorkflowId = () => `
+SELECT COUNT(s.id) AS submission_count
+FROM submission s
+JOIN submission_status ss ON s.id = ss.id
+WHERE ss.workflow_id = {{id}};
 `;
 
 // TODO - Update this query's complexity and to use sql builder
@@ -971,6 +978,7 @@ module.exports.getStepMessage = getStepMessage;
 module.exports.getCreatorName = getCreatorName;
 module.exports.getStepName = getStepName;
 module.exports.getSubmissionDetailsById = getSubmissionDetailsById;
+module.exports.getSubmissionCountByWorkflowId = getSubmissionCountByWorkflowId;
 module.exports.getSubmissionDaac = getSubmissionDaac;
 module.exports.getStepReviewApproval = getStepReviewApproval;
 module.exports.createStepReviewApproval = createStepReviewApproval;
