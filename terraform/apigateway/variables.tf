@@ -30,23 +30,11 @@ variable "metrics_lambda_arn" {
   type = string
 }
 
-variable "module_lambda_arn" {
-  type = string
-}
-
 variable "model_lambda_arn" {
   type = string
 }
 
-variable "register_lambda_arn" {
-  type = string
-}
-
 variable "submission_lambda_arn" {
-  type = string
-}
-
-variable "subscribe_lambda_arn" {
   type = string
 }
 
@@ -91,10 +79,6 @@ variable "region" {
 }
 
 variable "service_authorizer_lambda_arn" {
-  type = string
-}
-
-variable "mfa_auth_lambda_arn" {
   type = string
 }
 

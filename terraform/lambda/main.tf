@@ -395,44 +395,6 @@ resource "aws_lambda_permission" "model" {
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/GET/*"
 }
 
-# Module Lambda
-
-resource "aws_lambda_function" "module" {
-  filename      = "../artifacts/module-lambda.zip"
-  function_name = "module"
-  role          = var.edpub_lambda_role_arn
-  handler       = "module.handler"
-  layers = [
-    aws_lambda_layer_version.database_util.arn
-  ]
-  runtime          = "nodejs22.x"
-  source_code_hash = filesha256("../artifacts/module-lambda.zip")
-  timeout          = 180
-  environment {
-    variables = {
-      REGION  = var.region
-      PG_USER = var.db_user
-      PG_HOST = var.db_host
-      PG_DB   = var.db_database
-      PG_PASS = var.db_password
-      PG_PORT = var.db_port
-      DEBUG   = var.debug
-    }
-  }
-  vpc_config {
-    subnet_ids         = var.subnet_ids
-    security_group_ids = var.security_group_ids
-  }
-}
-
-resource "aws_lambda_permission" "module" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.module.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
-}
-
 # Notify Lambda
 
 resource "aws_lambda_function" "notification" {
@@ -650,48 +612,6 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_step_cleanup" {
   source_arn    = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.arn}"
 }
 
-# Register Lambda
-
-resource "aws_lambda_function" "register" {
-  filename      = "../artifacts/register-lambda.zip"
-  function_name = "register"
-  role          = var.edpub_lambda_role_arn
-  handler       = "register.handler"
-  layers = [
-    aws_lambda_layer_version.database_util.arn,
-    aws_lambda_layer_version.message_util.arn,
-    aws_lambda_layer_version.schema_util.arn
-  ]
-  runtime          = "nodejs22.x"
-  source_code_hash = filesha256("../artifacts/register-lambda.zip")
-  timeout          = 180
-  environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
-  }
-  vpc_config {
-    subnet_ids         = var.subnet_ids
-    security_group_ids = var.security_group_ids
-  }
-}
-
-resource "aws_lambda_permission" "register" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.register.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/POST/action/register"
-}
-
 # Service Authorizer Lambda
 
 resource "aws_lambda_function" "service_authorizer" {
@@ -774,49 +694,6 @@ resource "aws_lambda_permission" "submission" {
   function_name = aws_lambda_function.submission.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/submission/*"
-}
-
-
-# Subscribe Lambda
-
-resource "aws_lambda_function" "subscribe" {
-  filename      = "../artifacts/subscribe-lambda.zip"
-  function_name = "subscribe"
-  role          = var.edpub_lambda_role_arn
-  handler       = "subscribe.handler"
-  layers = [
-    aws_lambda_layer_version.database_util.arn,
-    aws_lambda_layer_version.message_util.arn,
-    aws_lambda_layer_version.schema_util.arn
-  ]
-  runtime          = "nodejs22.x"
-  source_code_hash = filesha256("../artifacts/subscribe-lambda.zip")
-  timeout          = 180
-  environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
-  }
-  vpc_config {
-    subnet_ids         = var.subnet_ids
-    security_group_ids = var.security_group_ids
-  }
-}
-
-resource "aws_lambda_permission" "subscribe" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.subscribe.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification/subscribe"
 }
 
 # User Lambda
@@ -1162,45 +1039,6 @@ resource "aws_lambda_permission" "file_upload" {
   function_name = aws_lambda_function.file_upload.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/upload/*"
-}
-
-# MFA Auth Lambda
-
-resource "aws_lambda_function" "mfa_auth" {
-  filename      = "../artifacts/mfa-auth-lambda.zip"
-  function_name = "mfa_auth"
-  role          = var.edpub_lambda_role_arn
-  handler       = "mfa-auth.handler"
-  runtime          = "nodejs22.x"
-  source_code_hash = filesha256("../artifacts/mfa-auth-lambda.zip")
-  timeout          = 180
-  layers = [
-    aws_lambda_layer_version.database_util.arn,
-  ]
-  environment {
-    variables = {
-      REGION          = var.region
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      CUP_ID         = var.cognito_user_pool_id
-      DEBUG          = var.debug
-    }
-  }
-  vpc_config {
-    subnet_ids         = var.subnet_ids
-    security_group_ids = var.security_group_ids
-  }
-}
-
-resource "aws_lambda_permission" "mfa_auth" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.mfa_auth.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/mfa/*"
 }
 
 # Disable User Account Lambda

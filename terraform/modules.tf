@@ -107,12 +107,9 @@ module "apigateway_endpoints" {
   notification_lambda_arn = module.lambda_functions.notification_lambda_arn
   metrics_lambda_arn = module.lambda_functions.metrics_lambda_arn
   model_lambda_arn = module.lambda_functions.model_lambda_arn
-  module_lambda_arn = module.lambda_functions.module_lambda_arn
   invoke_lambda_arn = module.lambda_functions.invoke_lambda_arn
-  subscribe_lambda_arn = module.lambda_functions.subscribe_lambda_arn
   submission_lambda_arn = module.lambda_functions.submission_lambda_arn
   user_lambda_arn = module.lambda_functions.user_lambda_arn
-  register_lambda_arn = module.lambda_functions.register_lambda_arn
   version_lambda_arn = module.lambda_functions.version_lambda_arn
   questions_lambda_arn = module.lambda_functions.questions_lambda_arn
   workflow_lambda_arn = module.lambda_functions.workflow_lambda_arn
@@ -124,7 +121,6 @@ module "apigateway_endpoints" {
   vpc_endpoint_id = var.vpc_endpoint_id
   region = var.region
   service_authorizer_lambda_arn = module.lambda_functions.service_authorizer_lambda_arn
-  mfa_auth_lambda_arn = module.lambda_functions.mfa_auth_lambda_arn
   oidc_authorizer_lambda_arn = module.lambda_functions.oidc_authorizer_lambda_arn
 }
 
