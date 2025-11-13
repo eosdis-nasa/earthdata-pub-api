@@ -63,7 +63,6 @@ module "lambda_functions" {
   edpub_event_sns_arn = module.sns_topics.edpub_event_sns_arn
   edpub_email_sns_arn = module.sns_topics.edpub_email_sns_arn
   edpub_metrics_sns_arn = module.sns_topics.edpub_metrics_sns_arn
-  edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
   edpub_actions_s3_bucket = var.edpub_actions_s3_bucket
   edpub_upload_s3_bucket = var.edpub_upload_s3_bucket
@@ -120,7 +119,6 @@ module "apigateway_endpoints" {
   cognito_user_pool_arn = "arn:aws:cognito-idp:${var.region}:${var.account_id}:userpool/${var.cognito_user_pool_id}"
   edpub_apigateway_s3_role_arn = module.iam_roles.edpub_apigateway_s3_role_arn
   edpub_dashboard_s3_bucket = var.edpub_dashboard_s3_bucket
-  edpub_metrics_s3_bucket = var.edpub_metrics_s3_bucket
   vpc_endpoint_id = var.vpc_endpoint_id
   region = var.region
   service_authorizer_lambda_arn = module.lambda_functions.service_authorizer_lambda_arn
