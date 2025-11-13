@@ -154,6 +154,6 @@ CREATE TABLE IF NOT EXISTS temp_upload_file (
   category VARCHAR,
   size BIGINT,
   lastmodified TIMESTAMP NOT NULL DEFAULT NOW(),
-  status VARCHAR(50) DEFAULT 'Uploading',
+  status VARCHAR(50) DEFAULT 'Scanning',
   FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
