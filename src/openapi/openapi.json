@@ -14559,7 +14559,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Id"
+                "$ref": "#/components/schemas/CreateTempUploadFile"
               }
             }
           }
@@ -14587,7 +14587,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DAAC"
+                  "$ref": "#/components/schemas/CreateTempUploadFileResponse"
                 }
               }
             }
