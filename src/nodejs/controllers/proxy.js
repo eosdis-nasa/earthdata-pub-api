@@ -20,12 +20,10 @@ module.exports.actionFindAll = function actionFindAll(req, res, next) {
     resource: 'action',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -53,12 +51,10 @@ module.exports.daacFindAll = function daacFindAll(req, res, next) {
     resource: 'daac',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -256,12 +252,10 @@ module.exports.questionFindAll = function questionFindAll(req, res, next) {
     resource: 'question',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -361,12 +355,10 @@ module.exports.serviceFindAll = function serviceFindAll(req, res, next) {
     resource: 'service',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -534,12 +526,10 @@ module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
     resource: 'workflow',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -1267,12 +1257,10 @@ module.exports.stepFindAll = function stepFindAll(req, res, next) {
     resource: 'step',
     operation: 'stepFindAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -1386,12 +1374,10 @@ module.exports.sectionFindAll = function sectionFindAll(req, res, next) {
     resource: 'section',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };

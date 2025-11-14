@@ -93,7 +93,15 @@ const sectionJoin = () => sql.select({
   alias: 'question_agg'
 });
 
-const findAll = () => 'SELECT question.* FROM question';
+const findAll = ({ sort, order, per_page, page }) => sql.select({
+  fields: ['question.*'],
+  from: { base: 'question' },
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
+});
+
 const findAllEx = () => `
   SELECT question.*, inputs
   FROM question
