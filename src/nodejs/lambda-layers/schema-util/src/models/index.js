@@ -7,6 +7,8 @@ const ConversationAddRemoveUser = require('./conversation-add-remove-user.js');
 const ConversationEdpuser = require('./conversation-edpuser.js');
 const ConversationList = require('./conversation-list.js');
 const ConversationNotes = require('./conversation-notes.js');
+const CreateTempUploadFile = require('./create-file-upload.js');
+const CreateTempUploadFileResponse = require('./create-file-upload-response.js');
 const DAAC = require('./daac.js');
 const FileListResponse = require('./file-list-response.js');
 const FileUploadResponse = require('./file-upload-response.js');
@@ -107,6 +109,8 @@ const models = {
   ConversationEdpuser,
   ConversationList,
   ConversationNotes,
+  CreateTempUploadFile,
+  CreateTempUploadFileResponse,
   DAAC,
   FileListResponse,
   FileUploadResponse,

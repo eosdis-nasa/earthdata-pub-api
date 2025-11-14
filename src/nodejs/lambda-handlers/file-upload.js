@@ -1,7 +1,7 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const {
-  S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand
+  S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand, GetObjectTaggingCommand
 } = require('@aws-sdk/client-s3');
 const path = require('path');
 
@@ -218,19 +218,39 @@ async function getUploadStepUrlMethod(event, user) {
   });
 }
 
-async function getChecksum(key, s3Client) {
+async function getChecksumTag(key, s3Client) {
   const payload = {
     Bucket: ingestBucket,
     Key: key,
     ChecksumMode: 'ENABLED'
   };
   try {
-    const command = new HeadObjectCommand(payload);
-    const response = await s3Client.send(command);
-    return response.ChecksumSHA256;
+    const headCmd = new HeadObjectCommand(payload);
+    const tagCmd = new GetObjectTaggingCommand(payload);
+
+    const [headResp, tagResp] = await Promise.all([
+      s3Client.send(headCmd),
+      s3Client.send(tagCmd)
+    ]);
+
+    const tagSet = Array.isArray(tagResp?.TagSet) ? tagResp.TagSet : [];
+
+    const fileIdTag = tagSet.find(
+      (tag) => tag.Key?.trim().toLowerCase() === 'fileid'
+    );
+
+    const fileId = fileIdTag?.Value || null;
+
+    return {
+      headResp,
+      fileId
+    };
   } catch (err) {
-    console.error(err);
-    return ({ error: 'Error getting checksum' });
+    console.error('Error retrieving S3 response:', err);
+    return {
+      error: true,
+      message: 'Error getting S3 respons'
+    };
   }
 }
 
@@ -245,16 +265,46 @@ function getFileCategory(s3Key) {
 }
 
 async function processFile(item, s3Client) {
-  const sha256Checksum = item.ChecksumAlgorithm ? (await getChecksum(item.Key, s3Client)) : null;
+  const response = item.ChecksumAlgorithm ? (await getChecksumTag(item.Key, s3Client)) : null;
+  const { fileId, ChecksumSHA256 } = response;
   const fileMetaData = {
     key: item.Key,
     size: item.Size,
     lastModified: item.LastModified,
     file_name: item.Key.split('/').pop(),
     category: getFileCategory(item.Key),
-    ...(sha256Checksum && { sha256Checksum })
+    ...(ChecksumSHA256 && { ChecksumSHA256 }),
+    ...(fileId && { fileId })
   };
   return fileMetaData;
+}
+
+async function updateUploadFiles(fileId) {
+  let respData = [];
+  try {
+    respData = await cuePostQuery({
+      endpoint: '/v2/files/list',
+      payload: {
+        file_id: fileId,
+        apiKey: cueAPIToken
+      }
+    });
+    const data = Array.isArray(respData?.items) ? respData.items[0] : respData;
+    const {
+      name: fileName, size_bytes: fileSize, collection_path: collectionPth, status
+    } = data;
+    const category = getFileCategory(collectionPth);
+    return {
+      file_id: fileId,
+      file_name: fileName,
+      size: fileSize,
+      category,
+      status
+    };
+  } catch (err) {
+    console.error('Error processing file_id:', fileId);
+  }
+  return {};
 }
 
 async function listFilesMethod(event, user) {
@@ -264,7 +314,11 @@ async function listFilesMethod(event, user) {
   const groupIds = userInfo.user_groups.map((group) => group.id);
   const userDaacs = groupIds.length > 0 ? await db.daac.getIds({ group_ids: groupIds }) : [];
   const userDaacIds = userDaacs.map((daac) => daac.id);
-
+  const uploadResponse = await db.submission.getTempUploadFiles({ submissionId });
+  const uploadResp = uploadResponse.map(({ lastmodified, ...rest }) => ({
+    ...rest,
+    lastModified: lastmodified || rest.lastModified
+  }));
   const {
     daac_id: daacId,
     contributor_ids: contributorIds
@@ -276,24 +330,43 @@ async function listFilesMethod(event, user) {
   ) {
     const s3Client = new S3Client({ region });
     const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${submissionId}` });
-
     try {
       rawResponse = await s3Client.send(command);
     } catch (err) {
       console.error(err);
-      return ({ error: 'Error listing files' });
     }
-
+    const response = [];
     if (rawResponse.Contents) {
-      const response = [];
       for (let i = 0; i < rawResponse.Contents.length; i += 1) {
         response.push(await processFile(rawResponse.Contents[i], s3Client));
       }
-      return response;
     }
-    return ([]);
+    const fileIds = response.map((item) => item.fileId);
+    const filteredUploadResp = uploadResp.filter(
+      (dbFile) => !fileIds.includes(dbFile.file_id)
+    );
+    const commonFileIds = uploadResp
+      .map((dbFile) => dbFile.file_id)
+      .filter((id) => fileIds.includes(id));
+
+    await db.submission.deleteTempUploadFilesByIds({ fileIds: commonFileIds });
+    const finalFiles = [...response, ...filteredUploadResp];
+    return finalFiles;
   }
   return ({ error: 'Not Authorized' });
+}
+
+async function createTempUploadFileMethod(event) {
+  const ret = await updateUploadFiles(event.fileId);
+  const result = await db.submission.createTempUploadFile({
+    file_id: ret.file_id,
+    submission_id: event.submissionId,
+    file_name: ret.file_name,
+    category: ret.category,
+    size: ret.size,
+    status: ret.status
+  });
+  return result;
 }
 
 async function listStepFilesMethod(event, user) {
@@ -472,6 +545,7 @@ async function startMultipartUploadMethod(event) {
 const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
+  createTempUploadFile: createTempUploadFileMethod,
   listStepFiles: listStepFilesMethod,
   getDownloadUrl: getDownloadUrlMethod,
   getGroupUploadUrl: getGroupUploadUrlMethod,

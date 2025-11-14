@@ -1123,6 +1123,20 @@ module.exports.listFiles = function listFiles(req, res, next) {
   });
 };
 
+module.exports.createTempUploadFile = function createTempUploadFile(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'createTempUploadFile',
+    submission_id: payload.value.submissionId,
+    file_id: payload.value.fileId,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.listStepFiles = function listStepFiles(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
