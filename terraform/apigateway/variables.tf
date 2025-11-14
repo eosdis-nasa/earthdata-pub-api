@@ -58,10 +58,6 @@ variable "edpub_dashboard_s3_bucket" {
   type = string
 }
 
-variable "edpub_metrics_s3_bucket" {
-  type = string
-}
-
 variable "edpub_apigateway_s3_role_arn" {
   type = string
 }

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updating backend to handle the needs_review case in daac selection
 - Renamed DAR -> DER form. Renamed Submit Data to ESDIS form to DAR
 - Updated the language for Open Data Policy questions in DAR and DER
+- Removing terraform references to edpub_metrics_s3_bucket
 
 ## 1.1.0
 
