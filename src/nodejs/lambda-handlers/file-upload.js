@@ -542,6 +542,28 @@ async function startMultipartUploadMethod(event) {
   return response;
 }
 
+async function getPartUrlMethod(event) {
+  delete event.operation;
+  delete event.context;
+  let response;
+  try {
+    response = await cuePostQuery({
+      endpoint: '/v2/upload/multipart/get-part-url',
+      payload: {
+        ...event,
+        ...{
+          file_id: event.file_id,
+          upload_id: event.upload_id,
+          part_number: event.part_number
+        }
+      }
+    });
+  } catch (err) {
+    console.error({ error: 'Error getting part url.' });
+  }
+  return response;
+}
+
 const operations = {
   getPostUrl: getPostUrlMethod,
   listFiles: listFilesMethod,
@@ -553,7 +575,8 @@ const operations = {
   getUploadStepUrl: getUploadStepUrlMethod,
   getUploadStep: getUploadStepMethod,
   completeUpload: completeUploadMethod,
-  startMultipartUpload: startMultipartUploadMethod
+  startMultipartUpload: startMultipartUploadMethod,
+  getPartUrl: getPartUrlMethod
 };
 
 async function handler(event) {
