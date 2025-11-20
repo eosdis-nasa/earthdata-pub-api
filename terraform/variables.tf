@@ -31,9 +31,6 @@ variable "lambda_execution_policy_arn" {
 variable "edpub_dashboard_s3_bucket" {
   type = string
 }
-variable "edpub_metrics_s3_bucket" {
-  type = string
-}
 variable "edpub_actions_s3_bucket" {
   type = string
 }
