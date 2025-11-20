@@ -522,27 +522,6 @@ async function completeUploadMethod(event) {
   return response;
 }
 
-async function startMultipartUploadMethod(event) {
-  delete event.operation;
-  delete event.context;
-  let response;
-  try {
-    response = await cuePostQuery({
-      endpoint: '/v2/upload/multipart/start',
-      payload: {
-        ...event,
-        ...{
-          collection_name: cueCollection,
-          collection_path: path.dirname(key)
-        }
-      }
-    });
-  } catch (err) {
-    console.error({ error: 'Error starting multipart upload.' });
-  }
-  return response;
-}
-
 async function getPartUrlMethod(event) {
   delete event.operation;
   delete event.context;
@@ -576,7 +555,6 @@ const operations = {
   getUploadStepUrl: getUploadStepUrlMethod,
   getUploadStep: getUploadStepMethod,
   completeUpload: completeUploadMethod,
-  startMultipartUpload: startMultipartUploadMethod,
   getPartUrl: getPartUrlMethod
 };
 
