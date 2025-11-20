@@ -1,6 +1,14 @@
 const sql = require('./sql-builder.js');
 
-const findAll = () => 'SELECT service.* FROM service';
+const findAll = ({ sort, order, per_page, page }) => sql.select({
+  fields: ['service.*'],
+  from: { base: 'service' },
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
+});
+
 const findById = () => `${findAll()} WHERE service.id = {{id}}`;
 const findByName = () => `${findAll()} WHERE service.short_name = {{short_name}}`;
 const createSecret = () => `INSERT INTO service_secret(id, secret, submission_id) VALUES ({{id}}, {{secret}}, {{submission_id}})`;

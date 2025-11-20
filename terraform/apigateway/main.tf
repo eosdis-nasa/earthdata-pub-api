@@ -21,12 +21,9 @@ data "template_file" "edpub_oas" {
     invoke_lambda_arn             = var.invoke_lambda_arn
     notification_lambda_arn       = var.notification_lambda_arn
     metrics_lambda_arn            = var.metrics_lambda_arn
-    module_lambda_arn             = var.module_lambda_arn
     model_lambda_arn              = var.model_lambda_arn
-    subscribe_lambda_arn          = var.subscribe_lambda_arn
     submission_lambda_arn         = var.submission_lambda_arn
     user_lambda_arn               = var.user_lambda_arn
-    register_lambda_arn           = var.register_lambda_arn
     version_lambda_arn            = var.version_lambda_arn
     questions_lambda_arn          = var.questions_lambda_arn
     workflow_lambda_arn           = var.workflow_lambda_arn
@@ -37,7 +34,6 @@ data "template_file" "edpub_oas" {
     cognito_user_pool_arn         = var.cognito_user_pool_arn
     region                        = var.region
     service_authorizer_lambda_arn = var.service_authorizer_lambda_arn
-    mfa_auth_lambda_arn           = var.mfa_auth_lambda_arn
     oidc_authorizer_lambda_arn    = var.oidc_authorizer_lambda_arn
   }
 }

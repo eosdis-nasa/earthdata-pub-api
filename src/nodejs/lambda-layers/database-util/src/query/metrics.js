@@ -63,12 +63,6 @@ ${findAll()} WHERE metrics.id = {{id}}`;
 const metricsFilter = () => `
 ${findAll()}`;
 
-const metricsStats = () => `
- SELECT
-  metrics.event->>'event_type' event_type,
-  COUNT(metrics.event->>'event_type') count
-FROM metrics GROUP BY metrics.event->>'event_type'`;
-
 const putMetric = () => `
 INSERT INTO metrics(event)
 VALUES ({{$}}::JSONB)`;
@@ -189,7 +183,6 @@ const setAccessionReversion = () => `
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.metricsFilter = metricsFilter;
-module.exports.metricsStats = metricsStats;
 module.exports.putMetric = putMetric;
 module.exports.getSubmissions = getSubmissions;
 module.exports.getUserCount = getUserCount;

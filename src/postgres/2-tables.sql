@@ -667,3 +667,14 @@ CREATE TABLE IF NOT EXISTS upload_step (
   FOREIGN KEY (step_name) REFERENCES step (step_name),
   UNIQUE (step_name)
 );
+
+CREATE TABLE IF NOT EXISTS temp_upload_file (
+  file_id UUID PRIMARY KEY,                  
+  submission_id UUID NOT NULL,          
+  file_name VARCHAR,
+  category VARCHAR,
+  size BIGINT,
+  lastmodified TIMESTAMP NOT NULL DEFAULT NOW(),
+  status VARCHAR(50) DEFAULT 'Scanning',
+  FOREIGN KEY (submission_id) REFERENCES submission (id)
+);

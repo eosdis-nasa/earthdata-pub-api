@@ -14,7 +14,6 @@ db.daac.getIds = jest.fn();
 db.metrics.getSubmissions = jest.fn();
 db.metrics.getAverageTimeToPublish = jest.fn();
 db.metrics.getUserCount = jest.fn();
-db.metrics.metricsStats = jest.fn();
 
 describe('Metrics', () => {
   beforeEach(() => {
@@ -136,43 +135,5 @@ describe('Metrics', () => {
     });
     const result3 = await handler(event3);
     expect(result3).toEqual({ user_count: 10 });
-  });
-  it('should use the put method', async () => {
-    const event = {
-      operation: 'put',
-      payload: {
-        action_id: 'action1',
-        conversation_id: 'conversation1',
-        daac_id: 'daac1',
-        form_id: 'form1',
-        group_id: 'group1',
-        question_id: 'question1',
-        role_id: 'role1',
-        service_id: 'service1',
-        submission_id: 'submission1',
-        workflow_id: 'workflow1',
-        data: 'data1'
-      },
-      context: { user_id: 'user1' }
-    };
-    msg.sendEvent.mockImplementationOnce(async (args) => {
-      expect(args).toEqual({
-        event_type: 'client_event',
-        user_id: 'user1',
-        action_id: 'action1',
-        conversation_id: 'conversation1',
-        daac_id: 'daac1',
-        form_id: 'form1',
-        group_id: 'group1',
-        question_id: 'question1',
-        role_id: 'role1',
-        service_id: 'service1',
-        submission_id: 'submission1',
-        workflow_id: 'workflow1',
-        data: 'data1'
-      });
-    });
-    const result = await handler(event);
-    expect(result).toEqual({ message: 'Success!' });
   });
 });

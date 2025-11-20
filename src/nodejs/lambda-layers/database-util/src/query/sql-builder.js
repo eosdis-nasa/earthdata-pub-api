@@ -80,6 +80,8 @@ const naturalJoin = ({ src }) => ` NATURAL JOIN ${src.type ? complexParse(src) :
 
 const naturalLeftJoin = ({ src, on }) => ` NATURAL LEFT JOIN ${src.type ? complexParse(src) : src}`;
 
+const naturalFullOuterJoin = ({ src, on }) => ` NATURAL FULL OUTER JOIN ${src.type ? complexParse(src) : src}`;
+
 const innerJoin = ({ src, on }) => ` INNER JOIN ${src.type ? complexParse(src) : src}${on
   ? ` ON ${on.left} = ${on.right}` : ''}`;
 
@@ -110,6 +112,8 @@ const jsonMergeAgg = ({
   ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${alias
   ? ` ${alias}` : ''}`;
 
+const jsonObjAgg = ({ keys, alias }) => `JSONB_OBJECT_AGG(${keys.map(typeCheck)})${alias ? ` ${alias}` : ''}`;
+
 const jsonObj = ({ keys, alias, strip }) => `${strip ? 'JSONB_STRIP_NULLS(' : ''}JSONB_BUILD_OBJECT(${keys.map(([key, src]) => `'${key}', ${src.type ? complexParse(src) : src}`)})${strip ? ')' : ''}${alias
   ? ` ${alias}` : ''}`;
 
@@ -130,12 +134,14 @@ const complexTypes = {
   left_join: leftJoin,
   natural_join: naturalJoin,
   natural_left_join: naturalLeftJoin,
+  natural_full_outer_join: naturalFullOuterJoin,
   inner_join: innerJoin,
   case: caseClause,
   coalesce,
   json_agg: jsonAgg,
   json_merge_agg: jsonMergeAgg,
   json_obj: jsonObj,
+  json_obj_agg: jsonObjAgg,
   literal: strLiteral,
   any: anyClause,
   union,

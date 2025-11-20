@@ -1,6 +1,5 @@
 const Action = require('./action.js');
 const ActionInvokeRequest = require('./action-invoke-request.js');
-const ActionRegisterRequest = require('./action-register-request.js');
 const BasicResponse = require('./basic-response.js');
 const CodeValidation = require('./code-validation.js');
 const Conversation = require('./conversation.js');
@@ -8,6 +7,8 @@ const ConversationAddRemoveUser = require('./conversation-add-remove-user.js');
 const ConversationEdpuser = require('./conversation-edpuser.js');
 const ConversationList = require('./conversation-list.js');
 const ConversationNotes = require('./conversation-notes.js');
+const CreateTempUploadFile = require('./create-file-upload.js');
+const CreateTempUploadFileResponse = require('./create-file-upload-response.js');
 const DAAC = require('./daac.js');
 const FileListResponse = require('./file-list-response.js');
 const FileUploadResponse = require('./file-upload-response.js');
@@ -18,8 +19,6 @@ const FormUpdate = require('./form-update.js');
 const Group = require('./group.js');
 const GroupDetails = require('./group-details.js');
 const Id = require('./id.js');
-const LogEvent = require('./log-event.js');
-const LogEventRequest = require('./log-event-request.js');
 const Note = require('./note.js');
 const NoteAddViewers = require('./note-add-viewers.js');
 const NoteRemoveViewer = require('./note-remove-viewer.js');
@@ -28,12 +27,9 @@ const NoteRemoveViewerRole = require('./note-remove-viewer-role.js');
 const NoteScope = require('./note-scope.js');
 const NotificationReplyRequest = require('./notification-reply-request.js');
 const NotificationSendRequest = require('./notification-send-request.js');
-const MetricsEventCount = require('./metrics-event-count.js');
 const MetricsGenerateReport = require('./metrics-generate-report.js');
 const MetricsGenerateReportResp = require('./metrics-generate-report-resp.js');
 const MetricsGetDaacsResp = require('./metrics-get-daacs-resp.js');
-const MfaVerifyRequest = require('./mfa-verify-request.js');
-const Page = require('./page.js');
 const Question = require('./question.js');
 const QuestionList = require('./question-list.js');
 const QuestionAdd = require('./question-add.js');
@@ -58,7 +54,6 @@ const SubmissionOperationCopySubmission = require('./submission-operation-copy-s
 const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js');
 const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
 const SubmissionOperationRemoveContributor = require('./submission-operation-remove-contributor.js');
-const SubmissionOperationRequest = require('./submission-operation-request.js');
 const SubmissionOperationReview = require('./submission-operation-review.js');
 const SubmissionOperationSubmit = require('./submission-operation-submit.js');
 const SubmissionOperationAssignDaacs = require('./submission-operation-assign-daacs.js');
@@ -67,7 +62,6 @@ const SubmissionInitializationRequest = require('./submission-initialization-req
 const SubmissionState = require('./submission-state.js');
 const SubmissionStatus = require('./submission-status.js');
 const SubmissionStepReview = require('./submission-step-review.js');
-const SubscribeRequest = require('./subscribe-request.js');
 const TokenRefreshResponse = require('./token-refresh-response.js');
 const UploadStep = require('./upload-step.js');
 const User = require('./user.js');
@@ -106,7 +100,6 @@ const UploadMultipartStart = require('./upload-multipart-start.js');
 const models = {
   Action,
   ActionInvokeRequest,
-  ActionRegisterRequest,
   BasicResponse,
   CodeValidation,
   Conversation,
@@ -114,6 +107,8 @@ const models = {
   ConversationEdpuser,
   ConversationList,
   ConversationNotes,
+  CreateTempUploadFile,
+  CreateTempUploadFileResponse,
   DAAC,
   FileListResponse,
   FileUploadResponse,
@@ -124,8 +119,6 @@ const models = {
   Group,
   GroupDetails,
   Id,
-  LogEvent,
-  LogEventRequest,
   Note,
   NoteAddViewers,
   NoteRemoveViewer,
@@ -134,12 +127,9 @@ const models = {
   NoteScope,
   NotificationReplyRequest,
   NotificationSendRequest,
-  MetricsEventCount,
   MetricsGenerateReport,
   MetricsGenerateReportResp,
   MetricsGetDaacsResp,
-  MfaVerifyRequest,
-  Page,
   Question,
   QuestionList,
   QuestionAdd,
@@ -165,12 +155,10 @@ const models = {
   SubmissionOperationCustomResponse,
   SubmissionOperationMetadata,
   SubmissionOperationRemoveContributor,
-  SubmissionOperationRequest,
   SubmissionOperationReview,
   SubmissionOperationSubmit,
   SubmissionOperationEsdisReview,
   SubmissionInitializationRequest,
-  SubscribeRequest,
   SubmissionOperationAssignDaacs,
   SubmissionState,
   SubmissionStatus,
