@@ -281,7 +281,6 @@ resource "aws_lambda_function" "metrics" {
       REGION         = var.region
       EVENT_SNS      = var.edpub_event_sns_arn
       METRICS_SNS    = var.edpub_metrics_sns_arn
-      METRICS_S3     = var.edpub_metrics_s3_bucket
       PG_USER        = var.db_user
       PG_HOST        = var.db_host
       PG_DB          = var.db_database
