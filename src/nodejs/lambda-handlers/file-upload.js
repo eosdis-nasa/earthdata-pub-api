@@ -81,7 +81,7 @@ async function generateUploadUrl(params) {
   if (!fileType) return ({ error: 'invalid file type' });
   try {
     const response = await cuePostQuery({
-      endpoint: '/v2/upload/prepare-single',
+      endpoint: '/v2/upload/multipart/start',
       payload: {
         collection_name: cueCollection,
         file_name: path.basename(key),
@@ -532,7 +532,8 @@ async function startMultipartUploadMethod(event) {
       payload: {
         ...event,
         ...{
-          collection_name: cueCollection
+          collection_name: cueCollection,
+          collection_path: path.dirname(key)
         }
       }
     });
