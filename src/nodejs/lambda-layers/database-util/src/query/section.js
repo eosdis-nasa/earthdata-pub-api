@@ -54,7 +54,15 @@ const formJoin = () => sql.select({
   alias: 'section_agg'
 });
 
-const findAll = () => 'SELECT section.* FROM section';
+const findAll = ({ sort, order, per_page, page }) => sql.select({
+  fields: ['section.*'],
+  from: { base: 'section' },
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
+});
+
 const findById = () => `${findAll()} WHERE section.id = {{id}}`;
 
 const createSection = (params) => sql.insert({
