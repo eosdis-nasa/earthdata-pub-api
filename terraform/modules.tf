@@ -95,6 +95,7 @@ module "lambda_functions" {
   cue_collection = var.cue_collection
   multipart_upload_limit_bytes = var.multipart_upload_limit_bytes
   use_cue_upload = var.use_cue_upload
+  ornl_bucket_name = var.ornl_bucket_name
 }
 
 module "apigateway_endpoints" {
