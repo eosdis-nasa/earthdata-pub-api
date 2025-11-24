@@ -82,6 +82,10 @@ variable "edpub_actions_s3_bucket" {
   type = string
 }
 
+variable "ornl_bucket_name" {
+  type = string
+}
+
 variable "edpub_upload_s3_bucket" {
   type = string
 }
