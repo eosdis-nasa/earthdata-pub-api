@@ -16,6 +16,24 @@ resource "aws_iam_role_policy_attachment" "edpub_lambda_execution_role_attach" {
   policy_arn = var.lambda_execution_policy_arn
 }
 
+data "aws_iam_policy_document" "ornl_s3_access" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:PutObject"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.ornl_bucket_name}/*"
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "allow_put_to_ornl" {
+  name   = "${var.stage}-edpub-put-to-ornl"
+  role   = aws_iam_role.edpub_lambda_role.id
+  policy = data.aws_iam_policy_document.ornl_s3_access.json
+}
+
 resource "aws_iam_role_policy" "edpub_apigateway_s3_policy" {
   name = "EDPUBApigatewayS3Policy"
   role = aws_iam_role.edpub_apigateway_s3_role.id

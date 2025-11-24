@@ -18,6 +18,7 @@ module "iam_roles" {
   ornl_endpoint_arn = module.aws_secrets.ornl_endpoint_arn
   gesdisc_endpoint_arn = module.aws_secrets.gesdisc_endpoint_arn
   ornl_service_authorization_arn = module.aws_secrets.ornl_service_authorization_arn
+  ornl_bucket_name = var.ornl_bucket_name
 }
 
 module "s3" {
