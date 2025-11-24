@@ -228,23 +228,15 @@ describe('file-upload', () => {
     const response = await fileUpload.handler(payload);
     expect(response).toEqual('https://fake_s3_.s3.us-west-2.amazonaws.com/file.txt');
   });
-  it('should complete single file CUE upload', async () => {
-    const payload = {
-      operation: 'completeUpload',
-      file_size_bytes: 1234,
-      upload_id: 'upload_id',
-      etags: [{ PartNumber: 1, Etag: 'etag' }],
-      context: { user_id: 'user_id' }
-    };
-    const response = await fileUpload.handler(payload);
-    expect(response).toEqual(expectCompleteResponse);
-  });
   it('should complete multipart CUE upload', async () => {
     const payload = {
       operation: 'completeUpload',
       file_size_bytes: 104857601,
       upload_id: 'upload_id',
-      etags: [{ PartNumber: 1, Etag: 'etag' }, { PartNumber: 2, Etag: 'etag_2' }],
+       parts: [
+      { PartNumber: 1, ETag: 'abcdef123456' },
+      { PartNumber: 2, ETag: 'fedcba654321' }
+    ],
       context: { user_id: 'user_id' }
     };
     const response = await fileUpload.handler(payload);

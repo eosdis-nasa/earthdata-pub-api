@@ -14,8 +14,6 @@ const cueAPIToken = process.env.CUE_API_TOKEN;
 const cueRootUrl = process.env.CUE_ROOT_URL;
 const cueCollection = process.env.CUE_COLLECTION;
 
-const multipartUploadLimitBytes = process.env.MULTIPART_UPLOAD_LIMIT_BYTES;
-
 const useCUEUpload = process.env.USE_CUE_UPLOAD;
 
 const categoryEnums = ['documentation', 'sample'];
@@ -475,50 +473,62 @@ async function getUploadStepMethod(event) {
 
 async function completeUploadMethod(event) {
   const {
-    file_size_bytes: fileSize,
+    final_file_size: fileSize,
     upload_id: uploadId,
-    etags
+    parts: rawParts
   } = event;
 
+  // -------------------------------
+  // SAFELY NORMALIZE incoming parts
+  // -------------------------------
+  let parts = rawParts;
+  if (typeof parts === 'string') {
+    // try to convert it manually
+    try {
+      // Convert = to : so JSON.parse can work
+      const fixed = parts
+        .replace(/=/g, ':')
+        .replace(/([A-Za-z0-9_]+):/g, '"$1":')
+        .replace(/:(\w+)/g, ':"$1"');
+
+      parts = JSON.parse(fixed);
+    } catch (err) {
+      console.error('Could not auto-fix parts:', parts);
+      return { error: "Invalid 'parts' format" };
+    }
+  }
+  // Normalize each part
+  const normalizedParts = parts.map((p) => {
+    let etag = p.ETag || '';
+    // Strip surrounding quotes
+    etag = etag.replace(/^"+|"+$/g, '');
+    etag = `"${etag}"`;
+    return {
+      PartNumber: Number(p.PartNumber),
+      ETag: etag
+    };
+  });
   const commonPayload = {
     file_id: event.file_id,
     collection_name: cueCollection,
     file_name: event.file_name,
     collection_path: event.collection_path,
     content_type: event.content_type,
-    checksum: event.checksum_value
+    checksum: event.checksum
   };
 
   if (Number(fileSize) < 0) return { error: 'Invalid file_size_types size.' };
-  let response;
-  if (Number(fileSize) > Number(multipartUploadLimitBytes)) {
-    // Use multipart upload endpoint
-    response = await cuePostQuery({
-      endpoint: '/v2/upload/multipart/complete',
-      payload: {
-        ...commonPayload,
-        ...{
-          upload_id: uploadId,
-          parts: etags,
-          final_file_size: fileSize
-        }
+  const response = await cuePostQuery({
+    endpoint: '/v2/upload/multipart/complete',
+    payload: {
+      ...commonPayload,
+      ...{
+        upload_id: uploadId,
+        parts: normalizedParts,
+        final_file_size: fileSize
       }
-    });
-  } else {
-    if (etags.length > 1) return { error: 'Too many objects provided within etag array for single file upload.' };
-    // Use single part upload endpoint
-    response = await cuePostQuery({
-      endpoint: '/v2/upload/complete-single',
-      payload: {
-        ...commonPayload,
-        ...{
-          file_size_bytes: fileSize,
-          // Single file upload should only contain 1 object within the etag array
-          s3_etag: etags[0].Etag
-        }
-      }
-    });
-  }
+    }
+  });
   return response;
 }
 
