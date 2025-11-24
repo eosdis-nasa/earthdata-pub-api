@@ -159,5 +159,6 @@ variable "use_cue_upload" {
 }
 
 variable "ornl_bucket_name" {
-  type = string
+  type = string,
+  default = "my-fake-ornl-bucket"
 }
