@@ -17,6 +17,18 @@ resource "aws_iam_role_policy_attachment" "edpub_lambda_execution_role_attach" {
 }
 
 data "aws_iam_policy_document" "ornl_s3_access" {
+  # List items in the bucket
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.ornl_bucket_name}"
+    ]
+  }
+
+  # Upload objects to the bucket
   statement {
     effect = "Allow"
     actions = [
