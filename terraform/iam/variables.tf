@@ -65,7 +65,3 @@ variable "gesdisc_endpoint_arn"{
 variable "ornl_service_authorization_arn" {
   type = string
 }
-
-variable "ornl_bucket_name" {
-  type = string
-}
