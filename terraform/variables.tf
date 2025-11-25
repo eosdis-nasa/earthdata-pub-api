@@ -160,4 +160,5 @@ variable "use_cue_upload" {
 
 variable "ornl_bucket_name" {
   type = string
+  default = "del-ornl"
 }
