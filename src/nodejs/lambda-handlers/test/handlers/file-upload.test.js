@@ -233,10 +233,10 @@ describe('file-upload', () => {
       operation: 'completeUpload',
       file_size_bytes: 104857601,
       upload_id: 'upload_id',
-       parts: [
-      { PartNumber: 1, ETag: 'abcdef123456' },
-      { PartNumber: 2, ETag: 'fedcba654321' }
-    ],
+      parts: [
+        { PartNumber: 1, ETag: 'abcdef123456' },
+        { PartNumber: 2, ETag: 'fedcba654321' }
+      ],
       context: { user_id: 'user_id' }
     };
     const response = await fileUpload.handler(payload);
