@@ -9,7 +9,7 @@ const findAll = ({ sort, order, per_page, page }) => sql.select({
   ...(page ? { offset: page } : {})
 });
 
-const findById = () => `${findAll()} WHERE action.id = {{id}}`;
+const findById = () => `${findAll({})} WHERE action.id = {{id}}`;
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
