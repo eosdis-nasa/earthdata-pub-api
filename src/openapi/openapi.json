@@ -12798,7 +12798,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UploadMultipartStart"
+                "$ref": "#/components/schemas/GetPartUrl"
               }
             }
           }
@@ -12820,6 +12820,13 @@
               "Access-Control-Allow-Headers": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPartUrlResponse"
                 }
               }
             }
