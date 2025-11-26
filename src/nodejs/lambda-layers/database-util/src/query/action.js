@@ -1,6 +1,6 @@
 const sql = require('./sql-builder.js');
 
-const findAll = ({ sort, order, per_page, page }) => sql.select({
+const findAll = ({ sort, order, per_page, page }= {}) => sql.select({
   fields: ['action.*'],
   from: { base: 'action' },
   ...(sort ? { sort } : {}),

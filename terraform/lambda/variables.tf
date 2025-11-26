@@ -209,3 +209,7 @@ variable "multipart_upload_limit_bytes" {
 variable "use_cue_upload" {
   type = string
 }
+
+variable "ornl_bucket_name" {
+  type = string
+}

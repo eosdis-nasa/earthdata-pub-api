@@ -28,7 +28,7 @@ const refs = {
   }
 }
 
-const findAll = ({ sort, order, per_page, page }) => sql.select({
+const findAll = ({ sort, order, per_page, page } = {}) => sql.select({
   fields: ['workflow.*', 'steps'],
   from: { 
     base: 'workflow', 
