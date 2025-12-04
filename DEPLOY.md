@@ -17,7 +17,7 @@ cd terraform
 Create a `.tfvars` file to set the required variables or set appropriate environment
 variables in your OS, you can see the list of required values in `variables.tf`.
 The Terraform configuration doesn't create your backend database, you will need
-to create a Postgres 10+ compatible RDS instance, this allows for flexibility
+to create a Postgres 17+ compatible RDS instance, this allows for flexibility
 between test and production environments.
 
 ## Initialize

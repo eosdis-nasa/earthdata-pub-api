@@ -28,7 +28,7 @@ const refs = {
   }
 }
 
-const findAll = ({ sort, order, per_page, page }) => sql.select({
+const findAll = ({ sort, order, per_page, page, where }) => sql.select({
   fields: ['workflow.*', 'steps'],
   from: { 
     base: 'workflow', 
@@ -71,6 +71,7 @@ const findAll = ({ sort, order, per_page, page }) => sql.select({
       on: { left: 'step_json.workflow_id', right: 'workflow.id' }
     }]
   },
+  ...(where ? { where: {filters: [{cmd: where}]} }: {}),
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
@@ -111,7 +112,7 @@ const createStep = (params) => sql.insert({
   }
 })
 
-const findById = () => `${findAll()} WHERE workflow.id = {{id}}`;
+const findById = () => findAll({where: 'workflow.id = {{id}}'});
 
 const clearSteps = () => `DELETE FROM step_edge WHERE step_edge.workflow_id = {{id}}`;
 
