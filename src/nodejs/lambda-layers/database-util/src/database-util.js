@@ -9,7 +9,8 @@ const config = {
   host: process.env.PG_HOST,
   database: process.env.PG_DB,
   password: process.env.PG_PASS,
-  port: process.env.PG_PORT
+  port: process.env.PG_PORT,
+  ...(process.env.AWS_EXECUTION_ENV && { ssl: { rejectUnauthorized: false } })
 };
 
 const pool = new Pool(config);

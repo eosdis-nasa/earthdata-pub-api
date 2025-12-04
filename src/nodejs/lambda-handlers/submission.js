@@ -2,7 +2,7 @@
  * Lambda that exposes Submission API to AWS API Gateway. This lambda
  * is used for most direct interactions with a Submission including the
  * following operations:
- * initialize, submit, review, lock, unlock, status
+ * initialize, submit, review, status
  * @module Submission
  */
 
@@ -254,24 +254,6 @@ async function reviewMethod(event, user) {
     return status;
   }
   return { error: 'Not Authorized' };
-}
-
-async function lockMethod(event, user) {
-  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  // submission.lock = user.id;
-  // const response = await dbDriver.putItem('submission', submission);
-  // constructMessage(submission, 'lock');
-  // return response;
-  console.info('Not Implemented', event, user);
-}
-
-async function unlockMethod(event, user) {
-  // const [[submission]] = await dbDriver.getItems('submission', body.submission_id);
-  // submission.lock = false;
-  // const response = await dbDriver.putItem('submission', submission);
-  // constructMessage(submission, 'unlock');
-  // return response;
-  console.info('Not Implemented', event, user);
 }
 
 async function withdrawMethod(event, user) {
@@ -711,8 +693,6 @@ const operations = {
   review: reviewMethod,
   esdisReview: esdisReviewMethod,
   resume: resumeMethod,
-  lock: lockMethod,
-  unlock: unlockMethod,
   withdraw: withdrawMethod,
   restore: restoreMethod,
   changeStep: changeStepMethod,

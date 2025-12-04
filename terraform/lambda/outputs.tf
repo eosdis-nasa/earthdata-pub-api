@@ -30,14 +30,6 @@ output "model_lambda_arn" {
   value = aws_lambda_function.model.invoke_arn
 }
 
-output "module_lambda_arn" {
-  value = aws_lambda_function.module.invoke_arn
-}
-
-output "subscribe_lambda_arn" {
-  value = aws_lambda_function.subscribe.invoke_arn
-}
-
 output "service_authorizer_lambda_arn" {
   value = aws_lambda_function.service_authorizer.invoke_arn
 }
@@ -48,10 +40,6 @@ output "submission_lambda_arn" {
 
 output "user_lambda_arn" {
   value = aws_lambda_function.user.invoke_arn
-}
-
-output "register_lambda_arn" {
-  value = aws_lambda_function.register.invoke_arn
 }
 
 output "notification_consumer_lambda_arn" {
@@ -72,10 +60,6 @@ output "workflow_lambda_arn" {
 
 output "file_upload_lambda_arn" {
   value = aws_lambda_function.file_upload.invoke_arn
-}
-
-output "mfa_auth_lambda_arn" {
-  value = aws_lambda_function.mfa_auth.invoke_arn
 }
 
 output "oidc_authorizer_lambda_arn" {

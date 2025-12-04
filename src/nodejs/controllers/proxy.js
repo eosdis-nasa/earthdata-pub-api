@@ -20,12 +20,10 @@ module.exports.actionFindAll = function actionFindAll(req, res, next) {
     resource: 'action',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -53,12 +51,10 @@ module.exports.daacFindAll = function daacFindAll(req, res, next) {
     resource: 'daac',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -256,12 +252,10 @@ module.exports.questionFindAll = function questionFindAll(req, res, next) {
     resource: 'question',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -361,12 +355,10 @@ module.exports.serviceFindAll = function serviceFindAll(req, res, next) {
     resource: 'service',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -534,12 +526,10 @@ module.exports.workflowFindAll = function workflowFindAll(req, res, next) {
     resource: 'workflow',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -676,21 +666,7 @@ module.exports.getSubscriptions = function getSubscriptions(req, res, next) {
   setTimeout(() => res.send(body), latency);
 };
 
-module.exports.subscribe = function subscribe(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = params.payload.value;
-  Object.assign(lambdaEvent, { context: { user_id: req.user_id } });
-  handlers.subscribe(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.actionInvoke = function actionInvoke(req, res, next) {
-  const body = { message: 'Not implemented' };
-  setTimeout(() => res.send(body), latency);
-};
-
-module.exports.actionRegister = function actionRegister(req, res, next) {
   const body = { message: 'Not implemented' };
   setTimeout(() => res.send(body), latency);
 };
@@ -848,32 +824,6 @@ module.exports.submissionOperationResume = function submissionOperationResume(re
   });
 };
 
-module.exports.submissionOperationLock = function submissionOperationLock(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: 'lock',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.submission(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.submissionOperationUnlock = function submissionOperationUnlock(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: 'unlock',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.submission(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.submissionOperationWithdraw = function submissionOperationWithdraw(req, res, next) {
   const { params } = req.swagger;
   const { payload } = params;
@@ -991,35 +941,6 @@ module.exports.submissionOperationAssignDaacs = function submissionOperationAssi
   });
 };
 
-module.exports.searchMetrics = function searchMetrics(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    operation: 'search',
-    filter: {
-      ...(params.start && { start: params.start.value }),
-      ...(params.end && { end: params.end.value }),
-      ...(params.event_type && { event_type: params.event_type.value }),
-      ...(params.count && { count: params.count.value })
-    },
-    context: { user_id: req.user_id }
-  };
-  handlers.metrics(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.putMetric = function putMetric(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    operation: 'put',
-    data: params.payload.value,
-    context: { user_id: req.user_id }
-  };
-  handlers.metrics(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.getPublicationMetrics = function getPublicationMetrics(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1043,16 +964,6 @@ module.exports.metricsGetDaacs = function metricsGetDaacs(req, res, next) {
   });
 };
 
-module.exports.metricsListReports = function metricsListReports(req, res, next) {
-  const body = ["2021-06-20", "2021-06-21", "2021-06-22"];
-  setTimeout(() => res.send(body), latency);
-};
-
-module.exports.metricsGetReport = function putMetric(req, res, next) {
-  const file = `${__dirname}/static/2021-06-20.json`
-  setTimeout(() => res.sendFile(file), latency);
-};
-
 module.exports.getModel = function getModel(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1063,47 +974,6 @@ module.exports.getModel = function getModel(req, res, next) {
     setTimeout(() => res.send(body), latency);
   });
 };
-
-module.exports.moduleList = function moduleList(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    operation: "list",
-    context: { user_id: req.user_id }
-  }
-  handlers.module(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-}
-
-module.exports.moduleInterface = function moduleInterface(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    operation: "interface",
-    module: params.module.value,
-    context: { user_id: req.user_id }
-  }
-  const file = `${__dirname}/static/module-ui.html`
-  setTimeout(() => res.sendFile(file), latency);
-}
-
-module.exports.moduleRequest = function moduleRequest(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    operation: "request",
-    module: params.module.value,
-    payload: params.payload.value,
-    context: { user_id: req.user_id }
-  }
-  const { payload } = lambdaEvent;
-  if (payload.operation == "test") {
-    const body = { message: 'Success' };
-    setTimeout(() => res.send(body), latency);
-  }
-  else {
-    const body = { error: 'Error' };
-    setTimeout(() => res.send(body), latency);
-  }
-}
 
 module.exports.getToken = function getToken(req, res, next) {
   const { params } = req.swagger;
@@ -1132,43 +1002,6 @@ module.exports.refreshToken = function refreshToken(req, res, next) {
 module.exports.getVersion = function getVersion(req, res, next) {
   const lambdaEvent = {};
   handlers.version(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.pageFindById = function pageFindById(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'page',
-    operation: 'findById',
-    params: { page_key: params.page_key.value }
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.pageFindAll = function pageFindAll(req, res, next) {
-  const lambdaEvent = {
-    resource: 'page',
-    operation: 'findAll'
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.pagePut = function pagePut(req, res, next) {
-  const { params } = req.swagger;
-  const lambdaEvent = {
-    resource: 'page',
-    operation: 'update',
-    params: {
-      payload: params.payload.value,
-    },
-    context: { user_id: req.user_id }
-  };
-  handlers.data(lambdaEvent).then((body) => {
     setTimeout(() => res.send(body), latency);
   });
 };
@@ -1280,6 +1113,20 @@ module.exports.listFiles = function listFiles(req, res, next) {
   });
 };
 
+module.exports.createTempUploadFile = function createTempUploadFile(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'createTempUploadFile',
+    submission_id: payload.value.submissionId,
+    file_id: payload.value.fileId,
+    context: { user_id: req.user_id }
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.listStepFiles = function listStepFiles(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1377,32 +1224,6 @@ module.exports.getFormsAppSubpath = function getFormsAppSubpath(req, res, next) 
   });
 };
 
-module.exports.onboardDaac = function onboardDaac(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: 'onboardDaac',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.offboardDaac = function offboardDaac(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    operation: 'offboardDaac',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.data(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
 module.exports.createStep = function createStep(req, res, next){
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1436,12 +1257,10 @@ module.exports.stepFindAll = function stepFindAll(req, res, next) {
     resource: 'step',
     operation: 'stepFindAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };
@@ -1524,18 +1343,6 @@ module.exports.deleteStepReviewApproval = function deleteStepReviewApproval(req,
   });
 };
 
-module.exports.associateMfa = function associateMfa(req, res, next) {
-  res.send({
-    message: 'Local placeholder for associate MFA function.'
-  });
-}
-
-module.exports.verifyMfa = function verifyMfa(req, res, next) {
-  res.send({
-    message: 'Local placeholder for verify MFA function.'
-  });
-}
-
 module.exports.editSection = function editSection(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
@@ -1568,12 +1375,10 @@ module.exports.sectionFindAll = function sectionFindAll(req, res, next) {
     resource: 'section',
     operation: 'findAll',
     params: {
-      query: {
-        sort: params.sort.value,
-        order: params.order.value,
-        per_page: params.per_page.value,
-        page: params.page.value
-      }
+      sort: params.sort.value,
+      order: params.order.value,
+      per_page: params.per_page.value,
+      page: params.page.value
     },
     context: { user_id: req.user_id }
   };

@@ -36,23 +36,19 @@ install_lambda invoke
 install_lambda metrics
 install_lambda metrics-consumer
 install_lambda model
-install_lambda module
 install_lambda notification
 install_lambda notification-consumer
 install_lambda rds-backup
 install_lambda step-cleanup
-install_lambda register
 install_lambda remap-statics
 install_lambda service-authorizer
 install_lambda submission
-install_lambda subscribe
 install_lambda user
 install_lambda version
 install_lambda workflow-consumer
 install_lambda questions
 install_lambda workflow
 install_lambda file-upload
-install_lambda mfa-auth
 install_lambda oidc-authorizer
 install_lambda disable-user-account
 #Add more lambda functions here <--
