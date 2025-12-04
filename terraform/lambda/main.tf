@@ -61,6 +61,7 @@ resource "aws_lambda_function" "action_consumer" {
       PG_PASS        = var.db_password
       PG_PORT        = var.db_port
       ACTIONS_BUCKET = var.edpub_actions_s3_bucket
+      ORNL_BUCKET    = var.ornl_bucket_name
       MEDITOR_USER   = var.meditor_service_username
       MEDITOR_PASS   = var.meditor_service_password
       ROOT_URL       = var.client_root_url
