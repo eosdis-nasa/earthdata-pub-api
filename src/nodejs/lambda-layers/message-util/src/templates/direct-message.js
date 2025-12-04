@@ -9,7 +9,7 @@ const getDMTemplate = (params, envUrl) => {
   const text = `Hello ${params.user.name},\n\nYou have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}\n\nAttachments:\n${
     params.eventMessage.attachments && params.eventMessage.attachments.length > 0
       ? params.eventMessage.attachments.map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`).join('\n') : 'None'
-   }\n\nView and track all of your Earthdata Pub requests in the Earthdata Pub Dashboard: ${envUrl}/dashboard\n`;
+  }\n\nView and track all of your Earthdata Pub requests in the Earthdata Pub Dashboard: ${envUrl}/dashboard\n`;
 
   // Decode message & convert newlines to <br> for html email formatting
   const message = decodeURI(params.eventMessage.conversation_last_message).replace(/(?:\r\n|\r|\n)/g, '<br>');

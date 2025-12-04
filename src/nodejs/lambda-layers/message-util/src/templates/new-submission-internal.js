@@ -1,5 +1,5 @@
 const getNewSubmissionInternalTemplate = (params, envUrl) => {
-  const newSubmissionInternalText = `Hello ${params.user.name},\n\nA request has been submitted to Earthdata Pub. The request has received the following name:\n\n${params.eventMessage.submission_name}\n\nView and track all of your Earthdata Pub requests in the Earthdata Pub Dashboard: ${envUrl}/dashboard\n`; 
+  const newSubmissionInternalText = `Hello ${params.user.name},\n\nA request has been submitted to Earthdata Pub. The request has received the following name:\n\n${params.eventMessage.submission_name}\n\nView and track all of your Earthdata Pub requests in the Earthdata Pub Dashboard: ${envUrl}/dashboard\n`;
   const newSubmissionInternalHTML = `
     <html>
     <body>
