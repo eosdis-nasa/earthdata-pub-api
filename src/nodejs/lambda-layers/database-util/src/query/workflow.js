@@ -1,37 +1,82 @@
 const sql = require('./sql-builder.js');
 
-const findAll = () => `
-  SELECT
-    workflow.*, steps
-  FROM workflow
-  LEFT JOIN (
-    SELECT
-    step_edge_details.workflow_id,
-      JSONB_OBJECT_AGG( step.step_name,
-        JSONB_STRIP_NULLS(JSONB_BUILD_OBJECT(
-          'step_id', step.step_id,
-          'type', step.type,
-          'action_id', step.action_id,
-          'form_id', step.form_id,
-          'service_id', step.service_id,
-          'step_status_label', step.step_status_label,
-          'next_step_name', step_edge_details.next_step_name,
-          'prev_step_name', step_edge_details.prev_step_name,
-          'step_message', step_edge_details.step_message,
-          'prev_step', step.data
-      ))) steps
-    FROM step
-    NATURAL LEFT JOIN (
-      SELECT  *
-      FROM step_edge
-      NATURAL FULL OUTER JOIN (
-        SELECT workflow_id, next_step_name step_name, step_name prev_step_name
-        FROM step_edge
-      ) back_edge
-    ) step_edge_details
-    group by step_edge_details.workflow_id
-  ) step_json ON step_json.workflow_id = workflow.id
-`;
+const refs = {
+  step_edge_details: {
+    type: 'natural_left_join',
+    src: sql.select({
+      fields: ['*'],
+      from: { 
+        base: 'step_edge', 
+        joins: [{
+          type: 'natural_full_outer_join', 
+          src: sql.select({
+            fields: ['workflow_id', 'next_step_name AS step_name', 'step_name AS prev_step_name'],
+            from: { 
+              base: 'step_edge'
+            },
+            alias: 'back_edge'
+          })
+        }]
+      },
+      alias: 'step_edge_details'
+    })
+  },
+
+  step_json : {
+    type: 'left_join',
+    
+  }
+}
+
+const findAll = ({ sort, order, per_page, page, where }) => sql.select({
+  fields: ['workflow.*', 'steps'],
+  from: { 
+    base: 'workflow', 
+    joins: [{
+      type: 'left_join', 
+      src: sql.select({
+        fields: [
+          'step_edge_details.workflow_id',
+          {
+            type: 'json_obj_agg',
+            keys: [
+              'step.step_name',
+              {
+                type: 'json_obj',
+                keys: [
+                  ['step_id', 'step.step_id'],
+                  ['type', 'step.type'],
+                  ['action_id', 'step.action_id'],
+                  ['form_id', 'step.form_id'],
+                  ['service_id', 'step.service_id'],
+                  ['step_status_label', 'step.step_status_label'],
+                  ['next_step_name', 'step_edge_details.next_step_name'],
+                  ['prev_step_name', 'step_edge_details.prev_step_name'],
+                  ['step_message', 'step_edge_details.step_message'],
+                  ['prev_step', 'step.data'],
+                ],
+                strip: true
+              }
+            ],
+            alias: 'steps'
+          }
+        ],
+        from: {
+          base: 'step',
+          joins: [refs.step_edge_details]
+        },
+        group: 'step_edge_details.workflow_id',
+        alias: 'step_json'
+      }),
+      on: { left: 'step_json.workflow_id', right: 'workflow.id' }
+    }]
+  },
+  ...(where ? { where: {filters: [{cmd: where}]} }: {}),
+  ...(sort ? { sort } : {}),
+  ...(order ? { order } : {}),
+  ...(per_page ? { limit: per_page } : {}),
+  ...(page ? { offset: page } : {})
+});
 
 const initialize = () =>`
   INSERT INTO workflow (short_name, version, long_name, description)
@@ -67,7 +112,7 @@ const createStep = (params) => sql.insert({
   }
 })
 
-const findById = () => `${findAll()} WHERE workflow.id = {{id}}`;
+const findById = () => findAll({where: 'workflow.id = {{id}}'});
 
 const clearSteps = () => `DELETE FROM step_edge WHERE step_edge.workflow_id = {{id}}`;
 

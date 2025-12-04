@@ -940,6 +940,24 @@ WHERE submission_id={{submissionId}}
 AND daac_id=ANY(ARRAY[${params.daacs.map(id => `'${id}'`).join(',')}]::UUID[])
 `
 
+const getTempUploadFiles = () => `
+  SELECT *
+  FROM temp_upload_file
+  WHERE submission_id = {{submissionId}} and lastmodified >= NOW() - INTERVAL '10 minutes'
+`;
+
+const deleteTempUploadFilesByIds = (params) => `
+  DELETE FROM temp_upload_file
+  WHERE file_id = ANY(ARRAY[${params.fileIds.map(id => `'${id}'`).join(', ')}]::UUID[])
+`;
+
+const createTempUploadFile = () => `
+INSERT INTO temp_upload_file(file_id, submission_id, file_name, category, size, status)
+Values({{file_id}}, {{submission_id}}, {{file_name}}, {{category}}, {{size}}, {{status}})
+ON CONFLICT DO NOTHING
+RETURNING *
+`
+
 module.exports.findAll = findAll;
 module.exports.findShortById = findShortById;
 module.exports.findById = findById;
@@ -990,3 +1008,6 @@ module.exports.stepCleanup = stepCleanup;
 module.exports.checkCode = checkCode;
 module.exports.createCode = createCode;
 module.exports.deleteCodes = deleteCodes;
+module.exports.getTempUploadFiles = getTempUploadFiles;
+module.exports.createTempUploadFile = createTempUploadFile;
+module.exports.deleteTempUploadFilesByIds = deleteTempUploadFilesByIds;

@@ -9,7 +9,8 @@ jest.mock('@aws-sdk/client-s3', () => {
         Contents: [{
           Key: '/fake/path/documentation/FakeS3Key.txt',
           LastModified: 'fake_last_modified_string',
-          Size: 1234
+          Size: 1234,
+          ChecksumAlgorithm: 'SHA256'
         }]
       };
     }
@@ -32,6 +33,8 @@ db.group = jest.fn();
 db.group.findById = jest.fn();
 db.upload = jest.fn();
 db.upload.findUploadStepById = jest.fn();
+db.submission.getTempUploadFiles = jest.fn();
+db.submission.deleteTempUploadFilesByIds = jest.fn().mockResolvedValue({});
 
 describe('file-upload', () => {
   beforeEach(() => {
@@ -139,19 +142,33 @@ describe('file-upload', () => {
       submission_id: '5c3d1baa-a19e-4681-9b2d-216c08762dfb',
       context: { user_id: 'user_id' }
     };
+    db.submission.getTempUploadFiles.mockResolvedValueOnce([{
+      file_id: 'fakeId1',
+      file_name: 'tempFile.txt',
+      lastmodified: '2024-01-01T00:00:00.000Z',
+      size: 987
+    }]);
     db.daac.getIds.mockReturnValueOnce([{ id: 'daac_id' }]);
     db.submission.findById.mockReturnValueOnce({
       daac_id: 'daac_id',
       contributor_ids: ['contributor_id']
     });
     const response = await fileUpload.handler(payload);
-    expect(response).toEqual([{
-      category: 'documentation',
-      file_name: 'FakeS3Key.txt',
-      key: '/fake/path/documentation/FakeS3Key.txt',
-      lastModified: 'fake_last_modified_string',
-      size: 1234
-    }]);
+    expect(response).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        category: 'documentation',
+        file_name: 'FakeS3Key.txt',
+        key: '/fake/path/documentation/FakeS3Key.txt',
+        lastModified: 'fake_last_modified_string',
+        size: 1234
+      }),
+      expect.objectContaining({
+        file_id: 'fakeId1',
+        file_name: 'tempFile.txt',
+        lastModified: '2024-01-01T00:00:00.000Z',
+        size: 987
+      })
+    ]));
   });
   it('should list step files', async () => {
     const payload = {
