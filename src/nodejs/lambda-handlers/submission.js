@@ -435,7 +435,7 @@ async function mapMetadataMethod(event, user) {
 
 async function createStepReviewApprovalMethod(event, user) {
   const {
-    submissionId, stepName, userIds, daacId
+    submissionId, stepName, userIds
   } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
   if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
@@ -449,12 +449,7 @@ async function createStepReviewApprovalMethod(event, user) {
       submitted_by: user.id
     });
 
-    let bccEmailRecipients = [];
     await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
-    if (daacId) {
-      const managerList = await db.user.getManagerIds({ daac_id: daacId });
-      bccEmailRecipients = managerList.map((u) => u.email);
-    }
     const eventMessage = {
       event_type: 'review_required',
       formId: formData?.length > 0 ? formData[0].form_id : '',
@@ -463,7 +458,6 @@ async function createStepReviewApprovalMethod(event, user) {
       submission_id: submissionId,
       step_name: stepName,
       submitted_by_name: user.name,
-      ...(bccEmailRecipients.length > 0 && { bcc_recipients: bccEmailRecipients }),
       // Have to use string here because SNS doesn't support boolean type
       emailPayloadProvided: 'true'
     };
