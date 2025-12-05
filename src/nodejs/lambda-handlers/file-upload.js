@@ -283,7 +283,7 @@ async function updateUploadFiles(fileId) {
     respData = await cuePostQuery({
       endpoint: '/v2/files/list',
       payload: {
-        file_id: fileId,
+        file_ids: [fileId],
         apiKey: cueAPIToken
       }
     });
