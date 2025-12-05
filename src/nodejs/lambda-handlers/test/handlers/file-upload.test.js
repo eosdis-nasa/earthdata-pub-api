@@ -63,12 +63,17 @@ describe('file-upload', () => {
         file_id: 'file_id',
         upload_id: 'upload_id'
       })));
-    } return (new Response(JSON.stringify({ error: 'URL not mocked in test.' })));
+    } if (url === 'https://fake-cue-url.com/v2/upload/multipart/get-part-url') {
+      return new Response(JSON.stringify({
+        presigned_url: 'https://s3-bucket.s3.amazonaws.com/fake-part-upload'
+      }));
+    }
+    return (new Response(JSON.stringify({ error: 'URL not mocked in test.' })));
   });
 
   const expectUploadResponse = expect.objectContaining({
     file_id: expect.any(String),
-    presigned_url: expect.any(String),
+    upload_id: expect.any(String),
     collection_path: expect.any(String)
   });
 
@@ -223,40 +228,30 @@ describe('file-upload', () => {
     const response = await fileUpload.handler(payload);
     expect(response).toEqual('https://fake_s3_.s3.us-west-2.amazonaws.com/file.txt');
   });
-  it('should complete single file CUE upload', async () => {
-    const payload = {
-      operation: 'completeUpload',
-      file_size_bytes: 1234,
-      upload_id: 'upload_id',
-      etags: [{ PartNumber: 1, Etag: 'etag' }],
-      context: { user_id: 'user_id' }
-    };
-    const response = await fileUpload.handler(payload);
-    expect(response).toEqual(expectCompleteResponse);
-  });
   it('should complete multipart CUE upload', async () => {
     const payload = {
       operation: 'completeUpload',
       file_size_bytes: 104857601,
       upload_id: 'upload_id',
-      etags: [{ PartNumber: 1, Etag: 'etag' }, { PartNumber: 2, Etag: 'etag_2' }],
+      parts: [
+        { PartNumber: 1, ETag: 'abcdef123456' },
+        { PartNumber: 2, ETag: 'fedcba654321' }
+      ],
       context: { user_id: 'user_id' }
     };
     const response = await fileUpload.handler(payload);
     expect(response).toEqual(expectCompleteResponse);
   });
-  it('should start multipart upload', async () => {
+  it('should start getPartUrl', async () => {
     const payload = {
-      operation: 'startMultipartUpload',
-      file_size_bytes: 104857601,
-      upload_id: 'upload_id',
-      etags: [{ PartNumber: 1, Etag: 'etag' }, { PartNumber: 2, Etag: 'etag_2' }],
-      context: { user_id: 'user_id' }
+      operation: 'getPartUrl',
+      file_id: 'fakeId1',
+      context: { user_id: 'user_id' },
+      part_number: 1
     };
     const response = await fileUpload.handler(payload);
     expect(response).toEqual(expect.objectContaining({
-      file_id: expect.any(String),
-      upload_id: expect.any(String)
+      presigned_url: expect.any(String)
     }));
   });
   it('should return CUE JSON parsing error', async () => {
