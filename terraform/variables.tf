@@ -157,3 +157,7 @@ variable "use_cue_upload" {
   type = string
   default = "true"
 }
+
+variable "ornl_bucket_name" {
+  type = string
+}
