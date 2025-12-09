@@ -1101,6 +1101,19 @@ module.exports.startMultipartUpload = function startMultipartUpload(req, res, ne
   });
 };
 
+module.exports.getPartUrl = function getPartUrl(req, res, next) {
+  const { params } = req.swagger;
+  const { payload } = params;
+  const lambdaEvent = {
+    operation: 'getPartUrl',
+    context: { user_id: req.user_id },
+    ...payload.value
+  };
+  handlers.fileUpload(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.listFiles = function listFiles(req, res, next) {
   const { params } = req.swagger;
   const lambdaEvent = {
