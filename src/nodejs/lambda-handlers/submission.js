@@ -162,7 +162,9 @@ async function metadataMethod(event, user) {
 }
 
 async function saveMethod(event) {
-  const { form_id: formId, daac_id: daacId, data } = event;
+  const {
+    form_id: formId, daac_id: daacId, daac_name: daacName, data
+  } = event;
   const { id } = event;
   const dataProduct = data.data_product_name_value || data.dar_form_project_name_info;
   const dataProducer = (data.data_producer_info_name
@@ -171,9 +173,12 @@ async function saveMethod(event) {
   await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
   await db.submission.updateMetadata({ id, metadata: JSON.stringify(await mapEDPubToUmmc(data)) });
   const status = await db.submission.getState({ id });
-  if (daacId && daacId !== status.daac_id) {
-    await db.submission.updateDaac({ id, daac_id: daacId });
-    status.daac_id = daacId;
+  if (daacId) {
+    if (daacId !== status.daac_id) {
+      await db.submission.updateDaac({ id, daac_id: daacId });
+      status.daac_id = daacId;
+    }
+    status.daac_name = daacName;
   }
   return status;
 }
@@ -199,6 +204,7 @@ async function submitMethod(event, user) {
     workflow_id: status.workflow_id,
     form_id: formId,
     user_id: user.id,
+    daac_name: status.daac_name,
     ...(emailRecipients.length > 0 && { additional_recipients: emailRecipients }),
     step_name: status.step.name
   };

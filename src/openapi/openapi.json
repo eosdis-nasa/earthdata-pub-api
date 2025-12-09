@@ -4594,7 +4594,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('daac_name'))\"daac_name\":\"$body.get('daac_name')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9921,7 +9921,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('daac_name'))\"daac_name\":\"$body.get('daac_name')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {

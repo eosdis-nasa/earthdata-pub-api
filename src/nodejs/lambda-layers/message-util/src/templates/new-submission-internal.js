@@ -15,7 +15,7 @@ const getNewSubmissionInternalTemplate = (params, envUrl) => {
             </tr>
             <tr>
                 <td colspan="2" style="padding:20px;">
-                    <h1>Hello ${params.user.name},</h1><br>
+                    <h1>Hello ${params.eventMessage.daac_name || params.user.name},</h1><br>
                     <br>
                     <p>A request has been submitted to Earthdata Pub. The request has received the following name:</p>
                     <p><a style="text-align: left;" href="${envUrl}/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">

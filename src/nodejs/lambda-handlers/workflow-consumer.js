@@ -20,11 +20,15 @@ const {
 
 async function actionMethod(status) {
   let emailRecipients = [];
-
   if (!status.step.action_id) {
     const form = await db.submission.findById({ id: status.id, user_id: status.user_id });
-    const emailPoc = form?.form_data?.dar_form_data_submission_poc_email;
-    emailRecipients = emailPoc ? [emailPoc] : [];
+    const pocEmail = form?.form_data?.dar_form_data_accession_poc_email;
+    const pocName = form?.form_data?.dar_form_data_accession_poc_name;
+    if (pocEmail && pocName) {
+      emailRecipients = [{ email: pocEmail, name: pocName }];
+    } else {
+      emailRecipients = [];
+    }
   }
 
   const eventMessage = {

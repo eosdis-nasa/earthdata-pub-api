@@ -34,9 +34,11 @@ const getDMTemplate = (params, envUrl) => {
              <tr>
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
-                 <p>You have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.</p>
+                 <p>You have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.</p><br>
+                 <p>Request Name: <p><a style="text-align: left;" href="${envUrl}/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">${params.eventMessage.submission_name}</a><br></p>
                  <h2>Message:</h2>
                  <p style="white-space: pre-wrap;">${message}</p><br><br>
+                 <p>To respond to this message, please go to your <a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Getting Started">ED Pub conversations page</a>.</p>
                  ${attachmentsHtml}
                  <br><br>
                  <p>View and track all of your Earthdata Pub requests in the <a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Getting Started">Earthdata Pub Dashboard</a>.</p>

@@ -17,18 +17,17 @@ const getAssignedDaacCodeTemplate = (params, envUrl) => {
             <tr>
                 <td colspan="2" style="padding:20px;">
                     <h1>Hello ${user.name},</h1><br>
-                    <br/>
-                    <p>Your Data Submission Request for ${eventMessage.submission_name} has been approved for publication at the following DAAC(s).</p>
+                    <p>Your Data Accession Request for "${eventMessage.submission_name}" has been approved for publication at the following DAAC(s).</p>
                     <br/>
                     ${eventMessage.assigned_daacs.map((element) => `<p>${element.daac_name}</p>`).join('\n')}
                     <br/>
                     <p>If you have been assigned to more than one DAAC, the DAACs will contact you to discuss which products go to which DAAC.</p>
                     <br/>
-                    <p>When the data products covered under this Accession Request are ready, you will need to submit a separate Data Publication Request for each product. You can do this via <a style="text-align: left;" href="${envUrl}/getting_started#Data Publication Request" aria-label="Getting Started">Earthdata Pub</a>. You will need to enter the access code(s) below each time you submit a Data Publication Request.</p>
+                    <p>When the data products covered under this Accession Request are ready, you will need to <a style="text-align: left;" href="${envUrl}/getting_started#Data Publication Request" aria-label="Getting Started">submit a separate Data Publication Request for each product. You can do this via Earthdata Pub</a>. You will need to enter the access code(s) below each time you submit a Data Publication Request.</p>
                     <br/>
                     ${eventMessage.assigned_daacs.map((element) => `<p>${element.daac_name}: ${element.code}</p>`).join('\n')}
                     <br/>
-                    <p>Anyone submitting a Data Publication Request will need both the DPR code and an Earthdata Pub account. If you would like to delegate this duty, please provide the code(s) to the person(s) submitting Data Publication Request(s) on your behalf and ensure that they request an <a style="text-align: left;" href="${envUrl}/getting_started#Create an Earthdata Pub Account" aria-label="Getting Started">Earthdata Pub account</a> as soon as possible. </p>
+                    <p>Anyone submitting a Data Publication Request will need both the DPR code and an Earthdata Pub account. If you would like to delegate this duty, please provide the code(s) to the person(s) submitting Data Publication Request(s) on your behalf and ensure that they <a style="text-align: left;" href="${envUrl}/getting_started#Create an Earthdata Pub Account" aria-label="Getting Started">request an Earthdata Pub account</a> as soon as possible.</p>
                     <br/>
                     <br/>
                     <p>View and track all of your Earthdata Pub requests in the <a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Getting Started">Earthdata Pub Dashboard</a>.</p>
