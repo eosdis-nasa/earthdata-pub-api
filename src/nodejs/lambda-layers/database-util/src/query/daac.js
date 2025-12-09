@@ -6,8 +6,8 @@ const order = () => 'ORDER BY short_name ASC';
 const findAll = ({ sort, order, per_page, page }) => sql.select({
   fields: ['daac.*'],
   from: { base: 'daac' },
-  ...(sort ? { sort } : {}),
-  ...(order ? { order } : {}),
+  ...(sort ? { sort } : { sort: 'short_name'}),
+  ...(order ? { order } : { order: 'ASC'}),
   ...(per_page ? { limit: per_page } : {}),
   ...(page ? { offset: page } : {})
 });
