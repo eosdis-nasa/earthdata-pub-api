@@ -82,7 +82,7 @@ const getEmailTemplate = async (eventMessage, message) => {
 
     const productNameValue = formData?.data_product_name_value;
     const projectNameInfo = formData?.dar_form_project_name_info;
-    if(eventMessage.daac_name) {
+    if (eventMessage.daac_name) {
       emailPayload.daac_name = eventMessage.daac_name;
     }
     if (productNameValue || projectNameInfo) {
