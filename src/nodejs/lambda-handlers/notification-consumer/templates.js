@@ -94,7 +94,9 @@ const getEmailTemplate = async (eventMessage, message) => {
       event_type: eventMessage.event_type,
       note_id: message.note_id,
       attachments: message.attachments,
-      conversation_id: eventMessage.data.conversation_id
+      conversation_id: eventMessage.data.conversation_id,
+      request_name: eventMessage.data.request_name,
+      request_id: eventMessage.data.request_id
     };
   }
 
