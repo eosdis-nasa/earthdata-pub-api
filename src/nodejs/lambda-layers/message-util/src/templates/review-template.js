@@ -25,7 +25,8 @@ const getReviewerAddedTemplate = (params, envUrl) => {
              </tr>
              <tr>
                <td colspan="2" style="padding:20px;">
-                 <h1>Hello ${params.user.name},</h1><br><br>
+                 <h1>Hello ${params.user.name},</h1><br>
+                 <p>You have been added as a reviewer to an Earthdata Pub <a aria-label="Visit Earthdata Pub Request Review Page" href="${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submission_id}">${formObj[params.eventMessage.formId]}</a>.</p><br>
                  <p>${params.eventMessage.submitted_by_name} has requested that you review a <a aria-label="Visit Earthdata Pub Request Review Page" href="${envUrl}/dashboard/forms/id/${params.eventMessage.formId}?requestId=${params.eventMessage.submission_id}">${formObj[params.eventMessage.formId]}</a> submitted via Earthdata Pub. <br>   
                  Specific review instructions (if any) are viewable in the comments section at the bottom of the ${formObj[params.eventMessage.formId]} page. Please note that any comments you leave in the form are viewable by NASA staff, DAAC User Working Group members, and the data producer who submitted the request.</p><br>
                  <br>
