@@ -54,6 +54,9 @@ async function sendEmailNotification({
     case 'action_request_no_id':
       userRole = [];
       break;
+    case 'daac_assignment':
+      userRole = [];
+      break;
     case 'direct_message':
       userRole = [
         roles.data_producer,
