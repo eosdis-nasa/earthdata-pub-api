@@ -32,7 +32,8 @@ async function replyMethod(params) {
       text: params.text,
       viewer_users: params.viewer_users,
       viewer_roles: params.viewer_roles,
-      attachments: params.attachments
+      attachments: params.attachments,
+      request_name: params.request_name
     },
     user_id: params.context.user_id
   };
