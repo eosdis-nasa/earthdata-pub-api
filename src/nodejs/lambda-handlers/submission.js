@@ -204,7 +204,7 @@ async function submitMethod(event, user) {
     workflow_id: status.workflow_id,
     form_id: formId,
     user_id: user.id,
-    ...(status.daac_name && { daac_name: status.daac_name }),
+    ...(status.daac_name && status.workflow_id === 'f223eec5-2c4d-4412-9c97-5df4117c9290' && { daac_name: status.daac_name }),
     ...(emailRecipients.length > 0 && { additional_recipients: emailRecipients }),
     step_name: status.step.name
   };
