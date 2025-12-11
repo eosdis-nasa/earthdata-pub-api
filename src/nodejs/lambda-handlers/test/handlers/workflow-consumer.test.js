@@ -7,6 +7,7 @@ db.submission = jest.fn();
 db.service = jest.fn();
 db.metrics = jest.fn();
 db.submission.rollback = jest.fn();
+db.submission.findById = jest.fn();
 db.submission.getState = jest.fn();
 db.submission.promoteStep = jest.fn();
 db.metrics.setAccessionReversion = jest.fn();

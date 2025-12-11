@@ -9,7 +9,7 @@ const getDMTemplate = (params, envUrl) => {
   const text = `Hello ${params.user.name},\n\nYou have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.\n\nMessage:\n${params.eventMessage.conversation_last_message}\n\nAttachments:\n${
     params.eventMessage.attachments && params.eventMessage.attachments.length > 0
       ? params.eventMessage.attachments.map((fileName) => `${envUrl}/dashboard/download?${params.eventMessage.note_id}/${fileName}`).join('\n') : 'None'
-  }`;
+  }\n\nView and track all of your Earthdata Pub requests in the Earthdata Pub Dashboard: ${envUrl}/dashboard\n`;
 
   // Decode message & convert newlines to <br> for html email formatting
   const message = decodeURI(params.eventMessage.conversation_last_message).replace(/(?:\r\n|\r|\n)/g, '<br>');
@@ -34,13 +34,15 @@ const getDMTemplate = (params, envUrl) => {
              <tr>
                <td colspan="2" style="padding:20px;">
                  <h1>Hello ${params.user.name},</h1><br><br>
-                 <p>You have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.</p>
+                 <p>You have received a direct message from ${params.eventMessage.user_name} on the Earthdata Pub Dashboard.</p><br>
+                 <h2>Request Name:</h2> 
+                 <p><a style="text-align: left;" href="${envUrl}/dashboard/requests/id/${params.eventMessage.request_id}" aria-label="View the request">${params.eventMessage.request_name}</a></p><br>
                  <h2>Message:</h2>
                  <p style="white-space: pre-wrap;">${message}</p><br><br>
+                 <p>To respond to this message, please go to your <a style="text-align: left;" href="${envUrl}/dashboard/conversations/id/${params.eventMessage.conversation_id}" aria-label="Getting Started">ED Pub conversations page</a>.</p>
                  ${attachmentsHtml}
                  <br><br>
-                 <h3>Dashboard:</h3>
-                 <p><a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Visit Earthdata Pub Dashboard">${envUrl}/dashboard</a></p>
+                 <p>View and track all of your Earthdata Pub requests in the <a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Getting Started">Earthdata Pub Dashboard</a>.</p>
                </td>
              </tr>
           </table>
