@@ -3,6 +3,8 @@ module.exports.model = (path) => ({
   type: 'object',
   properties: {
     text: { type: 'string' },
+    request_name: { type: 'string' },
+    request_id: { $ref: `#${path}UUID` },
     conversation_id: {
       description: 'UUID of Conversation if replying',
       $ref: `#${path}UUID`
