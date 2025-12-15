@@ -31,6 +31,8 @@ const getAssignedDaacCodeTemplate = (params, envUrl) => {
                     <br/>
                     <br/>
                     <p>View and track all of your Earthdata Pub requests in the <a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Getting Started">Earthdata Pub Dashboard</a>.</p>
+                    <br/>
+                    <p>The assigned DAAC(s) have received a copy of this notification.</p>
                 </td>
             </tr>
         </table>

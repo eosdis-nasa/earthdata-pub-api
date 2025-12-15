@@ -39,7 +39,7 @@ async function sendEmailNotification({
       userRole = [roles.data_producer];
       break;
     case 'form_submitted':
-      userRole = [roles.daac_staff, roles.daac_manager];
+      userRole = [];
       if (formId === '19025579-99ca-4344-8611-704dae626343') userRole.push(roles.daac_observer);
       break;
     case 'review_approved':
@@ -55,6 +55,9 @@ async function sendEmailNotification({
       userRole = [];
       break;
     case 'daac_assignment':
+      userRole = [];
+      break;
+    case 'review_request':
       userRole = [];
       break;
     case 'direct_message':
