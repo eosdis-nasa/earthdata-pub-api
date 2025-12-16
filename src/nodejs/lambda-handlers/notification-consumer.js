@@ -40,7 +40,6 @@ async function sendEmailNotification({
       break;
     case 'form_submitted':
       userRole = [];
-      if (formId === '19025579-99ca-4344-8611-704dae626343') userRole.push(roles.daac_observer);
       break;
     case 'review_approved':
       userRole = [roles.data_producer];
