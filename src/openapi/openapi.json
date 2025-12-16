@@ -4722,7 +4722,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"createStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end  #if($body.containsKey('daac_id'))\"daacId\":\"$body.get('daac_id')\", #end\"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"createStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11055,7 +11055,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"createStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end #if($body.containsKey('daac_id'))\"daacId\":\"$body.get('daac_id')\", #end\"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"createStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
