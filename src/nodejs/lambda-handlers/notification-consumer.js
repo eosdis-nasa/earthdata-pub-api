@@ -20,8 +20,7 @@ async function sendEmailNotification({
   note,
   emailPayload,
   usersList,
-  additionalContacts,
-  formId
+  additionalContacts
 }) {
   const roles = {
     data_producer: '804b335c-f191-4d26-9b98-1ec1cb62b97d',
