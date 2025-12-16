@@ -157,8 +157,7 @@ async function processRecord(record) {
           note,
           emailPayload,
           usersList: eventMessage.userIds,
-          additionalContacts: eventMessage.additional_recipients,
-          formId: eventMessage.form_id
+          additionalContacts: eventMessage.additional_recipients
         });
       }
     }
