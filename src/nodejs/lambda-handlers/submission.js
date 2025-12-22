@@ -268,7 +268,7 @@ async function withdrawMethod(event, user) {
 async function restoreMethod(event, user) {
   const { id } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
-  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.submission.restoreSubmission({ id });
   }
   return db.submission.findById({ id, user_id: user.id });
