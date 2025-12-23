@@ -3306,6 +3306,14 @@
             }
           },
           {
+            "name": "daac_name",
+            "in": "query",
+            "description": "The unique long name of the DAAC the submission has been assigned to.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "workflow_id",
             "in": "query",
             "description": "The unique id of the current workflow of the submission.",
@@ -3447,7 +3455,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Submission"
+                    "$ref": "#/components/schemas/SubmissionOperationFindAllResponse"
                   }
                 }
               }

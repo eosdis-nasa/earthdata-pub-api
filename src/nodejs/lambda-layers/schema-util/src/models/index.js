@@ -54,6 +54,7 @@ const SubmissionOperationApply = require('./submission-operation-apply.js');
 const SubmissionOperationChangeStep = require('./submission-operation-change-step.js');
 const SubmissionOperationCopySubmission = require('./submission-operation-copy-submission.js');
 const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js');
+const SubmissionOperationFindAllResponse = require('./submission-operation-find-all-result.js');
 const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
 const SubmissionOperationRemoveContributor = require('./submission-operation-remove-contributor.js');
 const SubmissionOperationReview = require('./submission-operation-review.js');
@@ -157,6 +158,7 @@ const models = {
   SubmissionOperationChangeStep,
   SubmissionOperationCopySubmission,
   SubmissionOperationCustomResponse,
+  SubmissionOperationFindAllResponse,
   SubmissionOperationMetadata,
   SubmissionOperationRemoveContributor,
   SubmissionOperationReview,

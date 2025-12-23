@@ -389,6 +389,7 @@ module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
       name: params.name.value,
       user_id: params.user_id.value,
       daac_id: params.daac_id.value,
+      daac_name: params.daac_name.value,
       workflow_id: params.workflow_id.value,
       workflow_name: params.workflow_name.value,
       step_name: params.step_name.value,
