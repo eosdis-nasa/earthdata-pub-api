@@ -199,7 +199,7 @@ async function reviewMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
   const { id, approve } = event;
   const userId = user.id;
-  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const status = await db.submission.getState({ id });
     const stepType = status.step.type;
     let eventType;
