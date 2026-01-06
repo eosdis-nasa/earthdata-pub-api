@@ -424,7 +424,7 @@ async function mapMetadataMethod(event, user) {
 async function createStepReviewApprovalMethod(event, user) {
   const { submissionId, stepName, userIds } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
-  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const {
       conversation_id: conversationId
     } = await db.submission.getConversationId({ id: submissionId });
