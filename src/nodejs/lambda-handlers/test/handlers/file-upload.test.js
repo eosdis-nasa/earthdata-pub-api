@@ -147,7 +147,7 @@ describe('file-upload', () => {
     db.note.readConversation.mockReturnValueOnce({
       id: 'conversation_id'
     });
-    
+
     const response = await fileUpload.handler(payload);
     expect(response).toEqual(expectUploadResponse);
   });
