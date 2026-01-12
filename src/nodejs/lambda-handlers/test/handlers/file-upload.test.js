@@ -35,6 +35,8 @@ db.upload = jest.fn();
 db.upload.findUploadStepById = jest.fn();
 db.submission.getTempUploadFiles = jest.fn();
 db.submission.deleteTempUploadFilesByIds = jest.fn().mockResolvedValue({});
+db.note = jest.fn();
+db.note.readConversation = jest.fn();
 
 describe('file-upload', () => {
   beforeEach(() => {
@@ -91,7 +93,8 @@ describe('file-upload', () => {
       submission_id: 'some_id',
       file_category: 'sample',
       context: { user_id: 'user_id' },
-      operation: 'getPostUrl'
+      operation: 'getUrl',
+      upload_type: 'form'
     };
     db.submission.findById.mockReturnValueOnce({
       daac_id: 'daac_id',
@@ -101,17 +104,18 @@ describe('file-upload', () => {
     const response = await fileUpload.handler(payload);
     expect(response).toEqual(expectUploadResponse);
   });
-  it('should generate an upload url with no submission id', async () => {
+  it('should generate an error when trying to create a form upload url with no submission id', async () => {
     const payload = {
       file_name: 'test.txt',
       file_type: 'text/plain',
       checksum_value: '1234567890',
       file_category: 'documentation',
       context: { user_id: 'user_id' },
-      operation: 'getPostUrl'
+      operation: 'getUrl',
+      upload_type: 'form'
     };
     const response = await fileUpload.handler(payload);
-    expect(response).toEqual(expectUploadResponse);
+    expect(response).toEqual({ error: 'Not Implemented' });
   });
   it('should generate a group upload url with no prefix', async () => {
     const payload = {
@@ -119,7 +123,8 @@ describe('file-upload', () => {
       file_type: 'text/plain',
       checksum_value: '1234567890',
       context: { user_id: 'user_id' },
-      operation: 'getGroupUploadUrl',
+      operation: 'getUrl',
+      upload_type: 'group',
       group_id: 'daac_id'
     };
     db.group.findById.mockReturnValueOnce({
@@ -136,8 +141,13 @@ describe('file-upload', () => {
       conversation_id: '342ba8f5-ea87-4ef4-abf0-8eb0f924115b',
       file_size_bytes: 1234,
       context: { user_id: 'user_id' },
-      operation: 'getAttachmentUploadUrl'
+      upload_type: 'attachment',
+      operation: 'getUrl'
     };
+    db.note.readConversation.mockReturnValueOnce({
+      id: 'conversation_id'
+    });
+    
     const response = await fileUpload.handler(payload);
     expect(response).toEqual(expectUploadResponse);
   });
@@ -259,10 +269,17 @@ describe('file-upload', () => {
       file_name: 'test.txt',
       file_type: 'text/plain',
       checksum_value: '1234567890',
+      submission_id: 'some_id',
       file_category: 'documentation',
       context: { user_id: 'user_id' },
-      operation: 'getPostUrl'
+      operation: 'getUrl',
+      upload_type: 'form'
     };
+    db.submission.findById.mockReturnValueOnce({
+      daac_id: 'daac_id',
+      contributor_ids: ['contributor_id']
+    });
+    db.daac.getIds.mockReturnValueOnce([{ id: 'daac_id' }]);
     jest.spyOn(global, 'fetch').mockImplementation(() => (new Response('<html>Non JSON response</html>')));
     const response = await fileUpload.handler(payload);
     expect(response).toEqual({ error: 'Error parsing CUE API response.' });
