@@ -144,14 +144,16 @@ async function getGroupUploadKeyMethod(event, user) {
   const groupIds = userInfo.user_groups.map((group) => group.id);
   const rootGroupId = '4daa6b22-f015-4ce2-8dac-8b3510004fca';
 
-  if (!(userInfo.user_privileges.includes('ADMIN') || groupIds.includes(rootGroupId))
-    && !(groupIds.includes(groupId) && userInfo.user_privileges.includes('GROUP_UPLOAD'))) {
-    return ({ error: 'Not Authorized' });
-  }
   const groupShortName = (await db.group.findById({ id: groupId })).short_name;
   if (!groupShortName) {
     return ({ error: 'Invalid Group' });
   }
+
+  if (!(userInfo.user_privileges.includes('ADMIN') || groupIds.includes(rootGroupId))
+    && !(groupIds.includes(groupId) && userInfo.user_privileges.includes('GROUP_UPLOAD'))) {
+    return ({ error: 'Not Authorized' });
+  }
+
   const key = prefix ? `group/${groupShortName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileName}` : `group/${groupShortName}/${fileName}`;
   return ({ key });
 }
