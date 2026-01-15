@@ -82,7 +82,9 @@ const getEmailTemplate = async (eventMessage, message) => {
 
     const productNameValue = formData?.data_product_name_value;
     const projectNameInfo = formData?.dar_form_project_name_info;
-
+    if (eventMessage.daac_name) {
+      emailPayload.daac_name = eventMessage.daac_name;
+    }
     if (productNameValue || projectNameInfo) {
       emailPayload.submission_name = productNameValue || projectNameInfo;
     } else { (emailPayload.submission_name = `Request Initialized by ${(await db.submission.getCreatorName({ id: eventMessage.submission_id })).name}`); }
@@ -91,7 +93,10 @@ const getEmailTemplate = async (eventMessage, message) => {
       conversation_last_message: message.text,
       event_type: eventMessage.event_type,
       note_id: message.note_id,
-      attachments: message.attachments
+      attachments: message.attachments,
+      conversation_id: eventMessage.data.conversation_id,
+      request_name: eventMessage.data.request_name,
+      request_id: eventMessage.data.request_id
     };
   }
 

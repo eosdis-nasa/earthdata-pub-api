@@ -451,7 +451,7 @@ WHERE edpuser.id = {{id}}
 RETURNING *`;
 
 const getManagerIds = (params) => sql.select({
-  fields: ['id'],
+  fields: ['id','email','name'],
   from: {
     base: 'edpuser',
     joins:[
@@ -468,7 +468,7 @@ const getManagerIds = (params) => sql.select({
 });
 
 const getRootGroupObserverIds = (params) => sql.select({
-  fields: ['id'],
+  fields: ['id', 'email', 'name'],
   from: {
     base: 'edpuser',
     joins:[
