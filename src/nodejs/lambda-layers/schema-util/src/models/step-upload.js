@@ -1,5 +1,5 @@
 module.exports.model = (path) => ({
-  description: 'Request body sent to upload',
+  description: 'Request body sent to generate a step upload key',
   type: 'object',
   allOf: [{ $ref: `#${path}Upload` }],
   properties: {

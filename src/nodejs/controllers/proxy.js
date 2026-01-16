@@ -1024,50 +1024,9 @@ module.exports.fileUpload = function fileUpload(req, res, next) {
   const { payload } = params;
   const lambdaEvent = {
     resource: 'upload',
-    operation: 'getPostUrl',
+    operation: 'getUrl',
     context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.fileUpload(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.groupFileUpload = function groupFileUpload(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    resource: 'upload',
-    operation: 'getGroupUploadUrl',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.fileUpload(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.attachmentFileUpload = function attachmentFileUpload(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    resource: 'upload',
-    operation: 'getAttachmentUploadUrl',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.fileUpload(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.uploadStepUrl = function uploadStepUrl(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    resource: 'upload',
-    operation: 'getUploadStepUrl',
-    context: { user_id: req.user_id },
+    upload_type: params.type.value,
     ...payload.value
   };
   handlers.fileUpload(lambdaEvent).then((body) => {
