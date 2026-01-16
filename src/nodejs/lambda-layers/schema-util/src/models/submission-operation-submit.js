@@ -14,6 +14,10 @@ module.exports.model = (path) => ({
       description: 'UUID of Form being saved or submitted',
       $ref: `#${path}UUID`
     },
+    daac_name: {
+      description: 'Name of DAAC to assign to Submission',
+      type: 'string'
+    },
     data: {
       description: 'A JSON formatted form data to save or submit, should not contain nested objects',
       type: 'object'
