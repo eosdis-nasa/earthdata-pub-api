@@ -422,7 +422,7 @@ const getAdminSubmissions = (params) => sql.select({
 });
 
 const findAll = ({
-  name, user_id, daac_id, workflow_id, workflow_name, step_name, step_type,
+  name, user_id, daac_id, daac_name, workflow_id, workflow_name, step_name, step_type,
   status, created_before, created_after, last_change_before, last_change_after, hidden, sort, order,
   per_page, page, contributor_ids
 }) => sql.select({

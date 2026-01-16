@@ -217,7 +217,7 @@ async function reviewMethod(event, user) {
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_REVIEW', 'REQUEST_REVIEW_MANAGER'];
   const { id, approve } = event;
   const userId = user.id;
-  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const status = await db.submission.getState({ id });
     const stepType = status.step.type;
     let eventType;
@@ -286,7 +286,7 @@ async function withdrawMethod(event, user) {
 async function restoreMethod(event, user) {
   const { id } = event;
   const approvedUserPrivileges = ['ADMIN', 'REQUEST_DAACREAD'];
-  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     return db.submission.restoreSubmission({ id });
   }
   return db.submission.findById({ id, user_id: user.id });
@@ -444,7 +444,7 @@ async function createStepReviewApprovalMethod(event, user) {
     submissionId, stepName, userIds
   } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
-  if (user.id?.includes('service-authorizer') || user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+  if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const {
       conversation_id: conversationId
     } = await db.submission.getConversationId({ id: submissionId });
