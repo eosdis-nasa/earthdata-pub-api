@@ -1,7 +1,7 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const {
-  S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand, GetObjectTaggingCommand
+  S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand
 } = require('@aws-sdk/client-s3');
 const path = require('path');
 
@@ -262,21 +262,10 @@ async function getChecksumTag(key, s3Client) {
   };
   try {
     const headCmd = new HeadObjectCommand(payload);
-    const tagCmd = new GetObjectTaggingCommand(payload);
 
-    const [headResp, tagResp] = await Promise.all([
-      s3Client.send(headCmd),
-      s3Client.send(tagCmd)
-    ]);
+    const headResp = await s3Client.send(headCmd);
 
-    const tagSet = Array.isArray(tagResp?.TagSet) ? tagResp.TagSet : [];
-
-    const fileIdTag = tagSet.find(
-      (tag) => tag.Key?.trim().toLowerCase() === 'fileid'
-    );
-
-    const fileId = fileIdTag?.Value || null;
-
+    const fileId = headResp?.Metadata?.fileid || null;
     return {
       headResp,
       fileId

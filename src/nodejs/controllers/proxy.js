@@ -1263,6 +1263,7 @@ module.exports.createStepReviewApproval = function createStepReviewApproval(req,
     stepName: payload.value.step_name,
     submissionId: payload.value.id,
     userIds: payload.value.user_list,
+    daacId: payload.value.daac_id,
     context: { user_id: req.user_id }
   };
 

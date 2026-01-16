@@ -1,5 +1,5 @@
 const getNewSubmissionInternalTemplate = (params, envUrl) => {
-  const newSubmissionInternalText = `Hello ${params.user.name},\n\nA request has been submitted to Earthdata Pub. The submission has received the following name:\n\n${params.eventMessage.submission_name}\n\nThank you for using Earthdata Pub.`;
+  const newSubmissionInternalText = `Hello ${params.user.name},\n\nA request has been submitted to Earthdata Pub. The request has received the following name:\n\n${params.eventMessage.submission_name}\n\nView and track all of your Earthdata Pub requests in the Earthdata Pub Dashboard: ${envUrl}/dashboard\n`;
   const newSubmissionInternalHTML = `
     <html>
     <body>
@@ -15,12 +15,13 @@ const getNewSubmissionInternalTemplate = (params, envUrl) => {
             </tr>
             <tr>
                 <td colspan="2" style="padding:20px;">
-                    <h1>Hello ${params.user.name},</h1><br>
+                    <h1>Hello ${params.eventMessage.daac_name || params.user.name},</h1><br>
                     <br>
-                    <p>A request has been submitted to Earthdata Pub. The submission has received the following name:</p>
+                    <p>A request has been submitted to Earthdata Pub. The request has received the following name:</p>
                     <p><a style="text-align: left;" href="${envUrl}/dashboard/requests/id/${params.eventMessage.submission_id}" aria-label="View the request">
                     ${params.eventMessage.submission_name}</a></p>
-                    <p>Thank you for using Earthdata Pub.</p>
+                    <br><br>
+                    <p>View and track all of your Earthdata Pub requests in the <a style="text-align: left;" href="${envUrl}/dashboard" aria-label="Getting Started">Earthdata Pub Dashboard</a>.</p>
                 </td>
             </tr>
         </table>
