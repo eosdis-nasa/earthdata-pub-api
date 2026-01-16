@@ -162,7 +162,9 @@ async function metadataMethod(event, user) {
 }
 
 async function saveMethod(event) {
-  const { form_id: formId, daac_id: daacId, data } = event;
+  const {
+    form_id: formId, daac_id: daacId, daac_name: daacName, data
+  } = event;
   const { id } = event;
   const dataProduct = data.data_product_name_value || data.dar_form_project_name_info;
   const dataProducer = (data.data_producer_info_name
@@ -171,9 +173,12 @@ async function saveMethod(event) {
   await db.submission.updateSubmissionData({ id, dataProduct, dataProducer });
   await db.submission.updateMetadata({ id, metadata: JSON.stringify(await mapEDPubToUmmc(data)) });
   const status = await db.submission.getState({ id });
-  if (daacId && daacId !== status.daac_id) {
-    await db.submission.updateDaac({ id, daac_id: daacId });
-    status.daac_id = daacId;
+  if (daacId) {
+    if (daacId !== status.daac_id) {
+      await db.submission.updateDaac({ id, daac_id: daacId });
+      status.daac_id = daacId;
+    }
+    status.daac_name = daacName;
   }
   return status;
 }
@@ -181,6 +186,17 @@ async function saveMethod(event) {
 async function submitMethod(event, user) {
   const { form_id: formId } = event;
   const status = await saveMethod(event, user);
+  let emailRecipients = [];
+  // DAR
+  if (status.workflow_id === '3335970e-8a9b-481b-85b7-dfaaa3f5dbd9') {
+    const staff = await db.user.getRootGroupObserverIds();
+    emailRecipients = staff;
+  }
+  // DPR
+  if (status.workflow_id === 'f223eec5-2c4d-4412-9c97-5df4117c9290') {
+    const managerList = await db.user.getManagerIds({ daac_id: status.daac_id });
+    emailRecipients = managerList;
+  }
   const eventMessage = {
     event_type: 'form_submitted',
     submission_id: status.id,
@@ -188,6 +204,8 @@ async function submitMethod(event, user) {
     workflow_id: status.workflow_id,
     form_id: formId,
     user_id: user.id,
+    ...(status.daac_name && status.workflow_id === 'f223eec5-2c4d-4412-9c97-5df4117c9290' && { daac_name: status.daac_name }),
+    ...(emailRecipients.length > 0 && { additional_recipients: emailRecipients }),
     step_name: status.step.name
   };
   if (status.step.step_message) eventMessage.step_message = status.step.step_message;
@@ -422,7 +440,9 @@ async function mapMetadataMethod(event, user) {
 }
 
 async function createStepReviewApprovalMethod(event, user) {
-  const { submissionId, stepName, userIds } = event;
+  const {
+    submissionId, stepName, userIds
+  } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
     const {
@@ -434,6 +454,7 @@ async function createStepReviewApprovalMethod(event, user) {
       user_ids: userIds,
       submitted_by: user.id
     });
+
     await addContributorsMethod({ id: submissionId, contributor_ids: userIds }, user);
     const eventMessage = {
       event_type: 'review_required',
@@ -497,7 +518,7 @@ async function assignDaacsMethod(event, user) {
   if (!submission.step_name.match(/daac_assignment(_final)?/g)) {
     return { error: 'Invalid workflow step. Unable to assign DAACs.' };
   }
-
+  const emailRecipients = [];
   // If the submission requires a daac review - assign the daac and move to the next step
   if (requiresReview) {
     // Double check that only one DAAC was chosen
@@ -542,15 +563,21 @@ async function assignDaacsMethod(event, user) {
         managerList.forEach((entry) => userIds.push(entry.id));
       }
     }
-
-    const pocRecipients = [];
-
     // Add the POC from the first form
-    if (submission.form_data.dar_form_data_submission_poc_email) {
-      pocRecipients.push({
-        name: submission.form_data.dar_form_data_submission_poc_name
-          ? submission.form_data.dar_form_data_submission_poc_name : '',
-        email: submission.form_data.dar_form_data_submission_poc_email
+    if (submission.form_data.dar_form_data_accession_poc_email) {
+      emailRecipients.push({
+        name: submission.form_data.dar_form_data_accession_poc_name
+          ? submission.form_data.dar_form_data_accession_poc_name : '',
+        email: submission.form_data.dar_form_data_accession_poc_email
+      });
+    }
+
+    // Add the PI from the first form
+    if (submission.form_data.dar_form_principal_investigator_email) {
+      emailRecipients.push({
+        name: submission.form_data.dar_form_principal_investigator_fullname
+          ? submission.form_data.dar_form_principal_investigator_fullname : '',
+        email: submission.form_data.dar_form_principal_investigator_email
       });
     }
 
@@ -562,7 +589,7 @@ async function assignDaacsMethod(event, user) {
       step_name: submission.step_name,
       assigned_daacs: submission.assigned_daacs,
       ...(userIds.length > 0 && { userIds }),
-      ...(pocRecipients.length > 0 && { additional_recipients: pocRecipients }),
+      ...(emailRecipients.length > 0 && { additional_recipients: emailRecipients }),
       emailPayloadProvided: 'true'
     };
 
@@ -577,7 +604,8 @@ async function assignDaacsMethod(event, user) {
     workflow_id: submission.workflow_id,
     user_id: user.id,
     data: submission.step_data.data,
-    step_name: submission.step_name
+    step_name: submission.step_name,
+    ...(emailRecipients.length > 0 && { additional_recipients: emailRecipients })
   };
   await msg.sendEvent(eventMessage);
 
