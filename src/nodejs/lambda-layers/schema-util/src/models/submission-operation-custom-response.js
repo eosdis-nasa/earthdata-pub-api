@@ -25,7 +25,6 @@ module.exports.model = (path) => ({
     status: { type: 'string' },
     created_at: { type: 'string' },
     last_change: { type: 'string' },
-    lock: { type: 'boolean' },
     contributor_ids: {
       type: 'array',
       items: { type: 'string' }

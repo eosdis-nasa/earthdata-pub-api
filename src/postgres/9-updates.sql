@@ -178,3 +178,36 @@ WHERE id = '4ecc885f-daf8-4bc6-a8cd-d30c2a54d740';
 UPDATE upload_step
 SET help_text = 'Please provide a cost model file. Files cannot include .exe or .dll extensions.'
 WHERE step_name = 'cost_model' AND upload_destination = 'DAR_Uploads' AND category_type = 'cost_model';
+
+-- EDPUB-1624: Remove unused db tables
+DROP TABLE IF EXISTS edpgroup_parent;
+
+DROP TABLE IF EXISTS edpgroup_permission_submission;
+
+DROP TABLE IF EXISTS edpgroup_subscription_action;
+
+DROP TABLE IF EXISTS edpgroup_subscription_daac;
+
+DROP TABLE IF EXISTS edpgroup_subscription_form;
+
+DROP TABLE IF EXISTS edpgroup_subscription_service;
+
+DROP TABLE IF EXISTS edpgroup_subscription_submission;
+
+DROP TABLE IF EXISTS edpgroup_subscription_workflow;
+
+DROP TABLE IF EXISTS edpuser_permission_submission;
+
+DROP TABLE IF EXISTS edpuser_subscription_action;
+
+DROP TABLE IF EXISTS edpuser_subscription_form;
+
+DROP TABLE IF EXISTS edpuser_subscription_service;
+
+DROP TABLE IF EXISTS edpuser_subscription_submission;
+
+DROP TABLE IF EXISTS edpuser_subscription_workflow;
+
+DROP TABLE IF EXISTS module;
+
+DROP TABLE IF EXISTS submission_lock;

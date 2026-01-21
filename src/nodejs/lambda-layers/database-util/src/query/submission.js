@@ -3,10 +3,10 @@ const sql = require('./sql-builder.js');
 const workflow = require('./workflow.js');
 
 const table = 'submission';
-// const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock'];
+// const allFields = ['id', 'name', 'user_id', 'daac_id', 'conversation_id', 'workflow_id', 'workflow_name', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change'];
 
-const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'code', 'assigned_daacs', 'step_data', 'step_status_label', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
-const customFields = ['id', 'name', 'data_producer_name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_status_label', 'step_name', 'status', 'created_at', 'last_change', 'lock', 'contributor_ids', 'copy', 'origin_id'];
+const allFields = ['id', 'name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'code', 'assigned_daacs', 'step_data', 'step_status_label', 'step_name', 'status', 'forms', 'action_data', 'form_data', 'metadata', 'created_at', 'last_change', 'contributor_ids', 'copy', 'origin_id'];
+const customFields = ['id', 'name', 'data_producer_name', 'initiator', 'workflow_id', 'hidden', 'conversation_id', 'workflow_name', 'daac_id', 'daac_name', 'step_data', 'step_status_label', 'step_name', 'status', 'created_at', 'last_change', 'contributor_ids', 'copy', 'origin_id'];
 
 const fieldMap = {
   id: 'submission.id',
@@ -30,7 +30,6 @@ const fieldMap = {
   metadata: 'submission_metadata.metadata',
   created_at: 'submission.created_at',
   last_change: 'submission_status.last_change',
-  lock: '(EXISTS(SELECT edpuser_id FROM submission_lock WHERE submission_lock.id = submission.id)) "lock"',
   contributor_ids: 'submission.contributor_ids',
   copy: '(EXISTS(SELECT edpuser_id FROM submission_copy WHERE submission_copy.id = submission.id)) "copy"',
   origin_id: 'submission_copy.origin_id',
