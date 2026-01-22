@@ -19,7 +19,6 @@ const FormUpdate = require('./form-update.js');
 const Group = require('./group.js');
 const GetPartUrl = require('./get-part-url.js');
 const GetPartUrlResponse = require('./get-part-url-response.js');
-const GroupDetails = require('./group-details.js');
 const Id = require('./id.js');
 const Note = require('./note.js');
 const NoteAddViewers = require('./note-add-viewers.js');
@@ -120,7 +119,6 @@ const models = {
   FormSections,
   FormUpdate,
   Group,
-  GroupDetails,
   GetPartUrl,
   GetPartUrlResponse,
   Id,
