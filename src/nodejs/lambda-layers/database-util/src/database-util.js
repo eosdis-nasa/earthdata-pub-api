@@ -9,7 +9,8 @@ const config = {
   database: process.env.PG_DB,
   password: process.env.PG_PASS,
   port: process.env.PG_PORT,
-  ...(process.env.AWS_EXECUTION_ENV && { ssl: { ca: readFileSync(process.env.NODE_EXTRA_CA_CERTS) } })
+  ...(process.env.AWS_EXECUTION_ENV
+    && { ssl: { ca: readFileSync(process.env.NODE_EXTRA_CA_CERTS) } })
 };
 
 const pool = new Pool(config);
