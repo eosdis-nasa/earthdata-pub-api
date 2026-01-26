@@ -1,5 +1,4 @@
-const fs = require('fs');
-
+const { readdirSync, readFileSync } = require('fs');
 const { Pool } = require('pg');
 
 const queryBuilder = require('./query/index.js');
@@ -10,7 +9,7 @@ const config = {
   database: process.env.PG_DB,
   password: process.env.PG_PASS,
   port: process.env.PG_PORT,
-  ...(process.env.AWS_EXECUTION_ENV && { ssl: { rejectUnauthorized: false } })
+  ...(process.env.AWS_EXECUTION_ENV && { ssl: { ca: readFileSync(process.env.NODE_EXTRA_CA_CERTS) } })
 };
 
 const pool = new Pool(config);
@@ -50,11 +49,11 @@ async function seed() {
   const client = await pool.connect().catch((e) => { Object.assign(response, { error: e }); });
   if (!response.error) {
     try {
-      const files = fs.readdirSync(`${__dirname}/db-setup`).map((filename) => `${__dirname}/db-setup/${filename}`);
+      const files = readdirSync(`${__dirname}/db-setup`).map((filename) => `${__dirname}/db-setup/${filename}`);
       await files.reduce(async (previous, file) => {
         await previous;
         console.info(`Executing ${file}:`);
-        const results = await client.query(fs.readFileSync(file).toString());
+        const results = await client.query(readFileSync(file).toString());
         if (Array.isArray(results)) {
           Object.entries(results.reduce((acc, result) => {
             acc[result.command] = 1 + acc[result.command] || 1;
