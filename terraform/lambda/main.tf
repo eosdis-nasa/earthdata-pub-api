@@ -1,4 +1,4 @@
-locals = {
+locals {
   db_env_vars = {
     PG_USER             = var.db_user
     PG_HOST             = var.db_host
