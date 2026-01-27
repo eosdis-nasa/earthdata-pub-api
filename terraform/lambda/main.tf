@@ -73,7 +73,7 @@ resource "aws_lambda_function" "action_consumer" {
       MEDITOR_PASS   = var.meditor_service_password
       ROOT_URL       = var.client_root_url
       SOURCE_EMAIL   = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -115,7 +115,7 @@ resource "aws_lambda_function" "data" {
       EVENT_SNS    = var.edpub_event_sns_arn
       METRICS_SNS  = var.edpub_metrics_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -151,7 +151,7 @@ resource "aws_lambda_function" "form" {
       REGION      = var.region
       EVENT_SNS   = var.edpub_event_sns_arn
       METRICS_SNS = var.edpub_metrics_sns_arn
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -186,7 +186,7 @@ resource "aws_lambda_function" "inbound_consumer" {
       REGION       = var.region
       EVENT_SNS    = var.edpub_event_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -228,7 +228,7 @@ resource "aws_lambda_function" "invoke" {
       EVENT_SNS    = var.edpub_event_sns_arn
       METRICS_SNS  = var.edpub_metrics_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -265,7 +265,7 @@ resource "aws_lambda_function" "metrics" {
       EVENT_SNS    = var.edpub_event_sns_arn
       METRICS_SNS  = var.edpub_metrics_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -302,7 +302,7 @@ resource "aws_lambda_function" "metrics_consumer" {
       EVENT_SNS    = var.edpub_event_sns_arn
       METRICS_SNS  = var.edpub_metrics_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -343,7 +343,7 @@ resource "aws_lambda_function" "model" {
       REGION       = var.region
       EVENT_SNS    = var.edpub_event_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -379,7 +379,7 @@ resource "aws_lambda_function" "notification" {
       REGION       = var.region
       EVENT_SNS    = var.edpub_event_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -420,7 +420,7 @@ resource "aws_lambda_function" "notification_consumer" {
       SOURCE_EMAIL     = var.ses_from_email
       ROOT_URL         = var.client_root_url
       DASHBOARD_BUCKET = var.edpub_dashboard_s3_bucket
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -530,7 +530,7 @@ resource "aws_lambda_function" "step_cleanup" {
   environment {
     variables = merge({
       REGION = var.region
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -577,7 +577,7 @@ resource "aws_lambda_function" "service_authorizer" {
       REGION       = var.region
       EVENT_SNS    = var.edpub_event_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -614,7 +614,7 @@ resource "aws_lambda_function" "submission" {
       EVENT_SNS    = var.edpub_event_sns_arn
       SOURCE_EMAIL = var.ses_from_email
       ROOT_URL     = var.client_root_url
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -652,7 +652,7 @@ resource "aws_lambda_function" "user" {
       EVENT_SNS    = var.edpub_event_sns_arn
       EMAIL_SNS    = var.edpub_email_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -688,7 +688,7 @@ resource "aws_lambda_function" "workflow_consumer" {
       REGION       = var.region
       EVENT_SNS    = var.edpub_event_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -729,7 +729,7 @@ resource "aws_lambda_function" "workflow" {
       REGION       = var.region
       EVENT_SNS    = var.edpub_event_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -772,7 +772,7 @@ resource "aws_lambda_function" "auth" {
       AUTH_CLIENT_ID     = var.auth_client_id
       AUTH_CLIENT_SECRET = var.auth_client_secret
       AUTH_CLIENT_PATH   = var.auth_client_path
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -887,7 +887,7 @@ resource "aws_lambda_function" "questions" {
       EVENT_SNS    = var.edpub_event_sns_arn
       METRICS_SNS  = var.edpub_metrics_sns_arn
       SOURCE_EMAIL = var.ses_from_email
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -923,7 +923,7 @@ resource "aws_lambda_function" "file_upload" {
       CUE_COLLECTION               = var.cue_collection
       MULTIPART_UPLOAD_LIMIT_BYTES = var.multipart_upload_limit_bytes
       USE_CUE_UPLOAD               = var.use_cue_upload
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -956,7 +956,7 @@ resource "aws_lambda_function" "disable_user_account" {
     variables = merge({
       REGION       = var.region
       USER_POOL_ID = var.cognito_user_pool_id
-    }, locals.db_env_vars)
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
