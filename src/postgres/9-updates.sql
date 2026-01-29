@@ -157,3 +157,57 @@ CREATE TABLE IF NOT EXISTS temp_upload_file (
   status VARCHAR(50) DEFAULT 'Scanning',
   FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
+
+-- EDPUB-1729: Remove wording restricting uploads to < 5GB 
+UPDATE question
+SET help = 'Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content. If more than 5 sample data files are necessary to represent the data product, please contact the DAAC for assistance. Files cannot include .exe or .dll extensions.'
+WHERE id = '53a0faa7-f7d4-4ce9-a9dc-a13cef44e1f3';
+
+UPDATE question
+SET help = 'For example, these documents may include descriptions of the variables, filename conventions, processing steps, and/or data quality. If you have more than 5 documents, please contact the DAAC for assistance. Files cannot include .exe or .dll extensions.'
+WHERE id = 'ad568b2f-89fe-4afd-a0bf-9e5832b71ce9';
+
+UPDATE question
+SET help = 'Providing sample data files that are representative of the range of data within this data product will help the DAAC understand and provide feedback on the data format, structure, and content. If more than 5 sample data files are necessary to represent the data product, please contact the DAAC for assistance. Files cannot include .exe or .dll extensions.'
+WHERE id = '9f3d4e12-7b29-45ce-bf21-6c018b9d6f54';
+
+UPDATE question
+SET help = 'If there are other documents you would like us to consider, please upload those here as well. For example, these documents may include descriptions of your data, data quality, processing methods, or instruments. Files cannot include .exe or .dll extensions.'
+WHERE id = '4ecc885f-daf8-4bc6-a8cd-d30c2a54d740';
+
+UPDATE upload_step
+SET help_text = 'Please provide a cost model file. Files cannot include .exe or .dll extensions.'
+WHERE step_name = 'cost_model' AND upload_destination = 'DAR_Uploads' AND category_type = 'cost_model';
+
+-- EDPUB-1624: Remove unused db tables
+DROP TABLE IF EXISTS edpgroup_parent;
+
+DROP TABLE IF EXISTS edpgroup_permission_submission;
+
+DROP TABLE IF EXISTS edpgroup_subscription_action;
+
+DROP TABLE IF EXISTS edpgroup_subscription_daac;
+
+DROP TABLE IF EXISTS edpgroup_subscription_form;
+
+DROP TABLE IF EXISTS edpgroup_subscription_service;
+
+DROP TABLE IF EXISTS edpgroup_subscription_submission;
+
+DROP TABLE IF EXISTS edpgroup_subscription_workflow;
+
+DROP TABLE IF EXISTS edpuser_permission_submission;
+
+DROP TABLE IF EXISTS edpuser_subscription_action;
+
+DROP TABLE IF EXISTS edpuser_subscription_form;
+
+DROP TABLE IF EXISTS edpuser_subscription_service;
+
+DROP TABLE IF EXISTS edpuser_subscription_submission;
+
+DROP TABLE IF EXISTS edpuser_subscription_workflow;
+
+DROP TABLE IF EXISTS module;
+
+DROP TABLE IF EXISTS submission_lock;

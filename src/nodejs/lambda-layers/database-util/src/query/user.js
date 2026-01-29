@@ -3,7 +3,7 @@ const role = require('./role.js');
 const group = require('./group.js');
 
 const table = 'edpuser';
-const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'permissions', 'user_privileges', 'subscriptions', 'detailed'];
+const allFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'user_privileges', 'detailed'];
 const fieldMap = {
   id: 'edpuser.id',
   name: 'edpuser.name',
@@ -29,43 +29,6 @@ const fieldMap = {
     src: 'role_agg.user_privileges',
     fallback: '\'[]\'::JSONB',
     alias: 'user_privileges'
-  },
-  permissions: {
-    type: 'coalesce',
-    src: 'permissions',
-    fallback: '\'[]\'::JSONB',
-    alias: 'permissions'
-  },
-  subscriptions: {
-    type: 'json_obj',
-    keys: [
-      ['action', {
-        type: 'coalesce',
-        src: 'subscriptions_action',
-        fallback: '\'[]\'::JSONB'
-      }],
-      ['form', {
-        type: 'coalesce',
-        src: 'subscriptions_form',
-        fallback: '\'[]\'::JSONB'
-      }],
-      ['service', {
-        type: 'coalesce',
-        src: 'subscriptions_service',
-        fallback: '\'[]\'::JSONB'
-      }],
-      ['submission', {
-        type: 'coalesce',
-        src: 'subscriptions_submission',
-        fallback: '\'[]\'::JSONB'
-      }],
-      ['workflow', {
-        type: 'coalesce',
-        src: 'subscriptions_workflow',
-        fallback: '\'[]\'::JSONB'
-      }]
-    ],
-    alias: 'subscriptions'
   },
   detailed: 'edpuser.detailed'
 };
@@ -100,114 +63,6 @@ const refs = {
     type: 'left_join',
     src: 'edpuser_edprole',
     on: { left: fieldMap.id, right: 'edpuser_edprole.edpuser_id' }
-  },
-  user_permission_submission: {
-    type: 'left_join',
-    src: {
-      type: 'select',
-      fields: [
-        'edpuser_permission_submission.edpuser_id',
-        {
-          type: 'json_agg',
-          src: 'edpuser_permission_submission.submission_id',
-          alias: 'permissions'
-        }
-      ],
-      from: { base: 'edpuser_permission_submission' },
-      group: 'edpuser_permission_submission.edpuser_id',
-      alias: 'permission_agg'
-    },
-    on: { left: 'permission_agg.edpuser_id', right: fieldMap.id }
-  },
-  user_subscription_action: {
-    type: 'left_join',
-    src: {
-      type: 'select',
-      fields: [
-        'edpuser_id',
-        {
-          type: 'json_agg',
-          src: 'edpuser_subscription_action.action_id',
-          alias: 'subscriptions_action'
-        }
-      ],
-      from: { base: 'edpuser_subscription_action' },
-      group: 'edpuser_id',
-      alias: 'subscription_action_agg'
-    },
-    on: { left: 'subscription_action_agg.edpuser_id', right: fieldMap.id }
-  },
-  user_subscription_form: {
-    type: 'left_join',
-    src: {
-      type: 'select',
-      fields: [
-        'edpuser_id',
-        {
-          type: 'json_agg',
-          src: 'edpuser_subscription_form.form_id',
-          alias: 'subscriptions_form'
-        }
-      ],
-      from: { base: 'edpuser_subscription_form' },
-      group: 'edpuser_id',
-      alias: 'subscription_form_agg'
-    },
-    on: { left: 'subscription_form_agg.edpuser_id', right: fieldMap.id }
-  },
-  user_subscription_service: {
-    type: 'left_join',
-    src: {
-      type: 'select',
-      fields: [
-        'edpuser_id',
-        {
-          type: 'json_agg',
-          src: 'edpuser_subscription_service.service_id',
-          alias: 'subscriptions_service'
-        }
-      ],
-      from: { base: 'edpuser_subscription_service' },
-      group: 'edpuser_id',
-      alias: 'subscription_service_agg'
-    },
-    on: { left: 'subscription_service_agg.edpuser_id', right: fieldMap.id }
-  },
-  user_subscription_submission: {
-    type: 'left_join',
-    src: {
-      type: 'select',
-      fields: [
-        'edpuser_id',
-        {
-          type: 'json_agg',
-          src: 'edpuser_subscription_submission.submission_id',
-          alias: 'subscriptions_submission'
-        }
-      ],
-      from: { base: 'edpuser_subscription_submission' },
-      group: 'edpuser_id',
-      alias: 'subscription_submission_agg'
-    },
-    on: { left: 'subscription_submission_agg.edpuser_id', right: fieldMap.id }
-  },
-  user_subscription_workflow: {
-    type: 'left_join',
-    src: {
-      type: 'select',
-      fields: [
-        'edpuser_id',
-        {
-          type: 'json_agg',
-          src: 'edpuser_subscription_workflow.workflow_id',
-          alias: 'subscriptions_workflow'
-        }
-      ],
-      from: { base: 'edpuser_subscription_workflow' },
-      group: 'edpuser_id',
-      alias: 'subscription_workflow_agg'
-    },
-    on: { left: 'subscription_workflow_agg.edpuser_id', right: fieldMap.id }
   }
 };
 
@@ -217,13 +72,7 @@ const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
     base: table,
     joins: [
       refs.group,
-      refs.role,
-      refs.user_permission_submission,
-      refs.user_subscription_action,
-      refs.user_subscription_form,
-      refs.user_subscription_service,
-      refs.user_subscription_submission,
-      refs.user_subscription_workflow
+      refs.role
     ]
   },
   ...(id || name || email ? {
@@ -301,13 +150,7 @@ const findById = () => sql.select({
     base: table,
     joins: [
       refs.group,
-      refs.role,
-      refs.user_permission_submission,
-      refs.user_subscription_action,
-      refs.user_subscription_form,
-      refs.user_subscription_service,
-      refs.user_subscription_submission,
-      refs.user_subscription_workflow
+      refs.role
     ]
   },
   where: {
@@ -451,7 +294,7 @@ WHERE edpuser.id = {{id}}
 RETURNING *`;
 
 const getManagerIds = (params) => sql.select({
-  fields: ['id'],
+  fields: ['id','email','name'],
   from: {
     base: 'edpuser',
     joins:[
@@ -468,7 +311,7 @@ const getManagerIds = (params) => sql.select({
 });
 
 const getRootGroupObserverIds = (params) => sql.select({
-  fields: ['id'],
+  fields: ['id', 'email', 'name'],
   from: {
     base: 'edpuser',
     joins:[

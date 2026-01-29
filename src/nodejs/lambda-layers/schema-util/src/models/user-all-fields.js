@@ -15,15 +15,10 @@ module.exports.model = (path) => ({
       type: 'array',
       items: { $ref: `#${path}Role` }
     },
-    permissions: {
-      type: 'array',
-      items: { type: 'string' }
-    },
     user_privileges: {
       type: 'array',
       items: { type: 'string' }
     },
-    subscriptions: { type: 'object' },
     detailed: { type: 'boolean' }
   }
 });

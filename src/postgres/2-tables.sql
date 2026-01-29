@@ -10,8 +10,6 @@ DROP TABLE IF EXISTS input CASCADE;
 
 DROP TABLE IF EXISTS action CASCADE;
 
-DROP TABLE IF EXISTS module CASCADE;
-
 DROP TABLE IF EXISTS service CASCADE;
 
 DROP TABLE IF EXISTS service_secret CASCADE;
@@ -19,8 +17,6 @@ DROP TABLE IF EXISTS service_secret CASCADE;
 DROP TABLE IF EXISTS edpuser CASCADE;
 
 DROP TABLE IF EXISTS edpgroup CASCADE;
-
-DROP TABLE IF EXISTS edpgroup_parent CASCADE;
 
 DROP TABLE IF EXISTS edprole CASCADE;
 
@@ -60,37 +56,9 @@ DROP TABLE IF EXISTS submission_form_data CASCADE;
 
 DROP TABLE IF EXISTS submission_form_data_pool CASCADE;
 
-DROP TABLE IF EXISTS submission_lock CASCADE;
-
 DROP TABLE IF EXISTS submission_copy CASCADE;
 
 DROP TABLE IF EXISTS submission_metrics CASCADE;
-
-DROP TABLE IF EXISTS edpuser_permission_submission CASCADE;
-
-DROP TABLE IF EXISTS edpgroup_permission_submission CASCADE;
-
-DROP TABLE IF EXISTS edpuser_subscription_action CASCADE;
-
-DROP TABLE IF EXISTS edpuser_subscription_form CASCADE;
-
-DROP TABLE IF EXISTS edpuser_subscription_service CASCADE;
-
-DROP TABLE IF EXISTS edpuser_subscription_submission CASCADE;
-
-DROP TABLE IF EXISTS edpuser_subscription_workflow CASCADE;
-
-DROP TABLE IF EXISTS edpgroup_subscription_action CASCADE;
-
-DROP TABLE IF EXISTS edpgroup_subscription_daac CASCADE;
-
-DROP TABLE IF EXISTS edpgroup_subscription_form CASCADE;
-
-DROP TABLE IF EXISTS edpgroup_subscription_service CASCADE;
-
-DROP TABLE IF EXISTS edpgroup_subscription_submission CASCADE;
-
-DROP TABLE IF EXISTS edpgroup_subscription_workflow CASCADE;
 
 DROP TABLE IF EXISTS edprole_privilege CASCADE;
 
@@ -187,18 +155,6 @@ CREATE TABLE IF NOT EXISTS action (
   UNIQUE (short_name, version)
 );
 
-CREATE TABLE IF NOT EXISTS module (
-  id UUID DEFAULT UUID_GENERATE_V4(),
-  short_name VARCHAR NOT NULL,
-  long_name VARCHAR NOT NULL,
-  description VARCHAR NOT NULL,
-  arn VARCHAR NOT NULL,
-  has_interface BOOLEAN NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  PRIMARY KEY (id),
-  UNIQUE (short_name)
-);
-
 CREATE TABLE IF NOT EXISTS service (
   id UUID DEFAULT UUID_GENERATE_V4(),
   short_name VARCHAR NOT NULL,
@@ -234,14 +190,6 @@ CREATE TABLE IF NOT EXISTS edpgroup (
   PRIMARY KEY (id),
   UNIQUE (short_name),
   UNIQUE (long_name)
-);
-
-CREATE TABLE IF NOT EXISTS edpgroup_parent (
-  id UUID NOT NULL,
-  parent_id UUID NOT NULL,
-  PRIMARY KEY (id, parent_id),
-  FOREIGN KEY (id) REFERENCES edpgroup (id),
-  FOREIGN KEY (parent_id) REFERENCES edpgroup (id)
 );
 
 CREATE TABLE IF NOT EXISTS edprole (
@@ -414,16 +362,6 @@ CREATE TABLE IF NOT EXISTS submission_form_data (
   FOREIGN KEY (data) REFERENCES submission_form_data_pool (id)
 );
 
-CREATE TABLE IF NOT EXISTS submission_lock (
-  id UUID NOT NULL,
-  edpuser_id UUID,
-  context VARCHAR DEFAULT 'none',
-  created_at TIMESTAMP DEFAULT NOW(),
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES submission (id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id)
-);
-
 CREATE TABLE IF NOT EXISTS submission_copy (
   id UUID NOT NULL,
   edpuser_id UUID NOT NULL,
@@ -466,21 +404,6 @@ CREATE TABLE IF NOT EXISTS service_secret (
   FOREIGN KEY (submission_id) REFERENCES submission (id)
 );
 
-CREATE TABLE IF NOT EXISTS edpuser_permission_submission (
-  edpuser_id UUID NOT NULL,
-  submission_id UUID NOT NULL,
-  PRIMARY KEY (edpuser_id, submission_id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
-  FOREIGN KEY (submission_id) REFERENCES submission (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpgroup_permission_submission (
-  edpgroup_id UUID NOT NULL,
-  submission_id UUID NOT NULL,
-  PRIMARY KEY (edpgroup_id, submission_id),
-  FOREIGN KEY (submission_id) REFERENCES submission (id)
-);
-
 CREATE TABLE IF NOT EXISTS privilege (
   privilege VARCHAR NOT NULL,
   PRIMARY KEY (privilege)
@@ -492,92 +415,6 @@ CREATE TABLE IF NOT EXISTS edprole_privilege (
   PRIMARY KEY (edprole_id, privilege),
   FOREIGN KEY (edprole_id) REFERENCES edprole (id),
   FOREIGN KEY (privilege) REFERENCES privilege (privilege)
-);
-
-CREATE TABLE IF NOT EXISTS edpuser_subscription_action (
-  edpuser_id UUID NOT NULL,
-  action_id UUID NOT NULL,
-  PRIMARY KEY (edpuser_id, action_id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
-  FOREIGN KEY (action_id) REFERENCES action (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpuser_subscription_form (
-  edpuser_id UUID NOT NULL,
-  form_id UUID NOT NULL,
-  PRIMARY KEY (edpuser_id, form_id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
-  FOREIGN KEY (form_id) REFERENCES form (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpuser_subscription_service (
-  edpuser_id UUID NOT NULL,
-  service_id UUID NOT NULL,
-  PRIMARY KEY (edpuser_id, service_id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
-  FOREIGN KEY (service_id) REFERENCES service (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpuser_subscription_submission (
-  edpuser_id UUID NOT NULL,
-  submission_id UUID NOT NULL,
-  PRIMARY KEY (edpuser_id, submission_id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser (id),
-  FOREIGN KEY (submission_id) REFERENCES submission (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpuser_subscription_workflow (
-  edpuser_id UUID NOT NULL,
-  workflow_id UUID NOT NULL,
-  PRIMARY KEY (edpuser_id, workflow_id),
-  FOREIGN KEY (edpuser_id) REFERENCES edpuser(id),
-  FOREIGN KEY (workflow_id) REFERENCES workflow (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpgroup_subscription_action (
-  edpgroup_id UUID NOT NULL,
-  action_id UUID NOT NULL,
-  PRIMARY KEY (edpgroup_id, action_id),
-  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
-  FOREIGN KEY (action_id) REFERENCES action (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpgroup_subscription_daac (
-  edpgroup_id UUID NOT NULL,
-  daac_id UUID NOT NULL,
-  PRIMARY KEY (edpgroup_id, daac_id),
-  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
-  FOREIGN KEY (daac_id) REFERENCES daac (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpgroup_subscription_form (
-  edpgroup_id UUID NOT NULL,
-  form_id UUID NOT NULL,
-  PRIMARY KEY (edpgroup_id, form_id),
-  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
-  FOREIGN KEY (form_id) REFERENCES form (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpgroup_subscription_service (
-  edpgroup_id UUID NOT NULL,
-  service_id UUID NOT NULL,
-  PRIMARY KEY (edpgroup_id, service_id),
-  FOREIGN KEY (edpgroup_id) REFERENCES edpgroup (id),
-  FOREIGN KEY (service_id) REFERENCES service (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpgroup_subscription_submission (
-  edpgroup_id UUID NOT NULL,
-  submission_id UUID NOT NULL,
-  PRIMARY KEY (edpgroup_id, submission_id),
-  FOREIGN KEY (submission_id) REFERENCES submission (id)
-);
-
-CREATE TABLE IF NOT EXISTS edpgroup_subscription_workflow (
-  edpgroup_id UUID NOT NULL,
-  workflow_id UUID NOT NULL,
-  PRIMARY KEY (edpgroup_id, workflow_id),
-  FOREIGN KEY (workflow_id) REFERENCES workflow (id)
 );
 
 CREATE TABLE IF NOT EXISTS metrics (

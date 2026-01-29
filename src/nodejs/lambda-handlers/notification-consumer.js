@@ -20,8 +20,7 @@ async function sendEmailNotification({
   note,
   emailPayload,
   usersList,
-  additionalContacts,
-  formId
+  additionalContacts
 }) {
   const roles = {
     data_producer: '804b335c-f191-4d26-9b98-1ec1cb62b97d',
@@ -39,8 +38,7 @@ async function sendEmailNotification({
       userRole = [roles.data_producer];
       break;
     case 'form_submitted':
-      userRole = [roles.daac_staff, roles.daac_manager];
-      if (formId === '19025579-99ca-4344-8611-704dae626343') userRole.push(roles.daac_observer);
+      userRole = [];
       break;
     case 'review_approved':
       userRole = [roles.data_producer];
@@ -52,7 +50,13 @@ async function sendEmailNotification({
       userRole = [roles.data_producer];
       break;
     case 'action_request_no_id':
-      userRole = [roles.daac_staff, roles.daac_manager, roles.daac_observer];
+      userRole = [];
+      break;
+    case 'daac_assignment':
+      userRole = [];
+      break;
+    case 'review_request':
+      userRole = [];
       break;
     case 'direct_message':
       userRole = [
@@ -153,8 +157,7 @@ async function processRecord(record) {
           note,
           emailPayload,
           usersList: eventMessage.userIds,
-          additionalContacts: eventMessage.additional_recipients,
-          formId: eventMessage.form_id
+          additionalContacts: eventMessage.additional_recipients
         });
       }
     }

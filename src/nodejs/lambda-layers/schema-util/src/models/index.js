@@ -19,7 +19,6 @@ const FormUpdate = require('./form-update.js');
 const Group = require('./group.js');
 const GetPartUrl = require('./get-part-url.js');
 const GetPartUrlResponse = require('./get-part-url-response.js');
-const GroupDetails = require('./group-details.js');
 const Id = require('./id.js');
 const Note = require('./note.js');
 const NoteAddViewers = require('./note-add-viewers.js');
@@ -54,6 +53,7 @@ const SubmissionOperationApply = require('./submission-operation-apply.js');
 const SubmissionOperationChangeStep = require('./submission-operation-change-step.js');
 const SubmissionOperationCopySubmission = require('./submission-operation-copy-submission.js');
 const SubmissionOperationCustomResponse = require('./submission-operation-custom-response.js');
+const SubmissionOperationFindAllResponse = require('./submission-operation-find-all-result.js');
 const SubmissionOperationMetadata = require('./submission-operation-metadata.js');
 const SubmissionOperationRemoveContributor = require('./submission-operation-remove-contributor.js');
 const SubmissionOperationReview = require('./submission-operation-review.js');
@@ -119,7 +119,6 @@ const models = {
   FormSections,
   FormUpdate,
   Group,
-  GroupDetails,
   GetPartUrl,
   GetPartUrlResponse,
   Id,
@@ -157,6 +156,7 @@ const models = {
   SubmissionOperationChangeStep,
   SubmissionOperationCopySubmission,
   SubmissionOperationCustomResponse,
+  SubmissionOperationFindAllResponse,
   SubmissionOperationMetadata,
   SubmissionOperationRemoveContributor,
   SubmissionOperationReview,

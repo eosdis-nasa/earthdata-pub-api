@@ -389,6 +389,7 @@ module.exports.submissionFindAll = function submissionFindAll(req, res, next) {
       name: params.name.value,
       user_id: params.user_id.value,
       daac_id: params.daac_id.value,
+      daac_name: params.daac_name.value,
       workflow_id: params.workflow_id.value,
       workflow_name: params.workflow_name.value,
       step_name: params.step_name.value,
@@ -1024,50 +1025,9 @@ module.exports.fileUpload = function fileUpload(req, res, next) {
   const { payload } = params;
   const lambdaEvent = {
     resource: 'upload',
-    operation: 'getPostUrl',
+    operation: 'getUrl',
     context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.fileUpload(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.groupFileUpload = function groupFileUpload(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    resource: 'upload',
-    operation: 'getGroupUploadUrl',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.fileUpload(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.attachmentFileUpload = function attachmentFileUpload(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    resource: 'upload',
-    operation: 'getAttachmentUploadUrl',
-    context: { user_id: req.user_id },
-    ...payload.value
-  };
-  handlers.fileUpload(lambdaEvent).then((body) => {
-    setTimeout(() => res.send(body), latency);
-  });
-};
-
-module.exports.uploadStepUrl = function uploadStepUrl(req, res, next) {
-  const { params } = req.swagger;
-  const { payload } = params;
-  const lambdaEvent = {
-    resource: 'upload',
-    operation: 'getUploadStepUrl',
-    context: { user_id: req.user_id },
+    upload_type: params.type.value,
     ...payload.value
   };
   handlers.fileUpload(lambdaEvent).then((body) => {
@@ -1304,6 +1264,7 @@ module.exports.createStepReviewApproval = function createStepReviewApproval(req,
     stepName: payload.value.step_name,
     submissionId: payload.value.id,
     userIds: payload.value.user_list,
+    daacId: payload.value.daac_id,
     context: { user_id: req.user_id }
   };
 
