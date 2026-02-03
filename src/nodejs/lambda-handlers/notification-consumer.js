@@ -40,12 +40,6 @@ async function sendEmailNotification({
     case 'form_submitted':
       userRole = [];
       break;
-    case 'review_approved':
-      userRole = [roles.data_producer];
-      break;
-    case 'review_rejected':
-      userRole = [roles.data_producer];
-      break;
     case 'metadata_updated':
       userRole = [roles.data_producer];
       break;
