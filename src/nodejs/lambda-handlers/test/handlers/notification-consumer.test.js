@@ -65,7 +65,7 @@ describe('notification-consumer', () => {
       expect(emailPayload).toEqual({
         submission_id: 'f68a54ba-0411-47ad-934b-42fa552b6fe5',
         workflow_name: 'test workflow',
-        conversation_last_message: 'Data Evaluation Request Form review completed; please click on the green button on the far right of your request’s row to complete the next action, if applicable.',
+        conversation_last_message: 'Data Evaluation Request Form review completed.',
         event_type: 'review_approved',
         submission_name: 'test product',
         user_id: '1b10a09d-d342-4eee-a9eb-c99acd2dde17'

@@ -13,7 +13,7 @@ const templates = {
     text: `Request ID ${e.submission_id} has been initialized.`
   }),
   action_request_no_id: (e) => ({
-    text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your request's row to work on this action, if applicable`
+    text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on.`
   }),
   workflow_started: () => ({
     text: 'The request has started.'
@@ -37,7 +37,7 @@ const templates = {
     text: `One or more reviewers have been added to the ${parseStepName(e.step_name)}`
   }),
   upload_step_completed: (e) => ({
-    text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on. Please click on the green button on the far right of your request's row to work on this action, if applicable`
+    text: `${parseStepName(e.data.rollback)} is complete, ${parseStepName(e.step_name)} is ready to be worked on.`
   }),
   daac_assignment: (e) => ({
     text: `${parseStepName(e.step_name)} is complete for Request ID ${e.submission_id}. Publication Codes are: ${e.assigned_daacs.map((element) => `${element.daac_name}: ${element.code}`).join(', ')}`
