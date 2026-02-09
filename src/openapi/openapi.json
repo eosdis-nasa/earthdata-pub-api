@@ -6765,6 +6765,19 @@
             "schema": {
               "$ref": "#/components/schemas/UUID"
             }
+          },
+          {
+            "name": "query_fields",
+            "in": "query",
+            "description": "Fields to return",
+            "schema": {
+              "type" : "array",
+              "items" : {
+                "type": "string",
+                "enum": ["id", "name", "email", "registered", "last_login", "group_ids", "role_ids", "detailed"]
+              }
+            },
+            "explode": false
           }
         ],
         "responses": {
@@ -6792,7 +6805,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/User"
+                    "$ref": "#/components/schemas/UserFindAll"
                   }
                 }
               }
@@ -6813,7 +6826,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end},\"context\":{\"user_id\": \"$context.authorizer.principalId\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end #if($req.querystring.keySet().containsKey('query_fields'))\"requested_fields\":\"$req.querystring.get('query_fields').split(',')\",#end},\"context\":{\"user_id\": \"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
