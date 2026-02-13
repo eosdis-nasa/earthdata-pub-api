@@ -6826,7 +6826,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end #if($req.querystring.keySet().containsKey('query_fields'))\"requested_fields\":\"$req.querystring.get('query_fields').split(',')\",#end},\"context\":{\"user_id\": \"$context.authorizer.principalId\"}}"
+            "application/json": "#set( $req = $input.params()) {\"resource\":\"user\",\"operation\":\"findAll\",\"params\":{#foreach($field in $req.querystring.keySet()) \"$field\":\"$req.querystring.get($field)\" #if($foreach.hasNext),#end #end #if($req.querystring.keySet().containsKey('query_fields')) #set( $splitStr = $req.querystring.get('query_fields')), \"requested_fields\": [ #foreach($sub in $splitStr.split(','))\"$sub\" #if($foreach.hasNext),#end #end] #end },\"context\":{\"user_id\": \"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
