@@ -30,7 +30,17 @@ const fieldMap = {
     fallback: '\'[]\'::JSONB',
     alias: 'user_privileges'
   },
-  detailed: 'edpuser.detailed'
+  detailed: 'edpuser.detailed',
+  group_ids: {
+    type: 'json_agg',
+    src: 'edpuser_edpgroup.edpgroup_id',
+    alias: 'group_ids'
+  },
+  role_ids: {
+    type: 'json_agg',
+    src: 'edpuser_edprole.edprole_id',
+    alias: 'role_ids'
+  }
 };
 const fields = (list) => list.map((field) => fieldMap[field]);
 const refs = {
@@ -107,7 +117,7 @@ const findAll = ({name, email, sort, order, per_page, page, group_id, role_id, r
       ...(role_id ? [{ field: 'edpuser_edprole.edprole_id', param: 'role_id' }] : []),
     ]
   },
-  group: 'id',
+  group: 'id, edpuser_edpgroup.edpuser_id, edpuser_edprole.edpuser_id',
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),

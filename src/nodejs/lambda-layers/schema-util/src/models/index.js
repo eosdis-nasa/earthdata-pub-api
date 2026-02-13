@@ -72,6 +72,7 @@ const UserAddRemoveRole = require('./user-add-remove-role.js');
 const UserAllFields = require('./user-all-fields.js');
 const UserCreate = require('./user-create.js');
 const UserDetails = require('./user-details.js');
+const UserFindAll = require('./user-find-all.js');
 const UserGetUsersRequest = require('./user-get-users-request.js');
 const UserGetUsersResponse = require('./user-get-users-response.js');
 const UserGroup = require('./edpuser-edpgroup.js');
@@ -175,6 +176,7 @@ const models = {
   UserAllFields,
   UserCreate,
   UserDetails,
+  UserFindAll,
   UserGetUsersRequest,
   UserGetUsersResponse,
   UserGroup,
