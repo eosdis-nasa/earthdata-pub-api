@@ -6,7 +6,8 @@ const path = require('path');
 
 const express = require('express');
 
-const oasTools = require('oas-tools');
+// const oasTools = require('oas-tools');
+const oasTools = require('@oas-tools/core');
 
 const bodyParser = require('body-parser');
 
@@ -41,22 +42,59 @@ app.get('/api-docs', (req, res) => res.redirect('/api-docs/index.html'));
 const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
 const oasDoc = JSON.parse(spec);
 
+
+// const oasOptions = {
+//   controllers: path.join(__dirname, './controllers'),
+//   loglevel: 'error',
+//   strict: false,
+//   router: true,
+//   validator: true,
+//   oasSecurity: true,
+//   securityFile: {
+//     Service_Authorizer: local.checkService,
+//     OIDC_Authorizer: local.check
+//   }
+// };
+
 const oasOptions = {
-  controllers: path.join(__dirname, './controllers'),
-  loglevel: 'error',
-  strict: false,
-  router: true,
-  validator: true,
-  oasSecurity: true,
-  securityFile: {
-    Service_Authorizer: local.checkService,
-    OIDC_Authorizer: local.check
-  }
+  middleware: {
+    router: {
+      controllers: path.join(__dirname, './controllers'),
+      disable: true,
+      requestValidation: true,
+      responseValidation: true
+    },
+    validator: {
+      strict: false
+    },
+    security: {
+      disable: true,
+      auth: {
+        Service_Authorizer: local.checkService,
+        OIDC_Authorizer: local.check
+      }
+    }
+  },
+  logger: { level: 'debug' },
+  oasFile: path.join(__dirname, '/api/openapi.json')
+  // oasFile: 'api/openapi.json'
 };
 
-oasTools.configure(oasOptions);
+// oasTools.configure(oasOptions);
 
-oasTools.initialize(oasDoc, app, () => {
+
+// oasTools.initialize(oasDoc, app, () => {
+//   http.createServer(app).listen(serverPort, () => {
+//     console.log(`App running at http://localhost:${serverPort}`);
+//     console.log('_____________________________________________________');
+//     if (oasOptions.docs !== false) {
+//       console.log(`API docs at http://localhost:${serverPort}/docs`);
+//       console.log('___________________________________________________');
+//     }
+//   });
+// });
+
+oasTools.initialize(app, oasOptions).then(() => {
   http.createServer(app).listen(serverPort, () => {
     console.log(`App running at http://localhost:${serverPort}`);
     console.log('_____________________________________________________');
@@ -64,7 +102,13 @@ oasTools.initialize(oasDoc, app, () => {
       console.log(`API docs at http://localhost:${serverPort}/docs`);
       console.log('___________________________________________________');
     }
+
+    inboundListener.start();
   });
 });
 
-inboundListener.start();
+// oasTools.initialize(app, oasOptions).then(() => {
+//     http.createServer(app).listen(serverPort, () => console.log("Server started!"));
+// })
+
+
