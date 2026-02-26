@@ -60,12 +60,12 @@ const oasOptions = {
   middleware: {
     router: {
       controllers: path.join(__dirname, './controllers'),
-      disable: true,
-      requestValidation: true,
-      responseValidation: true
+      disable: true
     },
     validator: {
-      strict: false
+      strict: false,
+      requestValidation: true,
+      responseValidation: true
     },
     security: {
       disable: true,
