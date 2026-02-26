@@ -1,7 +1,7 @@
 const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const {
-  S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand, GetObjectTaggingCommand
+  S3Client, ListObjectsCommand, GetObjectCommand, HeadObjectCommand
 } = require('@aws-sdk/client-s3');
 const path = require('path');
 
@@ -99,15 +99,12 @@ async function generateUploadUrl(params) {
   }
 }
 
-async function getPostUrlMethod(event, user) {
+async function getFormUrlKeyMethod(event, user) {
   const {
     file_name: fileName,
-    file_type: fileType,
-    checksum_value: checksumValue,
-    file_size_bytes: fileSize
+    file_category: fileCategory,
+    submission_id: submissionId
   } = event;
-  const { file_category: fileCategory } = event;
-  const { submission_id: submissionId } = event;
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
 
@@ -129,87 +126,128 @@ async function getPostUrlMethod(event, user) {
       || userInfo.user_privileges.includes('ADMIN')
       || userDaacIds.includes(daacId)
     ) {
-      return generateUploadUrl({
-        key: `${submissionId}/${fileCategory}/${user}/${fileName}`,
-        checksumValue,
-        fileType,
-        fileCategory,
-        fileSize
-      });
+      return ({ key: `${submissionId}/${fileCategory}/${user}/${fileName}` });
     }
   }
-  return generateUploadUrl({
-    key: `${fileCategory}/${user}/${fileName}`,
-    checksumValue,
-    fileType,
-    fileCategory,
-    fileSize
-  });
+
+  // return `${fileCategory}/${user}/${fileName}`
+  return ({ error: 'Not Implemented' });
 }
 
-async function getGroupUploadUrlMethod(event, user) {
+async function getGroupUploadKeyMethod(event, user) {
   const {
     file_name: fileName,
-    file_type: fileType,
-    checksum_value: checksumValue,
-    prefix,
-    file_size_bytes: fileSize
+    prefix
   } = event;
   const { group_id: groupId } = event;
   const userInfo = await db.user.findById({ id: user });
   const groupIds = userInfo.user_groups.map((group) => group.id);
   const rootGroupId = '4daa6b22-f015-4ce2-8dac-8b3510004fca';
 
+  const groupShortName = (await db.group.findById({ id: groupId })).short_name;
+  if (!groupShortName) {
+    return ({ error: 'Invalid Group' });
+  }
+
   if (!(userInfo.user_privileges.includes('ADMIN') || groupIds.includes(rootGroupId))
     && !(groupIds.includes(groupId) && userInfo.user_privileges.includes('GROUP_UPLOAD'))) {
     return ({ error: 'Not Authorized' });
   }
-  const groupShortName = (await db.group.findById({ id: groupId })).short_name;
+
   const key = prefix ? `group/${groupShortName}/${prefix.replace(/^\/?/, '').replace(/\/?$/, '')}/${fileName}` : `group/${groupShortName}/${fileName}`;
-  return generateUploadUrl({
-    key,
-    checksumValue,
-    fileType,
-    fileSize
-  });
+  return ({ key });
 }
 
-async function getAttachmentUploadUrlMethod(event, user) {
+async function getAttachmentUploadKeyMethod(event, user) {
   const {
     file_name: fileName,
-    file_type: fileType,
-    checksum_value: checksumValue,
-    conversation_id: conversationId,
-    file_size_bytes: fileSize
+    conversation_id: conversationId
   } = event;
   const userInfo = await db.user.findById({ id: user });
 
   if (!userInfo.user_privileges.includes('ADMIN') && !userInfo.user_privileges.includes('NOTE_REPLY')) {
     return ({ error: 'Not Authorized' });
   }
+  // Verify conversation is real & the user has permissions!
+  let response = {};
+  if (userInfo.user_privileges.includes('ADMIN')
+  || userInfo.user_groups.some((group) => group.short_name === 'root_group')) {
+    response = await db.note.readConversation({
+      admin: true,
+      conversation_id: conversationId
+    });
+  } else if (userInfo.user_privileges.includes('REQUEST_DAACREAD')) {
+    response = await db.note.readConversation({
+      user_id: user,
+      daac: true,
+      conversation_id: conversationId
+    });
+  } else {
+    response = await db.note.readConversation({
+      user_id: user,
+      conversation_id: conversationId
+    });
+  }
+
+  if (response.error) {
+    return ({ error: 'Conversation not found' });
+  }
+
   const key = `drafts/${conversationId}/${user}/${fileName}`;
-  return generateUploadUrl({
-    key,
-    checksumValue,
-    fileType,
-    fileSize
-  });
+  return ({ key });
 }
 
-async function getUploadStepUrlMethod(event, user) {
+async function getUploadStepKeyMethod(event, user) {
   const {
     file_name: fileName,
-    file_type: fileType,
-    checksum_value: checksumValue,
     file_category: fileCategory,
     destination: uploadDestination,
-    submission_id: submissionId,
+    submission_id: submissionId
+  } = event;
+
+  if (!fileName || !fileCategory || !uploadDestination || !submissionId) {
+    return ({ error: 'Invlaid parameters' });
+  }
+
+  // Verify submission is real!
+  const submissionResp = await db.submission.findById({ id: submissionId, user_id: user });
+  if (submissionResp.error) {
+    return ({ error: 'Submission not found' });
+  }
+
+  const key = `${uploadDestination.replace(/^\/?/, '').replace(/\/?$/, '')}/${submissionId}/${fileCategory}/${user}/${fileName}`;
+  return ({ key });
+}
+
+const keyMethods = {
+  form: getFormUrlKeyMethod,
+  group: getGroupUploadKeyMethod,
+  attachment: getAttachmentUploadKeyMethod,
+  step: getUploadStepKeyMethod
+};
+
+async function getUploadUrlMethod(event, user) {
+  const {
+    upload_type: uploadType,
+    file_type: fileType,
+    checksum_value: checksumValue,
     file_size_bytes: fileSize
   } = event;
 
-  const key = `${uploadDestination.replace(/^\/?/, '').replace(/\/?$/, '')}/${submissionId}/${fileCategory}/${user}/${fileName}`;
+  if (!(uploadType && Object.keys(keyMethods).includes(uploadType))) {
+    return ({ error: 'Invalid upload type' });
+  }
+
+  // Get the key for the type of url needed. The key method will perform the needed validations
+  const uploadKeyGenerator = keyMethods[uploadType];
+  const keyResult = await uploadKeyGenerator(event, user);
+
+  if (keyResult && keyResult.error) {
+    return ({ error: keyResult.error });
+  }
+
   return generateUploadUrl({
-    key,
+    key: keyResult.key,
     checksumValue,
     fileType,
     fileSize
@@ -224,21 +262,10 @@ async function getChecksumTag(key, s3Client) {
   };
   try {
     const headCmd = new HeadObjectCommand(payload);
-    const tagCmd = new GetObjectTaggingCommand(payload);
 
-    const [headResp, tagResp] = await Promise.all([
-      s3Client.send(headCmd),
-      s3Client.send(tagCmd)
-    ]);
+    const headResp = await s3Client.send(headCmd);
 
-    const tagSet = Array.isArray(tagResp?.TagSet) ? tagResp.TagSet : [];
-
-    const fileIdTag = tagSet.find(
-      (tag) => tag.Key?.trim().toLowerCase() === 'fileid'
-    );
-
-    const fileId = fileIdTag?.Value || null;
-
+    const fileId = headResp?.Metadata?.fileid || null;
     return {
       headResp,
       fileId
@@ -555,14 +582,11 @@ async function getPartUrlMethod(event) {
 }
 
 const operations = {
-  getPostUrl: getPostUrlMethod,
+  getUrl: getUploadUrlMethod,
   listFiles: listFilesMethod,
   createTempUploadFile: createTempUploadFileMethod,
   listStepFiles: listStepFilesMethod,
   getDownloadUrl: getDownloadUrlMethod,
-  getGroupUploadUrl: getGroupUploadUrlMethod,
-  getAttachmentUploadUrl: getAttachmentUploadUrlMethod,
-  getUploadStepUrl: getUploadStepUrlMethod,
   getUploadStep: getUploadStepMethod,
   completeUpload: completeUploadMethod,
   getPartUrl: getPartUrlMethod

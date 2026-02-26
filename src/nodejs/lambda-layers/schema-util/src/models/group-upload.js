@@ -1,5 +1,5 @@
 module.exports.model = (path) => ({
-  description: 'Request body sent to upload',
+  description: 'Request body sent to generate a group upload key',
   type: 'object',
   properties: {
 
@@ -25,7 +25,9 @@ module.exports.model = (path) => ({
     }
   },
   required: [
-    'file_type'
+    'file_name',
+    'file_type',
+    'group_id'
   ]
 });
 
