@@ -36,8 +36,7 @@ app.post('/goaws/workflow_consumer', local.handleWorkflow);
 app.post('/goaws/metrics_consumer', local.handleMetrics);
 app.post('/goaws/notification_consumer', local.handleNotification);
 app.post('/database_test', local.dbTest);
-app.get('/docs', (req, res) => res.redirect('/docs/swagger-index.html'));
-app.get('/docs/index.html', (req, res) => res.redirect('/docs/swagger-index.html'));
+app.get('/docs', (req, res) => res.redirect('/docs/index.html'));
 app.get('/api-docs', (req, res) => res.redirect('/api-docs/index.html'));
 
 const spec = fs.readFileSync(path.join(__dirname, '/api/openapi.json'), 'utf8');
@@ -74,6 +73,9 @@ const oasOptions = {
         Service_Authorizer: local.checkService,
         OIDC_Authorizer: local.check
       }
+    },
+    swagger: {
+      path: '/docs/index.html'
     }
   },
   logger: { level: 'debug' },
