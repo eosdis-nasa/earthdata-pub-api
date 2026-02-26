@@ -4227,7 +4227,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"inactive\", \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"inactive\", \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -4352,7 +4352,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -4477,7 +4477,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"metadata\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"metadata\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('metadata'))\"metadata\":$input.json('$.metadata'), #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -4602,7 +4602,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('daac_name'))\"daac_name\":\"$body.get('daac_name')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('daac_name'))\"daac_name\":\"$body.get('daac_name')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -4730,7 +4730,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"createStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"createStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -4858,7 +4858,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"deleteStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"deleteStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -4983,7 +4983,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -5108,7 +5108,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"review\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"review\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('approve'))\"approve\":\"$body.get('approve')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -5233,7 +5233,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"esdisReview\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('action'))\"action\":\"$body.get('action')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"esdisReview\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('action'))\"action\":\"$body.get('action')\", #end #if($body.containsKey('context'))\"context\":\"$body.get('context')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -5358,7 +5358,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -5483,7 +5483,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-          "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"restore\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+          "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"restore\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -5608,7 +5608,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -5733,7 +5733,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"promoteStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"promoteStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -5861,7 +5861,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -5989,7 +5989,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -6114,7 +6114,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"copySubmission\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if($body.containsKey('copy_context'))\"copy_context\":\"$body.get('copy_context')\",#end #if($body.containsKey('action_copy'))\"action_copy\":\"$body.get('action_copy')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"copySubmission\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if ($body.containsKey('copy_filter'))\"copy_filter\":$inputRoot.copy_filter, #end #if($body.containsKey('copy_context'))\"copy_context\":\"$body.get('copy_context')\",#end #if($body.containsKey('action_copy'))\"action_copy\":\"$body.get('action_copy')\", #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -6239,7 +6239,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"mapMetadata\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"mapMetadata\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -6364,7 +6364,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"assignDaacs\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('daacs'))\"daacs\": $inputRoot.daacs,#end #if($body.containsKey('requires_review'))\"requires_review\": $inputRoot.requires_review,#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"assignDaacs\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('daacs'))\"daacs\": $inputRoot.daacs,#end #if($body.containsKey('requires_review'))\"requires_review\": $inputRoot.requires_review,#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -8257,7 +8257,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\",#end #if($body.containsKey('request_id'))\"request_id\":\"$body.get('request_id')\",#end #if($body.containsKey('request_name'))\"request_name\":\"$body.get('request_name')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end #if($body.containsKey('viewer_users'))\"viewer_users\":$input.json('$.viewer_users'),#end #if($body.containsKey('viewer_roles'))\"viewer_roles\":$input.json('$.viewer_roles'),#end #if ($body.containsKey('attachments'))\"attachments\":$inputRoot.attachments, #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"reply\", \"text\":\"$body.get('text')\", #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\",#end #if($body.containsKey('request_id'))\"request_id\":\"$body.get('request_id')\",#end #if($body.containsKey('request_name'))\"request_name\":\"$body.get('request_name')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end #if($body.containsKey('viewer_users'))\"viewer_users\":$input.json('$.viewer_users'),#end #if($body.containsKey('viewer_roles'))\"viewer_roles\":$input.json('$.viewer_roles'),#end #if ($body.containsKey('attachments'))\"attachments\":$inputRoot.attachments, #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -8889,7 +8889,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"add_viewers\", #if($body.containsKey('viewer_ids'))\"viewer_ids\": $inputRoot.viewer_ids,#end #if($body.containsKey('note_id'))\"note_id\":\"$body.get('note_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"add_viewers\", #if($body.containsKey('viewer_ids'))\"viewer_ids\": $inputRoot.viewer_ids,#end #if($body.containsKey('note_id'))\"note_id\":\"$body.get('note_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9139,7 +9139,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"add_viewer_roles\", #if($body.containsKey('viewer_roles'))\"viewer_roles\": $inputRoot.viewer_roles,#end #if($body.containsKey('note_id'))\"note_id\":\"$body.get('note_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"add_viewer_roles\", #if($body.containsKey('viewer_roles'))\"viewer_roles\": $inputRoot.viewer_roles,#end #if($body.containsKey('note_id'))\"note_id\":\"$body.get('note_id')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9382,7 +9382,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "$input.json('$')"
+            "application/json": "$input.json($)"
           },
           "responses": {
             "default": {
@@ -9679,7 +9679,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('role_id'))\"role_id\":\"$body.get('role_id')\", #end #if($body.containsKey('detailed'))\"detailed\":\"$body.get('detailed')\", #end #if($body.containsKey('ids'))\"ids\":$inputRoot.ids, #end #if($body.containsKey('group_ids'))\"group_ids\":$inputRoot.group_ids,#end #if($body.containsKey('role_ids'))\"role_ids\":$inputRoot.role_ids,#end #if ($body.containsKey('username'))\"username\":\"$body.get('username')\",#end #if ($body.containsKey('name'))\"name\":\"$body.get('name')\",#end #if ($body.containsKey('email'))\"email\":\"$body.get('email')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"$req.path.get('operation')\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('role_id'))\"role_id\":\"$body.get('role_id')\", #end #if($body.containsKey('detailed'))\"detailed\":\"$body.get('detailed')\", #end #if($body.containsKey('ids'))\"ids\":$inputRoot.ids, #end #if($body.containsKey('group_ids'))\"group_ids\":$inputRoot.group_ids,#end #if($body.containsKey('role_ids'))\"role_ids\":$inputRoot.role_ids,#end #if ($body.containsKey('username'))\"username\":\"$body.get('username')\",#end #if ($body.containsKey('name'))\"name\":\"$body.get('name')\",#end #if ($body.containsKey('email'))\"email\":\"$body.get('email')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9804,7 +9804,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"apply\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('workflow_id'))\"workflow_id\":\"$body.get('workflow_id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -9929,7 +9929,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('daac_name'))\"daac_name\":\"$body.get('daac_name')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"submit\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if($body.containsKey('daac_name'))\"daac_name\":\"$body.get('daac_name')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10054,7 +10054,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"save\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('form_id'))\"form_id\":\"$body.get('form_id')\",#end #if($body.containsKey('daac_id'))\"daac_id\":\"$body.get('daac_id')\",#end #if ($body.containsKey('data'))\"data\":$input.json('$.data'), #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10179,7 +10179,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"resume\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"resume\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10304,7 +10304,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"withdraw\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10429,7 +10429,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"changeStep\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('step_name'))\"step_name\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10557,7 +10557,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"addContributors\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if ($body.containsKey('contributor_ids'))\"contributor_ids\":$inputRoot.contributor_ids, #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10685,7 +10685,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"removeContributor\", #if($body.containsKey('id'))\"id\":\"$body.get('id')\",#end #if($body.containsKey('contributor_id'))\"contributor_id\":\"$body.get('contributor_id')\",#end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10813,7 +10813,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"deleteStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"deleteStepReviewApproval\", #if($body.containsKey('id'))\"submissionId\":\"$body.get('id')\",#end #if($body.containsKey('user_list'))\"userIds\": $inputRoot.user_list,#end #if($body.containsKey('step_name'))\"stepName\":\"$body.get('step_name')\", #end \"context\":{\"authorizer\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -10938,7 +10938,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $input.json('$')) {\"operation\": \"get_submissions\", \"payload\": $body, \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $input.json($)) {\"operation\": \"get_submissions\", \"payload\": $body, \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11758,7 +11758,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getUrl\", \"upload_type\": \"$req.path.get('type')\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_category'))\"file_category\":\"$body.get('file_category')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end #if($body.containsKey('prefix'))\"prefix\":\"$body.get('prefix')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('destination'))\"destination\":\"$body.get('destination')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"getUrl\", \"upload_type\": \"$req.path.get('type')\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('file_type'))\"file_type\":\"$body.get('file_type')\",#end #if($body.containsKey('submission_id'))\"submission_id\":\"$body.get('submission_id')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_category'))\"file_category\":\"$body.get('file_category')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end #if($body.containsKey('conversation_id'))\"conversation_id\":\"$body.get('conversation_id')\",#end #if($body.containsKey('prefix'))\"prefix\":\"$body.get('prefix')\",#end #if($body.containsKey('group_id'))\"group_id\":\"$body.get('group_id')\",#end #if($body.containsKey('destination'))\"destination\":\"$body.get('destination')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11876,7 +11876,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"completeUpload\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end #if($body.containsKey('collection_path'))\"collection_path\":\"$body.get('collection_path')\",#end #if($body.containsKey('content_type'))\"content_type\":\"$body.get('content_type')\",#end #if($body.containsKey('file_id'))\"file_id\":\"$body.get('file_id')\",#end #if($body.containsKey('final_file_size'))\"final_file_size\":\"$body.get('final_file_size')\",#end #if($body.containsKey('checksum'))\"checksum\":\"$body.get('checksum')\",#end #if($body.containsKey('parts'))\"parts\":\"$body.get('parts')\",#end #if($body.containsKey('upload_id'))\"upload_id\":\"$body.get('upload_id')\",#end #if ($body.containsKey('etags'))\"etags\":$inputRoot.etags, #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"completeUpload\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('checksum_value'))\"checksum_value\":\"$body.get('checksum_value')\",#end #if($body.containsKey('file_size_bytes'))\"file_size_bytes\":\"$body.get('file_size_bytes')\",#end #if($body.containsKey('collection_path'))\"collection_path\":\"$body.get('collection_path')\",#end #if($body.containsKey('content_type'))\"content_type\":\"$body.get('content_type')\",#end #if($body.containsKey('file_id'))\"file_id\":\"$body.get('file_id')\",#end #if($body.containsKey('final_file_size'))\"final_file_size\":\"$body.get('final_file_size')\",#end #if($body.containsKey('checksum'))\"checksum\":\"$body.get('checksum')\",#end #if($body.containsKey('parts'))\"parts\":\"$body.get('parts')\",#end #if($body.containsKey('upload_id'))\"upload_id\":\"$body.get('upload_id')\",#end #if ($body.containsKey('etags'))\"etags\":$inputRoot.etags, #end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -11994,7 +11994,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"startMultipartUpload\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('collection_path'))\"collection_path\":\"$body.get('collection_path')\",#end #if($body.containsKey('content_type'))\"content_type\":\"$body.get('content_type')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"startMultipartUpload\", #if($body.containsKey('file_name'))\"file_name\":\"$body.get('file_name')\",#end #if($body.containsKey('collection_path'))\"collection_path\":\"$body.get('collection_path')\",#end #if($body.containsKey('content_type'))\"content_type\":\"$body.get('content_type')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -12119,7 +12119,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"getPartUrl\", #if($body.containsKey('file_id'))\"file_id\":\"$body.get('file_id')\",#end #if($body.containsKey('part_number'))\"part_number\":\"$body.get('part_number')\",#end #if($body.containsKey('upload_id'))\"upload_id\":\"$body.get('upload_id')\",#end #if($body.containsKey('content_type'))\"content_type\":\"$body.get('content_type')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"getPartUrl\", #if($body.containsKey('file_id'))\"file_id\":\"$body.get('file_id')\",#end #if($body.containsKey('part_number'))\"part_number\":\"$body.get('part_number')\",#end #if($body.containsKey('upload_id'))\"upload_id\":\"$body.get('upload_id')\",#end #if($body.containsKey('content_type'))\"content_type\":\"$body.get('content_type')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
@@ -12498,7 +12498,7 @@
           "httpMethod": "POST",
           "type": "aws",
           "requestTemplates": {
-            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path('$')) {\"operation\":\"createTempUploadFile\", #if($body.containsKey('fileId'))\"fileId\":\"$body.get('fileId')\",#end #if($body.containsKey('submissionId'))\"submissionId\":\"$body.get('submissionId')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
+            "application/json": "#set($req = $input.params()) #set($body = $util.parseJson($input.body)) #set($inputRoot = $input.path($)) {\"operation\":\"createTempUploadFile\", #if($body.containsKey('fileId'))\"fileId\":\"$body.get('fileId')\",#end #if($body.containsKey('submissionId'))\"submissionId\":\"$body.get('submissionId')\",#end \"context\":{\"user_id\":\"$context.authorizer.principalId\"}}"
           },
           "responses": {
             "default": {
