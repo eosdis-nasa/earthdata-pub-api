@@ -13255,17 +13255,6 @@
   },
   "components": {
     "securitySchemes": {
-      "Cognito_Authorizer": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header",
-        "description": "This authorizer is used for most requests to the EDPub API with the exception of service endpoints. The authorization value follows the format: 'Bearer \\<JWT token value\\>'",
-        "x-amazon-apigateway-authtype": "cognito_user_pools",
-        "x-amazon-apigateway-authorizer": {
-          "type": "cognito_user_pools",
-          "providerARNs": [ "${cognito_user_pool_arn}" ]
-        }
-      },
       "Service_Authorizer": {
         "type": "apiKey",
         "name": "Authorization",
