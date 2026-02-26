@@ -211,3 +211,8 @@ DROP TABLE IF EXISTS edpuser_subscription_workflow;
 DROP TABLE IF EXISTS module;
 
 DROP TABLE IF EXISTS submission_lock;
+
+-- EDPUB-1744: Update DPR Funding Organization requirement
+UPDATE question
+SET required = 'True'
+WHERE id = '8a364184-42ac-48fe-b831-acb2eb08c728';

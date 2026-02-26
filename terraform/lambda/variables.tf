@@ -182,7 +182,7 @@ variable "ornl_endpoint_arn" {
   type = string
 }
 
-variable "gesdisc_endpoint_arn"{
+variable "gesdisc_endpoint_arn" {
   type = string
 }
 
@@ -212,4 +212,9 @@ variable "use_cue_upload" {
 
 variable "ornl_bucket_name" {
   type = string
+}
+
+variable "aws_node_extra_ca_certs_path" {
+  type    = string
+  default = "/var/runtime/ca-cert.pem"
 }
