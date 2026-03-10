@@ -216,3 +216,13 @@ DROP TABLE IF EXISTS submission_lock;
 UPDATE question
 SET required = 'True'
 WHERE id = '8a364184-42ac-48fe-b831-acb2eb08c728';
+
+
+-- EDPUB-935: Change the subheadings for Upper and Lower Limits
+UPDATE input
+SET label = 'Upper Limit'
+WHERE question_id = 'a3701d37-77cf-4ccc-8068-c6860a7a8929' AND control_id = 'spatial_vertical_details_upper';
+
+UPDATE input
+SET label = 'Lower Limit'
+WHERE question_id = 'a3701d37-77cf-4ccc-8068-c6860a7a8929' AND control_id = 'spatial_vertical_details_lower';
