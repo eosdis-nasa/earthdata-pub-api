@@ -689,12 +689,12 @@ INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b54', '50
 -- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_fullname', 0, 'Full Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_email', 2, 'Email', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
 
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_name', 0, 'Full Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_email', 2, 'Email', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
 
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c730', 'dar_form_funding_nasa', 0, 'NASA', 'checkbox', '{}', '{}', '[]','[]',  False);
