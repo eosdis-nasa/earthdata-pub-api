@@ -226,3 +226,7 @@ WHERE question_id = 'a3701d37-77cf-4ccc-8068-c6860a7a8929' AND control_id = 'spa
 UPDATE input
 SET label = 'Lower Limit'
 WHERE question_id = 'a3701d37-77cf-4ccc-8068-c6860a7a8929' AND control_id = 'spatial_vertical_details_lower';
+
+-- EDPUB-1749: Fix email validation in DAR/DER
+UPDATE input SET type = 'email' WHERE control_id='dar_form_principal_investigator_email'
+UPDATE input SET type = 'email' WHERE control_id='dar_form_data_accession_poc_email'
