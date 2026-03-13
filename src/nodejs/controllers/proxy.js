@@ -465,7 +465,7 @@ module.exports.userFindAll = function userFindAll(req, res, next) {
           page: params.page.value,
           group_id: params.group_id.value,
           role_id: params.role_id.value,
-          ...(params.query_fields.value === '' ? {} : {requested_fields: params.query_fields.value.split(',')})
+          ...((params.query_fields.value === '' || params.query_fields.value === undefined) ? {} : {requested_fields: params.query_fields.value.split(',')})
     },
     context: { user_id: req.user_id }
   };

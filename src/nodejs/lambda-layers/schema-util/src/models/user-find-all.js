@@ -3,17 +3,13 @@ module.exports.model = (path) => ({
   type: 'object',
   allOf: [{ $ref: `#${path}User` }],
   properties: {
-    group_ids: {
+    user_groups: {
       type: 'array',
-      items: {
-        $ref: `#${path}UUID`
-      }
+      items: { type: 'string' }
     },
-    role_ids: {
+    user_roles: {
       type: 'array',
-      items: {
-        $ref: `#${path}UUID`
-      }
+      items: { type: 'string' }
     }
   }
 });

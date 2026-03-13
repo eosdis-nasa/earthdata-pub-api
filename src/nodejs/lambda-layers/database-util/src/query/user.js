@@ -30,17 +30,7 @@ const fieldMap = {
     fallback: '\'[]\'::JSONB',
     alias: 'user_privileges'
   },
-  detailed: 'edpuser.detailed',
-  group_ids: {
-    type: 'json_agg',
-    src: 'edpuser_edpgroup.edpgroup_id',
-    alias: 'group_ids'
-  },
-  role_ids: {
-    type: 'json_agg',
-    src: 'edpuser_edprole.edprole_id',
-    alias: 'role_ids'
-  }
+  detailed: 'edpuser.detailed'
 };
 const fields = (list) => list.map((field) => fieldMap[field]);
 const refs = {
@@ -53,6 +43,11 @@ const refs = {
     type: 'left_join',
     src: group.userJoinList,
     on: { left: fieldMap.id, right: 'group_agg.edpuser_id' }
+  },
+  filteredGroupList: {
+    type: 'left_join',
+    src: group.userJoinList,
+    on: { left: 'filtered_users.id', right: 'group_agg.edpuser_id' }
   },
   simple_group: {
     type: 'left_join',
@@ -68,6 +63,11 @@ const refs = {
     type: 'left_join',
     src: role.userJoinList,
     on: { left: fieldMap.id, right: 'role_agg.edpuser_id' }
+  },
+  filteredRoleList: {
+    type: 'left_join',
+    src: role.userJoinList,
+    on: { left: 'filtered_users.id', right: 'role_agg.edpuser_id' }
   },
   simple_role: {
     type: 'left_join',
@@ -100,29 +100,49 @@ const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
   ...(page ? { offset: page } : {})
 });
 
-const findAll = ({name, email, sort, order, per_page, page, group_id, role_id, requested_fields=['id', 'name']}) => sql.select({
-  fields: fields(requested_fields),
+const findAll = ({name, email, sort, order, per_page, page, group_id, role_id, requested_fields=['id', 'name']}) => {
+  // Ensure that the fields being requested by the user are valid options. If not, toss all bad requests.
+  const requestableFields = ['id', 'name', 'email', 'registered', 'last_login', 'user_groups', 'user_roles', 'detailed'];
+  const validKeys = requested_fields.filter(key => requestableFields.includes(key));
+  const queryFields = validKeys.length === 0 ? ['id', 'name'] : validKeys;
+
+  const query = sql.select({
+  with_query: {
+    alias: 'filtered_users',
+    query: sql.select({
+      fields: ['DISTINCT edpuser.*'],
+      from: {
+        base: table,
+        joins: [
+          refs.simple_group,
+          refs.simple_role
+        ]
+      },
+      where: {
+        filters: [
+          ...(name ? [{ field: 'edpuser.name', like: 'name' }] : []),
+          ...(email ? [{ field: 'edpuser.email', like: 'email'}] : []),
+          ...(group_id ? [{ field: 'edpuser_edpgroup.edpgroup_id', param: 'group_id' }] : []),
+          ...(role_id ? [{ field: 'edpuser_edprole.edprole_id', param: 'role_id' }] : []),
+        ]
+      }
+    })
+  },
+  fields: queryFields,
   from: {
-    base: table,
+    base: 'filtered_users',
     joins: [
-      refs.simple_group,
-      refs.simple_role
+      refs.filteredGroupList,
+      refs.filteredRoleList
     ]
   },
-  where: {
-    filters: [
-      ...(name ? [{ field: 'edpuser.name', like: 'name' }] : []),
-      ...(email ? [{ field: 'edpuser.email', like: 'email'}] : []),
-      ...(group_id ? [{ field: 'edpuser_edpgroup.edpgroup_id', param: 'group_id' }] : []),
-      ...(role_id ? [{ field: 'edpuser_edprole.edprole_id', param: 'role_id' }] : []),
-    ]
-  },
-  group: 'id, edpuser_edpgroup.edpuser_id, edpuser_edprole.edpuser_id',
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
   ...(page ? { offset: page } : {})
 });
+return query;
+};
 
 const getDetailedUsers = ({id, name, email, sort, order, per_page, page, group_id, role_id}) => sql.select({
   fields: fields(['id', 'name', 'email', 'extension', 'user_groups', 'user_roles']),

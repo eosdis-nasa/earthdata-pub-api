@@ -6774,7 +6774,7 @@
               "type" : "array",
               "items" : {
                 "type": "string",
-                "enum": ["id", "name", "email", "registered", "last_login", "group_ids", "role_ids", "detailed"]
+                "enum": ["id", "name", "email", "registered", "last_login", "user_groups", "user_roles", "detailed"]
               }
             },
             "explode": false
