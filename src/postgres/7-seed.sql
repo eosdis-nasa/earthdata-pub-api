@@ -60,7 +60,7 @@ INSERT INTO section VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b54', '19025579-99
 -- Question(id, short_name, version, long_name, text, help, required, created_at)
 INSERT INTO question VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e2', 'data_producer_info', 1, 'Primary Data Producer', 'Who is the primary person responsible for the collection or creation of this data product?', 'The Primary Data Producer is often the Principal Investigator, Project Scientist, or Project Manager.');
 INSERT INTO question VALUES ('f3e2eab9-6375-4e53-9cc2-3d16f318d333', 'point_of_contact', 1, 'Data Evaluation Point of Contact', 'Who should the DAAC contact with questions regarding this Data Evaluation request?', 'This person should have in-depth knowledge of this data product, allowing them to provide additional information as needed.');
-INSERT INTO question VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organization', 1, 'Funding Organization', 'What organization(s) funded the creation of this data product?', '');
+INSERT INTO question VALUES ('8a364184-42ac-48fe-b831-acb2eb08c728', 'funding_organization', 1, 'Funding Organization', 'What organization(s) funded the creation of this data product?', '', True);
 INSERT INTO question VALUES ('4ecc885f-daf8-4bc6-a8cd-d30c2a54d085', 'funding_program', 1, 'Funding Program/Element', 'Under what program or program element within the funding organization was this data product created?', 'Examples include NASA programs such as MEaSUREs, Terrestrial Hydrology, Earth Venture, ACCESS, or AIST.');
 INSERT INTO question VALUES ('f74c6c20-7483-40f9-a63e-58cc20ae8c8f', 'data_product_name', 1, 'Data Product Name', 'How do you refer to this data product?', 'This is how the DAAC will refer to this data product during the data publication process. The DAAC will work with you to develop an official data product title in compliance with DAAC/ESDIS standards.');
 INSERT INTO question VALUES ('39701413-ac96-4b66-9c2f-2d9c08a18ed9', 'data_product_description', 1, 'Data Product Description', 'Please provide a brief description of this data product.', 'The description should mimic a journal abstract and should provide a reader with the information needed to quickly understand the relevance and usefulness of the data.');
@@ -266,9 +266,9 @@ INSERT INTO input VALUES ('15a012d0-9b4b-4979-9fa9-81fac1600b09', 'spatial_horiz
 INSERT INTO input VALUES ('15a012d0-9b4b-4979-9fa9-81fac1600b09', 'spatial_horizontal_2', 1, '', 'bbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('15a012d0-9b4b-4979-9fa9-81fac1600b09', 'spatial_horizontal_3', 2, '', 'bbox', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('0f640f21-37ec-4d04-af2c-da955ae98e12', 'spatial_vertical_answer', 0, '', 'radio', '["Yes","No"]', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_upper', 0, 'Upper Amount', 'number', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_upper', 0, 'Upper Limit', 'number', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_upper_units', 1, '', 'radio', '["km","m","feet","miles","mb","Pa","hPa","Varies"]', '{}', '[]','[]',  False);
-INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_lower', 2, 'Lower Amount', 'number', '{}', '{}', '[]','[]',  False);
+INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_lower', 2, 'Lower Limit', 'number', '{}', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('a3701d37-77cf-4ccc-8068-c6860a7a8929', 'spatial_vertical_details_lower_units', 3, '', 'radio', '["km","m","feet","miles","mb","Pa","hPa","Varies"]', '{}', '[]','[]',  False);
 INSERT INTO input VALUES ('91577abc-a59c-40f7-b0e6-f954542e6b19', 'spatial_data_file', 0, '', 'textarea', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('a12ccd39-1d94-46a5-8aad-3587fd50c4ad', 'spatial_resolution', 0, 'Data Value Spatial Resolution', 'textarea', '{}', '{}', '[]','[]',  True);
@@ -689,12 +689,12 @@ INSERT INTO section_question VALUES ('1b4f110b-fea3-444f-b52c-c85008cf3b54', '50
 -- Input(question_id, control_id, list_order, label, type, enums, attributes, required_if, show_if, required))
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_fullname', 0, 'Full Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_email', 2, 'Email', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e3', 'dar_form_principal_investigator_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
 
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_name', 0, 'Full Name', 'text', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_organization', 1, 'Organization', 'text', '{}', '{}', '[]','[]',  True);
-INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_email', 2, 'Email', 'text', '{}', '{}', '[]','[]',  True);
+INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_email', 2, 'Email', 'email', '{}', '{}', '[]','[]',  True);
 INSERT INTO input VALUES ('80ac5f52-9ed9-4139-b5f9-7b4cebb6a8e4', 'dar_form_data_accession_poc_orcid', 3, 'ORCID', 'text', '{}', '{}', '[]','[]',  False);
 
 INSERT INTO input VALUES ('8a364184-42ac-48fe-b831-acb2eb08c730', 'dar_form_funding_nasa', 0, 'NASA', 'checkbox', '{}', '{}', '[]','[]',  False);
