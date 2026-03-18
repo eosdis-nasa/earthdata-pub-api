@@ -1,3 +1,15 @@
+locals {
+  db_env_vars = {
+    PG_USER             = var.db_user
+    PG_HOST             = var.db_host
+    PG_DB               = var.db_database
+    PG_PASS             = var.db_password
+    PG_PORT             = var.db_port
+    DEBUG               = var.debug
+    NODE_EXTRA_CA_CERTS = var.aws_node_extra_ca_certs_path
+  }
+}
+
 # Auth Util Layer
 
 resource "aws_lambda_layer_version" "auth_util" {
@@ -50,24 +62,18 @@ resource "aws_lambda_function" "action_consumer" {
   source_code_hash = filesha256("../artifacts/action-consumer-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
+    variables = merge({
       REGION         = var.region
       EVENT_SNS      = var.edpub_event_sns_arn
       EMAIL_SNS      = var.edpub_email_sns_arn
       METRICS_SNS    = var.edpub_metrics_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
       ACTIONS_BUCKET = var.edpub_actions_s3_bucket
       ORNL_BUCKET    = var.ornl_bucket_name
       MEDITOR_USER   = var.meditor_service_username
       MEDITOR_PASS   = var.meditor_service_password
       ROOT_URL       = var.client_root_url
       SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -104,18 +110,12 @@ resource "aws_lambda_function" "data" {
   source_code_hash = filesha256("../artifacts/data-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION          = var.region
-      EVENT_SNS       = var.edpub_event_sns_arn
-      METRICS_SNS     = var.edpub_metrics_sns_arn
-      PG_USER         = var.db_user
-      PG_HOST         = var.db_host
-      PG_DB           = var.db_database
-      PG_PASS         = var.db_password
-      PG_PORT         = var.db_port
-      SOURCE_EMAIL    = var.ses_from_email
-      DEBUG           = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      METRICS_SNS  = var.edpub_metrics_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -147,17 +147,11 @@ resource "aws_lambda_function" "form" {
   source_code_hash = filesha256("../artifacts/form-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION          = var.region
-      EVENT_SNS       = var.edpub_event_sns_arn
-      METRICS_SNS     = var.edpub_metrics_sns_arn
-      PG_USER         = var.db_user
-      PG_HOST         = var.db_host
-      PG_DB           = var.db_database
-      PG_PASS         = var.db_password
-      PG_PORT         = var.db_port
-      DEBUG           = var.debug
-    }
+    variables = merge({
+      REGION      = var.region
+      EVENT_SNS   = var.edpub_event_sns_arn
+      METRICS_SNS = var.edpub_metrics_sns_arn
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -188,17 +182,11 @@ resource "aws_lambda_function" "inbound_consumer" {
   source_code_hash = filesha256("../artifacts/inbound-consumer-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION        = var.region
-      EVENT_SNS     = var.edpub_event_sns_arn
-      PG_USER       = var.db_user
-      PG_HOST       = var.db_host
-      PG_DB         = var.db_database
-      PG_PASS       = var.db_password
-      PG_PORT       = var.db_port
-      SOURCE_EMAIL  = var.ses_from_email
-      DEBUG         = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -235,18 +223,12 @@ resource "aws_lambda_function" "invoke" {
   source_code_hash = filesha256("../artifacts/invoke-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      METRICS_SNS    = var.edpub_metrics_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      METRICS_SNS  = var.edpub_metrics_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -278,18 +260,12 @@ resource "aws_lambda_function" "metrics" {
   source_code_hash = filesha256("../artifacts/metrics-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      METRICS_SNS    = var.edpub_metrics_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      METRICS_SNS  = var.edpub_metrics_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -321,18 +297,12 @@ resource "aws_lambda_function" "metrics_consumer" {
   source_code_hash = filesha256("../artifacts/metrics-consumer-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      METRICS_SNS    = var.edpub_metrics_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      METRICS_SNS  = var.edpub_metrics_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -369,17 +339,11 @@ resource "aws_lambda_function" "model" {
   source_code_hash = filesha256("../artifacts/model-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -411,17 +375,11 @@ resource "aws_lambda_function" "notification" {
   source_code_hash = filesha256("../artifacts/notification-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -453,22 +411,16 @@ resource "aws_lambda_function" "notification_consumer" {
   source_code_hash = filesha256("../artifacts/notification-consumer-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION                = var.region
-      INGEST_BUCKET         = var.edpub_upload_s3_bucket
-      EMAIL_SNS             = var.edpub_email_sns_arn
-      EVENT_SNS             = var.edpub_event_sns_arn
-      METRICS_SNS           = var.edpub_metrics_sns_arn
-      PG_USER               = var.db_user
-      PG_HOST               = var.db_host
-      PG_DB                 = var.db_database
-      PG_PASS               = var.db_password
-      PG_PORT               = var.db_port
-      SOURCE_EMAIL          = var.ses_from_email
-      ROOT_URL              = var.client_root_url
-      DASHBOARD_BUCKET      = var.edpub_dashboard_s3_bucket
-      DEBUG                 = var.debug
-    }
+    variables = merge({
+      REGION           = var.region
+      INGEST_BUCKET    = var.edpub_upload_s3_bucket
+      EMAIL_SNS        = var.edpub_email_sns_arn
+      EVENT_SNS        = var.edpub_event_sns_arn
+      METRICS_SNS      = var.edpub_metrics_sns_arn
+      SOURCE_EMAIL     = var.ses_from_email
+      ROOT_URL         = var.client_root_url
+      DASHBOARD_BUCKET = var.edpub_dashboard_s3_bucket
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -492,19 +444,19 @@ resource "aws_lambda_event_source_mapping" "notification_consumer_sqs_event" {
 # OIDC Authorizer Lambda
 
 resource "aws_lambda_function" "oidc_authorizer" {
-  filename      = "../artifacts/oidc-authorizer-lambda.zip"
-  function_name = "oidc_authorizer"
-  role          = var.edpub_lambda_role_arn
-  handler       = "oidc-authorizer.handler"
+  filename         = "../artifacts/oidc-authorizer-lambda.zip"
+  function_name    = "oidc_authorizer"
+  role             = var.edpub_lambda_role_arn
+  handler          = "oidc-authorizer.handler"
   runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/oidc-authorizer-lambda.zip")
   timeout          = 180
   environment {
     variables = {
-      AUTH_PROVIDER_URL     = var.auth_provider_url
-      AUTH_INTROSPECT_PATH  = var.auth_introspect_path
-      AUTH_CLIENT_ID        = var.auth_client_id
-      AUTH_CLIENT_SECRET    = var.auth_client_secret
+      AUTH_PROVIDER_URL    = var.auth_provider_url
+      AUTH_INTROSPECT_PATH = var.auth_introspect_path
+      AUTH_CLIENT_ID       = var.auth_client_id
+      AUTH_CLIENT_SECRET   = var.auth_client_secret
     }
   }
   vpc_config {
@@ -549,9 +501,9 @@ resource "aws_cloudwatch_event_rule" "rds_backup_daily_cron" {
 }
 
 resource "aws_cloudwatch_event_target" "check_rds_trigger_daily" {
-  rule      = "${aws_cloudwatch_event_rule.rds_backup_daily_cron.name}"
+  rule      = aws_cloudwatch_event_rule.rds_backup_daily_cron.name
   target_id = "lambda"
-  arn       = "${aws_lambda_function.rds_backup.arn}"
+  arn       = aws_lambda_function.rds_backup.arn
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_rds_backup" {
@@ -559,15 +511,15 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_rds_backup" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.rds_backup.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.rds_backup_daily_cron.arn}"
+  source_arn    = aws_cloudwatch_event_rule.rds_backup_daily_cron.arn
 }
 
 # Step clean Lambda
 
 resource "aws_lambda_function" "step_cleanup" {
-  filename         = "../artifacts/step-cleanup-lambda.zip"
-  function_name    = "step_cleanup"
-  role             = var.edpub_lambda_role_arn
+  filename      = "../artifacts/step-cleanup-lambda.zip"
+  function_name = "step_cleanup"
+  role          = var.edpub_lambda_role_arn
   layers = [
     aws_lambda_layer_version.database_util.arn
   ]
@@ -576,15 +528,9 @@ resource "aws_lambda_function" "step_cleanup" {
   source_code_hash = filesha256("../artifacts/step-cleanup-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
+    variables = merge({
       REGION = var.region
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      DEBUG          = var.debug
-    }
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -599,9 +545,9 @@ resource "aws_cloudwatch_event_rule" "step_cleanup_monthly_cron" {
 }
 
 resource "aws_cloudwatch_event_target" "check_step_cleanup_trigger_monthly" {
-  rule      = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name}"
+  rule      = aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name
   target_id = "lambda"
-  arn       = "${aws_lambda_function.step_cleanup.arn}"
+  arn       = aws_lambda_function.step_cleanup.arn
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_step_cleanup" {
@@ -609,7 +555,7 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_step_cleanup" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.step_cleanup.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.arn}"
+  source_arn    = aws_cloudwatch_event_rule.step_cleanup_monthly_cron.arn
 }
 
 # Service Authorizer Lambda
@@ -627,17 +573,11 @@ resource "aws_lambda_function" "service_authorizer" {
   source_code_hash = filesha256("../artifacts/service-authorizer-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -669,18 +609,12 @@ resource "aws_lambda_function" "submission" {
   source_code_hash = filesha256("../artifacts/submission-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      ROOT_URL       = var.client_root_url
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+      ROOT_URL     = var.client_root_url
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -712,19 +646,13 @@ resource "aws_lambda_function" "user" {
   source_code_hash = filesha256("../artifacts/user-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      CUP_ID         = var.cognito_user_pool_id
-      EVENT_SNS      = var.edpub_event_sns_arn
-      EMAIL_SNS      = var.edpub_email_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      CUP_ID       = var.cognito_user_pool_id
+      EVENT_SNS    = var.edpub_event_sns_arn
+      EMAIL_SNS    = var.edpub_email_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -756,17 +684,11 @@ resource "aws_lambda_function" "workflow_consumer" {
   source_code_hash = filesha256("../artifacts/workflow-consumer-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -803,17 +725,11 @@ resource "aws_lambda_function" "workflow" {
   source_code_hash = filesha256("../artifacts/workflow-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -844,14 +760,9 @@ resource "aws_lambda_function" "auth" {
   source_code_hash = filesha256("../artifacts/auth-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
+    variables = merge({
       REGION             = var.region
       EVENT_SNS          = var.edpub_event_sns_arn
-      PG_USER            = var.db_user
-      PG_HOST            = var.db_host
-      PG_DB              = var.db_database
-      PG_PASS            = var.db_password
-      PG_PORT            = var.db_port
       CLIENT_ROOT_URL    = var.client_root_url
       AUTH_PROVIDER_URL  = var.auth_provider_url
       AUTH_LOGOUT_PATH   = var.auth_logout_path
@@ -861,8 +772,7 @@ resource "aws_lambda_function" "auth" {
       AUTH_CLIENT_ID     = var.auth_client_id
       AUTH_CLIENT_SECRET = var.auth_client_secret
       AUTH_CLIENT_PATH   = var.auth_client_path
-      DEBUG              = var.debug
-    }
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -972,18 +882,12 @@ resource "aws_lambda_function" "questions" {
   source_code_hash = filesha256("../artifacts/questions-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
-      REGION         = var.region
-      EVENT_SNS      = var.edpub_event_sns_arn
-      METRICS_SNS    = var.edpub_metrics_sns_arn
-      PG_USER        = var.db_user
-      PG_HOST        = var.db_host
-      PG_DB          = var.db_database
-      PG_PASS        = var.db_password
-      PG_PORT        = var.db_port
-      SOURCE_EMAIL   = var.ses_from_email
-      DEBUG          = var.debug
-    }
+    variables = merge({
+      REGION       = var.region
+      EVENT_SNS    = var.edpub_event_sns_arn
+      METRICS_SNS  = var.edpub_metrics_sns_arn
+      SOURCE_EMAIL = var.ses_from_email
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -1000,10 +904,10 @@ resource "aws_lambda_permission" "questions" {
 }
 
 resource "aws_lambda_function" "file_upload" {
-  filename      = "../artifacts/file-upload-lambda.zip"
-  function_name = "file_upload"
-  role          = var.edpub_lambda_role_arn
-  handler       = "file-upload.handler"
+  filename         = "../artifacts/file-upload-lambda.zip"
+  function_name    = "file_upload"
+  role             = var.edpub_lambda_role_arn
+  handler          = "file-upload.handler"
   runtime          = "nodejs22.x"
   source_code_hash = filesha256("../artifacts/file-upload-lambda.zip")
   timeout          = 180
@@ -1011,21 +915,15 @@ resource "aws_lambda_function" "file_upload" {
     aws_lambda_layer_version.database_util.arn,
   ]
   environment {
-    variables = {
-      REGION                        = var.region
-      INGEST_BUCKET                 = var.edpub_upload_s3_bucket
-      PG_USER                       = var.db_user
-      PG_HOST                       = var.db_host
-      PG_DB                         = var.db_database
-      PG_PASS                       = var.db_password
-      PG_PORT                       = var.db_port
-      DEBUG                         = var.debug
-      CUE_API_TOKEN                 = var.cue_api_token
-      CUE_ROOT_URL                  = var.cue_root_url
-      CUE_COLLECTION                = var.cue_collection
-      MULTIPART_UPLOAD_LIMIT_BYTES  = var.multipart_upload_limit_bytes
-      USE_CUE_UPLOAD                = var.use_cue_upload
-    }
+    variables = merge({
+      REGION                       = var.region
+      INGEST_BUCKET                = var.edpub_upload_s3_bucket
+      CUE_API_TOKEN                = var.cue_api_token
+      CUE_ROOT_URL                 = var.cue_root_url
+      CUE_COLLECTION               = var.cue_collection
+      MULTIPART_UPLOAD_LIMIT_BYTES = var.multipart_upload_limit_bytes
+      USE_CUE_UPLOAD               = var.use_cue_upload
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -1044,9 +942,9 @@ resource "aws_lambda_permission" "file_upload" {
 # Disable User Account Lambda
 
 resource "aws_lambda_function" "disable_user_account" {
-  filename         = "../artifacts/disable-user-account-lambda.zip"
-  function_name    = "disable_user_account"
-  role             = var.edpub_lambda_role_arn
+  filename      = "../artifacts/disable-user-account-lambda.zip"
+  function_name = "disable_user_account"
+  role          = var.edpub_lambda_role_arn
   layers = [
     aws_lambda_layer_version.database_util.arn
   ]
@@ -1055,15 +953,10 @@ resource "aws_lambda_function" "disable_user_account" {
   source_code_hash = filesha256("../artifacts/disable-user-account-lambda.zip")
   timeout          = 180
   environment {
-    variables = {
+    variables = merge({
       REGION       = var.region
       USER_POOL_ID = var.cognito_user_pool_id
-      PG_USER      = var.db_user
-      PG_HOST      = var.db_host
-      PG_DB        = var.db_database
-      PG_PASS      = var.db_password
-      PG_PORT      = var.db_port
-    }
+    }, local.db_env_vars)
   }
   vpc_config {
     subnet_ids         = var.subnet_ids
@@ -1080,9 +973,9 @@ resource "aws_cloudwatch_event_rule" "disable_user_account_monthly_cron" {
 
 # Event Target for Lambda
 resource "aws_cloudwatch_event_target" "disable_user_account_trigger_monthly" {
-  rule      = "${aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name}"
+  rule      = aws_cloudwatch_event_rule.step_cleanup_monthly_cron.name
   target_id = "lambda"
-  arn       = "${aws_lambda_function.disable_user_account.arn}"
+  arn       = aws_lambda_function.disable_user_account.arn
 }
 
 # Allow CloudWatch to Invoke Lambda
@@ -1091,5 +984,5 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_disable_user_account"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.disable_user_account.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = "${aws_cloudwatch_event_rule.disable_user_account_monthly_cron.arn}"
+  source_arn    = aws_cloudwatch_event_rule.disable_user_account_monthly_cron.arn
 }
