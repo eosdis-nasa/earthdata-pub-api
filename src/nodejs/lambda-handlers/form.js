@@ -34,16 +34,16 @@ async function addSection({ params, context }) {
 
 async function createForm({ params, context }) {
   if (await hasPerms(context.user_id, ['ADMIN'])) {
-    params.privileged_user = true;
+    return db.form.createForm(params);
   }
-  return db.form.createForm(params);
+  return { error: 'Not Authorized' };
 }
 
 async function updateForm({ params, context }) {
   if (await hasPerms(context.user_id, ['ADMIN'])) {
-    params.privileged_user = true;
+    return db.form.updateForm(params);
   }
-  return db.form.updateForm(params);
+  return { error: 'Not Authorized' };
 }
 
 async function formFindById({ params, form_id: formId, context }) {
