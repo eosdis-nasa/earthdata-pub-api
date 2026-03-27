@@ -3,6 +3,8 @@ const { Pool } = require('pg');
 
 const queryBuilder = require('./query/index.js');
 
+const testing = process.env.TESTING || false;
+
 const config = {
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
@@ -13,7 +15,15 @@ const config = {
     && { ssl: { ca: readFileSync(process.env.NODE_EXTRA_CA_CERTS) } })
 };
 
-const pool = new Pool(config);
+const testingConfig = {
+  user: process.env.TESTDB_USER,
+  host: process.env.TESTDB_HOST,
+  database: process.env.TESTDB_DB,
+  password: process.env.TESTDB_PW,
+  port: process.env.TESTDB_PORT
+};
+
+const pool = new Pool(testing === false ? config : testingConfig);
 
 async function execute({ resource, operation }, params) {
   const response = { data: {} };
@@ -87,3 +97,4 @@ module.exports = Object.entries(queryBuilder).reduce((exportable, [resource, ope
 
 module.exports.execute = execute;
 module.exports.seed = seed;
+module.exports.pool = pool;
