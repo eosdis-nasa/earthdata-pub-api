@@ -1,4 +1,5 @@
 const path = require('path');
+// eslint-disable-next-line
 const { PostgreSqlContainer } = require('@testcontainers/postgresql');
 
 const runIntegration = process.env.RUN_INTEGRATION || false;
