@@ -259,7 +259,8 @@ describe('user integration', () => {
         descriptor: 'DM',
         requestorId: '8b52fc38-e03c-4c4f-8ef7-94d96002e8fc',
         testUser: '5e711da9-913f-4752-a4de-98d53c206b67',
-        groupId: '89816689-5375-4c81-a30c-bf6ed12d30fb'
+        // groupId: '89816689-5375-4c81-a30c-bf6ed12d30fb'
+        groupId: '8edd07a0-34e1-45c7-a2c1-7fc9ae884030'
       }
     ];
 
@@ -332,7 +333,7 @@ describe('user integration', () => {
         descriptor: 'DM',
         requestorId: '8b52fc38-e03c-4c4f-8ef7-94d96002e8fc',
         testUser: '5e711da9-913f-4752-a4de-98d53c206b67',
-        groupId: '89816689-5375-4c81-a30c-bf6ed12d30fb'
+        groupId: '8edd07a0-34e1-45c7-a2c1-7fc9ae884030'
       }
     ];
 
