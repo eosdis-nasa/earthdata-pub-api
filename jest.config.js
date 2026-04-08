@@ -10,7 +10,9 @@ module.exports = {
       functions: 4,
       lines: 40,
     }
-  }
+  },
+  globalSetup: "<rootDir>/src/nodejs/lambda-handlers/test/test_setup.js",
+  globalTeardown: "<rootDir>/src/nodejs/lambda-handlers/test/test_teardown.js",
 };
 
 process.env.TABLE_SUFFIX = '_TEST';
@@ -23,3 +25,5 @@ process.env.AWS_ACCESS_KEY_ID = 'TEST_KEY';
 process.env.AWS_SECTRET_ACCESS_KEY = 'TEST_SECRET';
 process.env.CUE_ROOT_URL = "https://fake-cue-url.com"
 process.env.MULTIPART_UPLOAD_LIMIT_BYTES = 104857600
+process.env.DEVELOPMENT = true;
+process.env.TESTING = true;
