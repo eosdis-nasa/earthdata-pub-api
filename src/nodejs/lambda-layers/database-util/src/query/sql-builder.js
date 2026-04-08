@@ -20,8 +20,9 @@ const complexParse = (src) => complexTypes[src.type](src);
 const typeCheck = (stub) => `${stub.type ? complexParse(stub) : stub.param ? param(stub) : stub}`;
 
 const selectQuery = ({
-  fields, from, where, group, sort, order, limit, offset, alias
-}) => `${alias ? '(' : ''}SELECT${fields
+  with_query, fields, from, where, group, sort, order, limit, offset, alias
+}) => `${with_query ? withQuery(with_query) : ''}
+  ${alias ? '(' : ''}SELECT${fields
   ? ` ${fields.map(typeCheck)}` : ' *'}${from
   ? fromClause(from) : ''}${where
   ? whereClause(where) : ''}${group
@@ -122,6 +123,8 @@ const strWrapper = (value) => ` '${value}'`;
 const strLiteral = ({ value }) => strLiteral(value);
 
 const union = ({ query1, query2, alias }) => `${alias ? '(' : ''}${query1.type ? complexParse(query1) : query1} UNION ${query2.type ? complexParse(query2) : query2}${alias ? `) ${alias}` : ''}`;
+
+const withQuery = ({ alias, query }) => `WITH ${alias} AS (${query.type ? complexParse(query): query})`;
 
 const complexTypes = {
   select: selectQuery,
