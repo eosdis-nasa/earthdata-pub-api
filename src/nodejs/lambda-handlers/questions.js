@@ -62,8 +62,8 @@ async function updateInputsMethod({ params, context }) {
         questionId: params.questionId
       }
     ));
-    Promise.all(promises);
-    return (db.question.findById(params));
+    await Promise.all(promises);
+    return (db.question.findById({ id: params.questionId }));
   }
   return {};
 }
