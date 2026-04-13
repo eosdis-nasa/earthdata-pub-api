@@ -128,7 +128,7 @@ resource "aws_lambda_permission" "data" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.data.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*"
 }
 
 # Form Lambda
@@ -666,15 +666,6 @@ resource "aws_lambda_permission" "user" {
   function_name = aws_lambda_function.user.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/user/*"
-}
-
-resource "aws_lambda_permission" "users" {
-  # Also need to include this APIGateway route to avoid permissions issues
-  statement_id  = "AllowExecutionFromAPIGateway-users"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.user.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/users/*"
 }
 
 # Workflow Consumer Lambda
