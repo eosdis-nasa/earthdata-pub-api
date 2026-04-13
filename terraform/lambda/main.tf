@@ -661,11 +661,20 @@ resource "aws_lambda_function" "user" {
 }
 
 resource "aws_lambda_permission" "user" {
-  statement_id  = "AllowExecutionFromAPIGateway"
+  statement_id  = "AllowExecutionFromAPIGateway-user"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.user.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/user*/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/user/*"
+}
+
+resource "aws_lambda_permission" "users" {
+  # Also need to include this APIGateway route to avoid permissions issues
+  statement_id  = "AllowExecutionFromAPIGateway-users"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.user.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/users/*"
 }
 
 # Workflow Consumer Lambda
