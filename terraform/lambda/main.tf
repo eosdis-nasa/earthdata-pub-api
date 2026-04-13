@@ -128,7 +128,7 @@ resource "aws_lambda_permission" "data" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.data.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}*"
 }
 
 # Form Lambda
@@ -160,12 +160,12 @@ resource "aws_lambda_function" "form" {
 }
 
 resource "aws_lambda_permission" "form" {
-  for_each      = toset(["form", "forms", "sections"])
+  for_each      = toset(["form", "sections"])
   statement_id  = "AllowExecutionFromAPIGateway-${each.value}"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.form.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/${each.value}/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/${each.value}*"
 }
 
 # Inbound Consumer Lambda
@@ -279,7 +279,7 @@ resource "aws_lambda_permission" "metrics" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.metrics.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/metrics/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/metrics*"
 }
 
 # Metrics Consumer Lambda
@@ -393,7 +393,7 @@ resource "aws_lambda_permission" "notification" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.notification.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/notification*"
 }
 
 # Notification Consumer Lambda
@@ -628,7 +628,7 @@ resource "aws_lambda_permission" "submission" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.submission.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/submission/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/submission*"
 }
 
 # User Lambda
@@ -662,12 +662,12 @@ resource "aws_lambda_function" "user" {
 }
 
 resource "aws_lambda_permission" "user" {
-  for_each      = toset(["user", "users"])
+  for_each      = toset(["user"])
   statement_id  = "AllowExecutionFromAPIGateway-${each.value}"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.user.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/${each.value}/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/${each.value}*"
 }
 
 # Workflow Consumer Lambda
@@ -740,12 +740,12 @@ resource "aws_lambda_function" "workflow" {
 }
 
 resource "aws_lambda_permission" "workflow" {
-  for_each      = toset(["workflow", "workflows", "steps"])
+  for_each      = toset(["workflow", "steps"])
   statement_id  = "AllowExecutionFromAPIGateway-${each.value}"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.workflow.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/${each.value}/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/${each.value}*"
 }
 
 # Auth Lambda
@@ -899,12 +899,12 @@ resource "aws_lambda_function" "questions" {
 }
 
 resource "aws_lambda_permission" "questions" {
-  for_each      = toset(["questions", "question", "inputs", "input"])
+  for_each      = toset(["question", "input"])
   statement_id  = "AllowExecutionFromAPIGateway-${each.value}"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.questions.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/${each.value}/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/${each.value}*"
 }
 
 resource "aws_lambda_function" "file_upload" {
@@ -940,7 +940,7 @@ resource "aws_lambda_permission" "file_upload" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.file_upload.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/upload/*"
+  source_arn    = "arn:aws:execute-api:${var.region}:${var.account_id}:${var.api_id}/*/*/upload*"
 }
 
 # Disable User Account Lambda
