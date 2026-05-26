@@ -14,7 +14,9 @@
     "stop": "docker-compose down",
     "lint": "eslint ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
     "lint-fix": "eslint --fix ./src/nodejs/lambda-layers ./src/nodejs/lambda-handlers -c eslint.config.json",
-    "test": "jest -c jest.config.js --all",
+    "test": "jest -c jest.config.js --all --testPathIgnorePatterns=integration",
+    "test:integration": "export RUN_INTEGRATION=true && jest -c jest.config.js integration --all",
+    "test:all": "export RUN_INTEGRATION=true && jest -c jest.config.js --all",
     "generate-docs": "bash ./scripts/generate-jsdoc.sh && bash ./scripts/generate-apidoc.sh",
     "start-api": "npm run start:detached",
     "stop-api": "npm run stop",
@@ -27,6 +29,7 @@
   "license": "BSD 3-Clause License",
   "devDependencies": {
     "@smithy/util-stream": "^4.2.2",
+    "@testcontainers/postgresql": "^11.13.0",
     "aws-sdk-client-mock": "^4.1.0",
     "eslint": "^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
