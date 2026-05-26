@@ -102,7 +102,7 @@ async function findByIdMethod(event, privileges) {
 
 async function groupConditional(id, userPrivileges, groupId, privilege) {
   if (userPrivileges.includes('ADMIN')) { return true; }
-  const { user_groups: userGroups } = await db.user.findById(id);
+  const { user_groups: userGroups } = await db.user.findById({ id });
   const groupIds = userGroups.map((group) => group.id);
   return userPrivileges.includes(privilege) && groupIds.includes(groupId);
 }

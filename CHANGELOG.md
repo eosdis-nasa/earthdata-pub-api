@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated the language for Open Data Policy questions in DAR and DER
 - Removing terraform references to edpub_metrics_s3_bucket
 - Removing unused database tables and references to them
+- Added Group_Upload privilege to DAAC Data Manager role
 
 ## 1.1.0
 
