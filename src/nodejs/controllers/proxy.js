@@ -1001,6 +1001,16 @@ module.exports.refreshToken = function refreshToken(req, res, next) {
   });
 };
 
+module.exports.getIdfsSession = function getIdfsSession(req, res, next) {
+  const lambdaEvent = {
+    idfssession: true,
+    context: { user_id: req.user_id }
+  };
+  handlers.auth(lambdaEvent).then((body) => {
+    setTimeout(() => res.send(body), latency);
+  });
+};
+
 module.exports.getVersion = function getVersion(req, res, next) {
   const lambdaEvent = {};
   handlers.version(lambdaEvent).then((body) => {

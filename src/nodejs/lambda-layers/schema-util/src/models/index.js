@@ -20,6 +20,7 @@ const Group = require('./group.js');
 const GetPartUrl = require('./get-part-url.js');
 const GetPartUrlResponse = require('./get-part-url-response.js');
 const Id = require('./id.js');
+const IdfsSession = require('./idfs-session.js');
 const Note = require('./note.js');
 const NoteAddViewers = require('./note-add-viewers.js');
 const NoteRemoveViewer = require('./note-remove-viewer.js');
@@ -123,6 +124,7 @@ const models = {
   GetPartUrl,
   GetPartUrlResponse,
   Id,
+  IdfsSession,
   Note,
   NoteAddViewers,
   NoteRemoveViewer,
