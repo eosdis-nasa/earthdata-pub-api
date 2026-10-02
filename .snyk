@@ -1,0 +1,12 @@
+# Snyk (https://snyk.io) policy file
+version: v1.25.0
+ignore:
+  SNYK-JS-URIJS-19963963:
+    - '*':
+        reason: >-
+          No patched uri-js release. Transitive via oas-tools@2.2.2 > request >
+          har-validator > ajv@6 on local-server only (not deployed to UAT/prod).
+          oas-tools 3.x is a breaking rewrite of the local OpenAPI server.
+          Forcing ajv@8.15.0 breaks har-validator (draft-04 / schemaId).
+        expires: 2027-04-02T00:00:00.000Z
+patch: {}
