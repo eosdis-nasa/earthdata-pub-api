@@ -22,6 +22,19 @@ function filterObject(base, filter) {
   return filtered;
 }
 
+function canAssignStepReviewers(stepName, status) {
+  const currentStepName = status?.step_name || status?.step?.name;
+  const formId = status?.step?.form_id || status?.step?.data?.form_id;
+  return Boolean(
+    stepName
+    && currentStepName
+    && stepName === currentStepName
+    && stepName !== 'close'
+    && currentStepName !== 'close'
+    && formId
+  );
+}
+
 async function statusMethod(event, user) {
   const hidden = event.operation === 'inactive';
   if (user.user_privileges.includes('ADMIN')
@@ -445,6 +458,11 @@ async function createStepReviewApprovalMethod(event, user) {
   } = event;
   const approvedUserPrivileges = ['ADMIN', 'CREATE_STEPREVIEW'];
   if (user.user_privileges.some((privilege) => approvedUserPrivileges.includes(privilege))) {
+    const status = await db.submission.getState({ id: submissionId });
+    if (!canAssignStepReviewers(stepName, status)) {
+      return { error: 'Invalid workflow step. Unable to assign reviewers.' };
+    }
+
     const {
       conversation_id: conversationId
     } = await db.submission.getConversationId({ id: submissionId });
