@@ -1,0 +1,14 @@
+# Snyk (https://snyk.io) policy file
+version: v1.25.0
+ignore:
+  SNYK-JS-URIJS-19963963:
+    - '*':
+        reason: No patched uri-js. Transitive via oas-tools@2.2.2 > request on local-server only; not deployed to UAT/prod. oas-tools 3.x is a breaking rewrite.
+        expires: '2027-04-02T00:00:00.000Z'
+    - 'oas-tools > request > har-validator > ajv > uri-js':
+        reason: No patched uri-js. Transitive via oas-tools@2.2.2 > request on local-server only; not deployed to UAT/prod. oas-tools 3.x is a breaking rewrite.
+        expires: '2027-04-02T00:00:00.000Z'
+    - 'local-server > oas-tools > request > har-validator > ajv > uri-js':
+        reason: No patched uri-js. Transitive via oas-tools@2.2.2 > request on local-server only; not deployed to UAT/prod. oas-tools 3.x is a breaking rewrite.
+        expires: '2027-04-02T00:00:00.000Z'
+patch: {}
