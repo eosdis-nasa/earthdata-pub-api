@@ -64,7 +64,8 @@ async function getCognitoEnabledForUser(userId) {
 }
 
 function withEnabled(user, enabled) {
-  if (!user || user.error) {
+  // Only enrich plain user objects (skip strings/arrays from older callers/tests)
+  if (!user || user.error || typeof user !== 'object' || Array.isArray(user)) {
     return user;
   }
   return { ...user, enabled };
