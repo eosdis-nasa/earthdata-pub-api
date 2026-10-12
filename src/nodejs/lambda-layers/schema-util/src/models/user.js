@@ -20,6 +20,10 @@ module.exports.model = (path) => ({
     last_login: {
       type: 'string'
     },
+    enabled: {
+      type: 'boolean',
+      description: 'Cognito account Enabled (Active) vs disabled'
+    },
     detailed: {
       type: 'boolean'
     }
