@@ -25,6 +25,10 @@ async function handler(event) {
     const user = await db.user.findById({ id: decoded.sub });
     return { token: access, user };
   }
+  // Lightweight IDFS/OIDC validity probe — authorizer already validated the token
+  if (event.idfssession) {
+    return { ok: true };
+  }
   if (event.logout) {
     const { redirect } = await auth.getLogoutUrl(event);
     return { redirect };

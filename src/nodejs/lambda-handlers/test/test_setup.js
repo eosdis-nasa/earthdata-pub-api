@@ -1,12 +1,12 @@
 const path = require('path');
-// eslint-disable-next-line
-const { PostgreSqlContainer } = require('@testcontainers/postgresql');
 
 const runIntegration = process.env.RUN_INTEGRATION || false;
 
 module.exports = async () => {
   // Only setup the docker if we're running integration tests
   if (runIntegration) {
+    // eslint-disable-next-line
+    const { PostgreSqlContainer } = require('@testcontainers/postgresql');
     // Paths to the files we need for initialization
     const pgInit = path.resolve(__dirname, '../../../postgres/1-init.sql');
     const pgTables = path.resolve(__dirname, '../../../postgres/2-tables.sql');

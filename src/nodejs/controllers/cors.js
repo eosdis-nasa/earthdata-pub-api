@@ -35,6 +35,7 @@ module.exports.optionsUser = optionsHeaders;
 module.exports.optionsMetrics = optionsHeaders;
 module.exports.optionsModel = optionsHeaders;
 module.exports.optionsToken = optionsHeaders;
+module.exports.optionsIdfsSession = optionsHeaders;
 module.exports.optionsVersion = optionsHeaders;
 module.exports.optionsFileUpload = optionsHeaders;
 module.exports.optionsDataStep = optionsHeaders;
