@@ -4675,7 +4675,7 @@
           "data"
         ],
         "summary": "Add step reviewers",
-        "description": "Allows a user to add reviewers to a submission step.",
+        "description": "Allows a user to add reviewers to a submission's current step. Requests on close or steps with no form_id are rejected; no step_review row is created and no notification is sent.",
         "operationId": "createStepReviewApproval",
         "requestBody": {
           "x-name": "payload",
