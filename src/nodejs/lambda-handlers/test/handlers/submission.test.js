@@ -30,6 +30,7 @@ db.submission.checkWorkflow = jest.fn();
 db.submission.setStep = jest.fn();
 db.submission.getConversationId = jest.fn();
 db.submission.addContributors = jest.fn();
+db.submission.createStepReviewApproval = jest.fn();
 db.submission.removeContributor = jest.fn();
 db.submission.copyFormData = jest.fn();
 db.submission.copyActionData = jest.fn();
@@ -379,6 +380,130 @@ describe('submission', () => {
       conversation_id: 'test conversation',
       workflow_id: 'test workflow',
       step: { name: 'test step' }
+    });
+  });
+
+  describe('createStepReviewApproval', () => {
+    const reviewerPayload = {
+      operation: 'createStepReviewApproval',
+      context: { user_id: 'test user' },
+      submissionId: 'test submission',
+      stepName: 'data_publication_request_form_review',
+      userIds: ['reviewer-1']
+    };
+    const reviewStepStatus = {
+      id: 'test submission',
+      step_name: 'data_publication_request_form_review',
+      conversation_id: 'test conversation',
+      step: {
+        type: 'review',
+        name: 'data_publication_request_form_review',
+        data: { form_id: '19025579-99ca-4344-8610-704dae626343' }
+      }
+    };
+
+    it('should reject assigning reviewers on a closed request', async () => {
+      db.user.findById.mockReturnValue({
+        id: 'test user',
+        name: 'Test User',
+        user_privileges: ['ADMIN']
+      });
+      db.submission.getState.mockReturnValue({
+        id: 'test submission',
+        step_name: 'close',
+        conversation_id: 'test conversation',
+        step: { type: 'close', name: 'close' }
+      });
+
+      const response = await submission.handler({
+        ...reviewerPayload,
+        stepName: 'close'
+      });
+
+      expect(response).toEqual({ error: 'Invalid workflow step. Unable to assign reviewers.' });
+      expect(db.submission.createStepReviewApproval).not.toHaveBeenCalled();
+      expect(msg.sendEvent).not.toHaveBeenCalled();
+    });
+
+    it('should reject assigning reviewers when the request is closed even if a review step is sent', async () => {
+      db.user.findById.mockReturnValue({
+        id: 'test user',
+        name: 'Test User',
+        user_privileges: ['ADMIN']
+      });
+      db.submission.getState.mockReturnValue({
+        id: 'test submission',
+        step_name: 'close',
+        conversation_id: 'test conversation',
+        step: { type: 'close', name: 'close' }
+      });
+
+      const response = await submission.handler(reviewerPayload);
+
+      expect(response).toEqual({ error: 'Invalid workflow step. Unable to assign reviewers.' });
+      expect(db.submission.createStepReviewApproval).not.toHaveBeenCalled();
+      expect(msg.sendEvent).not.toHaveBeenCalled();
+    });
+
+    it('should reject assigning reviewers on a step with no form', async () => {
+      db.user.findById.mockReturnValue({
+        id: 'test user',
+        name: 'Test User',
+        user_privileges: ['CREATE_STEPREVIEW']
+      });
+      db.submission.getState.mockReturnValue({
+        id: 'test submission',
+        step_name: 'start_qa',
+        conversation_id: 'test conversation',
+        step: {
+          type: 'action',
+          name: 'start_qa',
+          data: { rollback: 'data_publication_request_form_review' }
+        }
+      });
+
+      const response = await submission.handler({
+        ...reviewerPayload,
+        stepName: 'start_qa'
+      });
+
+      expect(response).toEqual({ error: 'Invalid workflow step. Unable to assign reviewers.' });
+      expect(db.submission.createStepReviewApproval).not.toHaveBeenCalled();
+      expect(msg.sendEvent).not.toHaveBeenCalled();
+    });
+
+    it('should add reviewers on a review step', async () => {
+      const inserted = [{
+        step_name: 'data_publication_request_form_review',
+        submission_id: 'test submission',
+        edpuser_id: 'reviewer-1',
+        form_id: '19025579-99ca-4344-8610-704dae626343'
+      }];
+      db.user.findById.mockReturnValue({
+        id: 'test user',
+        name: 'Test User',
+        user_privileges: ['ADMIN']
+      });
+      db.submission.getState.mockReturnValue(reviewStepStatus);
+      db.submission.getConversationId.mockReturnValue({ conversation_id: 'test conversation' });
+      db.submission.createStepReviewApproval.mockReturnValue(inserted);
+      db.note.addUsersToConversation.mockReturnValue({});
+      db.submission.addContributors.mockReturnValue({});
+
+      const response = await submission.handler(reviewerPayload);
+
+      expect(db.submission.createStepReviewApproval).toHaveBeenCalledWith({
+        submission_id: 'test submission',
+        step_name: 'data_publication_request_form_review',
+        user_ids: ['reviewer-1'],
+        submitted_by: 'test user'
+      });
+      expect(msg.sendEvent).toHaveBeenCalledWith(expect.objectContaining({
+        event_type: 'review_required',
+        formId: '19025579-99ca-4344-8610-704dae626343',
+        step_name: 'data_publication_request_form_review'
+      }));
+      expect(response).toEqual(inserted);
     });
   });
 });
