@@ -11,8 +11,65 @@ const db = require('database-util');
 const { CognitoIdentityProvider: CognitoIdentityServiceProvider } = require('@aws-sdk/client-cognito-identity-provider');
 
 const idp = new CognitoIdentityServiceProvider({ region: process.env.REGION });
-const userPoolId = process.env.CUP_ID;
+const userPoolId = process.env.CUP_ID || process.env.USER_POOL_ID;
 const dev = process.env.DEVELOPMENT || false;
+
+/**
+ * Map Cognito `sub` → Enabled. Returns null when Cognito is unavailable (local/dev)
+ * so callers can default to Active.
+ */
+async function listCognitoEnabledBySub() {
+  if (dev || !userPoolId) {
+    return null;
+  }
+  const enabledBySub = new Map();
+  let paginationToken;
+  do {
+    const res = await idp.listUsers({
+      UserPoolId: userPoolId,
+      Limit: 60,
+      ...(paginationToken ? { PaginationToken: paginationToken } : {})
+    });
+    (res.Users || []).forEach((cognitoUser) => {
+      const attrs = Object.fromEntries(
+        (cognitoUser.Attributes || []).map((a) => [a.Name, a.Value])
+      );
+      if (attrs.sub) {
+        enabledBySub.set(attrs.sub, !!cognitoUser.Enabled);
+      }
+    });
+    paginationToken = res.PaginationToken;
+  } while (paginationToken);
+  return enabledBySub;
+}
+
+async function getCognitoEnabledForUser(userId) {
+  if (dev || !userPoolId) {
+    return true;
+  }
+  try {
+    const res = await idp.listUsers({
+      UserPoolId: userPoolId,
+      Filter: `sub = "${userId}"`,
+      Limit: 1
+    });
+    if (res.Users && res.Users[0]) {
+      return !!res.Users[0].Enabled;
+    }
+    return false;
+  } catch (err) {
+    console.error('Failed to read Cognito Enabled for user', userId, err.message);
+    return null;
+  }
+}
+
+function withEnabled(user, enabled) {
+  // Only enrich plain user objects (skip strings/arrays from older callers/tests)
+  if (!user || user.error || typeof user !== 'object' || Array.isArray(user)) {
+    return user;
+  }
+  return { ...user, enabled };
+}
 
 async function createCognitoUser({
   sub, username, name, email
@@ -84,8 +141,45 @@ async function updateUsername(params) {
 async function findMethod(params, privileges) {
   if (privileges.includes('ADMIN')
     || privileges.includes('USER_READ')) {
-    if (params.id) return db.user.findById(params);
-    return db.user.find(params);
+    if (params.id) {
+      const user = await db.user.findById(params);
+      return withEnabled(user, await getCognitoEnabledForUser(params.id));
+    }
+    const users = await db.user.find(params);
+    const enabledBySub = await listCognitoEnabledBySub();
+    if (!Array.isArray(users)) {
+      return users;
+    }
+    if (enabledBySub === null) {
+      return users.map((u) => withEnabled(u, true));
+    }
+    return users.map((u) => withEnabled(
+      u,
+      enabledBySub.has(u.id) ? enabledBySub.get(u.id) : false
+    ));
+  }
+  return { error: 'No privilege' };
+}
+
+async function findAllMethod(event, privileges) {
+  const { params } = event;
+  if (privileges.includes('ADMIN') || privileges.includes('USER_READ')) {
+    if (params && params.id) {
+      const user = await db.user.findById(params);
+      return withEnabled(user, await getCognitoEnabledForUser(params.id));
+    }
+    const users = await db.user.findAll(params || {});
+    const enabledBySub = await listCognitoEnabledBySub();
+    if (!Array.isArray(users)) {
+      return users;
+    }
+    if (enabledBySub === null) {
+      return users.map((u) => withEnabled(u, true));
+    }
+    return users.map((u) => withEnabled(
+      u,
+      enabledBySub.has(u.id) ? enabledBySub.get(u.id) : false
+    ));
   }
   return { error: 'No privilege' };
 }
@@ -95,7 +189,8 @@ async function findByIdMethod(event, privileges) {
   if (privileges.includes('ADMIN')
     || privileges.includes('USER_READ')
     || params.id === context.user_id) {
-    return db.user.findById(params);
+    const user = await db.user.findById(params);
+    return withEnabled(user, await getCognitoEnabledForUser(params.id));
   }
   return { error: 'No privilege' };
 }
@@ -183,6 +278,7 @@ async function getDetailedUsersMethod(event, privileges) {
 const operations = {
   create: createMethod,
   find: findMethod,
+  findAll: findAllMethod,
   findById: findByIdMethod,
   add_group: addGroupMethod,
   remove_group: removeGroupMethod,

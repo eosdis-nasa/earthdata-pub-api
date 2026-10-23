@@ -112,6 +112,7 @@ resource "aws_lambda_function" "data" {
   environment {
     variables = merge({
       REGION       = var.region
+      CUP_ID       = var.cognito_user_pool_id
       EVENT_SNS    = var.edpub_event_sns_arn
       METRICS_SNS  = var.edpub_metrics_sns_arn
       SOURCE_EMAIL = var.ses_from_email
