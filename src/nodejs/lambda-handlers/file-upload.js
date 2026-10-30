@@ -472,11 +472,13 @@ async function getDownloadUrlMethod(event, user) {
   const userDaacIds = userDaacs.map((daac) => daac.id);
 
   const {
-    daac_id: daacId
+    daac_id: daacId,
+    contributor_ids: contributorIds
   } = await db.submission.findById({ id: submissionId, user_id: userInfo.id });
 
   if (userInfo.user_privileges.includes('ADMIN')
     || userDaacIds.includes(daacId)
+    || (contributorIds || []).includes(userInfo.id)
   ) {
     const payload = {
       Bucket: ingestBucket,
