@@ -7,6 +7,7 @@ module.exports.model = (path) => ({
     email: { type: 'string' },
     registered: { type: 'string' },
     last_login: { type: 'string' },
+    enabled: { type: 'boolean', description: 'Cognito account enabled (Active) vs disabled' },
     user_groups: {
       type: 'array',
       items: { $ref: `#${path}Group` }
