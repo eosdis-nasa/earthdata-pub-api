@@ -7,8 +7,8 @@
  */
 
 const db = require('database-util');
-
 const msg = require('message-util');
+const { guard } = require('./error-reference');
 
 const { mapEDPubToUmmc } = require('./submission/metadata-mapper.js');
 
@@ -730,6 +730,10 @@ const operations = {
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
+  // Temporary SIT check for EDPUB-1803. Remove after the error-page test.
+  if (event.operation === 'active' && event.page === '/') {
+    throw new Error('edpub-1803');
+  }
   const user = (event.context.authorizer ? { id: event.context.authorizer }
     : await db.user.findById({ id: event.context.user_id }));
   const operation = operations[event.operation];
@@ -737,4 +741,4 @@ async function handler(event) {
   return data;
 }
 
-exports.handler = handler;
+exports.handler = guard(handler);

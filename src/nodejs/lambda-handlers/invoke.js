@@ -7,6 +7,7 @@
  */
 
 const msg = require('message-util');
+const { guard } = require('./error-reference');
 
 // const DatabaseUtil = require('database-util');
 
@@ -26,4 +27,4 @@ async function handler(event) {
   return { message: 'Action requested' };
 }
 
-exports.handler = handler;
+exports.handler = guard(handler);

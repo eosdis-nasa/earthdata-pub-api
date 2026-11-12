@@ -56,7 +56,24 @@ const oasOptions = {
 
 oasTools.configure(oasOptions);
 
+const { createReferenceId, publicErrorBody, withPage, logReferenceError } = require('./lambda-handlers/error-reference');
+
+app.use((req, res, next) => {
+  withPage(req.get('X-Edpub-Page'), () => next());
+});
+
 oasTools.initialize(oasDoc, app, () => {
+  app.use((err, req, res, next) => {
+    if (res.headersSent) {
+      next(err);
+      return;
+    }
+    const referenceId = createReferenceId();
+    const name = err && typeof err.name === 'string' ? err.name : 'Error';
+    logReferenceError(referenceId, name);
+    res.status(500).json(publicErrorBody(referenceId));
+  });
+
   http.createServer(app).listen(serverPort, () => {
     console.log(`App running at http://localhost:${serverPort}`);
     console.log('_____________________________________________________');

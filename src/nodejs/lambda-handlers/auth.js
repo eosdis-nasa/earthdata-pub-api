@@ -5,6 +5,7 @@
 const db = require('database-util');
 
 const auth = require('auth-util');
+const { guard } = require('./error-reference');
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
@@ -38,4 +39,4 @@ async function handler(event) {
   return { redirect };
 }
 
-module.exports.handler = handler;
+module.exports.handler = guard(handler);

@@ -16,7 +16,7 @@ const workflowEventFilter = ['request_initialized', 'form_submitted', 'review_ap
 function aclAllowAll(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,authorization,X-Edpub-Page');
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
 }

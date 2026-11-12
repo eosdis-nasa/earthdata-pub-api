@@ -6,6 +6,7 @@ const {
 const path = require('path');
 
 const db = require('database-util');
+const { guard } = require('./error-reference');
 
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
@@ -602,4 +603,4 @@ async function handler(event) {
   return data;
 }
 
-exports.handler = handler;
+exports.handler = guard(handler);
