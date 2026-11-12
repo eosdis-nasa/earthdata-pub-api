@@ -730,11 +730,6 @@ const operations = {
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
-  // Temporary SIT check for EDPUB-1803. Remove after the error-page test.
-  const homePage = event.page === '/' || event.page === '/dashboard' || event.page === '/dashboard/';
-  if (event.operation === 'active' && homePage) {
-    throw new Error('edpub-1803');
-  }
   const user = (event.context.authorizer ? { id: event.context.authorizer }
     : await db.user.findById({ id: event.context.user_id }));
   const operation = operations[event.operation];
