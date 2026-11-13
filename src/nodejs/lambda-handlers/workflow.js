@@ -6,6 +6,7 @@
  */
 
 const db = require('database-util');
+const { guard } = require('./error-reference');
 
 async function createStep(step, stepName, rollbackInfo) {
   return db.workflow.createStep({
@@ -152,4 +153,4 @@ async function handler(event) {
   return data;
 }
 
-exports.handler = handler;
+exports.handler = guard(handler);

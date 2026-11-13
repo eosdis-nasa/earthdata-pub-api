@@ -7,6 +7,7 @@
  */
 
 const db = require('database-util');
+const { guard } = require('./error-reference');
 
 async function hasPerms(uid, perms) {
   const userInfo = await db.user.findById({ id: uid });
@@ -77,4 +78,4 @@ async function handler(event) {
   return data;
 }
 
-module.exports.handler = handler;
+module.exports.handler = guard(handler);

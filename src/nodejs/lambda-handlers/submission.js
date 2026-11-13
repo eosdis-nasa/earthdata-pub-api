@@ -7,8 +7,8 @@
  */
 
 const db = require('database-util');
-
 const msg = require('message-util');
+const { guard } = require('./error-reference');
 
 const { mapEDPubToUmmc } = require('./submission/metadata-mapper.js');
 
@@ -737,4 +737,4 @@ async function handler(event) {
   return data;
 }
 
-exports.handler = handler;
+exports.handler = guard(handler);

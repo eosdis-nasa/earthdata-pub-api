@@ -6,6 +6,7 @@ const {
 const path = require('path');
 
 const db = require('database-util');
+const { guard } = require('./error-reference');
 
 const ingestBucket = process.env.INGEST_BUCKET;
 const region = process.env.REGION;
@@ -353,17 +354,19 @@ async function listFilesMethod(event, user) {
     || userInfo.user_privileges.includes('ADMIN')
     || userDaacIds.includes(daacId)
   ) {
-    const s3Client = new S3Client({ region });
-    const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${submissionId}` });
-    try {
-      rawResponse = await s3Client.send(command);
-    } catch (err) {
-      console.error(err);
-    }
     const response = [];
-    if (rawResponse.Contents) {
-      for (let i = 0; i < rawResponse.Contents.length; i += 1) {
-        response.push(await processFile(rawResponse.Contents[i], s3Client));
+    if (ingestBucket) {
+      const s3Client = new S3Client({ region });
+      const command = new ListObjectsCommand({ Bucket: ingestBucket, Prefix: `${submissionId}` });
+      try {
+        rawResponse = await s3Client.send(command);
+      } catch (err) {
+        console.error(err);
+      }
+      if (rawResponse && rawResponse.Contents) {
+        for (let i = 0; i < rawResponse.Contents.length; i += 1) {
+          response.push(await processFile(rawResponse.Contents[i], s3Client));
+        }
       }
     }
     const fileIds = response.map((item) => item.fileId);
@@ -602,4 +605,4 @@ async function handler(event) {
   return data;
 }
 
-exports.handler = handler;
+exports.handler = guard(handler);

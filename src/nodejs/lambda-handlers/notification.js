@@ -7,6 +7,7 @@
  */
 const msg = require('message-util');
 const db = require('database-util');
+const { guard } = require('./error-reference');
 
 async function sendMethod(params) {
   const message = {
@@ -167,4 +168,4 @@ async function handler(event) {
   return data;
 }
 
-exports.handler = handler;
+exports.handler = guard(handler);
