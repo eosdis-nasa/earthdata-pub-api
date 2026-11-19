@@ -44,6 +44,16 @@ async function execute({ resource, operation }, params) {
       Object.assign(response, { data: { error: 'No results' } });
     }
   } catch (e) {
+    if (e && e.name === 'InvalidOrderByError') {
+      Object.assign(response, {
+        data: {
+          error: e.message,
+          statusCode: 400
+        }
+      });
+      console.error({ error: e });
+      return response.data;
+    }
     Object.assign(response, {
       data: {
         statusCode: 503,

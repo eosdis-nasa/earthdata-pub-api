@@ -28,6 +28,15 @@ const refs = {
   }
 }
 
+const SORT_COLUMNS = {
+  id: 'workflow.id',
+  short_name: 'workflow.short_name',
+  version: 'workflow.version',
+  long_name: 'workflow.long_name',
+  description: 'workflow.description',
+  created_at: 'workflow.created_at'
+};
+
 const findAll = ({ sort, order, per_page, page, where }) => sql.select({
   fields: ['workflow.*', 'steps'],
   from: { 
@@ -71,6 +80,7 @@ const findAll = ({ sort, order, per_page, page, where }) => sql.select({
       on: { left: 'step_json.workflow_id', right: 'workflow.id' }
     }]
   },
+  sort_columns: SORT_COLUMNS,
   ...(where ? { where: {filters: [{cmd: where}]} }: {}),
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),

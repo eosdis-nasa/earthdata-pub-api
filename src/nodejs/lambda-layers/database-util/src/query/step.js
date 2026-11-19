@@ -1,10 +1,21 @@
 const sql = require('./sql-builder.js');
 
+const SORT_COLUMNS = {
+  step_id: 'step.step_id',
+  step_name: 'step.step_name',
+  step_status_label: 'step.step_status_label',
+  type: 'step.type',
+  action_id: 'step.action_id',
+  form_id: 'step.form_id',
+  service_id: 'step.service_id'
+};
+
 const findAll = ({ order, sort, per_page, page }) => sql.select({
     fields: ['*'],
     from: {
       base: 'step'
     },
+    sort_columns: SORT_COLUMNS,
     ...(sort ? { sort } : {}),
     ...(order ? { order } : {}),
     ...(per_page ? { limit: per_page } : {}),

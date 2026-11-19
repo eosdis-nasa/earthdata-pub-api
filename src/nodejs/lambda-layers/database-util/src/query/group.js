@@ -51,9 +51,17 @@ const userJoinList = {
   group: fieldMap.user_id,
   alias: 'group_agg'
 };
+const SORT_COLUMNS = {
+  id: 'edpgroup.id',
+  short_name: 'edpgroup.short_name',
+  long_name: 'edpgroup.long_name',
+  description: 'edpgroup.description'
+};
+
 const findAll = ({ short_name, long_name, sort, order, per_page, page }) => sql.select({
   fields: ['edpgroup.*'],
   from: { base: table },
+  sort_columns: SORT_COLUMNS,
   ...(short_name || long_name ? {
     where: {
       filters: [

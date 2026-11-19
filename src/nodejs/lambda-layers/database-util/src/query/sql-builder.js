@@ -15,19 +15,103 @@ const opTypes = {
   is: 'IS'
 };
 
+const IDENTIFIER = /^[A-Za-z_][A-Za-z0-9_]*$/;
+const ORDER_DIR = /^(ASC|DESC)$/i;
+
+class InvalidOrderByError extends Error {
+  constructor(message = 'Invalid sort or order parameter') {
+    super(message);
+    this.name = 'InvalidOrderByError';
+  }
+}
+
+function isOmitted(value) {
+  return value === undefined || value === null || value === '';
+}
+
+function parseOrderDirection(order) {
+  if (typeof order !== 'string') {
+    throw new InvalidOrderByError('Invalid order parameter');
+  }
+  const trimmed = order.trim();
+  if (!ORDER_DIR.test(trimmed)) {
+    throw new InvalidOrderByError('Invalid order parameter');
+  }
+  return trimmed.toUpperCase();
+}
+
+function parseIdentifierColumn(column) {
+  const identifiers = column.split('.');
+  if (identifiers.length < 1 || identifiers.length > 2
+    || !identifiers.every((identifier) => IDENTIFIER.test(identifier))) {
+    throw new InvalidOrderByError('Invalid sort parameter');
+  }
+  return identifiers.join('.');
+}
+
+function resolveSortColumn(column, sortColumns) {
+  if (sortColumns) {
+    if (!Object.prototype.hasOwnProperty.call(sortColumns, column)) {
+      throw new InvalidOrderByError('Invalid sort parameter');
+    }
+    return sortColumns[column];
+  }
+  return parseIdentifierColumn(column);
+}
+
+function parseSortParts(sort, sortColumns) {
+  if (typeof sort !== 'string') {
+    throw new InvalidOrderByError('Invalid sort parameter');
+  }
+  const rawParts = sort.split(',');
+  if (rawParts.some((part) => part.trim() === '')) {
+    throw new InvalidOrderByError('Invalid sort parameter');
+  }
+  return rawParts.map((part) => {
+    const tokens = part.trim().split(/\s+/);
+    if (tokens.length > 2) {
+      throw new InvalidOrderByError('Invalid sort parameter');
+    }
+    const column = resolveSortColumn(tokens[0], sortColumns);
+    if (tokens[1] && !ORDER_DIR.test(tokens[1])) {
+      throw new InvalidOrderByError('Invalid sort parameter');
+    }
+    const direction = tokens[1] ? tokens[1].toUpperCase() : '';
+    return { column, direction };
+  });
+}
+
+function orderByClause(sort, order, sortColumns) {
+  // Empty sort= is omitted. order without sort is ignored: the dashboard
+  // sends order=desc on first load before a sort column is chosen.
+  if (isOmitted(sort)) return '';
+  const parts = parseSortParts(sort, sortColumns);
+  const hasInlineDirection = parts.some((part) => part.direction);
+  let orderDir = '';
+  if (!isOmitted(order)) {
+    orderDir = parseOrderDirection(order);
+    if (hasInlineDirection) {
+      throw new InvalidOrderByError('Invalid sort parameter');
+    }
+  }
+  const clause = parts
+    .map((part) => (part.direction ? `${part.column} ${part.direction}` : part.column))
+    .join(', ');
+  return ` ORDER BY ${clause}${orderDir ? ` ${orderDir}` : ''}`;
+}
+
 const complexParse = (src) => complexTypes[src.type](src);
 
 const typeCheck = (stub) => `${stub.type ? complexParse(stub) : stub.param ? param(stub) : stub}`;
 
 const selectQuery = ({
-  with_query, fields, from, where, group, sort, order, limit, offset, alias
+  with_query, fields, from, where, group, sort, order, sort_columns: sortColumns, limit, offset, alias
 }) => `${with_query ? withQuery(with_query) : ''}
   ${alias ? '(' : ''}SELECT${fields
   ? ` ${fields.map(typeCheck)}` : ' *'}${from
   ? fromClause(from) : ''}${where
   ? whereClause(where) : ''}${group
-  ? ` GROUP BY ${group}` : ''}${sort
-  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''}${limit
+  ? ` GROUP BY ${group}` : ''}${orderByClause(sort, order, sortColumns)}${limit
   ? ` LIMIT ${limit}${offset
   ? ` OFFSET ${offset * limit}` : ''}` : ''}${alias
   ? `) ${alias}` : ''}`;
@@ -102,15 +186,13 @@ const coalesce = ({ src, fallback, alias }) => ` COALESCE(${src.type ? complexPa
 
 const jsonAgg = ({
   src, distinct, sort, order, filters, alias
-}) => `JSONB_AGG(${distinct ? 'DISTINCT ': ''}${typeCheck(src)}${sort
-  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${filters
+}) => `JSONB_AGG(${distinct ? 'DISTINCT ': ''}${typeCheck(src)}${orderByClause(sort, order)})${filters
     ? `FILTER (${whereClause({ filters })})` : ''}${alias
   ? ` ${alias}` : ''}`;
 
 const jsonMergeAgg = ({
   src, sort, order, alias
-}) => `JSONB_MERGE_AGG(${src.type ? complexParse(src) : src}${sort
-  ? ` ORDER BY ${sort}${order ? ` ${order}` : ''}` : ''})${alias
+}) => `JSONB_MERGE_AGG(${src.type ? complexParse(src) : src}${orderByClause(sort, order)})${alias
   ? ` ${alias}` : ''}`;
 
 const jsonObjAgg = ({ keys, alias }) => `JSONB_OBJECT_AGG(${keys.map(typeCheck)})${alias ? ` ${alias}` : ''}`;
@@ -150,4 +232,5 @@ const complexTypes = {
   union,
 };
 
-module.exports = complexTypes;
+module.exports = { ...complexTypes };
+module.exports.InvalidOrderByError = InvalidOrderByError;
