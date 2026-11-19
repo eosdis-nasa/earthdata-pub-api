@@ -1,8 +1,20 @@
 const sql = require('./sql-builder.js');
 
+const SORT_COLUMNS = {
+  id: 'service.id',
+  short_name: 'service.short_name',
+  long_name: 'service.long_name',
+  description: 'service.description',
+  endpoint: 'service.endpoint',
+  method: 'service.method',
+  code: 'service.code',
+  payload: 'service.payload'
+};
+
 const findAll = ({ sort, order, per_page, page, where }) => sql.select({
   fields: ['service.*'],
   from: { base: 'service' },
+  sort_columns: SORT_COLUMNS,
   ...(where ? { where: {filters: [{cmd: where}]} }: {}),
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),

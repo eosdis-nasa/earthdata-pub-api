@@ -76,6 +76,24 @@ const refs = {
   }
 };
 
+const USER_SORT_COLUMNS = {
+  id: 'edpuser.id',
+  name: 'edpuser.name',
+  email: 'edpuser.email',
+  registered: 'edpuser.registered',
+  last_login: 'edpuser.last_login',
+  detailed: 'edpuser.detailed'
+};
+
+const FILTERED_USER_SORT_COLUMNS = {
+  id: 'filtered_users.id',
+  name: 'filtered_users.name',
+  email: 'filtered_users.email',
+  registered: 'filtered_users.registered',
+  last_login: 'filtered_users.last_login',
+  detailed: 'filtered_users.detailed'
+};
+
 const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
   fields: fields(allFields),
   from: {
@@ -85,6 +103,7 @@ const find = ({ id, name, email, sort, order, per_page, page }) => sql.select({
       refs.role
     ]
   },
+  sort_columns: USER_SORT_COLUMNS,
   ...(id || name || email ? {
     where: {
       filters: [
@@ -136,6 +155,7 @@ const findAll = ({name, email, sort, order, per_page, page, group_id, role_id, r
       refs.filteredRoleList
     ]
   },
+  sort_columns: FILTERED_USER_SORT_COLUMNS,
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
@@ -153,6 +173,7 @@ const getDetailedUsers = ({id, name, email, sort, order, per_page, page, group_i
       refs.roleList
     ]
   },
+  sort_columns: USER_SORT_COLUMNS,
   ...(id || name || email || group_id || role_id? {
     where: {
       filters: [

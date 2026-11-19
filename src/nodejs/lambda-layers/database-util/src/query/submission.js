@@ -450,6 +450,23 @@ const findAll = ({
       ...(typeof(hidden)=='undefined' ? [] : (hidden==='false' || hidden===false) ? [{ cmd: 'NOT submission.hidden'}] : [{ cmd: 'submission.hidden'}]),
     ]
   },
+  sort_columns: {
+    id: 'submission.id',
+    name: 'submission.name',
+    data_producer_name: 'submission.data_producer_name',
+    data_producer_info_name: 'submission.data_producer_name',
+    conversation_id: 'submission.conversation_id',
+    hidden: 'submission.hidden',
+    workflow_id: 'submission_status.workflow_id',
+    workflow_name: 'workflow.long_name',
+    daac_name: 'daac.long_name',
+    step_name: 'step.step_name',
+    status: 'step.status',
+    status_message: 'step.status',
+    created_at: 'submission.created_at',
+    last_change: 'submission_status.last_change',
+    contributor_ids: 'submission.contributor_ids'
+  },
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),

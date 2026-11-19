@@ -42,6 +42,16 @@ RETURNING *;
 `;
 
 
+const SORT_COLUMNS = {
+  id: 'form.id',
+  short_name: 'form.short_name',
+  version: 'form.version',
+  long_name: 'form.long_name',
+  description: 'form.description',
+  daac_only: 'form.daac_only',
+  created_at: 'form.created_at'
+};
+
 const findAll = ({
   short_name, version, long_name, created_after, created_before, privileged_user, order, sort, per_page, page
 }) => sql.select({
@@ -49,6 +59,7 @@ const findAll = ({
   from: {
     base: table
   },
+  sort_columns: SORT_COLUMNS,
   where: {
     filters: [
       ...(short_name ? [{ field: 'form.short_name', like: 'short_name' }] : []),
