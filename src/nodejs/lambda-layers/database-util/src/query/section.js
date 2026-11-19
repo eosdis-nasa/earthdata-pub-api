@@ -54,9 +54,20 @@ const formJoin = () => sql.select({
   alias: 'section_agg'
 });
 
+const SORT_COLUMNS = {
+  id: 'section.id',
+  form_id: 'section.form_id',
+  heading: 'section.heading',
+  list_order: 'section.list_order',
+  required_if: 'section.required_if',
+  show_if: 'section.show_if',
+  daac_id: 'section.daac_id'
+};
+
 const findAll = ({ sort, order, per_page, page, where }) => sql.select({
   fields: ['section.*'],
   from: { base: 'section' },
+  sort_columns: SORT_COLUMNS,
   ...(where ? { where: {filters: [{cmd: where}]} }: {}),
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),

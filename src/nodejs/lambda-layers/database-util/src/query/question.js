@@ -93,9 +93,22 @@ const sectionJoin = () => sql.select({
   alias: 'question_agg'
 });
 
+const SORT_COLUMNS = {
+  id: 'question.id',
+  short_name: 'question.short_name',
+  version: 'question.version',
+  long_name: 'question.long_name',
+  question_name: 'question.long_name',
+  text: 'question.text',
+  help: 'question.help',
+  required: 'question.required',
+  created_at: 'question.created_at'
+};
+
 const findAll = ({ sort, order, per_page, page }) => sql.select({
   fields: ['question.*'],
   from: { base: 'question' },
+  sort_columns: SORT_COLUMNS,
   ...(sort ? { sort } : {}),
   ...(order ? { order } : {}),
   ...(per_page ? { limit: per_page } : {}),
