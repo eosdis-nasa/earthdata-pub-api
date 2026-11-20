@@ -4,6 +4,7 @@
  */
 
 const schema = require('schema-util');
+const { guard } = require('./error-reference');
 
 async function handler(event) {
   console.info(`[EVENT]\n${JSON.stringify(event)}`);
@@ -12,4 +13,4 @@ async function handler(event) {
   return model;
 }
 
-module.exports.handler = handler;
+module.exports.handler = guard(handler);

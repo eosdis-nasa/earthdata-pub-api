@@ -5,6 +5,7 @@
  */
 
 const db = require('database-util');
+const { guard } = require('./error-reference');
 
 const editPerms = { privilege: ['ADMIN'] };
 const readPerms = { privilege: ['ADMIN'] };
@@ -133,4 +134,4 @@ async function handler(event) {
   return data;
 }
 
-exports.handler = handler;
+exports.handler = guard(handler);

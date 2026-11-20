@@ -8,6 +8,7 @@
 
 const db = require('database-util');
 const { CognitoIdentityProvider: CognitoIdentityServiceProvider } = require('@aws-sdk/client-cognito-identity-provider');
+const { guard } = require('./error-reference');
 
 const idp = new CognitoIdentityServiceProvider({ region: process.env.REGION });
 const userPoolId = process.env.CUP_ID || process.env.USER_POOL_ID;
@@ -123,4 +124,4 @@ async function handler(event) {
   return data;
 }
 
-module.exports.handler = handler;
+module.exports.handler = guard(handler);

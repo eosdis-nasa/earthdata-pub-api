@@ -2,17 +2,20 @@ const db = require('database-util');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const fileUpload = require('../../file-upload.js');
 
+const mockS3List = {
+  Contents: [{
+    Key: '/fake/path/documentation/FakeS3Key.txt',
+    LastModified: 'fake_last_modified_string',
+    Size: 1234,
+    ChecksumAlgorithm: 'SHA256'
+  }]
+};
+const mockS3Send = jest.fn(() => mockS3List);
+
 jest.mock('@aws-sdk/client-s3', () => {
   class mockS3Client {
-    send() {
-      return {
-        Contents: [{
-          Key: '/fake/path/documentation/FakeS3Key.txt',
-          LastModified: 'fake_last_modified_string',
-          Size: 1234,
-          ChecksumAlgorithm: 'SHA256'
-        }]
-      };
+    send(command) {
+      return mockS3Send(command);
     }
   }
   return {
@@ -41,6 +44,7 @@ db.note.readConversation = jest.fn();
 describe('file-upload', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockS3Send.mockImplementation(() => mockS3List);
   });
 
   db.user.findById.mockReturnValue({
@@ -184,6 +188,33 @@ describe('file-upload', () => {
         size: 987
       })
     ]));
+  });
+  it('should keep saved files when the S3 list fails', async () => {
+    const payload = {
+      operation: 'listFiles',
+      submission_id: '5c3d1baa-a19e-4681-9b2d-216c08762dfb',
+      context: { user_id: 'user_id' }
+    };
+    mockS3Send.mockRejectedValueOnce(new Error('No value provided for input HTTP label: Bucket.'));
+    db.submission.getTempUploadFiles.mockResolvedValueOnce([{
+      file_id: 'fakeId1',
+      file_name: 'tempFile.txt',
+      lastmodified: '2024-01-01T00:00:00.000Z',
+      size: 987
+    }]);
+    db.daac.getIds.mockReturnValueOnce([{ id: 'daac_id' }]);
+    db.submission.findById.mockReturnValueOnce({
+      daac_id: 'daac_id',
+      contributor_ids: ['contributor_id']
+    });
+    const response = await fileUpload.handler(payload);
+    expect(response).toEqual([{
+      file_id: 'fakeId1',
+      file_name: 'tempFile.txt',
+      lastModified: '2024-01-01T00:00:00.000Z',
+      size: 987
+    }]);
+    expect(response.error).toBeUndefined();
   });
   it('should list step files', async () => {
     const payload = {

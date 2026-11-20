@@ -4,6 +4,7 @@
  */
 
 const db = require('database-util');
+const { guard } = require('./error-reference');
 
 async function getSubmissions({ payload, context }) {
   // gets using information and checks for minimum permissions
@@ -113,4 +114,4 @@ async function handler(event) {
   return data;
 }
 
-module.exports.handler = handler;
+module.exports.handler = guard(handler);
